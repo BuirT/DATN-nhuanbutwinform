@@ -17,7 +17,6 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmThanhToan_Load(object sender, EventArgs e)
         {
-            // Khởi tạo các giá trị tham khảo cho Combo box (Theo hình ảnh CSDL)
             cboLoaiBao.Items.AddRange(new string[] { "NG", "KH" });
             cboVung.Items.AddRange(new string[] { "HCM", "HN", "DN" });
             cboLoaiTT.Items.AddRange(new string[] { "CT", "LE" });
@@ -26,7 +25,10 @@ namespace HETHONGTINHNHUANBUT
             LoadData();
             btnLuu.Enabled = false;
 
-            // --- CHÍCH THUỐC FIX LỖI FONT VNI-WINDOWS ---
+            // Nếu đồng chí chưa tạo nút btnDuyet trên giao diện thì tạm comment dòng dưới lại nhé
+            btnDuyet.Enabled = false;
+
+            // Fix Font VNI
             Font vniFont = new Font("VNI-Times", 10.2F);
             dgvThanhToan.DefaultCellStyle.Font = vniFont;
             dgvThanhToan.RowsDefaultCellStyle.Font = vniFont;
@@ -39,7 +41,6 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                // Truy vấn đúng các cột trong bảng ThanhToan
                 string sql = "SELECT Maso, Tengoi, Ngay, Tungay, Denngay, Loaibao, Sotien, Vung, LoaiTT, Khoaso, hinhthucTT FROM ThanhToan ORDER BY Maso DESC";
                 dgvThanhToan.DataSource = DataProvider.Instance.ExecuteQuery(sql);
             }
@@ -50,8 +51,9 @@ namespace HETHONGTINHNHUANBUT
         {
             isAddNew = true;
             btnLuu.Enabled = true;
+            btnDuyet.Enabled = false; // Đang thêm mới thì không cho duyệt
 
-            txtMaso.Clear(); // Hệ thống sẽ tự cấp mã lúc Lưu
+            txtMaso.Clear();
             txtTenGoi.Clear();
             txtSoTien.Text = "0";
 
@@ -82,7 +84,6 @@ namespace HETHONGTINHNHUANBUT
 
                 if (isAddNew)
                 {
-                    // Tạo mã số tự động (Max + 1)
                     string query = @"
                         DECLARE @newID INT;
                         SELECT @newID = ISNULL(MAX(Maso), 1000) + 1 FROM ThanhToan;
@@ -132,8 +133,12 @@ namespace HETHONGTINHNHUANBUT
         {
             txtMaso.Clear(); txtTenGoi.Clear(); txtSoTien.Clear();
             btnLuu.Enabled = false;
+            btnDuyet.Enabled = false;
+            btnSua.Enabled = true;
+            btnXoa.Enabled = true;
         }
 
+        // --- CẬP NHẬT LOGIC: KIỂM TRA TRẠNG THÁI KHOASO KHI CLICK VÀO LƯỚI ---
         private void dgvThanhToan_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvThanhToan.CurrentRow == null || e.RowIndex < 0) return;
@@ -155,6 +160,55 @@ namespace HETHONGTINHNHUANBUT
                 txtSoTien.Text = Math.Round(sotien, 0).ToString();
 
             btnLuu.Enabled = false;
+
+            // KIỂM TRA QUYỀN TRƯỢNG: Nếu đã duyệt (Khoaso = 'Y') thì khóa hết nút sửa/xóa
+            string trangThaiKhoa = row.Cells["Khoaso"].Value?.ToString() ?? "N";
+            if (trangThaiKhoa.Trim().ToUpper() == "Y")
+            {
+                btnSua.Enabled = false;
+                btnXoa.Enabled = false;
+                btnDuyet.Enabled = false; // Đã duyệt rồi thì ẩn/khóa luôn nút duyệt
+                MessageBox.Show("Đợt chi trả này ĐÃ ĐƯỢC KÝ DUYỆT, không thể chỉnh sửa!", "Khóa số liệu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                btnSua.Enabled = true;
+                btnXoa.Enabled = true;
+                btnDuyet.Enabled = true; // Hiện nút duyệt lên cho lãnh đạo bấm
+            }
+        }
+
+        // --- HÀM MỚI DÀNH CHO LÃNH ĐẠO ---
+        private void btnDuyet_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtMaso.Text))
+            {
+                MessageBox.Show("Vui lòng chọn đợt chi trả cần ký duyệt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show(
+                "Đồng chí có chắc chắn muốn KÝ DUYỆT đợt chi trả này?\n\nLƯU Ý: Sau khi Ký duyệt, dữ liệu sẽ được chuyển sang kế toán và KHÔNG THỂ CHỈNH SỬA!",
+                "Xác nhận Ký Duyệt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (rs == DialogResult.Yes)
+            {
+                try
+                {
+                    // Chuyển trường Khoaso thành 'Y'
+                    string query = "UPDATE ThanhToan SET Khoaso = 'Y' WHERE Maso = @maso";
+                    DataProvider.Instance.ExecuteNonQuery(query, new object[] { Convert.ToInt32(txtMaso.Text) });
+
+                    MessageBox.Show("Đã Ký Duyệt thành công! Đợt chi trả đã được chốt sổ.", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    LoadData();
+                    btnHuy_Click(sender, e); // Reset UI
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi ký duyệt: " + ex.Message, "Lỗi Database");
+                }
+            }
         }
     }
 }
