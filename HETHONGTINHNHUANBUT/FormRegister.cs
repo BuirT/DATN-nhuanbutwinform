@@ -57,7 +57,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string checkQuery = "SELECT COUNT(*) FROM dbo.gUser WHERE UserId = @UserId";
-                object existObj = DataProvider.Instance.ExecuteScalar(checkQuery, new object[] { userId });
+                object existObj = MongoProvider.Instance.ExecuteScalar(checkQuery, new object[] { userId });
                 int existCount = 0;
                 if (existObj != null && int.TryParse(existObj.ToString(), out int tmp)) existCount = tmp;
 
@@ -74,7 +74,7 @@ namespace HETHONGTINHNHUANBUT
                 string privelege = "";
                 string hashedPassword = HashHelper.ComputeSha256(password);
 
-                int rows = DataProvider.Instance.ExecuteNonQuery(insertQuery, new object[] { userId, hashedPassword, fullname, groupID, privelege });
+                int rows = MongoProvider.Instance.ExecuteNonQuery(insertQuery, new object[] { userId, hashedPassword, fullname, groupID, privelege });
 
                 if (rows > 0)
                 {

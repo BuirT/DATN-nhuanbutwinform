@@ -38,7 +38,7 @@ namespace HETHONGTINHNHUANBUT
                 GROUP BY n.Butdanh
                 ORDER BY SUM(n.TienNhuanbut) DESC";
 
-            DataTable dt = DataProvider.Instance.ExecuteQuery(sql, new object[] { dtpTuNgay.Value, dtpDenNgay.Value });
+            DataTable dt = MongoProvider.Instance.ExecuteQuery(sql, new object[] { dtpTuNgay.Value, dtpDenNgay.Value });
             dgvCongNo.DataSource = dt;
 
             if (dgvCongNo.Columns.Count > 1)

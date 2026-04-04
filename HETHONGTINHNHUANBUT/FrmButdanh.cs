@@ -28,7 +28,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string sql = "SELECT Maso, Hoten FROM TacGia";
-                DataTable dt = DataProvider.Instance.ExecuteQuery(sql);
+                DataTable dt = MongoProvider.Instance.ExecuteQuery(sql);
                 cboTacGia.DataSource = dt;
                 cboTacGia.DisplayMember = "Hoten"; // Hiển thị tên cho dễ nhìn
                 cboTacGia.ValueMember = "Maso";    // Nhưng ngầm hiểu lưu giá trị là Mã
@@ -48,7 +48,7 @@ namespace HETHONGTINHNHUANBUT
                     SELECT b.Maso, b.Butdanh, t.Hoten AS TenTacGia, b.MsTacgia 
                     FROM Butdanh b 
                     LEFT JOIN TacGia t ON b.MsTacgia = t.Maso";
-                dgvButDanh.DataSource = DataProvider.Instance.ExecuteQuery(sql);
+                dgvButDanh.DataSource = MongoProvider.Instance.ExecuteQuery(sql);
 
                 // Ẩn cột mã tác giả đi cho bảng nó gọn đẹp
                 if (dgvButDanh.Columns["MsTacgia"] != null)
@@ -87,7 +87,7 @@ namespace HETHONGTINHNHUANBUT
                     cboTacGia.SelectedValue.ToString() // Lấy mã tác giả đang được chọn
                 };
 
-                if (DataProvider.Instance.ExecuteNonQuery(query, para) > 0)
+                if (MongoProvider.Instance.ExecuteNonQuery(query, para) > 0)
                 {
                     MessageBox.Show("Thêm Bút danh thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -117,7 +117,7 @@ namespace HETHONGTINHNHUANBUT
                     Convert.ToInt32(txtMaButDanh.Text)
                 };
 
-                if (DataProvider.Instance.ExecuteNonQuery(query, para) > 0)
+                if (MongoProvider.Instance.ExecuteNonQuery(query, para) > 0)
                 {
                     MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -138,7 +138,7 @@ namespace HETHONGTINHNHUANBUT
                 try
                 {
                     string query = "DELETE FROM Butdanh WHERE Maso = @maso";
-                    if (DataProvider.Instance.ExecuteNonQuery(query, new object[] { Convert.ToInt32(txtMaButDanh.Text) }) > 0)
+                    if (MongoProvider.Instance.ExecuteNonQuery(query, new object[] { Convert.ToInt32(txtMaButDanh.Text) }) > 0)
                     {
                         MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         btnThem_Click(sender, e);

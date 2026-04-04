@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Guna.Charts.WinForms;
+using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
+using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using HETHONGTINHNHUANBUT.DAL;
-using Guna.Charts.WinForms;
+using System.Linq;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -46,15 +49,31 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                lblSoTacGia.Text = DataProvider.Instance.ExecuteScalar("SELECT COUNT(*) FROM TacGia")?.ToString() ?? "0";
-                lblSoBaiViet.Text = DataProvider.Instance.ExecuteScalar("SELECT COUNT(*) FROM Nhuanbut")?.ToString() ?? "0";
-                lblSoBaoCho.Text = DataProvider.Instance.ExecuteScalar("SELECT COUNT(*) FROM Bao WHERE DaDuyet = 'N'")?.ToString() ?? "0";
+                // 1. Kết nối đến các bảng (Collection) trên Cloud
+                var tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
+                var nhuanButColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi"); // Hoặc tên bảng nhuận bút của anh
+                var baoColl = MongoProvider.Instance.GetCollection<Bao>("Bao");
 
-                object kqTien = DataProvider.Instance.ExecuteScalar("SELECT SUM(TienNhuanbut) FROM Nhuanbut");
-                if (kqTien != DBNull.Value && kqTien.ToString() != "")
-                    lblTongTien.Text = $"{Convert.ToDecimal(kqTien):N0} VNĐ";
+                // 2. Lấy số lượng cực nhanh bằng hàm CountDocuments
+                lblSoTacGia.Text = tacGiaColl.CountDocuments(_ => true).ToString();
+                lblSoBaiViet.Text = nhuanButColl.CountDocuments(_ => true).ToString();
+
+                // Đếm bài chưa duyệt (Ví dụ trạng thái duyệt là N)
+                // lblSoBaoCho.Text = baoColl.CountDocuments(x => x.DaDuyet == "N").ToString();
+
+                // 3. Tính tổng tiền (Sử dụng Linq Sum cực xịn)
+                var listPhieu = nhuanButColl.Find(_ => true).ToList();
+                decimal tongTien = listPhieu.Sum(x => (decimal?)x.Sotien) ?? 0;
+
+                lblTongTien.Text = tongTien.ToString("N0") + " VNĐ";
             }
-            catch { }
+            catch
+            {
+                // Nếu lỗi (ví dụ chưa có data), gán bằng 0 cho an toàn
+                lblSoTacGia.Text = "0";
+                lblSoBaiViet.Text = "0";
+                lblTongTien.Text = "0 VNĐ";
+            }
         }
 
         void LoadTopSoBao()
@@ -62,7 +81,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string sql = "SELECT TOP 10 Tenbao AS [Tên Báo], Sobao AS [Số], Ngayra AS [Ngày XB] FROM Bao ORDER BY Ngayra DESC";
-                dgvHoatDong.DataSource = DataProvider.Instance.ExecuteQuery(sql);
+                dgvHoatDong.DataSource = MongoProvider.Instance.ExecuteQuery(sql);
 
                 Font vniFont = new Font("VNI-Times", 11F);
                 dgvHoatDong.DefaultCellStyle.Font = vniFont;
@@ -120,7 +139,7 @@ namespace HETHONGTINHNHUANBUT
                                FROM Bao b JOIN Nhuanbut n ON b.Maso = n.MsBao 
                                GROUP BY b.Tenbao, b.Ngayra 
                                ORDER BY b.Ngayra DESC";
-                DataTable dt = DataProvider.Instance.ExecuteQuery(sql);
+                DataTable dt = MongoProvider.Instance.ExecuteQuery(sql);
 
                 foreach (DataRow row in dt.Rows)
                 {

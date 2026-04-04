@@ -226,29 +226,13 @@
             this.pnlTacGia.Location = new System.Drawing.Point(3, 3);
             this.pnlTacGia.Name = "pnlTacGia";
             this.pnlTacGia.Padding = new System.Windows.Forms.Padding(15);
-            this.pnlTacGia.ShadowDecoration.Enabled = false;
             this.pnlTacGia.Size = new System.Drawing.Size(262, 168);
             this.pnlTacGia.TabIndex = 0;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = false;
-            this.label2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(15, 15);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(232, 35);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "👥 Tác giả";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblSoTacGia
             // 
-            this.lblSoTacGia.AutoSize = false;
-            this.lblSoTacGia.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSoTacGia.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoTacGia.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSoTacGia.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblSoTacGia.ForeColor = System.Drawing.Color.White;
             this.lblSoTacGia.Location = new System.Drawing.Point(15, 50);
@@ -257,6 +241,19 @@
             this.lblSoTacGia.TabIndex = 0;
             this.lblSoTacGia.Text = "0";
             this.lblSoTacGia.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(15, 15);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(232, 35);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "👥 Tác giả";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlBaiViet
             // 
@@ -270,29 +267,13 @@
             this.pnlBaiViet.Location = new System.Drawing.Point(271, 3);
             this.pnlBaiViet.Name = "pnlBaiViet";
             this.pnlBaiViet.Padding = new System.Windows.Forms.Padding(15);
-            this.pnlBaiViet.ShadowDecoration.Enabled = false;
             this.pnlBaiViet.Size = new System.Drawing.Size(262, 168);
             this.pnlBaiViet.TabIndex = 1;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = false;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(15, 15);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(232, 35);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "📝 Bài viết";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblSoBaiViet
             // 
-            this.lblSoBaiViet.AutoSize = false;
-            this.lblSoBaiViet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSoBaiViet.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoBaiViet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSoBaiViet.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblSoBaiViet.ForeColor = System.Drawing.Color.White;
             this.lblSoBaiViet.Location = new System.Drawing.Point(15, 50);
@@ -301,6 +282,19 @@
             this.lblSoBaiViet.TabIndex = 0;
             this.lblSoBaiViet.Text = "0";
             this.lblSoBaiViet.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(15, 15);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(232, 35);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "📝 Bài viết";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlSoBao
             // 
@@ -314,29 +308,13 @@
             this.pnlSoBao.Location = new System.Drawing.Point(539, 3);
             this.pnlSoBao.Name = "pnlSoBao";
             this.pnlSoBao.Padding = new System.Windows.Forms.Padding(15);
-            this.pnlSoBao.ShadowDecoration.Enabled = false;
             this.pnlSoBao.Size = new System.Drawing.Size(262, 168);
             this.pnlSoBao.TabIndex = 2;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = false;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(15, 15);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(232, 35);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "📅 Số báo chờ";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblSoBaoCho
             // 
-            this.lblSoBaoCho.AutoSize = false;
-            this.lblSoBaoCho.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSoBaoCho.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoBaoCho.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSoBaoCho.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblSoBaoCho.ForeColor = System.Drawing.Color.White;
             this.lblSoBaoCho.Location = new System.Drawing.Point(15, 50);
@@ -345,6 +323,19 @@
             this.lblSoBaoCho.TabIndex = 0;
             this.lblSoBaoCho.Text = "0";
             this.lblSoBaoCho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label4
+            // 
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(15, 15);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(232, 35);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "📅 Số báo chờ";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlTien
             // 
@@ -358,30 +349,13 @@
             this.pnlTien.Location = new System.Drawing.Point(807, 3);
             this.pnlTien.Name = "pnlTien";
             this.pnlTien.Padding = new System.Windows.Forms.Padding(15);
-            this.pnlTien.ShadowDecoration.Enabled = false;
             this.pnlTien.Size = new System.Drawing.Size(264, 168);
             this.pnlTien.TabIndex = 3;
             // 
-            // label6
-            // 
-            this.label6.AutoSize = false;
-            this.label6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(15, 15);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(234, 35);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "💰 Quỹ nhuận bút";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblTongTien
             // 
-            this.lblTongTien.AutoSize = false;
-            this.lblTongTien.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTongTien.BackColor = System.Drawing.Color.Transparent;
-            // Đổi Font Size xuống 18F để tiền trăm tỷ không bị tràn thẻ
+            this.lblTongTien.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblTongTien.ForeColor = System.Drawing.Color.White;
             this.lblTongTien.Location = new System.Drawing.Point(15, 50);
@@ -390,6 +364,19 @@
             this.lblTongTien.TabIndex = 0;
             this.lblTongTien.Text = "0 ₫";
             this.lblTongTien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(15, 15);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(234, 35);
+            this.label6.TabIndex = 1;
+            this.label6.Text = "💰 Quỹ nhuận bút";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // splitContainer1
             // 
@@ -417,7 +404,6 @@
             this.pnlBieuDo.Location = new System.Drawing.Point(0, 0);
             this.pnlBieuDo.Name = "pnlBieuDo";
             this.pnlBieuDo.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlBieuDo.ShadowDecoration.Enabled = false;
             this.pnlBieuDo.Size = new System.Drawing.Size(700, 469);
             this.pnlBieuDo.TabIndex = 0;
             // 
@@ -522,13 +508,9 @@
             this.tlpMain.ResumeLayout(false);
             this.tlpCards.ResumeLayout(false);
             this.pnlTacGia.ResumeLayout(false);
-            this.pnlTacGia.PerformLayout();
             this.pnlBaiViet.ResumeLayout(false);
-            this.pnlBaiViet.PerformLayout();
             this.pnlSoBao.ResumeLayout(false);
-            this.pnlSoBao.PerformLayout();
             this.pnlTien.ResumeLayout(false);
-            this.pnlTien.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

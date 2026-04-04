@@ -42,7 +42,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string sql = "SELECT Maso, Tengoi, Ngay, Tungay, Denngay, Loaibao, Sotien, Vung, LoaiTT, Khoaso, hinhthucTT FROM ThanhToan ORDER BY Maso DESC";
-                dgvThanhToan.DataSource = DataProvider.Instance.ExecuteQuery(sql);
+                dgvThanhToan.DataSource = MongoProvider.Instance.ExecuteQuery(sql);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
         }
@@ -94,7 +94,7 @@ namespace HETHONGTINHNHUANBUT
                         txtTenGoi.Text, dtpNgay.Value, dtpTuNgay.Value, dtpDenNgay.Value,
                         cboLoaiBao.Text, sotien, cboVung.Text, cboLoaiTT.Text, cboHinhThuc.Text
                     };
-                    DataProvider.Instance.ExecuteNonQuery(query, para);
+                    MongoProvider.Instance.ExecuteNonQuery(query, para);
                     MessageBox.Show("Khởi tạo đợt chi trả thành công!", "Thông báo");
                 }
                 else
@@ -106,7 +106,7 @@ namespace HETHONGTINHNHUANBUT
                         txtTenGoi.Text, dtpNgay.Value, dtpTuNgay.Value, dtpDenNgay.Value,
                         cboLoaiBao.Text, sotien, cboVung.Text, cboLoaiTT.Text, cboHinhThuc.Text, Convert.ToInt32(txtMaso.Text)
                     };
-                    DataProvider.Instance.ExecuteNonQuery(query, para);
+                    MongoProvider.Instance.ExecuteNonQuery(query, para);
                     MessageBox.Show("Cập nhật đợt chi trả thành công!", "Thông báo");
                 }
 
@@ -123,7 +123,7 @@ namespace HETHONGTINHNHUANBUT
             if (MessageBox.Show("Bạn có chắc muốn xóa đợt chi trả này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 string sql = "DELETE FROM ThanhToan WHERE Maso = @maso";
-                DataProvider.Instance.ExecuteNonQuery(sql, new object[] { Convert.ToInt32(txtMaso.Text) });
+                MongoProvider.Instance.ExecuteNonQuery(sql, new object[] { Convert.ToInt32(txtMaso.Text) });
                 LoadData();
                 btnHuy_Click(sender, e);
             }
@@ -197,7 +197,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     // Chuyển trường Khoaso thành 'Y'
                     string query = "UPDATE ThanhToan SET Khoaso = 'Y' WHERE Maso = @maso";
-                    DataProvider.Instance.ExecuteNonQuery(query, new object[] { Convert.ToInt32(txtMaso.Text) });
+                    MongoProvider.Instance.ExecuteNonQuery(query, new object[] { Convert.ToInt32(txtMaso.Text) });
 
                     MessageBox.Show("Đã Ký Duyệt thành công! Đợt chi trả đã được chốt sổ.", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

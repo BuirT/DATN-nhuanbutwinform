@@ -25,21 +25,21 @@ namespace HETHONGTINHNHUANBUT
             {
                 // 1. Tổng quỹ nhuận bút (Tất cả bài viết đã nhập)
                 string qAll = "SELECT SUM(TienNhuanbut) FROM Nhuanbut";
-                object rAll = DataProvider.Instance.ExecuteScalar(qAll);
+                object rAll = MongoProvider.Instance.ExecuteScalar(qAll);
                 lblTongQuy.Text = (rAll != DBNull.Value) ? string.Format("{0:N0} đ", rAll) : "0 đ";
 
                 // 2. Tiền đã chi (Dựa trên số báo đã Duyệt 'Y')
                 string qPaid = @"SELECT SUM(n.TienNhuanbut) 
                                 FROM Nhuanbut n JOIN Bao b ON n.MsBao = b.Maso 
                                 WHERE b.DaDuyet = 'Y'";
-                object rPaid = DataProvider.Instance.ExecuteScalar(qPaid);
+                object rPaid = MongoProvider.Instance.ExecuteScalar(qPaid);
                 lblDaChi.Text = (rPaid != DBNull.Value) ? string.Format("{0:N0} đ", rPaid) : "0 đ";
 
                 // 3. Tiền chờ chi (Số báo chưa Duyệt 'N')
                 string qPending = @"SELECT SUM(n.TienNhuanbut) 
                                    FROM Nhuanbut n JOIN Bao b ON n.MsBao = b.Maso 
                                    WHERE b.DaDuyet = 'N'";
-                object rPending = DataProvider.Instance.ExecuteScalar(qPending);
+                object rPending = MongoProvider.Instance.ExecuteScalar(qPending);
                 lblChoChi.Text = (rPending != DBNull.Value) ? string.Format("{0:N0} đ", rPending) : "0 đ";
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace HETHONGTINHNHUANBUT
                                GROUP BY Butdanh 
                                ORDER BY SUM(TienNhuanbut) DESC";
 
-                DataTable dt = DataProvider.Instance.ExecuteQuery(sql);
+                DataTable dt = MongoProvider.Instance.ExecuteQuery(sql);
                 dgvTopPV.DataSource = dt;
 
                 // Fix font VNI để hiện tên Bút danh mã VNI

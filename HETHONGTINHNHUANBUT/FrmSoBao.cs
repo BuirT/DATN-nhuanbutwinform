@@ -27,7 +27,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string sql = "SELECT Maso, Tenbao, Ngayra, Sobao, Sobo, Loaibao, DaDuyet FROM Bao ORDER BY Ngayra DESC";
-                dgvSoBao.DataSource = DataProvider.Instance.ExecuteQuery(sql);
+                dgvSoBao.DataSource = MongoProvider.Instance.ExecuteQuery(sql);
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace HETHONGTINHNHUANBUT
                     txtSoBo.Text
                 };
 
-                if (DataProvider.Instance.ExecuteNonQuery(query, para) > 0)
+                if (MongoProvider.Instance.ExecuteNonQuery(query, para) > 0)
                 {
                     MessageBox.Show("Thêm Số báo thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -100,7 +100,7 @@ namespace HETHONGTINHNHUANBUT
                     Convert.ToInt32(txtMaso.Text)
                 };
 
-                if (DataProvider.Instance.ExecuteNonQuery(query, para) > 0)
+                if (MongoProvider.Instance.ExecuteNonQuery(query, para) > 0)
                 {
                     MessageBox.Show("Cập nhật Số báo thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -124,7 +124,7 @@ namespace HETHONGTINHNHUANBUT
                     string query = "DELETE FROM Bao WHERE Maso = @maso";
                     object[] para = new object[] { Convert.ToInt32(txtMaso.Text) };
 
-                    if (DataProvider.Instance.ExecuteNonQuery(query, para) > 0)
+                    if (MongoProvider.Instance.ExecuteNonQuery(query, para) > 0)
                     {
                         MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         btnThem_Click(sender, e);

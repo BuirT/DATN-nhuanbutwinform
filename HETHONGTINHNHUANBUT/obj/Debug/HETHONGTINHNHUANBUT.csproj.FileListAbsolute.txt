@@ -157,3 +157,29 @@ D:\DoAnTotNghiep\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Numeri
 D:\DoAnTotNghiep\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 D:\DoAnTotNghiep\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\obj\Debug\HETHONGT.8F5FCE39.Up2Date
 D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\obj\Debug\HETHONGTINHNHUANBUT.csproj.SuggestedBindingRedirects.cache
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\DnsClient.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Microsoft.Win32.Registry.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\MongoDB.Bson.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\MongoDB.Driver.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\SharpCompress.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Snappier.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Security.AccessControl.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Security.Principal.Windows.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Text.Encoding.CodePages.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Threading.Tasks.Extensions.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\ZstdSharp.dll
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\DnsClient.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Microsoft.Extensions.Logging.Abstractions.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Microsoft.Win32.Registry.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\MongoDB.Bson.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\MongoDB.Driver.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\Snappier.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Security.AccessControl.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Security.Principal.Windows.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Text.Encoding.CodePages.xml
+D:\1.BuiTr\3.Môn đang học\HETHONGTINHNHUANBUT\HETHONGTINHNHUANBUT\bin\Debug\System.Threading.Tasks.Extensions.xml

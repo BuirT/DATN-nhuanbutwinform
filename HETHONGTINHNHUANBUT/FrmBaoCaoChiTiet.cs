@@ -30,7 +30,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string sql = "SELECT Maso, Tenbao + ' (Số: ' + LTRIM(RTRIM(Sobao)) + ')' as Display FROM Bao ORDER BY Ngayra DESC";
-                DataTable dt = DataProvider.Instance.ExecuteQuery(sql);
+                DataTable dt = MongoProvider.Instance.ExecuteQuery(sql);
                 cboSoBao.DataSource = dt;
                 cboSoBao.DisplayMember = "Display";
                 cboSoBao.ValueMember = "Maso";
@@ -46,7 +46,7 @@ namespace HETHONGTINHNHUANBUT
                            Butdanh AS [Bút Danh], TienNhuanbut AS [Số Tiền] 
                            FROM Nhuanbut WHERE MsBao = @msbao ORDER BY Trang ASC";
 
-            DataTable dt = DataProvider.Instance.ExecuteQuery(sql, new object[] { cboSoBao.SelectedValue });
+            DataTable dt = MongoProvider.Instance.ExecuteQuery(sql, new object[] { cboSoBao.SelectedValue });
             dgvReport.DataSource = dt;
 
             decimal tong = 0;

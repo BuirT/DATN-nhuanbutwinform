@@ -52,7 +52,7 @@ namespace HETHONGTINHNHUANBUT
                                GROUP BY b.Tenbao, b.Sobao, b.Ngayra
                                ORDER BY b.Ngayra ASC";
 
-                DataTable dt = DataProvider.Instance.ExecuteQuery(sql, new object[] { cboThang.Text, cboNam.Text });
+                DataTable dt = MongoProvider.Instance.ExecuteQuery(sql, new object[] { cboThang.Text, cboNam.Text });
                 dgvThang.DataSource = dt;
 
                 if (dgvThang.Columns.Count > 3)

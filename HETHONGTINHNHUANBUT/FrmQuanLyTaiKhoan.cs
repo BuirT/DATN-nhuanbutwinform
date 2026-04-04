@@ -35,7 +35,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string query = "SELECT UserId, fullname, GroupID, privelege FROM gUser";
-                dgvTaiKhoan.DataSource = DataProvider.Instance.ExecuteQuery(query);
+                dgvTaiKhoan.DataSource = MongoProvider.Instance.ExecuteQuery(query);
 
                 if (dgvTaiKhoan.Columns["UserId"] != null) dgvTaiKhoan.Columns["UserId"].HeaderText = "Tên đăng nhập";
                 if (dgvTaiKhoan.Columns["fullname"] != null) dgvTaiKhoan.Columns["fullname"].HeaderText = "Họ tên";
@@ -118,7 +118,7 @@ namespace HETHONGTINHNHUANBUT
                         privs,
                         txtHoTen.Text.Trim()
                     };
-                    DataProvider.Instance.ExecuteNonQuery(query, para);
+                    MongoProvider.Instance.ExecuteNonQuery(query, para);
                     MessageBox.Show("Thêm mới Tài khoản thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -127,7 +127,7 @@ namespace HETHONGTINHNHUANBUT
                     {
                         string query = "UPDATE gUser SET GroupID=@grp, privelege=@priv, fullname=@name WHERE UserId=@id";
                         object[] para = new object[] { cboLoaiTK.Text, privs, txtHoTen.Text.Trim(), txtUsername.Text.Trim() };
-                        DataProvider.Instance.ExecuteNonQuery(query, para);
+                        MongoProvider.Instance.ExecuteNonQuery(query, para);
                     }
                     else
                     {
@@ -140,7 +140,7 @@ namespace HETHONGTINHNHUANBUT
                             txtHoTen.Text.Trim(),
                             txtUsername.Text.Trim()
                         };
-                        DataProvider.Instance.ExecuteNonQuery(query, para);
+                        MongoProvider.Instance.ExecuteNonQuery(query, para);
                     }
                     MessageBox.Show("Cập nhật Tài khoản thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -163,7 +163,7 @@ namespace HETHONGTINHNHUANBUT
                 try
                 {
                     string query = "DELETE FROM gUser WHERE UserId = @id";
-                    DataProvider.Instance.ExecuteNonQuery(query, new object[] { txtUsername.Text.Trim() });
+                    MongoProvider.Instance.ExecuteNonQuery(query, new object[] { txtUsername.Text.Trim() });
                     MessageBox.Show("Đã xóa tài khoản thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     LoadTaiKhoan();
