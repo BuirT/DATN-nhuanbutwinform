@@ -93,8 +93,8 @@
             this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnClose.FillColor = System.Drawing.Color.Transparent;
             this.btnClose.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnClose.ForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
-            this.btnClose.HoverState.FillColor = System.Drawing.Color.FromArgb(255, 200, 200);
+            this.btnClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnClose.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.btnClose.HoverState.ForeColor = System.Drawing.Color.Red;
             this.btnClose.Location = new System.Drawing.Point(1043, 5);
             this.btnClose.Name = "btnClose";
@@ -111,8 +111,8 @@
             this.btnMinimize.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnMinimize.FillColor = System.Drawing.Color.Transparent;
             this.btnMinimize.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnMinimize.ForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
-            this.btnMinimize.HoverState.FillColor = System.Drawing.Color.FromArgb(230, 230, 230);
+            this.btnMinimize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnMinimize.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.btnMinimize.Location = new System.Drawing.Point(988, 5);
             this.btnMinimize.Name = "btnMinimize";
             this.btnMinimize.Size = new System.Drawing.Size(45, 35);
@@ -125,7 +125,7 @@
             this.lblTitle.AutoSize = true;
             this.lblTitle.BackColor = System.Drawing.Color.White;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(40, 40, 40);
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.lblTitle.Location = new System.Drawing.Point(55, 9);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(301, 25);
@@ -135,7 +135,7 @@
             // picIcon
             // 
             this.picIcon.BackColor = System.Drawing.Color.Transparent;
-            this.picIcon.FillColor = System.Drawing.Color.FromArgb(94, 148, 255);
+            this.picIcon.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.picIcon.ImageRotate = 0F;
             this.picIcon.Location = new System.Drawing.Point(10, 5);
             this.picIcon.Name = "picIcon";
@@ -186,8 +186,8 @@
             this.pnlTacGia.Controls.Add(this.lblSoTacGia);
             this.pnlTacGia.Controls.Add(this.label2);
             this.pnlTacGia.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTacGia.FillColor = System.Drawing.Color.FromArgb(94, 148, 255);
-            this.pnlTacGia.FillColor2 = System.Drawing.Color.FromArgb(0, 191, 255);
+            this.pnlTacGia.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.pnlTacGia.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(191)))), ((int)(((byte)(255)))));
             this.pnlTacGia.Location = new System.Drawing.Point(3, 3);
             this.pnlTacGia.Name = "pnlTacGia";
             this.pnlTacGia.Padding = new System.Windows.Forms.Padding(10);
@@ -228,8 +228,8 @@
             this.pnlBaiViet.Controls.Add(this.lblSoBaiViet);
             this.pnlBaiViet.Controls.Add(this.label3);
             this.pnlBaiViet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBaiViet.FillColor = System.Drawing.Color.FromArgb(162, 110, 255);
-            this.pnlBaiViet.FillColor2 = System.Drawing.Color.FromArgb(138, 43, 226);
+            this.pnlBaiViet.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(110)))), ((int)(((byte)(255)))));
+            this.pnlBaiViet.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(43)))), ((int)(((byte)(226)))));
             this.pnlBaiViet.Location = new System.Drawing.Point(271, 3);
             this.pnlBaiViet.Name = "pnlBaiViet";
             this.pnlBaiViet.Padding = new System.Windows.Forms.Padding(10);
@@ -270,8 +270,8 @@
             this.pnlSoBao.Controls.Add(this.lblSoBaoCho);
             this.pnlSoBao.Controls.Add(this.label4);
             this.pnlSoBao.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlSoBao.FillColor = System.Drawing.Color.FromArgb(255, 128, 0);
-            this.pnlSoBao.FillColor2 = System.Drawing.Color.FromArgb(255, 191, 0);
+            this.pnlSoBao.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.pnlSoBao.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
             this.pnlSoBao.Location = new System.Drawing.Point(539, 3);
             this.pnlSoBao.Name = "pnlSoBao";
             this.pnlSoBao.Padding = new System.Windows.Forms.Padding(10);
@@ -312,8 +312,8 @@
             this.pnlTien.Controls.Add(this.lblTongTien);
             this.pnlTien.Controls.Add(this.label6);
             this.pnlTien.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTien.FillColor = System.Drawing.Color.FromArgb(46, 204, 113);
-            this.pnlTien.FillColor2 = System.Drawing.Color.FromArgb(26, 188, 156);
+            this.pnlTien.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.pnlTien.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(188)))), ((int)(((byte)(156)))));
             this.pnlTien.Location = new System.Drawing.Point(807, 3);
             this.pnlTien.Name = "pnlTien";
             this.pnlTien.Padding = new System.Windows.Forms.Padding(10);
@@ -397,10 +397,10 @@
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             this.dgvHoatDong.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(94, 148, 255);
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(0, 110, 220);
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(110)))), ((int)(((byte)(220)))));
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvHoatDong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
@@ -408,18 +408,18 @@
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(71, 69, 94);
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(231, 229, 255);
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(71, 69, 94);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvHoatDong.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvHoatDong.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHoatDong.GridColor = System.Drawing.Color.FromArgb(231, 229, 255);
-            this.dgvHoatDong.Location = new System.Drawing.Point(0, 30);
+            this.dgvHoatDong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.dgvHoatDong.Location = new System.Drawing.Point(0, 65);
             this.dgvHoatDong.Name = "dgvHoatDong";
             this.dgvHoatDong.ReadOnly = true;
             this.dgvHoatDong.RowHeadersVisible = false;
-            this.dgvHoatDong.Size = new System.Drawing.Size(370, 519);
+            this.dgvHoatDong.Size = new System.Drawing.Size(370, 484);
             this.dgvHoatDong.TabIndex = 1;
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -427,8 +427,8 @@
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.Empty;
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.Empty;
             this.dgvHoatDong.ThemeStyle.BackColor = System.Drawing.Color.White;
-            this.dgvHoatDong.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(231, 229, 255);
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(94, 148, 255);
+            this.dgvHoatDong.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.dgvHoatDong.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.dgvHoatDong.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.dgvHoatDong.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgvHoatDong.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
@@ -438,10 +438,10 @@
             this.dgvHoatDong.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvHoatDong.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvHoatDong.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvHoatDong.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(71, 69, 94);
+            this.dgvHoatDong.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.dgvHoatDong.ThemeStyle.RowsStyle.Height = 22;
-            this.dgvHoatDong.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(231, 229, 255);
-            this.dgvHoatDong.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(71, 69, 94);
+            this.dgvHoatDong.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.dgvHoatDong.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             // 
             // label7
             // 
@@ -449,8 +449,8 @@
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Dock = System.Windows.Forms.DockStyle.Top;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
-            this.label7.Location = new System.Drawing.Point(0, 0);
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label7.Location = new System.Drawing.Point(0, 30);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(10, 0, 0, 5);
             this.label7.Size = new System.Drawing.Size(260, 35);
@@ -462,7 +462,7 @@
             this.lblWelcome.AutoSize = true;
             this.lblWelcome.BackColor = System.Drawing.Color.Transparent;
             this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(40, 40, 40);
+            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.lblWelcome.Location = new System.Drawing.Point(35, 65);
             this.lblWelcome.Name = "lblWelcome";
             this.lblWelcome.Size = new System.Drawing.Size(393, 37);
@@ -485,7 +485,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.FromArgb(242, 246, 252);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(246)))), ((int)(((byte)(252)))));
             this.ClientSize = new System.Drawing.Size(1100, 800);
             this.Controls.Add(this.lblClock);
             this.Controls.Add(this.lblWelcome);

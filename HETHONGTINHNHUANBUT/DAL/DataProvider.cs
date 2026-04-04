@@ -19,7 +19,7 @@ namespace HETHONGTINHNHUANBUT.DAL
         private DataProvider()
         {
             connectionSTR = ConfigurationManager.ConnectionStrings["HETHONGTINHNHUANBUT.Properties.Settings.TNConnectionString"]?.ConnectionString
-                            ?? @"Data Source=LAPTOP-8I16O9GQ;Initial Catalog=TN;Integrated Security=True;TrustServerCertificate=True";
+                            ?? @"Data Source=LAPTOP-5O9OTMIJ\SQLEXPRESS;Initial Catalog=TN;Integrated Security=True;TrustServerCertificate=True";
 
         }
 

@@ -3,9 +3,18 @@
     partial class FrmNhapNhuanBut
     {
         private System.ComponentModel.IContainer components = null;
-        protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         #region Windows Form Designer generated code
+
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -13,6 +22,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.label1 = new System.Windows.Forms.Label();
             this.lblTongTien = new System.Windows.Forms.Label();
+            this.lblTrangThai = new System.Windows.Forms.Label();
             this.cboSoBao = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnChotSo = new Guna.UI2.WinForms.Guna2Button();
             this.groupBox1 = new Guna.UI2.WinForms.Guna2GroupBox();
@@ -43,7 +53,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(20, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(214, 23);
+            this.label1.Size = new System.Drawing.Size(179, 19);
             this.label1.TabIndex = 10;
             this.label1.Text = "Chọn Số Báo (Chưa chốt):";
             // 
@@ -53,9 +63,20 @@
             this.lblTongTien.ForeColor = System.Drawing.Color.Red;
             this.lblTongTien.Location = new System.Drawing.Point(20, 75);
             this.lblTongTien.Name = "lblTongTien";
-            this.lblTongTien.Size = new System.Drawing.Size(148, 23);
+            this.lblTongTien.Size = new System.Drawing.Size(122, 19);
             this.lblTongTien.TabIndex = 8;
             this.lblTongTien.Text = "Tổng quỹ: 0 VNĐ";
+            // 
+            // lblTrangThai
+            // 
+            this.lblTrangThai.AutoSize = true;
+            this.lblTrangThai.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTrangThai.ForeColor = System.Drawing.Color.MediumSeaGreen;
+            this.lblTrangThai.Location = new System.Drawing.Point(680, 65);
+            this.lblTrangThai.Name = "lblTrangThai";
+            this.lblTrangThai.Size = new System.Drawing.Size(183, 19);
+            this.lblTrangThai.TabIndex = 12;
+            this.lblTrangThai.Text = "Trạng thái: ĐANG NHẬP LIỆU";
             // 
             // cboSoBao
             // 
@@ -77,7 +98,7 @@
             // 
             this.btnChotSo.BorderRadius = 5;
             this.btnChotSo.FillColor = System.Drawing.Color.Crimson;
-            this.btnChotSo.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnChotSo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnChotSo.ForeColor = System.Drawing.Color.White;
             this.btnChotSo.Location = new System.Drawing.Point(680, 15);
             this.btnChotSo.Name = "btnChotSo";
@@ -100,7 +121,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.txtMaBai);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
             this.groupBox1.Location = new System.Drawing.Point(25, 110);
             this.groupBox1.Name = "groupBox1";
@@ -128,7 +149,7 @@
             this.label7.BackColor = System.Drawing.Color.White;
             this.label7.Location = new System.Drawing.Point(20, 155);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(58, 20);
+            this.label7.Size = new System.Drawing.Size(49, 15);
             this.label7.TabIndex = 1;
             this.label7.Text = "Số tiền:";
             // 
@@ -153,7 +174,7 @@
             this.label6.BackColor = System.Drawing.Color.White;
             this.label6.Location = new System.Drawing.Point(520, 105);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(71, 20);
+            this.label6.Size = new System.Drawing.Size(61, 15);
             this.label6.TabIndex = 3;
             this.label6.Text = "Bút danh:";
             // 
@@ -177,7 +198,7 @@
             this.label5.BackColor = System.Drawing.Color.White;
             this.label5.Location = new System.Drawing.Point(220, 105);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 20);
+            this.label5.Size = new System.Drawing.Size(34, 15);
             this.label5.TabIndex = 5;
             this.label5.Text = "Mục:";
             // 
@@ -201,7 +222,7 @@
             this.label4.BackColor = System.Drawing.Color.White;
             this.label4.Location = new System.Drawing.Point(20, 105);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 20);
+            this.label4.Size = new System.Drawing.Size(42, 15);
             this.label4.TabIndex = 7;
             this.label4.Text = "Trang:";
             // 
@@ -225,7 +246,7 @@
             this.label3.BackColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(220, 55);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 20);
+            this.label3.Size = new System.Drawing.Size(49, 15);
             this.label3.TabIndex = 9;
             this.label3.Text = "Tên bài:";
             // 
@@ -250,7 +271,7 @@
             this.label2.BackColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(20, 55);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(58, 20);
+            this.label2.Size = new System.Drawing.Size(47, 15);
             this.label2.TabIndex = 11;
             this.label2.Text = "Mã bài:";
             // 
@@ -258,7 +279,7 @@
             // 
             this.btnThem.BorderRadius = 5;
             this.btnThem.FillColor = System.Drawing.Color.MediumSeaGreen;
-            this.btnThem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnThem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnThem.ForeColor = System.Drawing.Color.White;
             this.btnThem.Location = new System.Drawing.Point(25, 320);
             this.btnThem.Name = "btnThem";
@@ -271,7 +292,7 @@
             // 
             this.btnSua.BorderRadius = 5;
             this.btnSua.FillColor = System.Drawing.Color.Gold;
-            this.btnSua.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSua.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnSua.ForeColor = System.Drawing.Color.Black;
             this.btnSua.Location = new System.Drawing.Point(145, 320);
             this.btnSua.Name = "btnSua";
@@ -284,7 +305,7 @@
             // 
             this.btnLuu.BorderRadius = 5;
             this.btnLuu.FillColor = System.Drawing.Color.DodgerBlue;
-            this.btnLuu.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnLuu.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnLuu.ForeColor = System.Drawing.Color.White;
             this.btnLuu.Location = new System.Drawing.Point(265, 320);
             this.btnLuu.Name = "btnLuu";
@@ -297,7 +318,7 @@
             // 
             this.btnXoa.BorderRadius = 5;
             this.btnXoa.FillColor = System.Drawing.Color.DarkOrange;
-            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnXoa.ForeColor = System.Drawing.Color.White;
             this.btnXoa.Location = new System.Drawing.Point(385, 320);
             this.btnXoa.Name = "btnXoa";
@@ -310,7 +331,7 @@
             // 
             this.btnHuy.BorderRadius = 5;
             this.btnHuy.FillColor = System.Drawing.Color.DimGray;
-            this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnHuy.ForeColor = System.Drawing.Color.White;
             this.btnHuy.Location = new System.Drawing.Point(505, 320);
             this.btnHuy.Name = "btnHuy";
@@ -334,7 +355,7 @@
             this.dgvNhuanButCT.ColumnHeadersHeight = 29;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("VNI-Times", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
@@ -369,12 +390,12 @@
             this.dgvNhuanButCT.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvNhuanButCT.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.dgvNhuanButCT.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvNhuanButCT_CellClick);
-          
             // 
             // FrmNhapNhuanBut
             // 
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1000, 640);
+            this.Controls.Add(this.lblTrangThai);
             this.Controls.Add(this.dgvNhuanButCT);
             this.Controls.Add(this.btnHuy);
             this.Controls.Add(this.btnXoa);
@@ -400,10 +421,29 @@
         }
         #endregion
 
-        private System.Windows.Forms.Label label1; private System.Windows.Forms.Label lblTongTien; private System.Windows.Forms.Label label2; private System.Windows.Forms.Label label3; private System.Windows.Forms.Label label4; private System.Windows.Forms.Label label5; private System.Windows.Forms.Label label6; private System.Windows.Forms.Label label7;
-        private Guna.UI2.WinForms.Guna2ComboBox cboSoBao; private Guna.UI2.WinForms.Guna2Button btnChotSo; private Guna.UI2.WinForms.Guna2GroupBox groupBox1;
-        private Guna.UI2.WinForms.Guna2TextBox txtSoTien; private Guna.UI2.WinForms.Guna2ComboBox cboButDanh; private Guna.UI2.WinForms.Guna2TextBox txtMuc; private Guna.UI2.WinForms.Guna2TextBox txtTrang; private Guna.UI2.WinForms.Guna2TextBox txtTenBai; private Guna.UI2.WinForms.Guna2TextBox txtMaBai;
-        private Guna.UI2.WinForms.Guna2Button btnThem; private Guna.UI2.WinForms.Guna2Button btnSua; private Guna.UI2.WinForms.Guna2Button btnLuu; private Guna.UI2.WinForms.Guna2Button btnXoa; private Guna.UI2.WinForms.Guna2Button btnHuy;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTongTien;
+        private System.Windows.Forms.Label lblTrangThai;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private Guna.UI2.WinForms.Guna2ComboBox cboSoBao;
+        private Guna.UI2.WinForms.Guna2Button btnChotSo;
+        private Guna.UI2.WinForms.Guna2GroupBox groupBox1;
+        private Guna.UI2.WinForms.Guna2TextBox txtSoTien;
+        private Guna.UI2.WinForms.Guna2ComboBox cboButDanh;
+        private Guna.UI2.WinForms.Guna2TextBox txtMuc;
+        private Guna.UI2.WinForms.Guna2TextBox txtTrang;
+        private Guna.UI2.WinForms.Guna2TextBox txtTenBai;
+        private Guna.UI2.WinForms.Guna2TextBox txtMaBai;
+        private Guna.UI2.WinForms.Guna2Button btnThem;
+        private Guna.UI2.WinForms.Guna2Button btnSua;
+        private Guna.UI2.WinForms.Guna2Button btnLuu;
+        private Guna.UI2.WinForms.Guna2Button btnXoa;
+        private Guna.UI2.WinForms.Guna2Button btnHuy;
         private Guna.UI2.WinForms.Guna2DataGridView dgvNhuanButCT;
     }
 }
