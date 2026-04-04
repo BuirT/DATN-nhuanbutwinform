@@ -27,6 +27,9 @@
             this.btnMinimize = new Guna.UI2.WinForms.Guna2Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.picIcon = new Guna.UI2.WinForms.Guna2CirclePictureBox();
+            this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblWelcome = new System.Windows.Forms.Label();
+            this.lblClock = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpCards = new System.Windows.Forms.TableLayoutPanel();
             this.pnlTacGia = new Guna.UI2.WinForms.Guna2GradientPanel();
@@ -46,10 +49,9 @@
             this.panelRight = new System.Windows.Forms.Panel();
             this.dgvHoatDong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.label7 = new System.Windows.Forms.Label();
-            this.lblWelcome = new System.Windows.Forms.Label();
-            this.lblClock = new System.Windows.Forms.Label();
             this.pnlTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picIcon)).BeginInit();
+            this.pnlHeader.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpCards.SuspendLayout();
             this.pnlTacGia.SuspendLayout();
@@ -144,6 +146,39 @@
             this.picIcon.TabIndex = 0;
             this.picIcon.TabStop = false;
             // 
+            // pnlHeader
+            // 
+            this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
+            this.pnlHeader.Controls.Add(this.lblWelcome);
+            this.pnlHeader.Controls.Add(this.lblClock);
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Location = new System.Drawing.Point(0, 45);
+            this.pnlHeader.Name = "pnlHeader";
+            this.pnlHeader.Size = new System.Drawing.Size(1100, 90);
+            this.pnlHeader.TabIndex = 4;
+            // 
+            // lblWelcome
+            // 
+            this.lblWelcome.AutoSize = true;
+            this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.lblWelcome.Location = new System.Drawing.Point(20, 15);
+            this.lblWelcome.Name = "lblWelcome";
+            this.lblWelcome.Size = new System.Drawing.Size(393, 37);
+            this.lblWelcome.TabIndex = 28;
+            this.lblWelcome.Text = "Chào mừng trở lại, Admin 👋";
+            // 
+            // lblClock
+            // 
+            this.lblClock.AutoSize = true;
+            this.lblClock.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.lblClock.ForeColor = System.Drawing.Color.Gray;
+            this.lblClock.Location = new System.Drawing.Point(25, 55);
+            this.lblClock.Name = "lblClock";
+            this.lblClock.Size = new System.Drawing.Size(185, 21);
+            this.lblClock.TabIndex = 27;
+            this.lblClock.Text = "Đang cập nhật thời gian...";
+            // 
             // tlpMain
             // 
             this.tlpMain.ColumnCount = 1;
@@ -151,13 +186,13 @@
             this.tlpMain.Controls.Add(this.tlpCards, 0, 0);
             this.tlpMain.Controls.Add(this.splitContainer1, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMain.Location = new System.Drawing.Point(0, 45);
+            this.tlpMain.Location = new System.Drawing.Point(0, 135);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.Padding = new System.Windows.Forms.Padding(10);
+            this.tlpMain.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 180F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(1100, 755);
+            this.tlpMain.Size = new System.Drawing.Size(1100, 665);
             this.tlpMain.TabIndex = 1;
             // 
             // tlpCards
@@ -172,7 +207,7 @@
             this.tlpCards.Controls.Add(this.pnlSoBao, 2, 0);
             this.tlpCards.Controls.Add(this.pnlTien, 3, 0);
             this.tlpCards.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpCards.Location = new System.Drawing.Point(13, 13);
+            this.tlpCards.Location = new System.Drawing.Point(13, 3);
             this.tlpCards.Name = "tlpCards";
             this.tlpCards.RowCount = 1;
             this.tlpCards.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -190,36 +225,38 @@
             this.pnlTacGia.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(191)))), ((int)(((byte)(255)))));
             this.pnlTacGia.Location = new System.Drawing.Point(3, 3);
             this.pnlTacGia.Name = "pnlTacGia";
-            this.pnlTacGia.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlTacGia.ShadowDecoration.Depth = 20;
-            this.pnlTacGia.ShadowDecoration.Enabled = true;
-            this.pnlTacGia.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(5, 5, 10, 10);
+            this.pnlTacGia.Padding = new System.Windows.Forms.Padding(15);
+            this.pnlTacGia.ShadowDecoration.Enabled = false;
             this.pnlTacGia.Size = new System.Drawing.Size(262, 168);
             this.pnlTacGia.TabIndex = 0;
             // 
-            // lblSoTacGia
-            // 
-            this.lblSoTacGia.AutoSize = true;
-            this.lblSoTacGia.BackColor = System.Drawing.Color.Transparent;
-            this.lblSoTacGia.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold);
-            this.lblSoTacGia.ForeColor = System.Drawing.Color.White;
-            this.lblSoTacGia.Location = new System.Drawing.Point(15, 65);
-            this.lblSoTacGia.Name = "lblSoTacGia";
-            this.lblSoTacGia.Size = new System.Drawing.Size(56, 65);
-            this.lblSoTacGia.TabIndex = 0;
-            this.lblSoTacGia.Text = "0";
-            // 
             // label2
             // 
-            this.label2.AutoSize = true;
+            this.label2.AutoSize = false;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Top;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(15, 15);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 21);
+            this.label2.Size = new System.Drawing.Size(232, 35);
             this.label2.TabIndex = 1;
             this.label2.Text = "👥 Tác giả";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblSoTacGia
+            // 
+            this.lblSoTacGia.AutoSize = false;
+            this.lblSoTacGia.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblSoTacGia.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoTacGia.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
+            this.lblSoTacGia.ForeColor = System.Drawing.Color.White;
+            this.lblSoTacGia.Location = new System.Drawing.Point(15, 50);
+            this.lblSoTacGia.Name = "lblSoTacGia";
+            this.lblSoTacGia.Size = new System.Drawing.Size(232, 103);
+            this.lblSoTacGia.TabIndex = 0;
+            this.lblSoTacGia.Text = "0";
+            this.lblSoTacGia.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlBaiViet
             // 
@@ -232,36 +269,38 @@
             this.pnlBaiViet.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(43)))), ((int)(((byte)(226)))));
             this.pnlBaiViet.Location = new System.Drawing.Point(271, 3);
             this.pnlBaiViet.Name = "pnlBaiViet";
-            this.pnlBaiViet.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlBaiViet.ShadowDecoration.Depth = 20;
-            this.pnlBaiViet.ShadowDecoration.Enabled = true;
-            this.pnlBaiViet.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(5, 5, 10, 10);
+            this.pnlBaiViet.Padding = new System.Windows.Forms.Padding(15);
+            this.pnlBaiViet.ShadowDecoration.Enabled = false;
             this.pnlBaiViet.Size = new System.Drawing.Size(262, 168);
             this.pnlBaiViet.TabIndex = 1;
             // 
-            // lblSoBaiViet
-            // 
-            this.lblSoBaiViet.AutoSize = true;
-            this.lblSoBaiViet.BackColor = System.Drawing.Color.Transparent;
-            this.lblSoBaiViet.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold);
-            this.lblSoBaiViet.ForeColor = System.Drawing.Color.White;
-            this.lblSoBaiViet.Location = new System.Drawing.Point(15, 65);
-            this.lblSoBaiViet.Name = "lblSoBaiViet";
-            this.lblSoBaiViet.Size = new System.Drawing.Size(56, 65);
-            this.lblSoBaiViet.TabIndex = 0;
-            this.lblSoBaiViet.Text = "0";
-            // 
             // label3
             // 
-            this.label3.AutoSize = true;
+            this.label3.AutoSize = false;
+            this.label3.Dock = System.Windows.Forms.DockStyle.Top;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(15, 15);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 21);
+            this.label3.Size = new System.Drawing.Size(232, 35);
             this.label3.TabIndex = 1;
             this.label3.Text = "📝 Bài viết";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblSoBaiViet
+            // 
+            this.lblSoBaiViet.AutoSize = false;
+            this.lblSoBaiViet.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblSoBaiViet.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoBaiViet.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
+            this.lblSoBaiViet.ForeColor = System.Drawing.Color.White;
+            this.lblSoBaiViet.Location = new System.Drawing.Point(15, 50);
+            this.lblSoBaiViet.Name = "lblSoBaiViet";
+            this.lblSoBaiViet.Size = new System.Drawing.Size(232, 103);
+            this.lblSoBaiViet.TabIndex = 0;
+            this.lblSoBaiViet.Text = "0";
+            this.lblSoBaiViet.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlSoBao
             // 
@@ -274,36 +313,38 @@
             this.pnlSoBao.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
             this.pnlSoBao.Location = new System.Drawing.Point(539, 3);
             this.pnlSoBao.Name = "pnlSoBao";
-            this.pnlSoBao.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlSoBao.ShadowDecoration.Depth = 20;
-            this.pnlSoBao.ShadowDecoration.Enabled = true;
-            this.pnlSoBao.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(5, 5, 10, 10);
+            this.pnlSoBao.Padding = new System.Windows.Forms.Padding(15);
+            this.pnlSoBao.ShadowDecoration.Enabled = false;
             this.pnlSoBao.Size = new System.Drawing.Size(262, 168);
             this.pnlSoBao.TabIndex = 2;
             // 
-            // lblSoBaoCho
-            // 
-            this.lblSoBaoCho.AutoSize = true;
-            this.lblSoBaoCho.BackColor = System.Drawing.Color.Transparent;
-            this.lblSoBaoCho.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold);
-            this.lblSoBaoCho.ForeColor = System.Drawing.Color.White;
-            this.lblSoBaoCho.Location = new System.Drawing.Point(15, 65);
-            this.lblSoBaoCho.Name = "lblSoBaoCho";
-            this.lblSoBaoCho.Size = new System.Drawing.Size(56, 65);
-            this.lblSoBaoCho.TabIndex = 0;
-            this.lblSoBaoCho.Text = "0";
-            // 
             // label4
             // 
-            this.label4.AutoSize = true;
+            this.label4.AutoSize = false;
+            this.label4.Dock = System.Windows.Forms.DockStyle.Top;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.label4.ForeColor = System.Drawing.Color.White;
             this.label4.Location = new System.Drawing.Point(15, 15);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(121, 21);
+            this.label4.Size = new System.Drawing.Size(232, 35);
             this.label4.TabIndex = 1;
             this.label4.Text = "📅 Số báo chờ";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblSoBaoCho
+            // 
+            this.lblSoBaoCho.AutoSize = false;
+            this.lblSoBaoCho.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblSoBaoCho.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoBaoCho.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
+            this.lblSoBaoCho.ForeColor = System.Drawing.Color.White;
+            this.lblSoBaoCho.Location = new System.Drawing.Point(15, 50);
+            this.lblSoBaoCho.Name = "lblSoBaoCho";
+            this.lblSoBaoCho.Size = new System.Drawing.Size(232, 103);
+            this.lblSoBaoCho.TabIndex = 0;
+            this.lblSoBaoCho.Text = "0";
+            this.lblSoBaoCho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlTien
             // 
@@ -316,41 +357,44 @@
             this.pnlTien.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(188)))), ((int)(((byte)(156)))));
             this.pnlTien.Location = new System.Drawing.Point(807, 3);
             this.pnlTien.Name = "pnlTien";
-            this.pnlTien.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlTien.ShadowDecoration.Depth = 20;
-            this.pnlTien.ShadowDecoration.Enabled = true;
-            this.pnlTien.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(5, 5, 10, 10);
+            this.pnlTien.Padding = new System.Windows.Forms.Padding(15);
+            this.pnlTien.ShadowDecoration.Enabled = false;
             this.pnlTien.Size = new System.Drawing.Size(264, 168);
             this.pnlTien.TabIndex = 3;
             // 
-            // lblTongTien
-            // 
-            this.lblTongTien.AutoSize = true;
-            this.lblTongTien.BackColor = System.Drawing.Color.Transparent;
-            this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
-            this.lblTongTien.ForeColor = System.Drawing.Color.White;
-            this.lblTongTien.Location = new System.Drawing.Point(15, 65);
-            this.lblTongTien.Name = "lblTongTien";
-            this.lblTongTien.Size = new System.Drawing.Size(79, 51);
-            this.lblTongTien.TabIndex = 0;
-            this.lblTongTien.Text = "0 ₫";
-            // 
             // label6
             // 
-            this.label6.AutoSize = true;
+            this.label6.AutoSize = false;
+            this.label6.Dock = System.Windows.Forms.DockStyle.Top;
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.label6.ForeColor = System.Drawing.Color.White;
             this.label6.Location = new System.Drawing.Point(15, 15);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(151, 21);
+            this.label6.Size = new System.Drawing.Size(234, 35);
             this.label6.TabIndex = 1;
             this.label6.Text = "💰 Quỹ nhuận bút";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblTongTien
+            // 
+            this.lblTongTien.AutoSize = false;
+            this.lblTongTien.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTongTien.BackColor = System.Drawing.Color.Transparent;
+            // Đổi Font Size xuống 18F để tiền trăm tỷ không bị tràn thẻ
+            this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTongTien.ForeColor = System.Drawing.Color.White;
+            this.lblTongTien.Location = new System.Drawing.Point(15, 50);
+            this.lblTongTien.Name = "lblTongTien";
+            this.lblTongTien.Size = new System.Drawing.Size(234, 103);
+            this.lblTongTien.TabIndex = 0;
+            this.lblTongTien.Text = "0 ₫";
+            this.lblTongTien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(13, 193);
+            this.splitContainer1.Location = new System.Drawing.Point(13, 183);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -360,7 +404,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panelRight);
-            this.splitContainer1.Size = new System.Drawing.Size(1074, 549);
+            this.splitContainer1.Size = new System.Drawing.Size(1074, 469);
             this.splitContainer1.SplitterDistance = 700;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -373,10 +417,8 @@
             this.pnlBieuDo.Location = new System.Drawing.Point(0, 0);
             this.pnlBieuDo.Name = "pnlBieuDo";
             this.pnlBieuDo.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlBieuDo.ShadowDecoration.Depth = 20;
-            this.pnlBieuDo.ShadowDecoration.Enabled = true;
-            this.pnlBieuDo.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(5, 5, 10, 10);
-            this.pnlBieuDo.Size = new System.Drawing.Size(700, 549);
+            this.pnlBieuDo.ShadowDecoration.Enabled = false;
+            this.pnlBieuDo.Size = new System.Drawing.Size(700, 469);
             this.pnlBieuDo.TabIndex = 0;
             // 
             // panelRight
@@ -386,8 +428,8 @@
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRight.Location = new System.Drawing.Point(0, 0);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
-            this.panelRight.Size = new System.Drawing.Size(370, 549);
+            this.panelRight.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
+            this.panelRight.Size = new System.Drawing.Size(370, 469);
             this.panelRight.TabIndex = 0;
             // 
             // dgvHoatDong
@@ -415,11 +457,11 @@
             this.dgvHoatDong.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvHoatDong.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvHoatDong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.dgvHoatDong.Location = new System.Drawing.Point(0, 65);
+            this.dgvHoatDong.Location = new System.Drawing.Point(0, 55);
             this.dgvHoatDong.Name = "dgvHoatDong";
             this.dgvHoatDong.ReadOnly = true;
             this.dgvHoatDong.RowHeadersVisible = false;
-            this.dgvHoatDong.Size = new System.Drawing.Size(370, 484);
+            this.dgvHoatDong.Size = new System.Drawing.Size(370, 414);
             this.dgvHoatDong.TabIndex = 1;
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -450,36 +492,12 @@
             this.label7.Dock = System.Windows.Forms.DockStyle.Top;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label7.Location = new System.Drawing.Point(0, 30);
+            this.label7.Location = new System.Drawing.Point(0, 20);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(10, 0, 0, 5);
             this.label7.Size = new System.Drawing.Size(260, 35);
             this.label7.TabIndex = 0;
             this.label7.Text = "📋 Hoạt động gần đây";
-            // 
-            // lblWelcome
-            // 
-            this.lblWelcome.AutoSize = true;
-            this.lblWelcome.BackColor = System.Drawing.Color.Transparent;
-            this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.lblWelcome.Location = new System.Drawing.Point(35, 65);
-            this.lblWelcome.Name = "lblWelcome";
-            this.lblWelcome.Size = new System.Drawing.Size(393, 37);
-            this.lblWelcome.TabIndex = 28;
-            this.lblWelcome.Text = "Chào mừng trở lại, Admin 👋";
-            // 
-            // lblClock
-            // 
-            this.lblClock.AutoSize = true;
-            this.lblClock.BackColor = System.Drawing.Color.Transparent;
-            this.lblClock.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.lblClock.ForeColor = System.Drawing.Color.Gray;
-            this.lblClock.Location = new System.Drawing.Point(40, 110);
-            this.lblClock.Name = "lblClock";
-            this.lblClock.Size = new System.Drawing.Size(185, 21);
-            this.lblClock.TabIndex = 27;
-            this.lblClock.Text = "Đang cập nhật thời gian...";
             // 
             // FrmTongQuan
             // 
@@ -487,9 +505,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(246)))), ((int)(((byte)(252)))));
             this.ClientSize = new System.Drawing.Size(1100, 800);
-            this.Controls.Add(this.lblClock);
-            this.Controls.Add(this.lblWelcome);
             this.Controls.Add(this.tlpMain);
+            this.Controls.Add(this.pnlHeader);
             this.Controls.Add(this.pnlTitleBar);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -500,6 +517,8 @@
             this.pnlTitleBar.ResumeLayout(false);
             this.pnlTitleBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picIcon)).EndInit();
+            this.pnlHeader.ResumeLayout(false);
+            this.pnlHeader.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.tlpCards.ResumeLayout(false);
             this.pnlTacGia.ResumeLayout(false);
@@ -518,19 +537,20 @@
             this.panelRight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHoatDong)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        // Khai báo các control (phải khớp với tên đã dùng trong InitializeComponent)
         private Guna.UI2.WinForms.Guna2BorderlessForm guna2BorderlessForm1;
         private Guna.UI2.WinForms.Guna2Panel pnlTitleBar;
         private Guna.UI2.WinForms.Guna2Button btnClose;
         private Guna.UI2.WinForms.Guna2Button btnMinimize;
         private System.Windows.Forms.Label lblTitle;
         private Guna.UI2.WinForms.Guna2CirclePictureBox picIcon;
+        private Guna.UI2.WinForms.Guna2Panel pnlHeader;
+        private System.Windows.Forms.Label lblWelcome;
+        private System.Windows.Forms.Label lblClock;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpCards;
         private Guna.UI2.WinForms.Guna2GradientPanel pnlTacGia;
@@ -550,7 +570,5 @@
         private System.Windows.Forms.Panel panelRight;
         private Guna.UI2.WinForms.Guna2DataGridView dgvHoatDong;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label lblWelcome;
-        private System.Windows.Forms.Label lblClock;
     }
 }
