@@ -1,203 +1,203 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using HETHONGTINHNHUANBUT.Models;
-using HETHONGTINHNHUANBUT.DAL;
-using System.Linq;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTacGia : Form
     {
-        private bool isEditing = false;
-        // Kết nối bảng TacGia trên Cloud
-        private IMongoCollection<TacGia> tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
+        private IMongoCollection<BsonDocument> tacgiaCollection;
 
         public FrmTacGia()
         {
             InitializeComponent();
+            KetNoiMongoDB();
         }
 
-        private void FrmTacGia_Load(object sender, EventArgs e)
-        {
-            LoadData();
-
-            // Định dạng font VNI cho DataGridView theo yêu cầu của đồng chí
-            dgvTacGia.DefaultCellStyle.Font = new System.Drawing.Font("VNI-Times", 10.2F);
-            dgvTacGia.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("VNI-Times", 10.2F);
-
-            SetFormState(false);
-        }
-
-        private void LoadData()
+        private void KetNoiMongoDB()
         {
             try
             {
-                // Lấy toàn bộ danh sách tác giả từ MongoDB Cloud
-                var list = tacGiaColl.Find(_ => true).ToList();
+                string connectionString = ConfigurationManager.ConnectionStrings["MongoDbConn"].ConnectionString;
+                string databaseName = ConfigurationManager.AppSettings["DatabaseName"];
 
-                // Đổ dữ liệu vào Grid
-                dgvTacGia.DataSource = list;
+                var client = new MongoClient(connectionString);
+                var database = client.GetDatabase(databaseName);
 
-                // Thiết lập Header cho các cột
-                if (dgvTacGia.Columns["Maso"] != null) dgvTacGia.Columns["Maso"].HeaderText = "Mã tác giả";
-                if (dgvTacGia.Columns["Hoten"] != null) dgvTacGia.Columns["Hoten"].HeaderText = "Họ tên";
-                if (dgvTacGia.Columns["Diachi"] != null) dgvTacGia.Columns["Diachi"].HeaderText = "Địa chỉ";
-                if (dgvTacGia.Columns["Dienthoai"] != null) dgvTacGia.Columns["Dienthoai"].HeaderText = "Điện thoại";
-
-                // Ẩn cột ID tự sinh của MongoDB để bảng đẹp hơn
-                if (dgvTacGia.Columns["Id"] != null) dgvTacGia.Columns["Id"].Visible = false;
-
-                dgvTacGia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                // Trỏ đúng vào collection TacGia trong file SQL
+                tacgiaCollection = database.GetCollection<BsonDocument>("TacGia");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu từ Cloud: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi kết nối MongoDB: " + ex.Message, "Lỗi Cấu Hình", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private bool ValidateInput()
+        private async void FrmTacGia_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtMaTacGia.Text))
-            {
-                MessageBox.Show("Vui lòng nhập mã tác giả.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMaTacGia.Focus();
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(txtTenTacGia.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên tác giả.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtTenTacGia.Focus();
-                return false;
-            }
-            return true;
+            txtMaso.ReadOnly = false;
+            // Ép font Segoe UI cho đẹp, bỏ font VNI-Times lỗi thời
+            dgvTacGia.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dgvTacGia.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            if (cboLoaiTG.Items.Count > 0) cboLoaiTG.SelectedIndex = 0;
+
+            await LoadDataAsync();
         }
 
-        private void SetFormState(bool editing)
+        private async Task LoadDataAsync()
         {
-            isEditing = editing;
-            // Khi đang sửa thì không cho đổi Mã số (vì nó là khóa định danh)
-            txtMaTacGia.Enabled = !editing;
-
-            if (!editing)
+            try
             {
-                txtMaTacGia.Clear();
-                txtTenTacGia.Clear();
-                txtDiaChi.Clear();
-                txtDienThoai.Clear();
-                txtMaTacGia.Focus();
+                // Tải dữ liệu ngầm để không bị đơ giao diện
+                var documents = await tacgiaCollection.Find(new BsonDocument()).ToListAsync();
+
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Maso");
+                dt.Columns.Add("MsTG");
+                dt.Columns.Add("Hoten");
+                dt.Columns.Add("Ngaysinh");
+                dt.Columns.Add("LoaiTacgia");
+                dt.Columns.Add("Email");
+                dt.Columns.Add("Dienthoai");
+                dt.Columns.Add("Ddong"); // Đây là Bút danh
+                dt.Columns.Add("Diachi");
+
+                foreach (var doc in documents)
+                {
+                    DataRow row = dt.NewRow();
+                    row["Maso"] = doc.GetValue("Maso", "").ToString();
+                    row["MsTG"] = doc.GetValue("MsTG", "").ToString();
+                    row["Hoten"] = doc.GetValue("Hoten", "").ToString();
+
+                    if (doc.Contains("Ngaysinh") && doc["Ngaysinh"].IsBsonDateTime)
+                        row["Ngaysinh"] = doc["Ngaysinh"].ToUniversalTime().ToString("dd/MM/yyyy");
+                    else
+                        row["Ngaysinh"] = doc.GetValue("Ngaysinh", "").ToString();
+
+                    row["LoaiTacgia"] = doc.GetValue("LoaiTacgia", "").ToString();
+                    row["Email"] = doc.GetValue("Email", "").ToString();
+                    row["Dienthoai"] = doc.GetValue("Dienthoai", "").ToString();
+                    row["Ddong"] = doc.GetValue("Ddong", "").ToString();
+                    row["Diachi"] = doc.GetValue("Diachi", "").ToString();
+                    dt.Rows.Add(row);
+                }
+
+                dgvTacGia.DataSource = dt;
+
+                if (dgvTacGia.Columns.Count > 0)
+                {
+                    dgvTacGia.Columns["Maso"].HeaderText = "Mã hệ thống";
+                    dgvTacGia.Columns["MsTG"].HeaderText = "Mã TG/Thẻ";
+                    dgvTacGia.Columns["Hoten"].HeaderText = "Họ và tên";
+                    dgvTacGia.Columns["Ngaysinh"].HeaderText = "Ngày sinh";
+                    dgvTacGia.Columns["LoaiTacgia"].HeaderText = "Loại";
+                    dgvTacGia.Columns["Ddong"].HeaderText = "Bút danh";
+                    dgvTacGia.Columns["Dienthoai"].HeaderText = "Điện thoại";
+                }
             }
+            catch { }
         }
 
         private void btnThem_Click(object sender, EventArgs e)
         {
-            SetFormState(false);
+            txtMaso.Clear(); txtMsTG.Clear(); txtHoTen.Clear();
+            txtEmail.Clear(); txtDienThoai.Clear(); txtButDanh.Clear(); txtDiaChi.Clear();
+            dtpNgaySinh.Value = DateTime.Now;
+            txtMaso.ReadOnly = false;
+            txtMaso.Focus();
         }
 
-        private void btnLuu_Click(object sender, EventArgs e)
+        private async void btnLuu_Click(object sender, EventArgs e)
         {
-            if (!ValidateInput()) return;
+            if (string.IsNullOrEmpty(txtMaso.Text) || string.IsNullOrEmpty(txtHoTen.Text))
+            {
+                MessageBox.Show("Đồng chí vui lòng nhập đủ Mã và Tên!", "Nhắc nhở");
+                return;
+            }
 
             try
             {
-                string maSo = txtMaTacGia.Text.Trim();
+                // Kiểm tra trùng mã trên MongoDB
+                var filter = Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text);
+                var exist = await tacgiaCollection.Find(filter).FirstOrDefaultAsync();
+                if (exist != null) { MessageBox.Show("Mã này đã tồn tại!"); return; }
 
-                // Kiểm tra xem mã này đã tồn tại chưa (Thay thế ExecuteScalar)
-                var existingTG = tacGiaColl.Find(x => x.Maso == maSo).FirstOrDefault();
+                string loai = cboLoaiTG.SelectedIndex == 0 ? "PV" : (cboLoaiTG.SelectedIndex == 1 ? "CT" : "TN");
 
-                TacGia tg = new TacGia()
-                {
-                    Maso = maSo,
-                    Hoten = txtTenTacGia.Text.Trim(),
-                    Diachi = txtDiaChi.Text.Trim(),
-                    Dienthoai = txtDienThoai.Text.Trim()
+                var newDoc = new BsonDocument {
+                    { "Maso", txtMaso.Text },
+                    { "MsTG", txtMsTG.Text },
+                    { "Hoten", txtHoTen.Text },
+                    { "Ngaysinh", new BsonDateTime(dtpNgaySinh.Value) },
+                    { "LoaiTacgia", loai },
+                    { "Email", txtEmail.Text },
+                    { "Dienthoai", txtDienThoai.Text },
+                    { "Ddong", txtButDanh.Text },
+                    { "Diachi", txtDiaChi.Text }
                 };
 
-                if (!isEditing) // Thêm mới
-                {
-                    if (existingTG != null)
-                    {
-                        MessageBox.Show("Mã tác giả này đã tồn tại!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                    tacGiaColl.InsertOne(tg);
-                    MongoProvider.Instance.GhiNhatKy("ADMIN", "Thêm tác giả: " + tg.Hoten);
-                    MessageBox.Show("Thêm tác giả lên Cloud thành công!", "Thông báo");
-                }
-                else // Cập nhật (Sửa)
-                {
-                    var filter = Builders<TacGia>.Filter.Eq(x => x.Maso, maSo);
-                    tacGiaColl.ReplaceOne(filter, tg);
-                    MongoProvider.Instance.GhiNhatKy("ADMIN", "Cập nhật tác giả: " + tg.Hoten);
-                    MessageBox.Show("Cập nhật thành công!", "Thông báo");
-                }
-
-                LoadData();
-                SetFormState(false);
+                await tacgiaCollection.InsertOneAsync(newDoc);
+                MessageBox.Show("Thêm thành công!");
+                await LoadDataAsync();
             }
-            catch (Exception ex)
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+        }
+
+        private async void btnSua_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtMaso.Text)) return;
+            try
             {
-                MessageBox.Show("Lỗi khi lưu dữ liệu Cloud:\n" + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string loai = cboLoaiTG.SelectedIndex == 0 ? "PV" : (cboLoaiTG.SelectedIndex == 1 ? "CT" : "TN");
+                var filter = Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text);
+                var update = Builders<BsonDocument>.Update
+                    .Set("MsTG", txtMsTG.Text)
+                    .Set("Hoten", txtHoTen.Text)
+                    .Set("Ngaysinh", new BsonDateTime(dtpNgaySinh.Value))
+                    .Set("LoaiTacgia", loai)
+                    .Set("Email", txtEmail.Text)
+                    .Set("Dienthoai", txtDienThoai.Text)
+                    .Set("Ddong", txtButDanh.Text)
+                    .Set("Diachi", txtDiaChi.Text);
+
+                await tacgiaCollection.UpdateOneAsync(filter, update);
+                MessageBox.Show("Cập nhật thành công!");
+                await LoadDataAsync();
             }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
-        // Trong MongoDB, Sửa và Lưu thường dùng chung logic hoặc chỉ cần bật trạng thái edit
-        private void btnSua_Click(object sender, EventArgs e)
+        private async void btnXoa_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtMaTacGia.Text)) return;
-            isEditing = true;
-            btnLuu_Click(sender, e); // Gọi hàm lưu để cập nhật
-        }
-
-        private void btnXoa_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtMaTacGia.Text)) return;
-
-            if (MessageBox.Show("Xóa tác giả này khỏi Cloud?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (string.IsNullOrEmpty(txtMaso.Text)) return;
+            if (MessageBox.Show("Xóa tác giả này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                try
-                {
-                    string maSo = txtMaTacGia.Text.Trim();
-                    var result = tacGiaColl.DeleteOne(x => x.Maso == maSo);
-
-                    if (result.DeletedCount > 0)
-                    {
-                        MongoProvider.Instance.GhiNhatKy("ADMIN", "Xóa tác giả mã: " + maSo);
-                        MessageBox.Show("Xóa thành công!");
-                        LoadData();
-                        SetFormState(false);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi xóa: " + ex.Message);
-                }
+                await tacgiaCollection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text));
+                btnThem_Click(sender, e);
+                await LoadDataAsync();
             }
         }
 
-        private void btnHuy_Click(object sender, EventArgs e)
-        {
-            SetFormState(false);
-        }
+        private void btnHuy_Click(object sender, EventArgs e) => btnThem_Click(sender, e);
 
         private void dgvTacGia_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
-
-            // Lấy dữ liệu từ Row hiện tại
+            if (dgvTacGia.CurrentRow == null || e.RowIndex < 0) return;
             var row = dgvTacGia.Rows[e.RowIndex];
-            txtMaTacGia.Text = row.Cells["Maso"].Value?.ToString() ?? "";
-            txtTenTacGia.Text = row.Cells["Hoten"].Value?.ToString() ?? "";
-            txtDiaChi.Text = row.Cells["Diachi"].Value?.ToString() ?? "";
-            txtDienThoai.Text = row.Cells["Dienthoai"].Value?.ToString() ?? "";
-
-            SetFormState(true);
-        }
-
-        private void dgvTacGia_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            dgvTacGia_CellClick(sender, e);
+            txtMaso.Text = row.Cells["Maso"].Value.ToString();
+            txtMsTG.Text = row.Cells["MsTG"].Value.ToString();
+            txtHoTen.Text = row.Cells["Hoten"].Value.ToString();
+            txtMaso.ReadOnly = true;
+            if (DateTime.TryParse(row.Cells["Ngaysinh"].Value.ToString(), out DateTime ns)) dtpNgaySinh.Value = ns;
+            txtEmail.Text = row.Cells["Email"].Value.ToString();
+            txtDienThoai.Text = row.Cells["Dienthoai"].Value.ToString();
+            txtButDanh.Text = row.Cells["Ddong"].Value.ToString();
+            txtDiaChi.Text = row.Cells["Diachi"].Value.ToString();
         }
     }
 }
