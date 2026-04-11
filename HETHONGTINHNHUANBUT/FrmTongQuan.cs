@@ -22,16 +22,6 @@ namespace HETHONGTINHNHUANBUT
             timerClock.Tick += TimerClock_Tick;
         }
 
-        private void btnMinimize_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void FrmTongQuan_Load(object sender, EventArgs e)
         {
             timerClock.Start();
@@ -49,19 +39,12 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                // 1. Kết nối đến các bảng (Collection) trên Cloud
                 var tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
-                var nhuanButColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi"); // Hoặc tên bảng nhuận bút của anh
-                var baoColl = MongoProvider.Instance.GetCollection<Bao>("Bao");
+                var nhuanButColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
 
-                // 2. Lấy số lượng cực nhanh bằng hàm CountDocuments
                 lblSoTacGia.Text = tacGiaColl.CountDocuments(_ => true).ToString();
                 lblSoBaiViet.Text = nhuanButColl.CountDocuments(_ => true).ToString();
 
-                // Đếm bài chưa duyệt (Ví dụ trạng thái duyệt là N)
-                // lblSoBaoCho.Text = baoColl.CountDocuments(x => x.DaDuyet == "N").ToString();
-
-                // 3. Tính tổng tiền (Sử dụng Linq Sum cực xịn)
                 var listPhieu = nhuanButColl.Find(_ => true).ToList();
                 decimal tongTien = listPhieu.Sum(x => (decimal?)x.Sotien) ?? 0;
 
@@ -69,7 +52,6 @@ namespace HETHONGTINHNHUANBUT
             }
             catch
             {
-                // Nếu lỗi (ví dụ chưa có data), gán bằng 0 cho an toàn
                 lblSoTacGia.Text = "0";
                 lblSoBaiViet.Text = "0";
                 lblTongTien.Text = "0 VNĐ";
@@ -93,7 +75,6 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-        // Tinh hoa hội tụ: Bản vá lỗi Font Tooltip & Legend cho mọi phiên bản Guna Chart
         void VeBieuDoGunaChart()
         {
             try
@@ -103,38 +84,27 @@ namespace HETHONGTINHNHUANBUT
                 gunaChart.Dock = DockStyle.Fill;
                 gunaChart.BackColor = Color.White;
 
-                // 1. Cấu hình Tiêu đề
                 gunaChart.Title.Text = "THỐNG KÊ QUỸ TIỀN THEO SỐ BÁO";
                 gunaChart.Title.Font = new ChartFont { FontName = "Segoe UI", Size = 13, Style = ChartFontStyle.Bold };
 
-                // 2. FIX LỖI FONT TOOLTIP (DÙNG ĐÚNG CHUẨN CHARTFONT CỦA GUNA)
                 try
                 {
                     gunaChart.Tooltips.TitleFont = new ChartFont { FontName = "VNI-Times", Size = 11, Style = ChartFontStyle.Bold };
                     gunaChart.Tooltips.BodyFont = new ChartFont { FontName = "VNI-Times", Size = 11, Style = ChartFontStyle.Normal };
                 }
-                catch
-                {
-                    // Bỏ qua nếu phiên bản Guna cũ không hỗ trợ
-                }
+                catch { }
 
-                // 3. Cấu hình Chú thích
                 gunaChart.Legend.LabelFont = new ChartFont { FontName = "Segoe UI", Size = 10, Style = ChartFontStyle.Normal };
-
-                // 4. Cấu hình Trục
                 gunaChart.XAxes.GridLines.Display = false;
                 gunaChart.YAxes.GridLines.Display = false;
 
-                // Font trục X để đọc được tiếng Việt mã VNI (Tên các số báo)
                 gunaChart.XAxes.Ticks.Font = new ChartFont { FontName = "VNI-Times", Size = 10, Style = ChartFontStyle.Normal };
                 gunaChart.YAxes.Ticks.Font = new ChartFont { FontName = "Segoe UI", Size = 9, Style = ChartFontStyle.Normal };
 
-                // 5. Khởi tạo dữ liệu
                 GunaBarDataset dataset = new GunaBarDataset();
                 dataset.Label = "Tổng Tiền (VNĐ)";
                 dataset.FillColors.Add(Color.FromArgb(162, 110, 255));
 
-                // Lấy dữ liệu (Top 6 số báo mới nhất)
                 string sql = @"SELECT TOP 6 b.Tenbao, SUM(n.TienNhuanbut) as TongTien 
                                FROM Bao b JOIN Nhuanbut n ON b.Maso = n.MsBao 
                                GROUP BY b.Tenbao, b.Ngayra 
@@ -148,7 +118,6 @@ namespace HETHONGTINHNHUANBUT
                     dataset.DataPoints.Add(tenBao, tongTien);
                 }
 
-                // 6. Hoàn tất
                 gunaChart.Datasets.Add(dataset);
                 gunaChart.Update();
                 pnlBieuDo.Controls.Add(gunaChart);

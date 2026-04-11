@@ -17,15 +17,9 @@
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
-            this.pnlTitleBar = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnClose = new Guna.UI2.WinForms.Guna2Button();
-            this.btnMinimize = new Guna.UI2.WinForms.Guna2Button();
-            this.lblTitle = new System.Windows.Forms.Label();
             this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.pnlLeftContent = new Guna.UI2.WinForms.Guna2Panel();
@@ -49,7 +43,6 @@
             this.lblClock = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.pnlTitleBar.SuspendLayout();
             this.pnlHeader.SuspendLayout();
             this.pnlLeftContent.SuspendLayout();
             this.tlpCards.SuspendLayout();
@@ -62,81 +55,12 @@
             this.pnlClockWidget.SuspendLayout();
             this.SuspendLayout();
             // 
-            // guna2BorderlessForm1
-            // 
-            this.guna2BorderlessForm1.BorderRadius = 15;
-            this.guna2BorderlessForm1.ContainerControl = this;
-            this.guna2BorderlessForm1.DockIndicatorTransparencyValue = 0.6D;
-            this.guna2BorderlessForm1.DragStartTransparencyValue = 1D;
-            this.guna2BorderlessForm1.TransparentWhileDrag = true;
-            // 
-            // pnlTitleBar
-            // 
-            this.pnlTitleBar.BackColor = System.Drawing.Color.White;
-            this.pnlTitleBar.Controls.Add(this.btnClose);
-            this.pnlTitleBar.Controls.Add(this.btnMinimize);
-            this.pnlTitleBar.Controls.Add(this.lblTitle);
-            this.pnlTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTitleBar.Location = new System.Drawing.Point(0, 0);
-            this.pnlTitleBar.Name = "pnlTitleBar";
-            this.pnlTitleBar.Size = new System.Drawing.Size(1200, 45);
-            this.pnlTitleBar.TabIndex = 0;
-            // 
-            // btnClose
-            // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Animated = true;
-            this.btnClose.BackColor = System.Drawing.Color.Transparent;
-            this.btnClose.BorderRadius = 10;
-            this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnClose.FillColor = System.Drawing.Color.Transparent;
-            this.btnClose.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.btnClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.btnClose.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(238)))));
-            this.btnClose.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
-            this.btnClose.Location = new System.Drawing.Point(1145, 5);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(45, 35);
-            this.btnClose.TabIndex = 2;
-            this.btnClose.Text = "✕";
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
-            // btnMinimize
-            // 
-            this.btnMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMinimize.Animated = true;
-            this.btnMinimize.BackColor = System.Drawing.Color.Transparent;
-            this.btnMinimize.BorderRadius = 10;
-            this.btnMinimize.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnMinimize.FillColor = System.Drawing.Color.Transparent;
-            this.btnMinimize.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.btnMinimize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.btnMinimize.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            this.btnMinimize.Location = new System.Drawing.Point(1094, 5);
-            this.btnMinimize.Name = "btnMinimize";
-            this.btnMinimize.Size = new System.Drawing.Size(45, 35);
-            this.btnMinimize.TabIndex = 1;
-            this.btnMinimize.Text = "—";
-            this.btnMinimize.Click += new System.EventHandler(this.btnMinimize_Click);
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.BackColor = System.Drawing.Color.Transparent;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.lblTitle.Location = new System.Drawing.Point(12, 13);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(248, 20);
-            this.lblTitle.TabIndex = 3;
-            this.lblTitle.Text = "NEWSRUS - NHUẬN BÚT SYSTEM";
-            // 
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
             this.pnlHeader.Controls.Add(this.lblWelcome);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(0, 45);
+            this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1200, 70);
             this.pnlHeader.TabIndex = 4;
@@ -148,7 +72,7 @@
             this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
             this.lblWelcome.Location = new System.Drawing.Point(12, 13);
             this.lblWelcome.Name = "lblWelcome";
-            this.lblWelcome.Size = new System.Drawing.Size(325, 45);
+            this.lblWelcome.Size = new System.Drawing.Size(343, 45);
             this.lblWelcome.TabIndex = 28;
             this.lblWelcome.Text = "Tổng Quan Hệ Thống";
             // 
@@ -157,10 +81,10 @@
             this.pnlLeftContent.Controls.Add(this.pnlBieuDo);
             this.pnlLeftContent.Controls.Add(this.tlpCards);
             this.pnlLeftContent.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlLeftContent.Location = new System.Drawing.Point(0, 115);
+            this.pnlLeftContent.Location = new System.Drawing.Point(0, 70);
             this.pnlLeftContent.Name = "pnlLeftContent";
             this.pnlLeftContent.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
-            this.pnlLeftContent.Size = new System.Drawing.Size(840, 685);
+            this.pnlLeftContent.Size = new System.Drawing.Size(840, 730);
             this.pnlLeftContent.TabIndex = 5;
             // 
             // pnlBieuDo
@@ -176,7 +100,7 @@
             this.pnlBieuDo.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
             this.pnlBieuDo.ShadowDecoration.Enabled = true;
             this.pnlBieuDo.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlBieuDo.Size = new System.Drawing.Size(820, 525);
+            this.pnlBieuDo.Size = new System.Drawing.Size(820, 570);
             this.pnlBieuDo.TabIndex = 1;
             // 
             // tlpCards
@@ -392,10 +316,10 @@
             this.pnlRightSidebar.Controls.Add(this.pnlClockWidget);
             this.pnlRightSidebar.Controls.Add(this.label7);
             this.pnlRightSidebar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRightSidebar.Location = new System.Drawing.Point(840, 115);
+            this.pnlRightSidebar.Location = new System.Drawing.Point(840, 70);
             this.pnlRightSidebar.Name = "pnlRightSidebar";
             this.pnlRightSidebar.Padding = new System.Windows.Forms.Padding(10, 0, 15, 10);
-            this.pnlRightSidebar.Size = new System.Drawing.Size(360, 685);
+            this.pnlRightSidebar.Size = new System.Drawing.Size(360, 730);
             this.pnlRightSidebar.TabIndex = 6;
             // 
             // dgvHoatDong
@@ -415,7 +339,7 @@
             this.dgvHoatDong.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
@@ -424,7 +348,7 @@
             this.dgvHoatDong.ColumnHeadersHeight = 35;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
@@ -432,12 +356,12 @@
             this.dgvHoatDong.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvHoatDong.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvHoatDong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(241)))), ((int)(((byte)(247)))));
-            this.dgvHoatDong.Location = new System.Drawing.Point(10, 150);
+            this.dgvHoatDong.Location = new System.Drawing.Point(10, 110);
             this.dgvHoatDong.Name = "dgvHoatDong";
             this.dgvHoatDong.ReadOnly = true;
             this.dgvHoatDong.RowHeadersVisible = false;
             this.dgvHoatDong.RowTemplate.Height = 35;
-            this.dgvHoatDong.Size = new System.Drawing.Size(335, 525);
+            this.dgvHoatDong.Size = new System.Drawing.Size(335, 610);
             this.dgvHoatDong.TabIndex = 1;
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.Font = new System.Drawing.Font("Segoe UI", 9.75F);
@@ -513,7 +437,7 @@
             this.label7.Location = new System.Drawing.Point(10, 120);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.label7.Size = new System.Drawing.Size(169, 31);
+            this.label7.Size = new System.Drawing.Size(161, 31);
             this.label7.TabIndex = 0;
             this.label7.Text = "Hoạt Động Gần Đây";
             // 
@@ -526,15 +450,11 @@
             this.Controls.Add(this.pnlRightSidebar);
             this.Controls.Add(this.pnlLeftContent);
             this.Controls.Add(this.pnlHeader);
-            this.Controls.Add(this.pnlTitleBar);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FrmTongQuan";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tổng quan tòa soạn";
             this.Load += new System.EventHandler(this.FrmTongQuan_Load);
-            this.pnlTitleBar.ResumeLayout(false);
-            this.pnlTitleBar.PerformLayout();
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.pnlLeftContent.ResumeLayout(false);
@@ -553,11 +473,6 @@
 
         #endregion
 
-        private Guna.UI2.WinForms.Guna2BorderlessForm guna2BorderlessForm1;
-        private Guna.UI2.WinForms.Guna2Panel pnlTitleBar;
-        private Guna.UI2.WinForms.Guna2Button btnClose;
-        private Guna.UI2.WinForms.Guna2Button btnMinimize;
-        private System.Windows.Forms.Label lblTitle;
         private Guna.UI2.WinForms.Guna2Panel pnlHeader;
         private System.Windows.Forms.Label lblWelcome;
         private Guna.UI2.WinForms.Guna2Panel pnlLeftContent;

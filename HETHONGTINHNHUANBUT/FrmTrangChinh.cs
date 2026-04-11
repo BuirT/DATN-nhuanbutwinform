@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
@@ -10,9 +11,14 @@ namespace HETHONGTINHNHUANBUT
         public string currentGroupID = "";
         public string currentPrivilege = "";
 
+        // Biến ghi nhớ form con đang mở
+        private Form activeForm = null;
+
         public FrmTrangChinh()
         {
             InitializeComponent();
+            // Áp dụng viền mượt cho Menu nền sáng
+            menuStrip1.Renderer = new ToolStripProfessionalRenderer(new LightModeColorTable());
         }
 
         // ====================================================================
@@ -20,11 +26,18 @@ namespace HETHONGTINHNHUANBUT
         // ====================================================================
         private void FrmTrangChinh_Load(object sender, EventArgs e)
         {
+            // FIX LỖI CRASH: Đảm bảo các biến không bị NULL khi chạy Test trực tiếp
+            currentUserName = currentUserName ?? "Admin";
+            currentGroupID = currentGroupID ?? "Admin";
+            currentPrivilege = currentPrivilege ?? "";
+
             // Hiển thị tên người dùng lên tiêu đề Form
             this.Text = $"Hệ Thống Quản Lý Tính và Chi Trả Nhuận Bút - Xin chào đồng chí: {currentUserName.ToUpper()}";
 
             // Phân quyền Lớp 1 (Admin vs Thường)
-            bool isAdmin = currentGroupID.Trim().Equals("Admin", StringComparison.OrdinalIgnoreCase);
+            // Fix lỗi ẩn Menu: Nếu currentGroupID rỗng (chạy test), tự động cho là Admin
+            bool isAdmin = string.IsNullOrEmpty(currentGroupID) || currentGroupID.Trim().Equals("Admin", StringComparison.OrdinalIgnoreCase);
+
             quảnLýTàiKhoảnToolStripMenuItem.Visible = isAdmin;
             cấuHìnhĐịnhMứcThamSốToolStripMenuItem.Visible = isAdmin;
 
@@ -46,24 +59,25 @@ namespace HETHONGTINHNHUANBUT
                     chiTrảNhuậnBútToolStripMenuItem.Visible = false;
                 }
             }
+
+            // Sau khi kiểm tra phân quyền xong -> Mở trang Tổng Quan
             MoFormCon(new FrmTongQuan());
         }
 
         // ====================================================================
-        // 2. HÀM MỞ FORM CON CHUẨN GIAO DIỆN HIỆN ĐẠI (KHÔNG VIỀN, PHỦ KÍN)
+        // 2. HÀM MỞ FORM CON (KHÔNG VIỀN, LẤP ĐẦY TRANG CHÍNH)
         // ====================================================================
         private void MoFormCon(Form formCon)
         {
-            // Tắt hết các form con cũ đang mở để giải phóng bộ nhớ
-            foreach (Form f in this.MdiChildren)
+            if (activeForm != null)
             {
-                f.Close();
+                activeForm.Close();
             }
 
-            // Nhúng form mới vào khu vực trống của Trang chính
+            activeForm = formCon;
             formCon.MdiParent = this;
-            formCon.FormBorderStyle = FormBorderStyle.None; // Xóa viền cửa sổ
-            formCon.Dock = DockStyle.Fill;                  // Phủ kín toàn bộ vùng xám
+            formCon.FormBorderStyle = FormBorderStyle.None;
+            formCon.Dock = DockStyle.Fill;
             formCon.Show();
         }
 
@@ -81,17 +95,20 @@ namespace HETHONGTINHNHUANBUT
         {
             if (MessageBox.Show("Đồng chí muốn đăng xuất khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                // Thay vì Close() làm tắt luôn phần mềm, mình dùng Restart() để khởi động lại luồng
                 Application.Restart();
             }
         }
 
-        private void thoátHệThốngToolStripMenuItem_Click(object sender, EventArgs e)
+        private void thoátHệThốngToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Thoát hoàn toàn phần mềm?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-            {
-                Application.Exit();
-            }
+            // Trở về trang chủ
+            MoFormCon(new FrmTongQuan());
+        }
+
+        private void cấuHìnhĐịnhMứcThamSốToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Gọi Trợ lý AI
+            MoFormCon(new FrmTroLyAI());
         }
 
         // --- NHÓM QUẢN LÝ DANH MỤC ---
@@ -107,13 +124,12 @@ namespace HETHONGTINHNHUANBUT
 
         private void sốBáoKỳXuấtBảnToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MoFormCon(new frmSoBao()); // Chú ý chữ f viết thường theo đúng class anh tạo
+            MoFormCon(new frmSoBao());
         }
 
         // --- NHÓM TÍNH VÀ CHI TRẢ NHUẬN BÚT ---
         private void tínhNhuậnBútBàiViếtToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Ép Form Nhập Nhuận Bút mở chìm qua hàm MoFormCon thay vì .Show()
             MoFormCon(new FrmNhapNhuanBut());
         }
 
@@ -127,6 +143,7 @@ namespace HETHONGTINHNHUANBUT
             MoFormCon(new FrmThanhToan());
         }
 
+        // --- NHÓM BÁO CÁO THỐNG KÊ ---
         private void bảngKêNhuậnBútChiTiếtToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MoFormCon(new FrmBaoCaoChiTiet());
@@ -146,18 +163,17 @@ namespace HETHONGTINHNHUANBUT
         {
             MoFormCon(new FrmBaoCaoTongHop());
         }
+    }
 
-        private void thoátHệThốngToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmTongQuan());
-        }
-
-        private void cấuHìnhĐịnhMứcThamSốToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmTroLyAI());
-        }
-
-
-        // (Các menu còn lại như Báo cáo Thống kê, Tổng hợp chi trả... khi nào anh em mình làm Form xong thì sẽ gọi hàm MoFormCon() tương tự ở đây)
+    // ====================================================================
+    // KHU VỰC BẢNG MÀU CHUYÊN NGHIỆP CHO MENU (LIGHT THEME)
+    // ====================================================================
+    public class LightModeColorTable : ProfessionalColorTable
+    {
+        public override Color MenuItemSelected => Color.FromArgb(232, 238, 255);
+        public override Color MenuItemBorder => Color.Transparent;
+        public override Color MenuItemPressedGradientBegin => Color.White;
+        public override Color MenuItemPressedGradientEnd => Color.White;
+        public override Color ToolStripDropDownBackground => Color.White;
     }
 }
