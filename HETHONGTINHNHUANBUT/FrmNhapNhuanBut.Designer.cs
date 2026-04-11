@@ -69,6 +69,7 @@
             // 
             // lblTrangThai
             // 
+            this.lblTrangThai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrangThai.AutoSize = true;
             this.lblTrangThai.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTrangThai.ForeColor = System.Drawing.Color.MediumSeaGreen;
@@ -80,6 +81,8 @@
             // 
             // cboSoBao
             // 
+            this.cboSoBao.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSoBao.BackColor = System.Drawing.Color.Transparent;
             this.cboSoBao.BorderRadius = 5;
             this.cboSoBao.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
@@ -96,6 +99,7 @@
             // 
             // btnChotSo
             // 
+            this.btnChotSo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnChotSo.BorderRadius = 5;
             this.btnChotSo.FillColor = System.Drawing.Color.Crimson;
             this.btnChotSo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -109,6 +113,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.txtSoTien);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.cboButDanh);
@@ -155,6 +161,8 @@
             // 
             // cboButDanh
             // 
+            this.cboButDanh.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboButDanh.BackColor = System.Drawing.Color.Transparent;
             this.cboButDanh.BorderRadius = 5;
             this.cboButDanh.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
@@ -228,6 +236,8 @@
             // 
             // txtTenBai
             // 
+            this.txtTenBai.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTenBai.BorderRadius = 5;
             this.txtTenBai.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTenBai.DefaultText = "";
@@ -342,6 +352,9 @@
             // 
             // dgvNhuanButCT
             // 
+            this.dgvNhuanButCT.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             this.dgvNhuanButCT.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
