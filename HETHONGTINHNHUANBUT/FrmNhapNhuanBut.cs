@@ -210,5 +210,10 @@ namespace HETHONGTINHNHUANBUT
             cboButDanh.Text = r.Cells["Butdanh"].Value.ToString();
             _isAdding = false;
         }
+
+        private void lblTrangThai_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
