@@ -1,82 +1,58 @@
-﻿using MongoDB.Driver;
-using System.Configuration;
-using HETHONGTINHNHUANBUT.Models;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
-using System.Data;
+using System.Configuration; // Đừng quên thư viện này
 
 namespace HETHONGTINHNHUANBUT.DAL
 {
-    public class DataProvider : MongoProvider { }
-
     public class MongoProvider
     {
-        private readonly IMongoDatabase _database;
-        private static MongoProvider instance;
+        private static MongoProvider _instance;
+        public static MongoProvider Instance => _instance ?? (_instance = new MongoProvider());
 
-        public static MongoProvider Instance
-        {
-            get
-            {
-                if (instance == null) instance = new MongoProvider();
-                return instance;
-            }
-        }
+        private IMongoDatabase _database;
 
-        protected MongoProvider()
+        private MongoProvider()
         {
             try
             {
-                // Lấy chuỗi kết nối từ App.config (Nhớ kiểm tra tên "MongoDbConn")
-                string connectionSTR = ConfigurationManager.ConnectionStrings["MongoDbConn"]?.ConnectionString;
-                var client = new MongoClient(connectionSTR);
+                // Đọc đúng tên thẻ trong App.config của đồng chí
+                string connectionString = ConfigurationManager.ConnectionStrings["MongoDbConn"]?.ConnectionString;
+                string dbName = ConfigurationManager.AppSettings["DatabaseName"];
 
-                // Kết nối đến Database trên Cloud Atlas
-                _database = client.GetDatabase("NhuanButDB_Cloud");
+                if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(dbName))
+                {
+                    throw new Exception("Chưa tìm thấy 'MongoDbConn' hoặc 'DatabaseName' trong App.config!");
+                }
+
+                var client = new MongoClient(connectionString);
+                _database = client.GetDatabase(dbName);
             }
             catch (Exception ex)
             {
-                // Nếu lỗi kết nối, anh có thể xem ở cửa sổ Output của Visual Studio
-                System.Diagnostics.Debug.WriteLine("Lỗi khởi tạo Mongo: " + ex.Message);
+                throw new Exception("Lỗi kết nối MongoDB Atlas: " + ex.Message);
             }
         }
 
-        // --- CÁC HÀM DÙNG CHO MONGODB (CODE MỚI) ---
+        public IMongoCollection<T> GetCollection<T>(string collectionName)
+        {
+            return _database.GetCollection<T>(collectionName);
+        }
 
-        public IMongoCollection<T> GetCollection<T>(string name) => _database.GetCollection<T>(name);
-
-        public void GhiNhatKy(string user, string action)
+        public void GhiNhatKy(string username, string action)
         {
             try
             {
-                var coll = GetCollection<LichSuThaoTac>("LichSuThaoTac");
-                coll.InsertOne(new LichSuThaoTac
+                var collection = _database.GetCollection<BsonDocument>("LichSuThaoTac");
+                var document = new BsonDocument
                 {
-                    NguoiDung = user,
-                    HanhDong = action,
-                    ThoiGian = DateTime.Now
-                });
+                    { "TaiKhoan", username },
+                    { "HanhDong", action },
+                    { "ThoiGian", DateTime.Now }
+                };
+                collection.InsertOne(document);
             }
-            catch { }
-        }
-
-        // --- CÁC HÀM "CHỮA CHÁY" ĐỂ FIX LỖI BUILD (GIỮ CHO CODE SQL CŨ KHÔNG BỊ ĐỎ) ---
-
-        public DataTable ExecuteQuery(string query, object[] parameter = null)
-        {
-            // Trả về bảng rỗng để các Form cũ không bị crash khi Build
-            return new DataTable();
-        }
-
-        public int ExecuteNonQuery(string query, object[] parameter = null)
-        {
-            // Trả về 0 để đánh lừa trình biên dịch
-            return 0;
-        }
-
-        public object ExecuteScalar(string query, object[] parameter = null)
-        {
-            // Trả về null để fix lỗi SQL cũ gọi ExecuteScalar
-            return null;
+            catch { /* Bỏ qua nếu lỗi log */ }
         }
     }
 }

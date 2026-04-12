@@ -1,0 +1,4 @@
+﻿# Chặn không cho đẩy file cấu hình chứa pass thật lên Git
+bin/
+obj/
+App.config

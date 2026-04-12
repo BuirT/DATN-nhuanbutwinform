@@ -1,46 +1,28 @@
 ﻿using System;
-using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
-using MongoDB.Bson;
+using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTacGia : Form
     {
-        private IMongoCollection<BsonDocument> tacgiaCollection;
+        // Khai báo Collection sử dụng Model TacGia thay vì BsonDocument
+        private readonly IMongoCollection<TacGia> _tacGiaColl;
 
         public FrmTacGia()
         {
             InitializeComponent();
-            KetNoiMongoDB();
-        }
-
-        private void KetNoiMongoDB()
-        {
-            try
-            {
-                string connectionString = ConfigurationManager.ConnectionStrings["MongoDbConn"].ConnectionString;
-                string databaseName = ConfigurationManager.AppSettings["DatabaseName"];
-
-                var client = new MongoClient(connectionString);
-                var database = client.GetDatabase(databaseName);
-
-                // Trỏ đúng vào collection TacGia trong file SQL
-                tacgiaCollection = database.GetCollection<BsonDocument>("TacGia");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi kết nối MongoDB: " + ex.Message, "Lỗi Cấu Hình", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Gọi kết nối từ Singleton Provider (rất tối ưu và gọn)
+            _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
         }
 
         private async void FrmTacGia_Load(object sender, EventArgs e)
         {
             txtMaso.ReadOnly = false;
-            // Ép font Segoe UI cho đẹp, bỏ font VNI-Times lỗi thời
             dgvTacGia.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
             dgvTacGia.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
 
@@ -53,42 +35,24 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                // Tải dữ liệu ngầm để không bị đơ giao diện
-                var documents = await tacgiaCollection.Find(new BsonDocument()).ToListAsync();
+                // Lấy toàn bộ dữ liệu từ Cloud
+                var list = await _tacGiaColl.Find(_ => true).ToListAsync();
 
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Maso");
-                dt.Columns.Add("MsTG");
-                dt.Columns.Add("Hoten");
-                dt.Columns.Add("Ngaysinh");
-                dt.Columns.Add("LoaiTacgia");
-                dt.Columns.Add("Email");
-                dt.Columns.Add("Dienthoai");
-                dt.Columns.Add("Ddong"); // Đây là Bút danh
-                dt.Columns.Add("Diachi");
-
-                foreach (var doc in documents)
+                // Bind thẳng List vào DataGridView qua LINQ để tùy biến hiển thị
+                dgvTacGia.DataSource = list.Select(t => new
                 {
-                    DataRow row = dt.NewRow();
-                    row["Maso"] = doc.GetValue("Maso", "").ToString();
-                    row["MsTG"] = doc.GetValue("MsTG", "").ToString();
-                    row["Hoten"] = doc.GetValue("Hoten", "").ToString();
+                    Maso = t.Maso,
+                    MsTG = t.MsTG,
+                    Hoten = t.Hoten,
+                    Ngaysinh = t.Ngaysinh.ToString("dd/MM/yyyy"),
+                    LoaiTacgia = t.LoaiTacgia,
+                    Email = t.Email,
+                    Dienthoai = t.Dienthoai,
+                    Ddong = t.Ddong, // Bút danh
+                    Diachi = t.Diachi
+                }).ToList();
 
-                    if (doc.Contains("Ngaysinh") && doc["Ngaysinh"].IsBsonDateTime)
-                        row["Ngaysinh"] = doc["Ngaysinh"].ToUniversalTime().ToString("dd/MM/yyyy");
-                    else
-                        row["Ngaysinh"] = doc.GetValue("Ngaysinh", "").ToString();
-
-                    row["LoaiTacgia"] = doc.GetValue("LoaiTacgia", "").ToString();
-                    row["Email"] = doc.GetValue("Email", "").ToString();
-                    row["Dienthoai"] = doc.GetValue("Dienthoai", "").ToString();
-                    row["Ddong"] = doc.GetValue("Ddong", "").ToString();
-                    row["Diachi"] = doc.GetValue("Diachi", "").ToString();
-                    dt.Rows.Add(row);
-                }
-
-                dgvTacGia.DataSource = dt;
-
+                // Đổi tên cột hiển thị
                 if (dgvTacGia.Columns.Count > 0)
                 {
                     dgvTacGia.Columns["Maso"].HeaderText = "Mã hệ thống";
@@ -98,9 +62,13 @@ namespace HETHONGTINHNHUANBUT
                     dgvTacGia.Columns["LoaiTacgia"].HeaderText = "Loại";
                     dgvTacGia.Columns["Ddong"].HeaderText = "Bút danh";
                     dgvTacGia.Columns["Dienthoai"].HeaderText = "Điện thoại";
+                    dgvTacGia.Columns["Diachi"].HeaderText = "Địa chỉ";
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+            }
         }
 
         private void btnThem_Click(object sender, EventArgs e)
@@ -122,26 +90,31 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // Kiểm tra trùng mã trên MongoDB
-                var filter = Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text);
-                var exist = await tacgiaCollection.Find(filter).FirstOrDefaultAsync();
-                if (exist != null) { MessageBox.Show("Mã này đã tồn tại!"); return; }
+                // Kiểm tra trùng lặp
+                var exist = await _tacGiaColl.Find(t => t.Maso == txtMaso.Text.Trim()).FirstOrDefaultAsync();
+                if (exist != null)
+                {
+                    MessageBox.Show("Mã hệ thống này đã tồn tại!");
+                    return;
+                }
 
                 string loai = cboLoaiTG.SelectedIndex == 0 ? "PV" : (cboLoaiTG.SelectedIndex == 1 ? "CT" : "TN");
 
-                var newDoc = new BsonDocument {
-                    { "Maso", txtMaso.Text },
-                    { "MsTG", txtMsTG.Text },
-                    { "Hoten", txtHoTen.Text },
-                    { "Ngaysinh", new BsonDateTime(dtpNgaySinh.Value) },
-                    { "LoaiTacgia", loai },
-                    { "Email", txtEmail.Text },
-                    { "Dienthoai", txtDienThoai.Text },
-                    { "Ddong", txtButDanh.Text },
-                    { "Diachi", txtDiaChi.Text }
+                // Thêm bằng Model rất trực quan
+                var newTacGia = new TacGia
+                {
+                    Maso = txtMaso.Text.Trim(),
+                    MsTG = txtMsTG.Text.Trim(),
+                    Hoten = txtHoTen.Text.Trim(),
+                    Ngaysinh = dtpNgaySinh.Value,
+                    LoaiTacgia = loai,
+                    Email = txtEmail.Text.Trim(),
+                    Dienthoai = txtDienThoai.Text.Trim(),
+                    Ddong = txtButDanh.Text.Trim(),
+                    Diachi = txtDiaChi.Text.Trim()
                 };
 
-                await tacgiaCollection.InsertOneAsync(newDoc);
+                await _tacGiaColl.InsertOneAsync(newTacGia);
                 MessageBox.Show("Thêm thành công!");
                 await LoadDataAsync();
             }
@@ -154,18 +127,19 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string loai = cboLoaiTG.SelectedIndex == 0 ? "PV" : (cboLoaiTG.SelectedIndex == 1 ? "CT" : "TN");
-                var filter = Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text);
-                var update = Builders<BsonDocument>.Update
-                    .Set("MsTG", txtMsTG.Text)
-                    .Set("Hoten", txtHoTen.Text)
-                    .Set("Ngaysinh", new BsonDateTime(dtpNgaySinh.Value))
-                    .Set("LoaiTacgia", loai)
-                    .Set("Email", txtEmail.Text)
-                    .Set("Dienthoai", txtDienThoai.Text)
-                    .Set("Ddong", txtButDanh.Text)
-                    .Set("Diachi", txtDiaChi.Text);
 
-                await tacgiaCollection.UpdateOneAsync(filter, update);
+                var filter = Builders<TacGia>.Filter.Eq(t => t.Maso, txtMaso.Text.Trim());
+                var update = Builders<TacGia>.Update
+                    .Set(t => t.MsTG, txtMsTG.Text.Trim())
+                    .Set(t => t.Hoten, txtHoTen.Text.Trim())
+                    .Set(t => t.Ngaysinh, dtpNgaySinh.Value)
+                    .Set(t => t.LoaiTacgia, loai)
+                    .Set(t => t.Email, txtEmail.Text.Trim())
+                    .Set(t => t.Dienthoai, txtDienThoai.Text.Trim())
+                    .Set(t => t.Ddong, txtButDanh.Text.Trim())
+                    .Set(t => t.Diachi, txtDiaChi.Text.Trim());
+
+                await _tacGiaColl.UpdateOneAsync(filter, update);
                 MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
@@ -177,7 +151,7 @@ namespace HETHONGTINHNHUANBUT
             if (string.IsNullOrEmpty(txtMaso.Text)) return;
             if (MessageBox.Show("Xóa tác giả này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                await tacgiaCollection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text));
+                await _tacGiaColl.DeleteOneAsync(t => t.Maso == txtMaso.Text.Trim());
                 btnThem_Click(sender, e);
                 await LoadDataAsync();
             }
@@ -189,15 +163,28 @@ namespace HETHONGTINHNHUANBUT
         {
             if (dgvTacGia.CurrentRow == null || e.RowIndex < 0) return;
             var row = dgvTacGia.Rows[e.RowIndex];
-            txtMaso.Text = row.Cells["Maso"].Value.ToString();
-            txtMsTG.Text = row.Cells["MsTG"].Value.ToString();
-            txtHoTen.Text = row.Cells["Hoten"].Value.ToString();
-            txtMaso.ReadOnly = true;
-            if (DateTime.TryParse(row.Cells["Ngaysinh"].Value.ToString(), out DateTime ns)) dtpNgaySinh.Value = ns;
-            txtEmail.Text = row.Cells["Email"].Value.ToString();
-            txtDienThoai.Text = row.Cells["Dienthoai"].Value.ToString();
-            txtButDanh.Text = row.Cells["Ddong"].Value.ToString();
-            txtDiaChi.Text = row.Cells["Diachi"].Value.ToString();
+
+            txtMaso.Text = row.Cells["Maso"].Value?.ToString();
+            txtMsTG.Text = row.Cells["MsTG"].Value?.ToString();
+            txtHoTen.Text = row.Cells["Hoten"].Value?.ToString();
+            txtMaso.ReadOnly = true; // Khóa mã lại không cho sửa
+
+            // Xử lý ngày sinh an toàn hơn
+            if (DateTime.TryParseExact(row.Cells["Ngaysinh"].Value?.ToString(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime ns))
+            {
+                dtpNgaySinh.Value = ns;
+            }
+
+            // Gán lại loại tác giả
+            string loai = row.Cells["LoaiTacgia"].Value?.ToString();
+            if (loai == "PV") cboLoaiTG.SelectedIndex = 0;
+            else if (loai == "CT") cboLoaiTG.SelectedIndex = 1;
+            else cboLoaiTG.SelectedIndex = 2;
+
+            txtEmail.Text = row.Cells["Email"].Value?.ToString();
+            txtDienThoai.Text = row.Cells["Dienthoai"].Value?.ToString();
+            txtButDanh.Text = row.Cells["Ddong"].Value?.ToString();
+            txtDiaChi.Text = row.Cells["Diachi"].Value?.ToString();
         }
     }
 }

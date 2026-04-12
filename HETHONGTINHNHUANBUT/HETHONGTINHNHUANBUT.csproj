@@ -182,6 +182,12 @@
   <ItemGroup>
     <Compile Include="DAL\MongoHelper.cs" />
     <Compile Include="DAL\MongoProvider.cs" />
+    <Compile Include="FrmTaiKhoan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmTaiKhoan.Designer.cs">
+      <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </Compile>
     <Compile Include="HashHelper.cs" />
     <Compile Include="FormLogin.cs">
       <SubType>Form</SubType>
@@ -231,12 +237,6 @@
     <Compile Include="FrmPhieuChi.Designer.cs">
       <DependentUpon>FrmPhieuChi.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmQuanLyTaiKhoan.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmQuanLyTaiKhoan.Designer.cs">
-      <DependentUpon>FrmQuanLyTaiKhoan.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmSoBao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -280,10 +280,11 @@
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Bao.cs" />
-    <Compile Include="Models\LichSuThaoTac.cs" />
     <Compile Include="Models\NhuanBut.cs" />
     <Compile Include="Models\PhieuChi.cs" />
     <Compile Include="Models\TacGia.cs" />
+    <Compile Include="Models\TaiKhoan.cs" />
+    <Compile Include="Models\ThanhToan.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -293,6 +294,9 @@
     <EmbeddedResource Include="FormRegister.resx">
       <DependentUpon>FormRegister.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmBaoCaoCongNo.resx">
+      <DependentUpon>FrmBaoCaoCongNo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmButdanh.resx">
       <DependentUpon>FrmButdanh.cs</DependentUpon>
     </EmbeddedResource>
@@ -301,9 +305,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPhieuChi.resx">
       <DependentUpon>FrmPhieuChi.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmQuanLyTaiKhoan.resx">
-      <DependentUpon>FrmQuanLyTaiKhoan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmSoBao.resx">
       <DependentUpon>FrmSoBao.cs</DependentUpon>
@@ -316,9 +317,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTongQuan.resx">
       <DependentUpon>FrmTongQuan.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmTrangChinh.resx">
-      <DependentUpon>FrmTrangChinh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTroLyAI.resx">
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>
@@ -333,6 +331,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="App.config.example" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -348,6 +347,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="resources\bao-2-185727174524549.jpg" />
   </ItemGroup>
   <ItemGroup />

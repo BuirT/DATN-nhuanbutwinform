@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<configSections>
+	</configSections>
+
+	<connectionStrings>
+		<add name="MongoDbConn" connectionString="mongodb://TAI_KHOAN:MAT_KHAU@ac-h0blw2o-shard-00-00.m2hpw3d.mongodb.net:27017,ac-h0blw2o-shard-00-01.m2hpw3d.mongodb.net:27017,ac-h0blw2o-shard-00-02.m2hpw3d.mongodb.net:27017/?ssl=true&amp;replicaSet=atlas-4wmdv5-shard-0&amp;authSource=admin&amp;appName=Cluster0" />
+	</connectionStrings>
+
+	<appSettings>
+		<add key="DatabaseName" value="NhuanButDB_Cloud" />
+	</appSettings>
+
+	<startup>
+		<supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />
+	</startup>
+
+	<runtime>
+		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+			<dependentAssembly>
+				<assemblyIdentity name="System.Memory" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+				<bindingRedirect oldVersion="0.0.0.0-4.0.1.2" newVersion="4.0.1.2" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="System.Numerics.Vectors" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+				<bindingRedirect oldVersion="0.0.0.0-4.1.4.0" newVersion="4.1.4.0" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="System.Buffers" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+				<bindingRedirect oldVersion="0.0.0.0-4.0.3.0" newVersion="4.0.3.0" />
+			</dependentAssembly>
+		</assemblyBinding>
+	</runtime>
+</configuration>

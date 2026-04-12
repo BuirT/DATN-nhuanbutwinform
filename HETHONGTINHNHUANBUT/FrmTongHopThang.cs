@@ -1,146 +1,167 @@
 ﻿using System;
 using System.Data;
-using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
-using ClosedXML.Excel;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
+using ClosedXML.Excel; // Đảm bảo đồng chí đã cài NuGet Package ClosedXML nhé
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTongHopThang : Form
     {
-        public FrmTongHopThang() { InitializeComponent(); }
+        private readonly IMongoCollection<NhuanBut> _nhuanButColl;
+
+        public FrmTongHopThang()
+        {
+            InitializeComponent();
+            // Kết nối thẳng tới bảng NhuanBut trên Atlas
+            _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
+        }
 
         private void FrmTongHopThang_Load(object sender, EventArgs e)
         {
-            for (int i = 1; i <= 12; i++) cboThang.Items.Add(i.ToString());
+            // Format font chữ cho DataGridView khi form vừa load lên
+            dgvBaoCao.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dgvBaoCao.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
 
-            int yearHienTai = DateTime.Now.Year;
-            for (int i = 2016; i <= yearHienTai + 2; i++)
-            {
-                cboNam.Items.Add(i.ToString());
-            }
-
-            cboThang.Text = DateTime.Now.Month.ToString();
-            cboNam.Text = yearHienTai.ToString();
-
-            // SỰ THẬT ĐÃ SÁNG TỎ: KẾT HỢP CẢ 2 LOẠI FONT
-            // 1. Tiêu đề cột dùng Segoe UI (Vì mình gõ Unicode trong SQL Alias)
-            dgvThang.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-
-            // 2. Dữ liệu bên dưới dùng VNI-Times (Vì Database lưu mã VNI)
-            dgvThang.DefaultCellStyle.Font = new Font("VNI-Times", 12F, FontStyle.Regular);
-
-            dgvThang.RowTemplate.Height = 35;
+            // Mặc định chọn tháng hiện tại cho tiện
+            dtpThang.Value = DateTime.Now;
         }
 
-        private void btnXem_Click(object sender, EventArgs e)
+        // Sự kiện khi bấm nút XEM BÁO CÁO
+        private async void btnXemBaoCao_Click(object sender, EventArgs e)
         {
             try
             {
-                // Chống đơ giao diện khi load nhiều dữ liệu
-                dgvThang.SuspendLayout();
+                // 1. Lấy ra mốc thời gian: Ngày đầu tháng và Ngày cuối tháng
+                DateTime selectedDate = dtpThang.Value;
+                DateTime startOfMonth = new DateTime(selectedDate.Year, selectedDate.Month, 1);
+                // Lấy ngày cuối cùng của tháng (bằng cách sang đầu tháng sau rồi trừ đi 1 tick)
+                DateTime endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
 
-                // Giữ nguyên tiêu đề Unicode để cột hiện đẹp với Segoe UI
-                string sql = @"SELECT b.Tenbao AS [Tên Báo], 
-                                      b.Sobao AS [Số Báo], 
-                                      CONVERT(VARCHAR(10), b.Ngayra, 103) AS [Ngày Xuất Bản], 
-                                      SUM(n.TienNhuanbut) AS [Tổng Nhuận Bút]
-                               FROM Bao b 
-                               JOIN Nhuanbut n ON b.Maso = n.MsBao
-                               WHERE MONTH(b.Ngayra) = @m AND YEAR(b.Ngayra) = @y
-                               GROUP BY b.Tenbao, b.Sobao, b.Ngayra
-                               ORDER BY b.Ngayra ASC";
+                // 2. Truy vấn dữ liệu từ MongoDB trong khoảng thời gian này
+                var builder = Builders<NhuanBut>.Filter;
+                var filter = builder.Gte(n => n.NgayNhap, startOfMonth) & builder.Lte(n => n.NgayNhap, endOfMonth);
 
-                DataTable dt = MongoProvider.Instance.ExecuteQuery(sql, new object[] { cboThang.Text, cboNam.Text });
-                dgvThang.DataSource = dt;
+                var danhSachTrongThang = await _nhuanButColl.Find(filter).ToListAsync();
 
-                if (dgvThang.Columns.Count > 3)
+                // 3. Kiểm tra xem có dữ liệu không
+                if (danhSachTrongThang.Count == 0)
                 {
-                    dgvThang.Columns[3].DefaultCellStyle.Format = "N0";
-                    dgvThang.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    dgvBaoCao.DataSource = null;
+                    MessageBox.Show("Không có dữ liệu nhuận bút nào được nhập trong tháng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
 
-                dgvThang.ResumeLayout();
+                // 4. DÙNG LINQ ĐỂ GOM NHÓM (GROUP BY) THEO BÚT DANH (Logic cốt lõi của báo cáo)
+                var reportData = danhSachTrongThang
+                    .GroupBy(n => n.ButDanh)
+                    .Select(g => new
+                    {
+                        ButDanh = g.Key,
+                        SoLuongBai = g.Count(),
+                        TongNhuanBut = g.Sum(x => x.TienNhuanBut),
+                        DaChiTra = g.Where(x => x.DaThanhToan).Sum(x => x.TienNhuanBut),
+                        ConNo = g.Where(x => !x.DaThanhToan).Sum(x => x.TienNhuanBut)
+                    })
+                    .OrderByDescending(x => x.TongNhuanBut) // Sắp xếp ai được nhiều tiền nhất lên đầu
+                    .ToList();
+
+                // 5. Định dạng lại thành chuỗi VNĐ cho đẹp mắt trên lưới
+                var displayList = reportData.Select(r => new
+                {
+                    r.ButDanh,
+                    r.SoLuongBai,
+                    TongNhuanBut = r.TongNhuanBut.ToString("N0") + " VNĐ",
+                    DaChiTra = r.DaChiTra.ToString("N0") + " VNĐ",
+                    ConNo = r.ConNo.ToString("N0") + " VNĐ"
+                }).ToList();
+
+                // 6. Đổ dữ liệu lên DataGridView
+                dgvBaoCao.DataSource = displayList;
+
+                // 7. Đặt lại tiêu đề cột cho chuyên nghiệp
+                if (dgvBaoCao.Columns.Count > 0)
+                {
+                    dgvBaoCao.Columns["ButDanh"].HeaderText = "Tác Giả / Bút Danh";
+                    dgvBaoCao.Columns["SoLuongBai"].HeaderText = "Số Lượng Bài";
+                    dgvBaoCao.Columns["TongNhuanBut"].HeaderText = "Tổng Nhuận Bút";
+                    dgvBaoCao.Columns["DaChiTra"].HeaderText = "Đã Chi Trả (CK/TM)";
+                    dgvBaoCao.Columns["ConNo"].HeaderText = "Còn Nợ Kỳ Sau";
+                }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi lập báo cáo: " + ex.Message, "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void btnExport_Click(object sender, EventArgs e)
+        // Sự kiện khi bấm nút XUẤT EXCEL
+        private void btnXuatExcel_Click(object sender, EventArgs e)
         {
-            if (dgvThang.Rows.Count == 0)
+            // Kiểm tra xem DataGridView có dữ liệu để xuất không
+            if (dgvBaoCao.Rows.Count == 0 || dgvBaoCao.DataSource == null)
             {
-                MessageBox.Show("Không có dữ liệu để xuất!", "Thông báo");
+                MessageBox.Show("Không có dữ liệu để xuất! Đồng chí vui lòng nhấn 'Xem báo cáo' trước.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", FileName = $"TongHop_Thang{cboThang.Text}_{cboNam.Text}" })
+            try
             {
+                // Mở hộp thoại chọn nơi lưu file cho người dùng
+                SaveFileDialog sfd = new SaveFileDialog()
+                {
+                    Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                    FileName = "BaoCaoNhuanBut_Thang_" + dtpThang.Value.ToString("MM_yyyy") + ".xlsx",
+                    Title = "Lưu báo cáo Excel"
+                };
+
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    try
+                    // Khởi tạo file Excel bằng thư viện ClosedXML
+                    using (var workbook = new XLWorkbook())
                     {
-                        // Hiện con trỏ chuột quay quay để báo hiệu đang xử lý
-                        Cursor.Current = Cursors.WaitCursor;
+                        var worksheet = workbook.Worksheets.Add("BaoCaoTongHop");
 
-                        using (var workbook = new XLWorkbook())
+                        // 1. Tạo dòng Tiêu đề (Header) từ tên cột của DataGridView
+                        for (int i = 0; i < dgvBaoCao.Columns.Count; i++)
                         {
-                            var ws = workbook.Worksheets.Add("TongHop");
+                            worksheet.Cell(1, i + 1).Value = dgvBaoCao.Columns[i].HeaderText;
 
-                            // 1. Tiêu đề Excel
-                            var titleRange = ws.Range("A1:D1");
-                            titleRange.Merge().Value = $"BẢNG TỔNG HỢP NHUẬN BÚT THÁNG {cboThang.Text}/{cboNam.Text}";
-                            titleRange.Style.Font.Bold = true;
-                            titleRange.Style.Font.FontSize = 16;
-                            titleRange.Style.Font.FontName = "Segoe UI";
-                            titleRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-                            // 2. Đổ dữ liệu Tiêu đề cột
-                            for (int i = 0; i < dgvThang.Columns.Count; i++)
-                            {
-                                ws.Cell(3, i + 1).Value = dgvThang.Columns[i].HeaderText;
-                            }
-                            // Quét 1 lần cho nguyên hàng Header
-                            var headerRange = ws.Range(3, 1, 3, dgvThang.Columns.Count);
-                            headerRange.Style.Fill.BackgroundColor = XLColor.LightBlue;
-                            headerRange.Style.Font.Bold = true;
-                            headerRange.Style.Font.FontName = "Segoe UI";
-                            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                            headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-
-                            // 3. Đổ dữ liệu thô cực nhanh (Không format trong vòng lặp)
-                            for (int r = 0; r < dgvThang.Rows.Count; r++)
-                            {
-                                for (int c = 0; c < dgvThang.Columns.Count; c++)
-                                {
-                                    ws.Cell(r + 4, c + 1).Value = dgvThang.Rows[r].Cells[c].Value?.ToString();
-                                }
-                            }
-
-                            // 4. TUYỆT CHIÊU: Gom toàn bộ vùng dữ liệu để ép Font VNI 1 LẦN DUY NHẤT
-                            var dataRange = ws.Range(4, 1, dgvThang.Rows.Count + 3, dgvThang.Columns.Count);
-                            dataRange.Style.Font.FontName = "VNI-Times";
-                            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-
-                            // 5. Căn chỉnh và Lưu
-                            ws.Columns().AdjustToContents();
-                            workbook.SaveAs(sfd.FileName);
-
-                            // Trả lại chuột bình thường
-                            Cursor.Current = Cursors.Default;
-                            MessageBox.Show("Xuất file Excel thành công!", "Hoàn tất");
+                            // Style cho dòng Header: in đậm, nền xanh lá, chữ trắng
+                            worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                            worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.MediumSeaGreen;
+                            worksheet.Cell(1, i + 1).Style.Font.FontColor = XLColor.White;
+                            worksheet.Cell(1, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Cursor.Current = Cursors.Default;
-                        MessageBox.Show("Lỗi xuất Excel: " + ex.Message);
+
+                        // 2. Đổ dữ liệu từ các dòng của DataGridView xuống Excel
+                        for (int i = 0; i < dgvBaoCao.Rows.Count; i++)
+                        {
+                            for (int j = 0; j < dgvBaoCao.Columns.Count; j++)
+                            {
+                                // Lấy giá trị từng ô và gán vào cell tương ứng trong Excel (dòng bắt đầu từ 2)
+                                string cellValue = dgvBaoCao.Rows[i].Cells[j].Value?.ToString();
+                                worksheet.Cell(i + 2, j + 1).Value = cellValue;
+                            }
+                        }
+
+                        // 3. Tự động căn chỉnh độ rộng cột cho vừa với nội dung chữ
+                        worksheet.Columns().AdjustToContents();
+
+                        // Lưu file ra ổ cứng
+                        workbook.SaveAs(sfd.FileName);
+                        MessageBox.Show("Đã xuất báo cáo Excel thành công!", "Tuyệt vời", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi xảy ra khi xuất Excel: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-
-        private void dgvThang_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
     }
 }

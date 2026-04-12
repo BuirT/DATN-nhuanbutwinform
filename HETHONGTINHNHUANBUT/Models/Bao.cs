@@ -4,28 +4,32 @@ using System;
 
 namespace HETHONGTINHNHUANBUT.Models
 {
+    [BsonIgnoreExtraElements]
     public class Bao
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } // ID tự sinh của MongoDB
+        public string Id { get; set; }
 
-        [BsonElement("Mabao")]
-        public string Mabao { get; set; } // Mã báo (ví dụ: B001)
+        [BsonElement("Maso")]
+        public int Maso { get; set; } // Mã số báo (kiểu int theo SQL cũ)
 
         [BsonElement("Tenbao")]
-        public string Tenbao { get; set; } // Tên tờ báo
+        public string Tenbao { get; set; }
+
+        [BsonElement("Ngayra")]
+        public DateTime Ngayra { get; set; }
+
+        [BsonElement("Sobao")]
+        public string Sobao { get; set; }
+
+        [BsonElement("Sobo")]
+        public string Sobo { get; set; }
 
         [BsonElement("Loaibao")]
-        public string Loaibao { get; set; } // Báo in, Báo điện tử...
+        public string Loaibao { get; set; }
 
-        [BsonElement("Dongia")]
-        public decimal Dongia { get; set; } // Đơn giá nhuận bút mặc định
-
-        [BsonElement("Ghichu")]
-        public string Ghichu { get; set; }
-
-        [BsonElement("NgayTao")]
-        public DateTime NgayTao { get; set; } = DateTime.Now;
+        [BsonElement("DaDuyet")]
+        public string DaDuyet { get; set; } = "N"; // 'N' là chưa duyệt, 'Y' là đã duyệt
     }
 }

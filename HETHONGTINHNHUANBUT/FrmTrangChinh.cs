@@ -1,179 +1,119 @@
 ﻿using System;
-using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTrangChinh : Form
     {
-        // Các biến toàn cục để nhận dữ liệu từ FormLogin truyền sang
-        public string currentUserName = "";
-        public string currentGroupID = "";
-        public string currentPrivilege = "";
+        // Biến lưu thông tin người dùng đăng nhập (được truyền từ FormLogin)
+        public string currentUserName { get; set; }
+        public string currentPrivilege { get; set; }
 
-        // Biến ghi nhớ form con đang mở
+        // Biến lưu trữ form con đang được mở
         private Form activeForm = null;
 
         public FrmTrangChinh()
         {
             InitializeComponent();
-            // Áp dụng viền mượt cho Menu nền sáng
-            menuStrip1.Renderer = new ToolStripProfessionalRenderer(new LightModeColorTable());
         }
 
-        // ====================================================================
-        // 1. SỰ KIỆN LOAD TRANG CHÍNH & PHÂN QUYỀN
-        // ====================================================================
         private void FrmTrangChinh_Load(object sender, EventArgs e)
         {
-            // FIX LỖI CRASH: Đảm bảo các biến không bị NULL khi chạy Test trực tiếp
-            currentUserName = currentUserName ?? "Admin";
-            currentGroupID = currentGroupID ?? "Admin";
-            currentPrivilege = currentPrivilege ?? "";
-
-            // Hiển thị tên người dùng lên tiêu đề Form
-            this.Text = $"Hệ Thống Quản Lý Tính và Chi Trả Nhuận Bút - Xin chào đồng chí: {currentUserName.ToUpper()}";
-
-            // Phân quyền Lớp 1 (Admin vs Thường)
-            // Fix lỗi ẩn Menu: Nếu currentGroupID rỗng (chạy test), tự động cho là Admin
-            bool isAdmin = string.IsNullOrEmpty(currentGroupID) || currentGroupID.Trim().Equals("Admin", StringComparison.OrdinalIgnoreCase);
-
-            quảnLýTàiKhoảnToolStripMenuItem.Visible = isAdmin;
-            cấuHìnhĐịnhMứcThamSốToolStripMenuItem.Visible = isAdmin;
-
-            // Phân quyền Lớp 2 (Nghiệp vụ chi tiết cho nhân viên thường)
-            string privileges = currentPrivilege.ToLower();
-
-            if (!isAdmin)
-            {
-                // Nếu KHÔNG CÓ chữ "nhuanbut" thì ẨN menu Nhập nhuận bút
-                if (!privileges.Contains("nhuanbut"))
-                {
-                    tínhNhuậnBútBàiViếtToolStripMenuItem.Visible = false;
-                }
-
-                // Nếu KHÔNG CÓ chữ "phieuchi" thì ẨN menu Lập phiếu chi
-                if (!privileges.Contains("phieuchi"))
-                {
-                    lậpPhiếuChiToolStripMenuItem.Visible = false;
-                    chiTrảNhuậnBútToolStripMenuItem.Visible = false;
-                }
-            }
-
-            // Sau khi kiểm tra phân quyền xong -> Mở trang Tổng Quan
-            MoFormCon(new FrmTongQuan());
+            // Khi vừa mở máy, hiển thị ngay màn hình Tổng Quan cho chuyên nghiệp
+            btnTongQuan_Click(null, null);
         }
 
-        // ====================================================================
-        // 2. HÀM MỞ FORM CON (KHÔNG VIỀN, LẤP ĐẦY TRANG CHÍNH)
-        // ====================================================================
-        private void MoFormCon(Form formCon)
+        // --- HÀM CỐT LÕI: MỞ FORM CON BÊN TRONG PANEL MAIN ---
+        private void OpenChildForm(Form childForm)
         {
             if (activeForm != null)
             {
-                activeForm.Close();
+                activeForm.Close(); // Đóng form cũ để giải phóng bộ nhớ
             }
 
-            activeForm = formCon;
-            formCon.MdiParent = this;
-            formCon.FormBorderStyle = FormBorderStyle.None;
-            formCon.Dock = DockStyle.Fill;
-            formCon.Show();
+            activeForm = childForm;
+            childForm.TopLevel = false;
+            childForm.FormBorderStyle = FormBorderStyle.None;
+            childForm.Dock = DockStyle.Fill;
+
+            pnlMain.Controls.Add(childForm);
+            pnlMain.Tag = childForm;
+            childForm.BringToFront();
+            childForm.Show();
         }
 
-        // ====================================================================
-        // 3. SỰ KIỆN CLICK CÁC MENU (GỌI FORM)
-        // ====================================================================
+        // --- CÁC SỰ KIỆN BẤM NÚT MENU ---
 
-        // --- NHÓM HỆ THỐNG ---
-        private void quảnLýTàiKhoảnToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnTongQuan_Click(object sender, EventArgs e)
         {
-            MoFormCon(new FrmQuanLyTaiKhoan());
+            OpenChildForm(new FrmTongQuan());
         }
 
-        private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnSoBao_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Đồng chí muốn đăng xuất khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            // Sử dụng tên file frmSoBao (chữ f thường) như đồng chí đã tạo
+            OpenChildForm(new FrmSoBao());
+        }
+
+        private void btnTacGia_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTacGia());
+        }
+
+        private void btnTaiKhoan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTaiKhoan());
+        }
+
+        private void btnNhapNhuanBut_Click(object sender, EventArgs e)
+        {
+            FrmNhapNhuanBut frmNhap = new FrmNhapNhuanBut();
+            frmNhap.NguoiDangNhap = this.currentUserName;
+            OpenChildForm(frmNhap);
+        }
+
+        private void btnPhieuChi_Click(object sender, EventArgs e)
+        {
+            // Truyền tên người lập phiếu để lưu vết
+            FrmPhieuChi frmChi = new FrmPhieuChi();
+            frmChi.NguoiLapPhieu = this.currentUserName;
+            OpenChildForm(frmChi);
+        }
+
+        // --- NHÓM MENU BÁO CÁO ---
+
+        private void btnBaoCao_Click(object sender, EventArgs e)
+        {
+            // Sử dụng đúng tên class baocaotonghop (không viết hoa, không dấu cách)
+            OpenChildForm(new FrmBaoCaoTongHop());
+        }
+
+        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoChiTiet());
+        }
+
+        private void btnBaoCaoCongNo_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoCongNo());
+        }
+
+        // --- ĐĂNG XUẤT ---
+        private void btnDangXuat_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Đồng chí có chắc chắn muốn đăng xuất khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Application.Restart();
+                this.Hide();
+                FormLogin login = new FormLogin();
+                login.Show();
             }
         }
 
-        private void thoátHệThốngToolStripMenuItem_Click_1(object sender, EventArgs e)
+        // Đảm bảo đóng hẳn chương trình khi tắt form chính
+        private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // Trở về trang chủ
-            MoFormCon(new FrmTongQuan());
+            Application.Exit();
         }
-
-        private void cấuHìnhĐịnhMứcThamSốToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Gọi Trợ lý AI
-            MoFormCon(new FrmTroLyAI());
-        }
-
-        // --- NHÓM QUẢN LÝ DANH MỤC ---
-        private void hồSơPhóngViênTácGiảToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmTacGia());
-        }
-
-        private void bútDanhToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmButdanh());
-        }
-
-        private void sốBáoKỳXuấtBảnToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new frmSoBao());
-        }
-
-        // --- NHÓM TÍNH VÀ CHI TRẢ NHUẬN BÚT ---
-        private void tínhNhuậnBútBàiViếtToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmNhapNhuanBut());
-        }
-
-        private void lậpPhiếuChiToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmPhieuChi());
-        }
-
-        private void chiTrảNhuậnBútToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmThanhToan());
-        }
-
-        // --- NHÓM BÁO CÁO THỐNG KÊ ---
-        private void bảngKêNhuậnBútChiTiếtToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmBaoCaoChiTiet());
-        }
-
-        private void báoCáoCôngNợPhóngViênTácGiảToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmBaoCaoCongNo());
-        }
-
-        private void tổngHợpChiTrảNhuậnBútTheoThángToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmTongHopThang());
-        }
-
-        private void báoCáoTổngHợpToànTòaSoạnToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoFormCon(new FrmBaoCaoTongHop());
-        }
-    }
-
-    // ====================================================================
-    // KHU VỰC BẢNG MÀU CHUYÊN NGHIỆP CHO MENU (LIGHT THEME)
-    // ====================================================================
-    public class LightModeColorTable : ProfessionalColorTable
-    {
-        public override Color MenuItemSelected => Color.FromArgb(232, 238, 255);
-        public override Color MenuItemBorder => Color.Transparent;
-        public override Color MenuItemPressedGradientBegin => Color.White;
-        public override Color MenuItemPressedGradientEnd => Color.White;
-        public override Color ToolStripDropDownBackground => Color.White;
     }
 }

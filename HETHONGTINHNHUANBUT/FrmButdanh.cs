@@ -102,13 +102,11 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-        // --- THAO TÁC TÌM KIẾM KHI NHẬP MÃ (CHỖ ĐỒNG CHÍ HỎI ĐÂY) ---
+        // --- THAO TÁC TÌM KIẾM KHI NHẬP MÃ ---
         private void txtMaso_TextChanged(object sender, EventArgs e)
         {
-            // Khi đồng chí gõ mã, bảng sẽ tự lọc dữ liệu
             if (dgvButDanh.DataSource is DataTable dt)
             {
-                // Lọc theo cột Maso (ép kiểu về string để dùng LIKE)
                 dt.DefaultView.RowFilter = string.Format("Convert(Maso, 'System.String') LIKE '%{0}%'", txtMaso.Text);
             }
         }
@@ -140,7 +138,6 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // Tạo Maso mới dựa trên file SQL là IDENTITY(1000,1)
                 long count = await butdanhCollection.CountDocumentsAsync(new BsonDocument());
                 string newId = (1000 + count + 1).ToString();
 
@@ -186,20 +183,30 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void btnHuy_Click(object sender, EventArgs e) => btnThem_Click(sender, e);
-
         private void dgvButDanh_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvButDanh.CurrentRow == null || e.RowIndex < 0) return;
+            if (e.RowIndex < 0) return;
 
-            var row = dgvButDanh.Rows[e.RowIndex];
-            txtMaso.Text = row.Cells["Maso"].Value?.ToString();
-            txtButDanh.Text = row.Cells["Butdanh"].Value?.ToString();
+            // Sử dụng DataBoundItem để lấy dữ liệu ngầm từ DataTable, tránh lỗi sai tên cột UI
+            if (dgvButDanh.Rows[e.RowIndex].DataBoundItem is DataRowView rowView)
+            {
+                txtMaso.Text = rowView["Maso"]?.ToString() ?? "";
+                txtButDanh.Text = rowView["Butdanh"]?.ToString() ?? "";
 
-            // Khóa mã lại không cho sửa khi đang xem thông tin cũ
-            txtMaso.ReadOnly = true;
+                // Khóa mã lại không cho sửa khi đang xem thông tin cũ
+                txtMaso.ReadOnly = true;
 
-            string msTG = row.Cells["MsTacgia"].Value?.ToString();
-            if (!string.IsNullOrEmpty(msTG)) cboTacGia.SelectedValue = msTG;
+                string msTG = rowView["MsTacgia"]?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(msTG)) cboTacGia.SelectedValue = msTG;
+            }
+            else
+            {
+                // Backup dự phòng nếu DataGridView không được bind qua DataTable
+                var row = dgvButDanh.Rows[e.RowIndex];
+                txtMaso.Text = row.Cells[0].Value?.ToString() ?? "";
+                txtButDanh.Text = row.Cells[1].Value?.ToString() ?? "";
+                txtMaso.ReadOnly = true;
+            }
         }
     }
 }

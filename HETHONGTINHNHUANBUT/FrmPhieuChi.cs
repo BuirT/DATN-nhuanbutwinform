@@ -1,225 +1,148 @@
-﻿using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmPhieuChi : Form
     {
-        bool isAddNew = false;
-        string taiKhoanDangNhap = "ADMIN";
+        private readonly IMongoCollection<NhuanBut> _nhuanButColl;
+        private readonly IMongoCollection<TacGia> _tacGiaColl;
+        private readonly IMongoCollection<PhieuChi> _phieuChiColl;
 
-        // Khởi tạo Collection MongoDB
-        private IMongoCollection<PhieuChi> phieuChiColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
+        public string NguoiLapPhieu { get; set; } // Lấy từ Form chính
 
         public FrmPhieuChi()
         {
             InitializeComponent();
+            _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
+            _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
+            _phieuChiColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
         }
 
-        private void FrmPhieuChi_Load(object sender, EventArgs e)
+        private async void FrmPhieuChi_Load(object sender, EventArgs e)
         {
-            LoadData();
-            btnLuu.Enabled = false;
-
-            // Thiết lập font chữ cho bảng
-            dgvPhieuChi.DefaultCellStyle.Font = new Font("VNI-Times", 10.2F);
-
-            // Ghi nhật ký qua MongoDB
-            MongoProvider.Instance.GhiNhatKy(taiKhoanDangNhap, "Truy cập màn hình Quản lý Phiếu Chi trên Cloud");
+            await LoadAuthorsAsync();
+            cboHinhThuc.SelectedIndex = 0;
+            txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
         }
 
-        void LoadData()
+        private async Task LoadAuthorsAsync()
         {
-            try
+            var authors = await _tacGiaColl.Find(_ => true).ToListAsync();
+            cboTacGia.DataSource = authors;
+            cboTacGia.DisplayMember = "Hoten";
+            cboTacGia.ValueMember = "Ddong"; // Bút danh dùng làm định danh liên kết
+        }
+
+        // Tải danh sách bài viết CHƯA THANH TOÁN của tác giả được chọn
+        private async void cboTacGia_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboTacGia.SelectedValue == null) return;
+            string penName = cboTacGia.SelectedValue.ToString();
+
+            // Tìm các bài có Bút danh này và DaThanhToan == false
+            var list = await _nhuanButColl.Find(n => n.ButDanh == penName && n.DaThanhToan == false).ToListAsync();
+
+            dgvChuaThanhToan.DataSource = list.Select(n => new {
+                n.Id,
+                n.TenSoBao,
+                n.TenBai,
+                n.TienNhuanBut
+            }).ToList();
+
+            if (dgvChuaThanhToan.Columns["Id"] != null) dgvChuaThanhToan.Columns["Id"].Visible = false;
+            TinhToanTien();
+        }
+
+        // Logic tính tiền khi người dùng tích chọn Checkbox
+        private void TinhToanTien()
+        {
+            decimal tong = 0;
+            foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
             {
-                var list = phieuChiColl.Find(_ => true).SortByDescending(x => x.Ngaylap).ToList();
-                dgvPhieuChi.DataSource = list;
-
-                if (dgvPhieuChi.Columns["Id"] != null) dgvPhieuChi.Columns["Id"].Visible = false;
-
-                // Đổi tên cột hiển thị cho đẹp
-                if (dgvPhieuChi.Columns["Sophieu"] != null) dgvPhieuChi.Columns["Sophieu"].HeaderText = "Số Phiếu";
-                if (dgvPhieuChi.Columns["Nguoinhan"] != null) dgvPhieuChi.Columns["Nguoinhan"].HeaderText = "Người Nhận";
-            }
-            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu từ Cloud: " + ex.Message); }
-        }
-
-        private decimal TinhThueTNCN(decimal tongTien, decimal thueSuat)
-        {
-            if (tongTien >= 2000000) return tongTien * (thueSuat / 100);
-            return 0;
-        }
-
-        private void TinhTien_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(txtSoTien.Text)) return;
-                decimal soTien = Convert.ToDecimal(txtSoTien.Text);
-                decimal thueSuat = string.IsNullOrEmpty(txtThueSuat.Text) ? 0 : Convert.ToDecimal(txtThueSuat.Text);
-                decimal tienThue = TinhThueTNCN(soTien, thueSuat);
-                decimal conLai = soTien - tienThue;
-                txtThue.Text = Math.Round(tienThue, 0).ToString();
-                txtConLai.Text = Math.Round(conLai, 0).ToString();
-            }
-            catch { }
-        }
-
-        #region Xử lý Email
-        private async Task<bool> GuiEmailAmTham(string emailNhan, string tenTacGia, string soPhieu, string soTien)
-        {
-            try
-            {
-                string emailGui = "duynguyen31052004@gmail.com";
-                string matKhauUngDung = "lpqquubafroscazr";
-                string tieuDe = $"[Tòa Soạn] Thông báo chi trả nhuận bút - Phiếu {soPhieu}";
-                string noiDungHTML = $@"<div style='font-family: Arial; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
-                        <h2 style='color: #A26EFF;'>BIÊN LAI ĐIỆN TỬ</h2>
-                        <p>Kính chào đồng chí <b>{tenTacGia}</b>, Toà soạn đã chi trả <b>{soTien} VNĐ</b> (Phiếu: {soPhieu}).</p></div>";
-
-                MailMessage message = new MailMessage(emailGui, emailNhan, tieuDe, noiDungHTML) { IsBodyHtml = true };
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587) { EnableSsl = true, Credentials = new NetworkCredential(emailGui, matKhauUngDung) })
+                bool isChecked = Convert.ToBoolean(row.Cells["colCheck"].Value);
+                if (isChecked)
                 {
-                    await smtp.SendMailAsync(message);
+                    // Giả sử cột TienNhuanBut ở vị trí 4 (sau Id, TenSoBao, TenBai)
+                    decimal tien = Convert.ToDecimal(row.Cells["TienNhuanBut"].Value);
+                    tong += tien;
                 }
-                return true;
             }
-            catch { return false; }
-        }
 
-        // Fix lỗi thiếu định nghĩa btnGuiEmail_Click trong Designer
-        private async void btnGuiEmail_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtSoPhieu.Text)) return;
-            this.Text = "Đang gửi Email...";
-            bool ok = await GuiEmailAmTham("duynguyen31052004@gmail.com", txtNguoiNhan.Text, txtSoPhieu.Text, txtConLai.Text);
-            this.Text = "Lập Phiếu Chi Nhuận Bút";
+            txtTongTien.Text = tong.ToString("N0");
 
-            if (ok) MessageBox.Show("Đã gửi biên lai cho tác giả!");
-            else MessageBox.Show("Gửi Email thất bại!");
-        }
-
-        private async void btnGuiHangLoat_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Gửi Email hàng loạt?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.No) return;
-
-            int thanhCong = 0;
-            btnGuiHangLoat.Enabled = false;
-
-            foreach (DataGridViewRow row in dgvPhieuChi.Rows)
+            if (decimal.TryParse(txtThue.Text, out decimal thuePhanTram))
             {
-                if (row.IsNewRow) continue;
-                string soPhieu = row.Cells["Sophieu"].Value?.ToString() ?? "";
-                string tenTG = row.Cells["Nguoinhan"].Value?.ToString() ?? "";
-                string tien = row.Cells["Conlai"].Value?.ToString() ?? "0";
+                decimal thueVnd = tong * (thuePhanTram / 100);
+                decimal thucLinh = tong - thueVnd;
+                txtThucLinh.Text = thucLinh.ToString("N0");
+            }
+        }
 
-                if (await GuiEmailAmTham("duynguyen31052004@gmail.com", tenTG, soPhieu, tien)) thanhCong++;
+        private async void btnLapPhieu_Click(object sender, EventArgs e)
+        {
+            List<string> selectedIds = new List<string>();
+            foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colCheck"].Value))
+                {
+                    selectedIds.Add(row.Cells["Id"].Value.ToString());
+                }
             }
 
-            btnGuiHangLoat.Enabled = true;
-            MongoProvider.Instance.GhiNhatKy(taiKhoanDangNhap, $"Gửi thành công {thanhCong} email hàng loạt");
-            MessageBox.Show($"Hoàn tất gửi {thanhCong} email!");
-        }
-        #endregion
-
-        private void btnThem_Click(object sender, EventArgs e)
-        {
-            isAddNew = true;
-            btnLuu.Enabled = true;
-            txtSoPhieu.Text = "PC" + DateTime.Now.ToString("yyMMddHHmm");
-            txtNguoiNhan.Clear(); txtSoTien.Clear(); txtThue.Clear(); txtConLai.Clear();
-            txtNguoiNhan.Focus();
-        }
-
-        private void btnSua_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtSoPhieu.Text)) return;
-            isAddNew = false;
-            btnLuu.Enabled = true;
-            txtSoPhieu.ReadOnly = true;
-        }
-
-        private void btnLuu_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtSoPhieu.Text)) return;
+            if (selectedIds.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn ít nhất một bài viết để thanh toán!");
+                return;
+            }
 
             try
             {
-                PhieuChi pc = new PhieuChi()
+                // 1. Lưu phiếu chi mới
+                var phieu = new PhieuChi
                 {
-                    Sophieu = txtSoPhieu.Text,
-                    Ngaylap = dtpNgayLap.Value,
-                    Nguoinhan = txtNguoiNhan.Text,
-                    Lydo = txtLyDo.Text,
-                    Sotien = Convert.ToDecimal(txtSoTien.Text),
-                    Thuesuat = (float)Convert.ToDecimal(txtThueSuat.Text),
-                    Thue = Convert.ToDecimal(txtThue.Text),
-                    Conlai = Convert.ToDecimal(txtConLai.Text),
-                    addby = taiKhoanDangNhap
+                    SoPhieu = txtSoPhieu.Text,
+                    TenTacGia = cboTacGia.Text,
+                    TongTien = decimal.Parse(txtTongTien.Text),
+                    Thue = decimal.Parse(txtThue.Text),
+                    ThucLinh = decimal.Parse(txtThucLinh.Text),
+                    HinhThuc = cboHinhThuc.Text,
+                    NguoiLap = this.NguoiLapPhieu,
+                    DanhSachBaiViet = selectedIds
                 };
+                await _phieuChiColl.InsertOneAsync(phieu);
 
-                if (isAddNew)
-                {
-                    phieuChiColl.InsertOne(pc);
-                    MongoProvider.Instance.GhiNhatKy(taiKhoanDangNhap, $"Thêm mới phiếu {pc.Sophieu}");
-                }
-                else
-                {
-                    var filter = Builders<PhieuChi>.Filter.Eq(x => x.Sophieu, pc.Sophieu);
-                    var update = Builders<PhieuChi>.Update
-                        .Set(x => x.Ngaylap, pc.Ngaylap)
-                        .Set(x => x.Nguoinhan, pc.Nguoinhan)
-                        .Set(x => x.Lydo, pc.Lydo)
-                        .Set(x => x.Sotien, pc.Sotien)
-                        .Set(x => x.Thue, pc.Thue)
-                        .Set(x => x.Conlai, pc.Conlai);
-                    phieuChiColl.UpdateOne(filter, update);
-                    MongoProvider.Instance.GhiNhatKy(taiKhoanDangNhap, $"Sửa phiếu {pc.Sophieu}");
-                }
-                LoadData();
-                btnHuy_Click(sender, e);
-                MessageBox.Show("Đã lưu dữ liệu lên Cloud!");
+                // 2. Cập nhật trạng thái "Đã thanh toán" cho các bài viết được chọn
+                var filter = Builders<NhuanBut>.Filter.In(n => n.Id, selectedIds);
+                var update = Builders<NhuanBut>.Update
+                    .Set(n => n.DaThanhToan, true)
+                    .Set(n => n.MaPhieuChi, phieu.SoPhieu);
+
+                await _nhuanButColl.UpdateManyAsync(filter, update);
+
+                MessageBox.Show("Lập phiếu chi thành công!");
+                cboTacGia_SelectedIndexChanged(null, null); // Refresh Grid
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
-        private void btnXoa_Click(object sender, EventArgs e)
+        // Các sự kiện hỗ trợ cập nhật tiền thời gian thực
+        private void dgvChuaThanhToan_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (string.IsNullOrEmpty(txtSoPhieu.Text)) return;
-            if (MessageBox.Show("Xóa phiếu này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                phieuChiColl.DeleteOne(x => x.Sophieu == txtSoPhieu.Text);
-                LoadData();
-                btnHuy_Click(sender, e);
-            }
+            if (e.ColumnIndex == 0) TinhToanTien();
         }
 
-        private void btnHuy_Click(object sender, EventArgs e)
+        private void dgvChuaThanhToan_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            txtSoPhieu.Clear(); txtNguoiNhan.Clear(); txtSoTien.Clear();
-            txtThue.Clear(); txtConLai.Clear();
-            btnLuu.Enabled = false; txtSoPhieu.ReadOnly = false;
+            if (dgvChuaThanhToan.IsCurrentCellDirty) dgvChuaThanhToan.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void dgvPhieuChi_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-            var row = dgvPhieuChi.Rows[e.RowIndex];
-            txtSoPhieu.Text = row.Cells["Sophieu"].Value?.ToString();
-            txtNguoiNhan.Text = row.Cells["Nguoinhan"].Value?.ToString();
-            txtLyDo.Text = row.Cells["Lydo"].Value?.ToString();
-            // Đổ các trường còn lại tương tự...
-            btnLuu.Enabled = false;
-        }
+        private void txtThue_TextChanged(object sender, EventArgs e) => TinhToanTien();
     }
 }

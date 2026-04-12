@@ -1,7 +1,11 @@
 ﻿using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
@@ -9,40 +13,50 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmThanhToan : Form
     {
         bool isAddNew = false;
+        private readonly IMongoCollection<ThanhToan> _thanhToanColl;
 
         public FrmThanhToan()
         {
             InitializeComponent();
+            _thanhToanColl = MongoProvider.Instance.GetCollection<ThanhToan>("ThanhToan");
         }
 
-        private void FrmThanhToan_Load(object sender, EventArgs e)
+        private async void FrmThanhToan_Load(object sender, EventArgs e)
         {
             cboLoaiBao.Items.AddRange(new string[] { "NG", "KH" });
             cboVung.Items.AddRange(new string[] { "HCM", "HN", "DN" });
             cboLoaiTT.Items.AddRange(new string[] { "CT", "LE" });
             cboHinhThuc.Items.AddRange(new string[] { "TM", "CK" });
 
-            LoadData();
             btnLuu.Enabled = false;
 
             // Nếu đồng chí chưa tạo nút btnDuyet trên giao diện thì tạm comment dòng dưới lại nhé
             btnDuyet.Enabled = false;
 
-            // Fix Font VNI
+            // Fix Font VNI theo đúng ý đồng chí
             Font vniFont = new Font("VNI-Times", 10.2F);
             dgvThanhToan.DefaultCellStyle.Font = vniFont;
             dgvThanhToan.RowsDefaultCellStyle.Font = vniFont;
             dgvThanhToan.AlternatingRowsDefaultCellStyle.Font = vniFont;
             dgvThanhToan.ThemeStyle.RowsStyle.Font = vniFont;
             dgvThanhToan.ThemeStyle.AlternatingRowsStyle.Font = vniFont;
+
+            await LoadDataAsync();
         }
 
-        void LoadData()
+        private async Task LoadDataAsync()
         {
             try
             {
-                string sql = "SELECT Maso, Tengoi, Ngay, Tungay, Denngay, Loaibao, Sotien, Vung, LoaiTT, Khoaso, hinhthucTT FROM ThanhToan ORDER BY Maso DESC";
-                dgvThanhToan.DataSource = MongoProvider.Instance.ExecuteQuery(sql);
+                // Lấy dữ liệu và sắp xếp theo Mã số giảm dần
+                var list = await _thanhToanColl.Find(_ => true).SortByDescending(t => t.Maso).ToListAsync();
+                dgvThanhToan.DataSource = list;
+
+                // Ẩn cột Id của MongoDB đi cho đẹp lưới
+                if (dgvThanhToan.Columns["Id"] != null)
+                {
+                    dgvThanhToan.Columns["Id"].Visible = false;
+                }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
         }
@@ -76,7 +90,7 @@ namespace HETHONGTINHNHUANBUT
             btnLuu.Enabled = true;
         }
 
-        private void btnLuu_Click(object sender, EventArgs e)
+        private async void btnLuu_Click(object sender, EventArgs e)
         {
             try
             {
@@ -84,47 +98,65 @@ namespace HETHONGTINHNHUANBUT
 
                 if (isAddNew)
                 {
-                    string query = @"
-                        DECLARE @newID INT;
-                        SELECT @newID = ISNULL(MAX(Maso), 1000) + 1 FROM ThanhToan;
-                        INSERT INTO ThanhToan (Maso, Tengoi, Ngay, Tungay, Denngay, Loaibao, Sotien, Vung, LoaiTT, Khoaso, hinhthucTT) 
-                        VALUES (@newID, @ten, @ngay, @tu, @den, @loaibao, @tien, @vung, @loaitt, 'N', @hinhthuc)";
+                    // Tìm Mã số lớn nhất hiện tại để tự động tăng (thay thế cho SELECT MAX trong SQL)
+                    var maxDoc = await _thanhToanColl.Find(_ => true).SortByDescending(t => t.Maso).FirstOrDefaultAsync();
+                    int newMaso = (maxDoc != null) ? maxDoc.Maso + 1 : 1001; // Bắt đầu từ 1001 nếu chưa có gì
 
-                    object[] para = new object[] {
-                        txtTenGoi.Text, dtpNgay.Value, dtpTuNgay.Value, dtpDenNgay.Value,
-                        cboLoaiBao.Text, sotien, cboVung.Text, cboLoaiTT.Text, cboHinhThuc.Text
+                    var ttMoi = new ThanhToan
+                    {
+                        Maso = newMaso,
+                        Tengoi = txtTenGoi.Text.Trim(),
+                        Ngay = dtpNgay.Value,
+                        Tungay = dtpTuNgay.Value,
+                        Denngay = dtpDenNgay.Value,
+                        Loaibao = cboLoaiBao.Text,
+                        Sotien = sotien,
+                        Vung = cboVung.Text,
+                        LoaiTT = cboLoaiTT.Text,
+                        Khoaso = "N", // Mặc định là chưa khóa
+                        hinhthucTT = cboHinhThuc.Text
                     };
-                    MongoProvider.Instance.ExecuteNonQuery(query, para);
+
+                    await _thanhToanColl.InsertOneAsync(ttMoi);
                     MessageBox.Show("Khởi tạo đợt chi trả thành công!", "Thông báo");
                 }
                 else
                 {
-                    string query = @"UPDATE ThanhToan SET Tengoi=@ten, Ngay=@ngay, Tungay=@tu, Denngay=@den, 
-                                     Loaibao=@loaibao, Sotien=@tien, Vung=@vung, LoaiTT=@loaitt, hinhthucTT=@hinhthuc 
-                                     WHERE Maso=@maso";
-                    object[] para = new object[] {
-                        txtTenGoi.Text, dtpNgay.Value, dtpTuNgay.Value, dtpDenNgay.Value,
-                        cboLoaiBao.Text, sotien, cboVung.Text, cboLoaiTT.Text, cboHinhThuc.Text, Convert.ToInt32(txtMaso.Text)
-                    };
-                    MongoProvider.Instance.ExecuteNonQuery(query, para);
+                    // Cập nhật dữ liệu
+                    int maSo = Convert.ToInt32(txtMaso.Text);
+                    var filter = Builders<ThanhToan>.Filter.Eq(t => t.Maso, maSo);
+
+                    var updateDef = Builders<ThanhToan>.Update
+                        .Set(t => t.Tengoi, txtTenGoi.Text.Trim())
+                        .Set(t => t.Ngay, dtpNgay.Value)
+                        .Set(t => t.Tungay, dtpTuNgay.Value)
+                        .Set(t => t.Denngay, dtpDenNgay.Value)
+                        .Set(t => t.Loaibao, cboLoaiBao.Text)
+                        .Set(t => t.Sotien, sotien)
+                        .Set(t => t.Vung, cboVung.Text)
+                        .Set(t => t.LoaiTT, cboLoaiTT.Text)
+                        .Set(t => t.hinhthucTT, cboHinhThuc.Text);
+
+                    await _thanhToanColl.UpdateOneAsync(filter, updateDef);
                     MessageBox.Show("Cập nhật đợt chi trả thành công!", "Thông báo");
                 }
 
-                LoadData();
+                await LoadDataAsync();
                 btnHuy_Click(sender, e);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi lưu dữ liệu: " + ex.Message, "Lỗi Database"); }
         }
 
-        private void btnXoa_Click(object sender, EventArgs e)
+        private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtMaso.Text)) return;
 
             if (MessageBox.Show("Bạn có chắc muốn xóa đợt chi trả này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                string sql = "DELETE FROM ThanhToan WHERE Maso = @maso";
-                MongoProvider.Instance.ExecuteNonQuery(sql, new object[] { Convert.ToInt32(txtMaso.Text) });
-                LoadData();
+                int maSo = Convert.ToInt32(txtMaso.Text);
+                await _thanhToanColl.DeleteOneAsync(t => t.Maso == maSo);
+
+                await LoadDataAsync();
                 btnHuy_Click(sender, e);
             }
         }
@@ -138,7 +170,6 @@ namespace HETHONGTINHNHUANBUT
             btnXoa.Enabled = true;
         }
 
-        // --- CẬP NHẬT LOGIC: KIỂM TRA TRẠNG THÁI KHOASO KHI CLICK VÀO LƯỚI ---
         private void dgvThanhToan_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvThanhToan.CurrentRow == null || e.RowIndex < 0) return;
@@ -178,8 +209,7 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // --- HÀM MỚI DÀNH CHO LÃNH ĐẠO ---
-        private void btnDuyet_Click(object sender, EventArgs e)
+        private async void btnDuyet_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtMaso.Text))
             {
@@ -195,13 +225,15 @@ namespace HETHONGTINHNHUANBUT
             {
                 try
                 {
-                    // Chuyển trường Khoaso thành 'Y'
-                    string query = "UPDATE ThanhToan SET Khoaso = 'Y' WHERE Maso = @maso";
-                    MongoProvider.Instance.ExecuteNonQuery(query, new object[] { Convert.ToInt32(txtMaso.Text) });
+                    int maSo = Convert.ToInt32(txtMaso.Text);
+                    var filter = Builders<ThanhToan>.Filter.Eq(t => t.Maso, maSo);
+                    var updateDef = Builders<ThanhToan>.Update.Set(t => t.Khoaso, "Y"); // Chốt sổ
+
+                    await _thanhToanColl.UpdateOneAsync(filter, updateDef);
 
                     MessageBox.Show("Đã Ký Duyệt thành công! Đợt chi trả đã được chốt sổ.", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    LoadData();
+                    await LoadDataAsync();
                     btnHuy_Click(sender, e); // Reset UI
                 }
                 catch (Exception ex)
