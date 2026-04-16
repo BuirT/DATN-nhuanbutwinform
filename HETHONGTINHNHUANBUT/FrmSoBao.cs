@@ -15,22 +15,15 @@ namespace HETHONGTINHNHUANBUT
         public FrmSoBao()
         {
             InitializeComponent();
-            // Lấy collection từ MongoProvider đã thiết lập
             _baoColl = MongoProvider.Instance.GetCollection<Bao>("Bao");
         }
 
         private async void FrmSoBao_Load(object sender, EventArgs e)
         {
-            // Làm đẹp cho GridView
-            dgvSoBao.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dgvSoBao.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
-
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
-
             await LoadDataAsync();
         }
 
-        // Tải dữ liệu từ MongoDB lên GridView
         private async Task LoadDataAsync()
         {
             try
@@ -46,15 +39,18 @@ namespace HETHONGTINHNHUANBUT
                     Sobo = b.Sobo,
                     Loaibao = b.Loaibao,
                     DaDuyet = b.DaDuyet == "Y" ? "Đã duyệt" : "Chưa duyệt"
-                }).OrderByDescending(x => x.Ngayra).ToList(); // Mới nhất xếp lên đầu
+                }).OrderByDescending(x => x.Ngayra).ToList();
 
                 if (dgvSoBao.Columns["Id"] != null) dgvSoBao.Columns["Id"].Visible = false;
 
-                // Đổi tên cột cho chuyên nghiệp khi chấm đồ án
                 if (dgvSoBao.Columns.Count > 0)
                 {
                     dgvSoBao.Columns["Maso"].HeaderText = "Mã Số";
+                    dgvSoBao.Columns["Maso"].Width = 80;
+
                     dgvSoBao.Columns["Tenbao"].HeaderText = "Tên Kỳ Báo";
+                    dgvSoBao.Columns["Tenbao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
                     dgvSoBao.Columns["Ngayra"].HeaderText = "Ngày Ra";
                     dgvSoBao.Columns["Sobao"].HeaderText = "Số Báo";
                     dgvSoBao.Columns["Sobo"].HeaderText = "Số Bộ";
@@ -76,7 +72,6 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
-            // Kiểm tra xem mã số nhập vào có đúng là số không để tránh crash app
             if (!int.TryParse(txtMaso.Text.Trim(), out int maSoParse))
             {
                 MessageBox.Show("Mã số phải là một số nguyên hợp lệ!", "Cảnh báo");
@@ -85,7 +80,6 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // Kiểm tra trùng mã số
                 var exist = await _baoColl.Find(b => b.Maso == maSoParse).FirstOrDefaultAsync();
                 if (exist != null)
                 {
@@ -101,7 +95,7 @@ namespace HETHONGTINHNHUANBUT
                     Sobao = txtSoBao.Text.Trim(),
                     Sobo = txtSoBo.Text.Trim(),
                     Loaibao = cboLoaiBao.Text,
-                    DaDuyet = "N" // Mặc định là chưa duyệt
+                    DaDuyet = "N"
                 };
 
                 await _baoColl.InsertOneAsync(bao);
@@ -115,12 +109,7 @@ namespace HETHONGTINHNHUANBUT
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvSoBao.CurrentRow == null) return;
-
-            if (!int.TryParse(txtMaso.Text.Trim(), out int maSoParse))
-            {
-                MessageBox.Show("Mã số phải là một số nguyên hợp lệ!", "Cảnh báo");
-                return;
-            }
+            if (!int.TryParse(txtMaso.Text.Trim(), out int maSoParse)) return;
 
             try
             {
@@ -146,7 +135,7 @@ namespace HETHONGTINHNHUANBUT
         {
             if (dgvSoBao.CurrentRow == null) return;
 
-            if (MessageBox.Show("Đồng chí có chắc chắn muốn xóa kỳ báo này không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Chắc chắn muốn xóa kỳ báo này không?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
@@ -172,7 +161,6 @@ namespace HETHONGTINHNHUANBUT
 
         private void dgvSoBao_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Tránh lỗi khi bấm vào tiêu đề cột (RowIndex = -1)
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvSoBao.Rows[e.RowIndex];
@@ -187,11 +175,6 @@ namespace HETHONGTINHNHUANBUT
                     dtpNgayRa.Value = dt;
                 }
             }
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
