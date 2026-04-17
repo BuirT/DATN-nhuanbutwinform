@@ -46,15 +46,16 @@ namespace HETHONGTINHNHUANBUT
 
                 foreach (var tg in listTacGia)
                 {
-                    // Dùng trường Ddong theo chuẩn Database mới của đồng chí
-                    if (!string.IsNullOrWhiteSpace(tg.Ddong))
+                    // ĐÃ SỬA: Dùng tg.ButDanh thay vì tg.Ddong
+                    if (!string.IsNullOrWhiteSpace(tg.ButDanh))
                     {
-                        tatCaButDanh.Add(tg.Ddong.Trim());
+                        tatCaButDanh.Add(tg.ButDanh.Trim());
                     }
-                    else if (!string.IsNullOrWhiteSpace(tg.Hoten))
+                    // ĐÃ SỬA: Dùng tg.HoTen thay vì tg.Hoten (chữ T viết hoa)
+                    else if (!string.IsNullOrWhiteSpace(tg.HoTen))
                     {
                         // Nếu không có bút danh thì lấy tạm Họ tên
-                        tatCaButDanh.Add(tg.Hoten.Trim());
+                        tatCaButDanh.Add(tg.HoTen.Trim());
                     }
                 }
 
@@ -67,7 +68,6 @@ namespace HETHONGTINHNHUANBUT
                 Console.WriteLine(ex.Message);
             }
         }
-
         // Xử lý sự kiện bấm nút XEM BÁO CÁO (TÌM KIẾM)
         private async void btnXemBaoCao_Click(object sender, EventArgs e)
         {

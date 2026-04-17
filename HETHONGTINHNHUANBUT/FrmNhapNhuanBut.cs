@@ -50,6 +50,7 @@ namespace HETHONGTINHNHUANBUT
         }
 
         // --- ĐÚNG Ý ĐỒ: Gộp thông tin Số - Tên - Ngày vào Kỳ xuất bản ---
+        // --- ĐÚNG Ý ĐỒ: Gộp thông tin Số - Tên - Ngày vào Kỳ xuất bản ---
         private async Task LoadComboboxDataAsync()
         {
             try
@@ -73,10 +74,12 @@ namespace HETHONGTINHNHUANBUT
 
                 foreach (var tg in listTacGia)
                 {
-                    if (!string.IsNullOrWhiteSpace(tg.Ddong))
-                        tatCaButDanh.Add(tg.Ddong.Trim());
-                    else if (!string.IsNullOrWhiteSpace(tg.Hoten))
-                        tatCaButDanh.Add(tg.Hoten.Trim());
+                    // ĐÃ SỬA: Đổi Ddong thành ButDanh
+                    if (!string.IsNullOrWhiteSpace(tg.ButDanh))
+                        tatCaButDanh.Add(tg.ButDanh.Trim());
+                    // ĐÃ SỬA: Đổi Hoten thành HoTen
+                    else if (!string.IsNullOrWhiteSpace(tg.HoTen))
+                        tatCaButDanh.Add(tg.HoTen.Trim());
                 }
                 cboButDanh.DataSource = tatCaButDanh.Distinct().OrderBy(x => x).ToList();
             }
