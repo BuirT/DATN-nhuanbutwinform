@@ -36,8 +36,12 @@ namespace HETHONGTINHNHUANBUT
         {
             var authors = await _tacGiaColl.Find(_ => true).ToListAsync();
             cboTacGia.DataSource = authors;
-            cboTacGia.DisplayMember = "Hoten";
-            cboTacGia.ValueMember = "Ddong"; // Bút danh dùng làm định danh liên kết
+
+            // ĐÃ SỬA: Chữ T viết hoa cho đúng Model
+            cboTacGia.DisplayMember = "HoTen";
+
+            // ĐÃ SỬA: Đổi Ddong thành ButDanh
+            cboTacGia.ValueMember = "ButDanh"; // Bút danh dùng làm định danh liên kết
         }
 
         // Tải danh sách bài viết CHƯA THANH TOÁN của tác giả được chọn

@@ -4,13 +4,14 @@ using System;
 
 namespace HETHONGTINHNHUANBUT.Models
 {
-    [BsonIgnoreExtraElements]
+    [BsonIgnoreExtraElements] // Bùa hộ mệnh chống crash khi DB có cột lạ
     public class ThanhToan
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        // GIỮ NGUYÊN TÊN BIẾN ĐỂ FORM CỦA CẬU KHÔNG BỊ LỖI
         public int Maso { get; set; }
         public string Tengoi { get; set; }
         public DateTime Ngay { get; set; }

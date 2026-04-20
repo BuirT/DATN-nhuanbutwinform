@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models;
+using HETHONGTINHNHUANBUT.Models; // Bắt buộc phải có để xài model TaiKhoan
 using MongoDB.Driver;
 using System.Linq;
 
@@ -9,19 +9,18 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FormLogin : Form
     {
-        // Sử dụng MongoProvider mà nhóm đã cấu hình sẵn
-        private readonly IMongoCollection<User> _userColl;
+        // ĐÃ SỬA: Đổi từ User sang TaiKhoan cho đồng bộ với hệ thống mới
+        private readonly IMongoCollection<TaiKhoan> _taiKhoanColl;
 
         public FormLogin()
         {
             InitializeComponent();
-            // Khởi tạo kết nối ngay khi mở form
-            _userColl = MongoProvider.Instance.GetCollection<User>("gUser");
+            // ĐÃ SỬA: Trỏ về đúng bảng "TaiKhoan" mà FrmTaiKhoan đang lưu
+            _taiKhoanColl = MongoProvider.Instance.GetCollection<TaiKhoan>("TaiKhoan");
         }
 
         private void FormLogin_Load(object sender, EventArgs e)
         {
-            // Tự động focus vào ô nhập tài khoản cho tiện
             txtUsername.Focus();
         }
 
@@ -40,8 +39,8 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // Sử dụng cú pháp Lambda trực tiếp để tìm User (nhờ Model đã map chuẩn)
-                var user = _userColl.Find(u => u.UserId == tenDangNhap).FirstOrDefault();
+                // ĐÃ SỬA: Tìm theo TenDangNhap trong bảng TaiKhoan
+                var user = _taiKhoanColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefault();
 
                 if (user == null)
                 {
@@ -49,17 +48,24 @@ namespace HETHONGTINHNHUANBUT
                     return;
                 }
 
+                // TÍNH NĂNG MỚI: Check xem tài khoản có đang bị khóa không (Checkbox HoatDong bên FrmTaiKhoan)
+                if (!user.HoatDong)
+                {
+                    MessageBox.Show("Tài khoản này đã bị khóa. Vui lòng liên hệ Admin!", "Từ chối", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    return;
+                }
+
                 string hashedInput = HashHelper.ComputeSha256(matKhau);
                 bool loginSuccess = false;
 
-                // Kiểm tra mật khẩu (Hỗ trợ cả pass cũ và pass đã hash)
-                if (HashHelper.IsSha256Hash(user.Password))
+                // Kiểm tra mật khẩu (hỗ trợ cả pass chưa hash và pass đã hash)
+                if (HashHelper.IsSha256Hash(user.MatKhau))
                 {
-                    loginSuccess = string.Equals(user.Password, hashedInput, StringComparison.OrdinalIgnoreCase);
+                    loginSuccess = string.Equals(user.MatKhau, hashedInput, StringComparison.OrdinalIgnoreCase);
                 }
                 else
                 {
-                    loginSuccess = (user.Password == matKhau);
+                    loginSuccess = (user.MatKhau == matKhau);
                 }
 
                 if (loginSuccess)
@@ -67,14 +73,12 @@ namespace HETHONGTINHNHUANBUT
                     this.Hide();
                     FrmTrangChinh frm = new FrmTrangChinh();
 
-                    // Xử lý chuỗi an toàn, phòng trường hợp null
-                    frm.currentUserName = !string.IsNullOrEmpty(user.FullName) ? user.FullName : user.UserId;
-                    frm.currentPrivilege = user.Privilege;
+                    // ĐÃ SỬA: Map dữ liệu theo biến mới HoTen và Quyen của model TaiKhoan
+                    frm.currentUserName = !string.IsNullOrEmpty(user.HoTen) ? user.HoTen : user.TenDangNhap;
+                    frm.currentPrivilege = user.Quyen;
 
-                    // Ghi nhật ký hệ thống
                     MongoProvider.Instance.GhiNhatKy(tenDangNhap, "Đăng nhập hệ thống thành công");
 
-                    // Rất quan trọng: Khi tắt Form chính thì phải tắt luôn toàn bộ Application
                     frm.FormClosed += (s, args) => this.Close();
                     frm.Show();
                 }
