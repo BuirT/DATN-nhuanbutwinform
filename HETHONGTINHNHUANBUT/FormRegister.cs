@@ -19,17 +19,15 @@ namespace HETHONGTINHNHUANBUT
             _taiKhoanColl = MongoProvider.Instance.GetCollection<TaiKhoan>("TaiKhoan");
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void FormRegister_Load(object sender, EventArgs e)
         {
-        }
+            // Thêm các quyền cho phép đăng ký (KHÔNG CÓ ADMIN nhé đồng chí)
+            cboRole.Items.Add("Phóng viên");
+            cboRole.Items.Add("Biên tập viên");
+            cboRole.Items.Add("Kế toán");
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            ShowLoginAndClose();
+            // Đặt mặc định là Biên tập viên cho tiện
+            cboRole.SelectedIndex = 1;
         }
 
         private void btnExit_Click_1(object sender, EventArgs e)
@@ -43,35 +41,41 @@ namespace HETHONGTINHNHUANBUT
             string userId = textBox1.Text.Trim();
             string password = textBox2.Text;
             string confirm = textBox3.Text;
+            string selectedRole = cboRole.Text;
 
             if (string.IsNullOrEmpty(userId))
             {
-                MessageBox.Show("Vui lòng nhập tên đăng nhập.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng nhập tên đăng nhập.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Vui lòng nhập mật khẩu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng nhập mật khẩu.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (password != confirm)
             {
-                MessageBox.Show("Mật khẩu và xác nhận mật khẩu không khớp.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Mật khẩu và xác nhận mật khẩu không khớp.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (string.IsNullOrEmpty(selectedRole))
+            {
+                MessageBox.Show("Vui lòng chọn loại tài khoản.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
-                // 1. Kiểm tra user đã tồn tại trong MongoDB chưa (Thay thế cho SELECT COUNT cũ)
+                // 1. Kiểm tra user đã tồn tại trong MongoDB chưa
                 var existUser = await _taiKhoanColl.Find(t => t.TenDangNhap == userId).FirstOrDefaultAsync();
 
                 if (existUser != null)
                 {
-                    MessageBox.Show("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Tên đăng nhập đã tồn tại. Đồng chí vui lòng chọn tên khác nhé.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // 2. Xử lý mã hóa mật khẩu (Anh vẫn giữ HashHelper của đồng chí nhé)
+                // 2. Xử lý mã hóa mật khẩu
                 string hashedPassword = password;
                 try
                 {
@@ -83,20 +87,20 @@ namespace HETHONGTINHNHUANBUT
                     hashedPassword = password;
                 }
 
-                // 3. Tạo Object Tài Khoản mới (Thay thế cho lệnh INSERT INTO cũ)
+                // 3. Tạo Object Tài Khoản mới (gán quyền từ ComboBox)
                 var tkMoi = new TaiKhoan
                 {
                     TenDangNhap = userId,
                     MatKhau = hashedPassword,
                     HoTen = userId, // Tạm lấy tên đăng nhập làm họ tên
-                    Quyen = "Biên tập viên", // Cấp quyền cơ bản mặc định
+                    Quyen = selectedRole, // Cấp quyền người dùng chọn
                     HoatDong = true
                 };
 
                 // 4. Lưu xuống Database
                 await _taiKhoanColl.InsertOneAsync(tkMoi);
 
-                MessageBox.Show("Đăng ký thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đăng ký thành công tài khoản {selectedRole}!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ShowLoginAndClose();
             }
             catch (Exception ex)

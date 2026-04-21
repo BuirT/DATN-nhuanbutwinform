@@ -1,4 +1,7 @@
-﻿namespace HETHONGTINHNHUANBUT
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace HETHONGTINHNHUANBUT
 {
     partial class FormRegister
     {
@@ -27,6 +30,8 @@
             this.btnregister = new Guna.UI2.WinForms.Guna2Button();
             this.btnExit = new Guna.UI2.WinForms.Guna2Button();
             this.panelOverlay = new System.Windows.Forms.Panel();
+            this.lblRole = new System.Windows.Forms.Label();
+            this.cboRole = new Guna.UI2.WinForms.Guna2ComboBox();
             this.panelOverlay.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -40,10 +45,8 @@
             this.textBox1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.textBox1.Name = "textBox1";
             this.textBox1.PlaceholderText = "Nhập tên đăng nhập";
-            this.textBox1.SelectedText = "";
             this.textBox1.Size = new System.Drawing.Size(280, 40);
             this.textBox1.TabIndex = 1;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
@@ -56,7 +59,6 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.PasswordChar = '*';
             this.textBox2.PlaceholderText = "Nhập mật khẩu";
-            this.textBox2.SelectedText = "";
             this.textBox2.Size = new System.Drawing.Size(280, 40);
             this.textBox2.TabIndex = 2;
             // 
@@ -71,7 +73,6 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.PasswordChar = '*';
             this.textBox3.PlaceholderText = "Nhập lại mật khẩu";
-            this.textBox3.SelectedText = "";
             this.textBox3.Size = new System.Drawing.Size(280, 40);
             this.textBox3.TabIndex = 3;
             // 
@@ -108,8 +109,34 @@
             this.txtpasswordagain.Name = "txtpasswordagain";
             this.txtpasswordagain.Size = new System.Drawing.Size(150, 40);
             this.txtpasswordagain.TabIndex = 3;
-            this.txtpasswordagain.Text = "Nhập lại mật khẩu:";
+            this.txtpasswordagain.Text = "Nhập lại MK:";
             this.txtpasswordagain.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblRole
+            // 
+            this.lblRole.BackColor = System.Drawing.Color.Transparent;
+            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblRole.ForeColor = System.Drawing.Color.Black;
+            this.lblRole.Location = new System.Drawing.Point(30, 260);
+            this.lblRole.Name = "lblRole";
+            this.lblRole.Size = new System.Drawing.Size(150, 40);
+            this.lblRole.TabIndex = 6;
+            this.lblRole.Text = "Loại tài khoản:";
+            this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cboRole
+            // 
+            this.cboRole.BackColor = System.Drawing.Color.Transparent;
+            this.cboRole.BorderRadius = 8;
+            this.cboRole.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboRole.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cboRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cboRole.ItemHeight = 34;
+            this.cboRole.Location = new System.Drawing.Point(190, 260);
+            this.cboRole.Name = "cboRole";
+            this.cboRole.Size = new System.Drawing.Size(280, 40);
+            this.cboRole.TabIndex = 7;
             // 
             // label1
             // 
@@ -130,7 +157,7 @@
             this.btnregister.FillColor = System.Drawing.Color.ForestGreen;
             this.btnregister.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnregister.ForeColor = System.Drawing.Color.White;
-            this.btnregister.Location = new System.Drawing.Point(270, 270);
+            this.btnregister.Location = new System.Drawing.Point(270, 330);
             this.btnregister.Name = "btnregister";
             this.btnregister.Size = new System.Drawing.Size(140, 45);
             this.btnregister.TabIndex = 4;
@@ -143,7 +170,7 @@
             this.btnExit.FillColor = System.Drawing.Color.Red;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnExit.ForeColor = System.Drawing.Color.White;
-            this.btnExit.Location = new System.Drawing.Point(90, 270);
+            this.btnExit.Location = new System.Drawing.Point(90, 330);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(140, 45);
             this.btnExit.TabIndex = 5;
@@ -153,6 +180,8 @@
             // panelOverlay
             // 
             this.panelOverlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.panelOverlay.Controls.Add(this.cboRole);
+            this.panelOverlay.Controls.Add(this.lblRole);
             this.panelOverlay.Controls.Add(this.label1);
             this.panelOverlay.Controls.Add(this.txtUsername);
             this.panelOverlay.Controls.Add(this.txtPassword);
@@ -162,21 +191,22 @@
             this.panelOverlay.Controls.Add(this.textBox3);
             this.panelOverlay.Controls.Add(this.btnregister);
             this.panelOverlay.Controls.Add(this.btnExit);
-            this.panelOverlay.Location = new System.Drawing.Point(150, 70);
+            this.panelOverlay.Location = new System.Drawing.Point(150, 50);
             this.panelOverlay.Name = "panelOverlay";
-            this.panelOverlay.Size = new System.Drawing.Size(521, 360);
+            this.panelOverlay.Size = new System.Drawing.Size(521, 410);
             this.panelOverlay.TabIndex = 0;
             // 
             // FormRegister
             // 
             this.BackgroundImage = global::HETHONGTINHNHUANBUT.Properties.Resources.bao_2_185727174524549;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(800, 500);
+            this.ClientSize = new System.Drawing.Size(800, 540);
             this.Controls.Add(this.panelOverlay);
             this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormRegister";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Load += new System.EventHandler(this.FormRegister_Load);
             this.panelOverlay.ResumeLayout(false);
             this.panelOverlay.PerformLayout();
             this.ResumeLayout(false);
@@ -185,13 +215,14 @@
 
         #endregion
 
-        // Khai báo các control - giữ nguyên tên cũ
         private Guna.UI2.WinForms.Guna2TextBox textBox1;
         private Guna.UI2.WinForms.Guna2TextBox textBox2;
         private Guna.UI2.WinForms.Guna2TextBox textBox3;
         private System.Windows.Forms.Label txtUsername;
         private System.Windows.Forms.Label txtPassword;
         private System.Windows.Forms.Label txtpasswordagain;
+        private System.Windows.Forms.Label lblRole;
+        private Guna.UI2.WinForms.Guna2ComboBox cboRole;
         private System.Windows.Forms.Label label1;
         private Guna.UI2.WinForms.Guna2Button btnregister;
         private Guna.UI2.WinForms.Guna2Button btnExit;
