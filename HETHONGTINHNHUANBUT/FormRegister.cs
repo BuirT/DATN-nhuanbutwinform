@@ -11,12 +11,12 @@ namespace HETHONGTINHNHUANBUT
     public partial class FormRegister : Form
     {
         // Khai báo kết nối đến bảng TaiKhoan
-        private readonly IMongoCollection<TaiKhoan> _taiKhoanColl;
+        private readonly IMongoCollection<User> _UserColl;
 
         public FormRegister()
         {
             InitializeComponent();
-            _taiKhoanColl = MongoProvider.Instance.GetCollection<TaiKhoan>("TaiKhoan");
+            _UserColl = MongoProvider.Instance.GetCollection<User>("User");
         }
 
         private void FormRegister_Load(object sender, EventArgs e)
@@ -67,7 +67,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 // 1. Kiểm tra user đã tồn tại trong MongoDB chưa
-                var existUser = await _taiKhoanColl.Find(t => t.TenDangNhap == userId).FirstOrDefaultAsync();
+                var existUser = await _UserColl.Find(t => t.TenDangNhap == userId).FirstOrDefaultAsync();
 
                 if (existUser != null)
                 {
@@ -88,7 +88,7 @@ namespace HETHONGTINHNHUANBUT
                 }
 
                 // 3. Tạo Object Tài Khoản mới (gán quyền từ ComboBox)
-                var tkMoi = new TaiKhoan
+                var tkMoi = new User
                 {
                     TenDangNhap = userId,
                     MatKhau = hashedPassword,
@@ -98,7 +98,7 @@ namespace HETHONGTINHNHUANBUT
                 };
 
                 // 4. Lưu xuống Database
-                await _taiKhoanColl.InsertOneAsync(tkMoi);
+                await _UserColl.InsertOneAsync(tkMoi);
 
                 MessageBox.Show($"Đăng ký thành công tài khoản {selectedRole}!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ShowLoginAndClose();

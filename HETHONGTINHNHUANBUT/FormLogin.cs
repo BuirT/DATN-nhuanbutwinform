@@ -10,13 +10,13 @@ namespace HETHONGTINHNHUANBUT
     public partial class FormLogin : Form
     {
         // ĐÃ SỬA: Đổi từ User sang TaiKhoan cho đồng bộ với hệ thống mới
-        private readonly IMongoCollection<TaiKhoan> _taiKhoanColl;
+        private readonly IMongoCollection<User> _UserColl;
 
         public FormLogin()
         {
             InitializeComponent();
             // ĐÃ SỬA: Trỏ về đúng bảng "TaiKhoan" mà FrmTaiKhoan đang lưu
-            _taiKhoanColl = MongoProvider.Instance.GetCollection<TaiKhoan>("TaiKhoan");
+            _UserColl = MongoProvider.Instance.GetCollection<User>("User");
         }
 
         private void FormLogin_Load(object sender, EventArgs e)
@@ -40,7 +40,7 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 // ĐÃ SỬA: Tìm theo TenDangNhap trong bảng TaiKhoan
-                var user = _taiKhoanColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefault();
+                var user = _UserColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefault();
 
                 if (user == null)
                 {

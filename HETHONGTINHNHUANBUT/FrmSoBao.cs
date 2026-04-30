@@ -11,33 +11,29 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmSoBao : Form
     {
         private readonly IMongoCollection<Bao> _baoColl;
-        private string _tenNguoiDung; // Biến lưu tên user đăng nhập
+        private string _tenNguoiDung;
 
-        // CHÚ Ý: Đã sửa hàm khởi tạo để nhận tham số tenNguoiDung
         public FrmSoBao(string tenNguoiDung = "Admin")
         {
             InitializeComponent();
-            _tenNguoiDung = tenNguoiDung; // Lưu lại tên được truyền vào
+            _tenNguoiDung = tenNguoiDung;
             _baoColl = MongoProvider.Instance.GetCollection<Bao>("Bao");
         }
 
         private async void FrmSoBao_Load(object sender, EventArgs e)
         {
-            // Hiển thị lời chào kèm tên
             lblXinChao.Text = $"Xin chào, {_tenNguoiDung} 👋";
 
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
             await LoadDataAsync();
         }
 
-        // HÀM TẢI DỮ LIỆU KÈM TÌM KIẾM
         private async Task LoadDataAsync(string keyword = "")
         {
             try
             {
                 var list = await _baoColl.Find(_ => true).ToListAsync();
 
-                // Lọc nếu có từ khóa
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
                     keyword = keyword.ToLower().Trim();
@@ -81,7 +77,6 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // SỰ KIỆN TÌM KIẾM THEO THỜI GIAN THỰC
         private async void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             await LoadDataAsync(txtTimKiem.Text);
@@ -180,7 +175,6 @@ namespace HETHONGTINHNHUANBUT
             dtpNgayRa.Value = DateTime.Now;
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
 
-            // Xóa luôn ô tìm kiếm để reset bảng
             if (txtTimKiem != null) txtTimKiem.Clear();
 
             txtMaso.Focus();
@@ -202,6 +196,11 @@ namespace HETHONGTINHNHUANBUT
                     dtpNgayRa.Value = dt;
                 }
             }
+        }
+
+        private void lblXinChao_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

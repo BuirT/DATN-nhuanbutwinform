@@ -283,9 +283,8 @@
     <Compile Include="Models\NhuanBut.cs" />
     <Compile Include="Models\PhieuChi.cs" />
     <Compile Include="Models\TacGia.cs" />
-    <Compile Include="Models\TaiKhoan.cs" />
-    <Compile Include="Models\ThanhToan.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\ThanhToan.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormLogin.resx">

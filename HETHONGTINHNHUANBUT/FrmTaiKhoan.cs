@@ -10,12 +10,12 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTaiKhoan : Form
     {
-        private readonly IMongoCollection<TaiKhoan> _taiKhoanColl;
+        private readonly IMongoCollection<User> _taiKhoanColl;
 
         public FrmTaiKhoan()
         {
             InitializeComponent();
-            _taiKhoanColl = MongoProvider.Instance.GetCollection<TaiKhoan>("TaiKhoan");
+            _taiKhoanColl = MongoProvider.Instance.GetCollection<User>("TaiKhoan");
         }
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)
@@ -78,7 +78,7 @@ namespace HETHONGTINHNHUANBUT
                     return;
                 }
 
-                var tk = new TaiKhoan
+                var tk = new User
                 {
                     TenDangNhap = txtTenDangNhap.Text.Trim(),
                     MatKhau = txtMatKhau.Text.Trim(),
@@ -102,10 +102,10 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
-                var filter = Builders<TaiKhoan>.Filter.Eq(t => t.Id, id);
+                var filter = Builders<User>.Filter.Eq(t => t.Id, id);
 
                 // Tránh tình trạng update đè mật khẩu rỗng nếu user không nhập gì vào ô mk lúc sửa
-                var updateDef = Builders<TaiKhoan>.Update
+                var updateDef = Builders<User>.Update
                     .Set(t => t.HoTen, txtHoTen.Text.Trim())
                     .Set(t => t.Quyen, cboQuyen.Text)
                     .Set(t => t.HoatDong, chkHoatDong.Checked);
