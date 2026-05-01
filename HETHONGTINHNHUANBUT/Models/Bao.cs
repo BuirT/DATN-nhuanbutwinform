@@ -11,8 +11,9 @@ namespace HETHONGTINHNHUANBUT.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        // DÙNG KIỂU object: Để chấp nhận cả dữ liệu cũ (Int32) và mới (String)
         [BsonElement("Maso")]
-        public int Maso { get; set; } // Mã số báo (kiểu int theo SQL cũ)
+        public object Maso { get; set; }
 
         [BsonElement("Tenbao")]
         public string Tenbao { get; set; }
@@ -30,6 +31,6 @@ namespace HETHONGTINHNHUANBUT.Models
         public string Loaibao { get; set; }
 
         [BsonElement("DaDuyet")]
-        public string DaDuyet { get; set; } = "N"; // 'N' là chưa duyệt, 'Y' là đã duyệt
+        public string DaDuyet { get; set; } = "N";
     }
 }

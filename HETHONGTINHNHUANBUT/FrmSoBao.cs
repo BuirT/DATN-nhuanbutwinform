@@ -23,7 +23,6 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmSoBao_Load(object sender, EventArgs e)
         {
             lblXinChao.Text = $"Xin chào, {_tenNguoiDung} 👋";
-
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
             await LoadDataAsync();
         }
@@ -38,14 +37,14 @@ namespace HETHONGTINHNHUANBUT
                 {
                     keyword = keyword.ToLower().Trim();
                     list = list.Where(b =>
-                        b.Maso.ToString().Contains(keyword) ||
-                        b.Tenbao.ToLower().Contains(keyword)
+                        (b.Maso != null && b.Maso.ToString().ToLower().Contains(keyword)) ||
+                        (b.Tenbao != null && b.Tenbao.ToLower().Contains(keyword))
                     ).ToList();
                 }
 
                 dgvSoBao.DataSource = list.Select(b => new {
                     b.Id,
-                    Maso = b.Maso,
+                    Maso = b.Maso?.ToString() ?? "", // Xử lý object sang string để hiện lên lưới[cite: 1]
                     Tenbao = b.Tenbao,
                     Ngayra = b.Ngayra.ToString("dd/MM/yyyy"),
                     Sobao = b.Sobao,
@@ -55,21 +54,6 @@ namespace HETHONGTINHNHUANBUT
                 }).OrderByDescending(x => x.Ngayra).ToList();
 
                 if (dgvSoBao.Columns["Id"] != null) dgvSoBao.Columns["Id"].Visible = false;
-
-                if (dgvSoBao.Columns.Count > 0)
-                {
-                    dgvSoBao.Columns["Maso"].HeaderText = "Mã Số";
-                    dgvSoBao.Columns["Maso"].Width = 80;
-
-                    dgvSoBao.Columns["Tenbao"].HeaderText = "Tên Kỳ Báo";
-                    dgvSoBao.Columns["Tenbao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-                    dgvSoBao.Columns["Ngayra"].HeaderText = "Ngày Ra";
-                    dgvSoBao.Columns["Sobao"].HeaderText = "Số Báo";
-                    dgvSoBao.Columns["Sobo"].HeaderText = "Số Bộ";
-                    dgvSoBao.Columns["Loaibao"].HeaderText = "Loại Báo";
-                    dgvSoBao.Columns["DaDuyet"].HeaderText = "Trạng Thái";
-                }
             }
             catch (Exception ex)
             {
@@ -77,6 +61,7 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
+        // ĐÂY LÀ HÀM ĐANG THIẾU KHIẾN DESIGNER BÁO LỖI
         private async void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             await LoadDataAsync(txtTimKiem.Text);
@@ -86,28 +71,23 @@ namespace HETHONGTINHNHUANBUT
         {
             if (string.IsNullOrWhiteSpace(txtMaso.Text) || string.IsNullOrWhiteSpace(txtTenBao.Text))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ Mã số và Tên báo!", "Nhắc nhở");
-                return;
-            }
-
-            if (!int.TryParse(txtMaso.Text.Trim(), out int maSoParse))
-            {
-                MessageBox.Show("Mã số phải là một số nguyên hợp lệ!", "Cảnh báo");
+                MessageBox.Show("Vui lòng nhập đầy đủ Mã số và Tên báo!");
                 return;
             }
 
             try
             {
-                var exist = await _baoColl.Find(b => b.Maso == maSoParse).FirstOrDefaultAsync();
+                string maSoMoi = txtMaso.Text.Trim();
+                var exist = await _baoColl.Find(b => b.Maso.ToString() == maSoMoi).FirstOrDefaultAsync();
                 if (exist != null)
                 {
-                    MessageBox.Show("Mã số báo này đã tồn tại trong hệ thống!", "Cảnh báo");
+                    MessageBox.Show("Mã số báo này đã tồn tại!");
                     return;
                 }
 
                 var bao = new Bao
                 {
-                    Maso = maSoParse,
+                    Maso = maSoMoi,
                     Tenbao = txtTenBao.Text.Trim(),
                     Ngayra = dtpNgayRa.Value,
                     Sobao = txtSoBao.Text.Trim(),
@@ -117,7 +97,7 @@ namespace HETHONGTINHNHUANBUT
                 };
 
                 await _baoColl.InsertOneAsync(bao);
-                MessageBox.Show("Thêm kỳ báo thành công!", "Tuyệt vời");
+                MessageBox.Show("Thêm kỳ báo thành công!");
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
             }
@@ -127,23 +107,19 @@ namespace HETHONGTINHNHUANBUT
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvSoBao.CurrentRow == null) return;
-            if (!int.TryParse(txtMaso.Text.Trim(), out int maSoParse)) return;
-
             try
             {
                 string id = dgvSoBao.CurrentRow.Cells["Id"].Value.ToString();
-                var filter = Builders<Bao>.Filter.Eq(b => b.Id, id);
-
                 var update = Builders<Bao>.Update
-                    .Set(b => b.Maso, maSoParse)
+                    .Set(b => b.Maso, txtMaso.Text.Trim())
                     .Set(b => b.Tenbao, txtTenBao.Text.Trim())
                     .Set(b => b.Ngayra, dtpNgayRa.Value)
                     .Set(b => b.Sobao, txtSoBao.Text.Trim())
                     .Set(b => b.Sobo, txtSoBo.Text.Trim())
                     .Set(b => b.Loaibao, cboLoaiBao.Text);
 
-                await _baoColl.UpdateOneAsync(filter, update);
-                MessageBox.Show("Cập nhật thành công!", "Thông báo");
+                await _baoColl.UpdateOneAsync(b => b.Id == id, update);
+                MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
@@ -152,17 +128,12 @@ namespace HETHONGTINHNHUANBUT
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvSoBao.CurrentRow == null) return;
-
-            if (MessageBox.Show("Chắc chắn muốn xóa kỳ báo này không?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("Chắc chắn muốn xóa kỳ báo này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                try
-                {
-                    string id = dgvSoBao.CurrentRow.Cells["Id"].Value.ToString();
-                    await _baoColl.DeleteOneAsync(b => b.Id == id);
-                    await LoadDataAsync();
-                    btnLamMoi_Click(null, null);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi khi xóa: " + ex.Message); }
+                string id = dgvSoBao.CurrentRow.Cells["Id"].Value.ToString();
+                await _baoColl.DeleteOneAsync(b => b.Id == id);
+                await LoadDataAsync();
+                btnLamMoi_Click(null, null);
             }
         }
 
@@ -174,9 +145,7 @@ namespace HETHONGTINHNHUANBUT
             txtSoBo.Clear();
             dtpNgayRa.Value = DateTime.Now;
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
-
             if (txtTimKiem != null) txtTimKiem.Clear();
-
             txtMaso.Focus();
         }
 
@@ -190,17 +159,8 @@ namespace HETHONGTINHNHUANBUT
                 txtSoBao.Text = row.Cells["Sobao"].Value?.ToString();
                 txtSoBo.Text = row.Cells["Sobo"].Value?.ToString();
                 cboLoaiBao.Text = row.Cells["Loaibao"].Value?.ToString();
-
-                if (DateTime.TryParseExact(row.Cells["Ngayra"].Value?.ToString(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime dt))
-                {
-                    dtpNgayRa.Value = dt;
-                }
+                if (DateTime.TryParse(row.Cells["Ngayra"].Value?.ToString(), out DateTime dt)) dtpNgayRa.Value = dt;
             }
-        }
-
-        private void lblXinChao_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
