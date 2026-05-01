@@ -271,6 +271,10 @@ namespace HETHONGTINHNHUANBUT
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hệ thống Quản lý Nhuận bút";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+
+            // --- ĐÂY LÀ DÒNG LỆNH LÀM BIẾN MẤT THANH WINDOWS BÊN TRÊN ---
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmTrangChinh_FormClosed);
             this.Load += new System.EventHandler(this.FrmTrangChinh_Load);
             this.pnlMenu.ResumeLayout(false);

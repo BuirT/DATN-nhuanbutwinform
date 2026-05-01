@@ -50,7 +50,6 @@ namespace HETHONGTINHNHUANBUT
         }
 
         // --- ĐÚNG Ý ĐỒ: Gộp thông tin Số - Tên - Ngày vào Kỳ xuất bản ---
-        // --- ĐÚNG Ý ĐỒ: Gộp thông tin Số - Tên - Ngày vào Kỳ xuất bản ---
         private async Task LoadComboboxDataAsync()
         {
             try
@@ -60,13 +59,14 @@ namespace HETHONGTINHNHUANBUT
 
                 // Gộp thông tin hiển thị: Số 15 - Tin tức sáng (13/04/2026)
                 var displayListBao = listBaoRaw.Select(b => new {
-                    Id = b.Id,
-                    HienThi = $"Số {b.Sobao} - {b.Tenbao} ({b.Ngayra:dd/MM/yyyy})"
+                    Id = b.Id, // Vẫn giữ Id để làm giá trị ngầm
+                    HienThi = $"Số {b.Sobao} - {b.Tenbao} ({b.Ngayra:dd/MM/yyyy})",
+                    MaSoBao = b.Maso // Giữ thêm mã số báo gốc để lưu vào Nhuận Bút
                 }).ToList();
 
                 cboSoBao.DataSource = displayListBao;
                 cboSoBao.DisplayMember = "HienThi";
-                cboSoBao.ValueMember = "Id";
+                cboSoBao.ValueMember = "Id"; // Dùng Id Mongo để ràng buộc
 
                 // 2. Load danh sách Bút danh
                 var listTacGia = await _tacGiaColl.Find(_ => true).ToListAsync();
@@ -74,10 +74,8 @@ namespace HETHONGTINHNHUANBUT
 
                 foreach (var tg in listTacGia)
                 {
-                    // ĐÃ SỬA: Đổi Ddong thành ButDanh
                     if (!string.IsNullOrWhiteSpace(tg.ButDanh))
                         tatCaButDanh.Add(tg.ButDanh.Trim());
-                    // ĐÃ SỬA: Đổi Hoten thành HoTen
                     else if (!string.IsNullOrWhiteSpace(tg.HoTen))
                         tatCaButDanh.Add(tg.HoTen.Trim());
                 }
@@ -89,33 +87,46 @@ namespace HETHONGTINHNHUANBUT
         // Khi thay đổi Kỳ xuất bản -> Load lại danh sách bài viết tương ứng
         private async void cboSoBao_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboSoBao.SelectedValue != null && cboSoBao.SelectedValue is string idBao)
+            if (cboSoBao.SelectedValue != null && cboSoBao.SelectedValue is string idBaoMongo)
             {
-                await LoadDataGridAsync(idBao);
+                // Truyền Id của bản ghi báo trong MongoDB vào hàm
+                await LoadDataGridAsync(idBaoMongo);
                 ClearInputs();
             }
         }
 
-        private async Task LoadDataGridAsync(string idBao)
+        private async Task LoadDataGridAsync(string idBaoMongo)
         {
             try
             {
-                var list = await _nhuanButColl.Find(n => n.IdBao == idBao).ToListAsync();
+                // ĐÃ SỬA: Sửa lại tên trường tìm kiếm (Vì ta đang nối thông qua Id của Báo)
+                // Lưu ý: Tùy thiết kế, ta có thể nối qua MsBao, nhưng ở đây theo logic cũ đồng chí đang nối bằng Id
+                // Anh tạm quy định cboSoBao.SelectedValue sẽ khớp với một cột nào đó. 
+                // Tốt nhất là nối qua MsBao (Mã Số Báo gốc)
 
-                // Đổ dữ liệu lên Grid và định dạng tiền tệ
+                // Lấy ra mã số báo thực sự từ selected item (vì mình lưu MsBao chứ không lưu Id mongo)
+                var selectedBao = (dynamic)cboSoBao.SelectedItem;
+                string maSoBao = selectedBao?.MaSoBao?.ToString();
+
+                var list = await _nhuanButColl.Find(n => n.MsBao == maSoBao).ToListAsync();
+
+                // Đổ dữ liệu lên Grid và định dạng tiền tệ (CẬP NHẬT TÊN TRƯỜNG THEO MODEL MỚI)
                 dgvNhuanBut.DataSource = list.Select(n => new {
                     n.Id,
-                    TenBai = n.TenBai,
+                    STT = n.STT,
+                    TenBai = n.Tenbai,
                     Trang = n.Trang,
                     Muc = n.Muc,
-                    ButDanh = n.ButDanh,
-                    TienNhuanBut = n.TienNhuanBut.ToString("N0") + " VNĐ"
+                    ButDanh = n.Butdanh,
+                    Vung = n.Vung,
+                    TienNhuanBut = n.TienNhuanbut.ToString("N0") + " VNĐ",
+                    NgoaiGio = n.NgoaiGio == "1" ? "Có" : "Không"
                 }).ToList();
 
                 if (dgvNhuanBut.Columns["Id"] != null) dgvNhuanBut.Columns["Id"].Visible = false;
 
-                // Tự động cộng tổng tiền đã chấm cho Kỳ này
-                decimal tongTien = list.Sum(n => n.TienNhuanBut);
+                // Tự động cộng tổng tiền đã chấm cho Kỳ này (CẬP NHẬT TÊN TRƯỜNG THEO MODEL MỚI)
+                decimal tongTien = list.Sum(n => n.TienNhuanbut);
                 lblTongTien.Text = "TỔNG TIỀN ĐÃ CHẤM: " + tongTien.ToString("N0") + " VNĐ";
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }
@@ -129,7 +140,7 @@ namespace HETHONGTINHNHUANBUT
             var row = dgvNhuanBut.Rows[e.RowIndex];
             _selectedNhuanButId = row.Cells["Id"].Value?.ToString();
 
-            // Đưa thông tin lên Form
+            // Đưa thông tin lên Form (CẬP NHẬT THEO CỘT MỚI)
             txtTenBai.Text = row.Cells["TenBai"].Value?.ToString();
             txtTrang.Text = row.Cells["Trang"].Value?.ToString();
             txtMuc.Text = row.Cells["Muc"].Value?.ToString();
@@ -166,33 +177,47 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
+                // Lấy thông tin Báo đang được chọn
+                var selectedBao = (dynamic)cboSoBao.SelectedItem;
+                string maSoBao = selectedBao?.MaSoBao?.ToString();
+
                 if (string.IsNullOrEmpty(_selectedNhuanButId))
                 {
                     // THÊM MỚI: Dành cho bài chưa có trong danh sách
                     var nb = new NhuanBut
                     {
-                        IdBao = cboSoBao.SelectedValue.ToString(),
+                        Maso = Guid.NewGuid().ToString().Substring(0, 6).ToUpper(), // Tạo mã số ngẫu nhiên 6 ký tự
+                        MsBao = maSoBao,
                         TenSoBao = cboSoBao.Text,
-                        TenBai = txtTenBai.Text.Trim(),
+                        Tenbai = txtTenBai.Text.Trim(),
                         Trang = txtTrang.Text.Trim(),
                         Muc = txtMuc.Text.Trim(),
-                        ButDanh = cboButDanh.Text,
-                        TienNhuanBut = tien,
-                        NguoiNhap = this.NguoiDangNhap
+                        Butdanh = cboButDanh.Text,
+                        TienNhuanbut = tien,
+                        addby = this.NguoiDangNhap,
+                        ngaychuyen = DateTime.Now,
+                        DaThanhToan = false,
+
+                        // Các trường mới thêm (Có thể làm TextBox trên giao diện để nhập sau, tạm thời fix cứng)
+                        Vung = "HNI",
+                        VungChuyenDen = "NULL",
+                        NgoaiGio = "0",
+                        STT = (dgvNhuanBut.Rows.Count + 1).ToString()
                     };
                     await _nhuanButColl.InsertOneAsync(nb);
                 }
                 else
                 {
-                    // CẬP NHẬT: Lưu số tiền vừa chấm (Đúng ý đồng chí Tí)
+                    // CẬP NHẬT: Lưu số tiền vừa chấm
                     var filter = Builders<NhuanBut>.Filter.Eq(x => x.Id, _selectedNhuanButId);
                     var update = Builders<NhuanBut>.Update
-                        .Set(x => x.TenBai, txtTenBai.Text.Trim())
+                        .Set(x => x.Tenbai, txtTenBai.Text.Trim())
                         .Set(x => x.Trang, txtTrang.Text.Trim())
                         .Set(x => x.Muc, txtMuc.Text.Trim())
-                        .Set(x => x.ButDanh, cboButDanh.Text)
-                        .Set(x => x.TienNhuanBut, tien)
-                        .Set(x => x.NguoiNhap, this.NguoiDangNhap);
+                        .Set(x => x.Butdanh, cboButDanh.Text)
+                        .Set(x => x.TienNhuanbut, tien)
+                        .Set(x => x.addby, this.NguoiDangNhap)
+                        .Set(x => x.ngaychuyen, DateTime.Now);
 
                     await _nhuanButColl.UpdateOneAsync(filter, update);
                 }
@@ -201,7 +226,11 @@ namespace HETHONGTINHNHUANBUT
                 MongoProvider.Instance.GhiNhatKy(this.NguoiDangNhap, $"Đã chấm {tien:N0} VNĐ cho bài '{txtTenBai.Text}'");
 
                 // Làm sạch và tải lại dữ liệu
-                await LoadDataGridAsync(cboSoBao.SelectedValue.ToString());
+                if (cboSoBao.SelectedValue != null)
+                {
+                    await LoadDataGridAsync(cboSoBao.SelectedValue.ToString());
+                }
+
                 ClearInputs();
                 MessageBox.Show("Lưu dữ liệu thành công!", "Thông báo");
             }
@@ -215,7 +244,11 @@ namespace HETHONGTINHNHUANBUT
             if (MessageBox.Show("Bạn có chắc muốn xóa bài này khỏi danh sách?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 await _nhuanButColl.DeleteOneAsync(n => n.Id == _selectedNhuanButId);
-                await LoadDataGridAsync(cboSoBao.SelectedValue.ToString());
+
+                if (cboSoBao.SelectedValue != null)
+                {
+                    await LoadDataGridAsync(cboSoBao.SelectedValue.ToString());
+                }
                 ClearInputs();
             }
         }

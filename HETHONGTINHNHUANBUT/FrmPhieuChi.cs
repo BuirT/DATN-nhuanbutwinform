@@ -51,7 +51,7 @@ namespace HETHONGTINHNHUANBUT
             string penName = cboTacGia.SelectedValue.ToString();
 
             // Tìm các bài có Bút danh này và DaThanhToan == false
-            var list = await _nhuanButColl.Find(n => n.ButDanh == penName && n.DaThanhToan == false).ToListAsync();
+            var list = await _nhuanButColl.Find(n => n.Butdanh == penName && n.DaThanhToan == false).ToListAsync();
 
             dgvChuaThanhToan.DataSource = list.Select(n => new {
                 n.Id,
