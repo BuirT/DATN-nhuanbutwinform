@@ -45,5 +45,16 @@ namespace HETHONGTINHNHUANBUT.Models
         // Mảng chứa ID các bài viết (Nhuận bút) được thanh toán trong phiếu này.
         // Dùng cái này thì không cần phải tạo bảng PhieuChiCT (Chi tiết) như SQL nữa!
         public List<string> DanhSachBaiViet { get; set; } = new List<string>();
+
+        // ==========================================
+        // --- 8. PHỤC VỤ LÃNH ĐẠO DUYỆT CHI ---
+        // ==========================================
+
+        // TrangThaiDuyet: 0 = Chờ duyệt (Mặc định khi Kế toán lập), 1 = Đã duyệt, -1 = Từ chối
+        public int TrangThaiDuyet { get; set; } = 0;
+
+        public string NguoiDuyet { get; set; } // Tên Lãnh đạo duyệt
+        public DateTime? NgayDuyet { get; set; } // Ngày giờ sếp ký duyệt
+        public string LyDoTuChoi { get; set; } // Ghi chú nếu Lãnh đạo không đồng ý chi
     }
 }

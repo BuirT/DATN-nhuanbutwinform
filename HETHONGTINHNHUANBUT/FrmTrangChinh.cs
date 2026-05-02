@@ -61,7 +61,6 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(new FrmTacGia());
         }
 
-        // ĐÃ SỬA: Bỏ chữ "sender" đi để khớp với cấu trúc hàm OpenChildForm
         private void btnButDanh_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmButDanh());
@@ -85,6 +84,17 @@ namespace HETHONGTINHNHUANBUT
             FrmPhieuChi frmChi = new FrmPhieuChi();
             frmChi.NguoiLapPhieu = this.currentUserName;
             OpenChildForm(frmChi);
+        }
+
+        // ==========================================
+        // MỚI THÊM: SỰ KIỆN NÚT LÃNH ĐẠO DUYỆT CHI
+        // ==========================================
+        private void btnDuyetChi_Click(object sender, EventArgs e)
+        {
+            FrmDuyetPhieuChi frmDuyet = new FrmDuyetPhieuChi();
+            // Truyền tên tài khoản đang đăng nhập vào làm người duyệt (nếu trống thì để mặc định)
+            frmDuyet.NguoiDuyet = string.IsNullOrEmpty(this.currentUserName) ? "Ban Giám Đốc" : this.currentUserName;
+            OpenChildForm(frmDuyet);
         }
 
         // --- NHÓM MENU BÁO CÁO ---

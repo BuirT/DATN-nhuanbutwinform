@@ -24,13 +24,14 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCaoCongNo = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCaoChiTiet = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
+
+            // ĐÃ THÊM: Nút Duyệt Chi (Dành cho Lãnh Đạo)
+            this.btnDuyetChi = new Guna.UI2.WinForms.Guna2Button();
+
             this.btnPhieuChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnNhapNhuanBut = new Guna.UI2.WinForms.Guna2Button();
             this.btnSoBao = new Guna.UI2.WinForms.Guna2Button();
-
-            // ĐÃ THÊM: Nút Quản lý Bút danh
             this.btnButDanh = new Guna.UI2.WinForms.Guna2Button();
-
             this.btnTacGia = new Guna.UI2.WinForms.Guna2Button();
             this.btnTongQuan = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
@@ -44,17 +45,18 @@ namespace HETHONGTINHNHUANBUT
             // 
             // pnlMenu
             // 
-            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(30)))), ((int)(((byte)(68)))));
+            // ĐÃ SỬA: Đổi nền menu sang màu xanh đen hiện đại
+            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.pnlMenu.Controls.Add(this.btnBaoCaoCongNo);
             this.pnlMenu.Controls.Add(this.btnBaoCaoChiTiet);
             this.pnlMenu.Controls.Add(this.btnBaoCao);
+
+            this.pnlMenu.Controls.Add(this.btnDuyetChi);
+
             this.pnlMenu.Controls.Add(this.btnPhieuChi);
             this.pnlMenu.Controls.Add(this.btnNhapNhuanBut);
             this.pnlMenu.Controls.Add(this.btnSoBao);
-
-            // ĐÃ THÊM: Đưa nút Bút danh vào panel menu
             this.pnlMenu.Controls.Add(this.btnButDanh);
-
             this.pnlMenu.Controls.Add(this.btnTacGia);
             this.pnlMenu.Controls.Add(this.btnTongQuan);
             this.pnlMenu.Controls.Add(this.pnlLogo);
@@ -69,12 +71,12 @@ namespace HETHONGTINHNHUANBUT
             // btnBaoCaoCongNo
             // 
             this.btnBaoCaoCongNo.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnBaoCaoCongNo.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnBaoCaoCongNo.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233))))); // Xanh ngọc
             this.btnBaoCaoCongNo.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCaoCongNo.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoCongNo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnBaoCaoCongNo.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnBaoCaoCongNo.Location = new System.Drawing.Point(0, 500); // Đã đẩy tọa độ xuống
+            this.btnBaoCaoCongNo.Location = new System.Drawing.Point(0, 550);
             this.btnBaoCaoCongNo.Name = "btnBaoCaoCongNo";
             this.btnBaoCaoCongNo.Size = new System.Drawing.Size(280, 50);
             this.btnBaoCaoCongNo.TabIndex = 0;
@@ -86,12 +88,12 @@ namespace HETHONGTINHNHUANBUT
             // btnBaoCaoChiTiet
             // 
             this.btnBaoCaoChiTiet.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnBaoCaoChiTiet.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnBaoCaoChiTiet.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnBaoCaoChiTiet.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCaoChiTiet.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoChiTiet.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnBaoCaoChiTiet.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnBaoCaoChiTiet.Location = new System.Drawing.Point(0, 450); // Đã đẩy tọa độ xuống
+            this.btnBaoCaoChiTiet.Location = new System.Drawing.Point(0, 500);
             this.btnBaoCaoChiTiet.Name = "btnBaoCaoChiTiet";
             this.btnBaoCaoChiTiet.Size = new System.Drawing.Size(280, 50);
             this.btnBaoCaoChiTiet.TabIndex = 1;
@@ -103,12 +105,12 @@ namespace HETHONGTINHNHUANBUT
             // btnBaoCao
             // 
             this.btnBaoCao.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnBaoCao.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnBaoCao.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnBaoCao.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCao.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnBaoCao.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnBaoCao.Location = new System.Drawing.Point(0, 400); // Đã đẩy tọa độ xuống
+            this.btnBaoCao.Location = new System.Drawing.Point(0, 450);
             this.btnBaoCao.Name = "btnBaoCao";
             this.btnBaoCao.Size = new System.Drawing.Size(280, 50);
             this.btnBaoCao.TabIndex = 2;
@@ -116,16 +118,36 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCao.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnBaoCao.TextOffset = new System.Drawing.Point(30, 0);
             this.btnBaoCao.Click += new System.EventHandler(this.btnBaoCao_Click);
+
+            // 
+            // btnDuyetChi
+            // 
+            this.btnDuyetChi.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            this.btnDuyetChi.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
+            this.btnDuyetChi.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDuyetChi.FillColor = System.Drawing.Color.Transparent;
+            this.btnDuyetChi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            // ĐÃ SỬA: Đổi lại màu Gainsboro cho đồng bộ
+            this.btnDuyetChi.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnDuyetChi.Location = new System.Drawing.Point(0, 400);
+            this.btnDuyetChi.Name = "btnDuyetChi";
+            this.btnDuyetChi.Size = new System.Drawing.Size(280, 50);
+            this.btnDuyetChi.TabIndex = 12;
+            this.btnDuyetChi.Text = "LÃNH ĐẠO DUYỆT CHI";
+            this.btnDuyetChi.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnDuyetChi.TextOffset = new System.Drawing.Point(30, 0);
+            this.btnDuyetChi.Click += new System.EventHandler(this.btnDuyetChi_Click);
+
             // 
             // btnPhieuChi
             // 
             this.btnPhieuChi.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnPhieuChi.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnPhieuChi.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnPhieuChi.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnPhieuChi.FillColor = System.Drawing.Color.Transparent;
             this.btnPhieuChi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnPhieuChi.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnPhieuChi.Location = new System.Drawing.Point(0, 350); // Đã đẩy tọa độ xuống
+            this.btnPhieuChi.Location = new System.Drawing.Point(0, 350);
             this.btnPhieuChi.Name = "btnPhieuChi";
             this.btnPhieuChi.Size = new System.Drawing.Size(280, 50);
             this.btnPhieuChi.TabIndex = 3;
@@ -137,12 +159,12 @@ namespace HETHONGTINHNHUANBUT
             // btnNhapNhuanBut
             // 
             this.btnNhapNhuanBut.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnNhapNhuanBut.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnNhapNhuanBut.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnNhapNhuanBut.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnNhapNhuanBut.FillColor = System.Drawing.Color.Transparent;
             this.btnNhapNhuanBut.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnNhapNhuanBut.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnNhapNhuanBut.Location = new System.Drawing.Point(0, 300); // Đã đẩy tọa độ xuống
+            this.btnNhapNhuanBut.Location = new System.Drawing.Point(0, 300);
             this.btnNhapNhuanBut.Name = "btnNhapNhuanBut";
             this.btnNhapNhuanBut.Size = new System.Drawing.Size(280, 50);
             this.btnNhapNhuanBut.TabIndex = 4;
@@ -154,12 +176,12 @@ namespace HETHONGTINHNHUANBUT
             // btnSoBao
             // 
             this.btnSoBao.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnSoBao.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnSoBao.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnSoBao.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSoBao.FillColor = System.Drawing.Color.Transparent;
             this.btnSoBao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnSoBao.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnSoBao.Location = new System.Drawing.Point(0, 250); // Đã đẩy tọa độ xuống
+            this.btnSoBao.Location = new System.Drawing.Point(0, 250);
             this.btnSoBao.Name = "btnSoBao";
             this.btnSoBao.Size = new System.Drawing.Size(280, 50);
             this.btnSoBao.TabIndex = 5;
@@ -171,12 +193,12 @@ namespace HETHONGTINHNHUANBUT
             // btnButDanh
             // 
             this.btnButDanh.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnButDanh.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnButDanh.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnButDanh.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnButDanh.FillColor = System.Drawing.Color.Transparent;
             this.btnButDanh.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnButDanh.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnButDanh.Location = new System.Drawing.Point(0, 200); // Đã thêm: Nằm ngay dưới Quản lý tác giả
+            this.btnButDanh.Location = new System.Drawing.Point(0, 200);
             this.btnButDanh.Name = "btnButDanh";
             this.btnButDanh.Size = new System.Drawing.Size(280, 50);
             this.btnButDanh.TabIndex = 11;
@@ -188,7 +210,7 @@ namespace HETHONGTINHNHUANBUT
             // btnTacGia
             // 
             this.btnTacGia.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnTacGia.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnTacGia.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnTacGia.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnTacGia.FillColor = System.Drawing.Color.Transparent;
             this.btnTacGia.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -205,11 +227,11 @@ namespace HETHONGTINHNHUANBUT
             // btnTongQuan
             // 
             this.btnTongQuan.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnTongQuan.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnTongQuan.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnTongQuan.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnTongQuan.FillColor = System.Drawing.Color.Transparent;
             this.btnTongQuan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnTongQuan.ForeColor = System.Drawing.Color.White;
+            this.btnTongQuan.ForeColor = System.Drawing.Color.Gainsboro;
             this.btnTongQuan.Location = new System.Drawing.Point(0, 100);
             this.btnTongQuan.Name = "btnTongQuan";
             this.btnTongQuan.Size = new System.Drawing.Size(280, 50);
@@ -221,7 +243,8 @@ namespace HETHONGTINHNHUANBUT
             // 
             // pnlLogo
             // 
-            this.pnlLogo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(24)))), ((int)(((byte)(55)))));
+            // ĐÃ SỬA: Đổi nền Logo tối hơn một chút tạo điểm nhấn
+            this.pnlLogo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.pnlLogo.Controls.Add(this.lblTitle);
             this.pnlLogo.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLogo.Location = new System.Drawing.Point(0, 0);
@@ -233,7 +256,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(189)))), ((int)(((byte)(248))))); // Chữ logo xanh biển sáng
             this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(280, 100);
@@ -244,14 +267,14 @@ namespace HETHONGTINHNHUANBUT
             // btnTaiKhoan
             // 
             this.btnTaiKhoan.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnTaiKhoan.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.btnTaiKhoan.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnTaiKhoan.CheckedState.ForeColor = System.Drawing.Color.White;
             this.btnTaiKhoan.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnTaiKhoan.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnTaiKhoan.FillColor = System.Drawing.Color.Transparent;
             this.btnTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnTaiKhoan.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnTaiKhoan.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(40)))), ((int)(((byte)(88)))));
+            this.btnTaiKhoan.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.btnTaiKhoan.Location = new System.Drawing.Point(0, 630);
             this.btnTaiKhoan.Name = "btnTaiKhoan";
             this.btnTaiKhoan.Size = new System.Drawing.Size(280, 60);
@@ -277,7 +300,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // pnlMain
             // 
-            this.pnlMain.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pnlMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246))))); // Nền xám nhạt nhẹ nhàng
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(280, 0);
             this.pnlMain.Name = "pnlMain";
@@ -312,13 +335,11 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnTongQuan;
         private Guna.UI2.WinForms.Guna2Button btnSoBao;
         private Guna.UI2.WinForms.Guna2Button btnTacGia;
-
-        // ĐÃ THÊM: Khai báo biến nút bấm
         private Guna.UI2.WinForms.Guna2Button btnButDanh;
-
         private Guna.UI2.WinForms.Guna2Button btnTaiKhoan;
         private Guna.UI2.WinForms.Guna2Button btnNhapNhuanBut;
         private Guna.UI2.WinForms.Guna2Button btnPhieuChi;
+        private Guna.UI2.WinForms.Guna2Button btnDuyetChi;
         private Guna.UI2.WinForms.Guna2Button btnBaoCao;
         private Guna.UI2.WinForms.Guna2Button btnBaoCaoChiTiet;
         private Guna.UI2.WinForms.Guna2Button btnBaoCaoCongNo;
