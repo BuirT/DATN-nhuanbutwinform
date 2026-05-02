@@ -1,2 +1,3 @@
-﻿đồng bộ lại database nhuận bút, chỉnh sửa lại giao diện nhuận bút cho khớp dữ liệu nhập
-sql bảng phiếu chi thêm thuộc tính đã nhận tiền hay chưa nhận tiền, thêm thuộc tính CCCD, số điện thoại
+﻿chỉnh sửa lại báo cáo tổng hợp, báo cáo chi tiết, báo cáo công nợ
+thiết kế lại giao diện toàn bộ
+chỉnh sửa lại phân quyền người dùng

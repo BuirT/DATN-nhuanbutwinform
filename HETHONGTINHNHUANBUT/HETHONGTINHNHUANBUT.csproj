@@ -280,6 +280,7 @@
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Bao.cs" />
+    <Compile Include="Models\ButDanh.cs" />
     <Compile Include="Models\NhuanBut.cs" />
     <Compile Include="Models\PhieuChi.cs" />
     <Compile Include="Models\TacGia.cs" />

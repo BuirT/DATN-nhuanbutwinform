@@ -1,170 +1,104 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
-using MongoDB.Bson;
+using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
-    public partial class FrmButdanh : Form
+    public partial class FrmButDanh : Form
     {
-        private IMongoCollection<BsonDocument> butdanhCollection;
-        private IMongoCollection<BsonDocument> tacgiaCollection;
+        private readonly IMongoCollection<ButDanh> _butDanhColl;
 
-        public FrmButdanh()
+        public FrmButDanh()
         {
             InitializeComponent();
-            KetNoiMongoDB();
+            _butDanhColl = MongoProvider.Instance.GetCollection<ButDanh>("Butdanh");
         }
 
-        private void KetNoiMongoDB()
+        private async void FrmButDanh_Load(object sender, EventArgs e)
         {
-            try
-            {
-                // Lấy link từ App.config để bảo mật như đồng chí dặn
-                string connectionString = ConfigurationManager.ConnectionStrings["MongoDbConn"].ConnectionString;
-                string databaseName = ConfigurationManager.AppSettings["DatabaseName"];
-                var client = new MongoClient(connectionString);
-                var database = client.GetDatabase(databaseName);
-
-                butdanhCollection = database.GetCollection<BsonDocument>("Butdanh");
-                tacgiaCollection = database.GetCollection<BsonDocument>("TacGia");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi kết nối MongoDB: " + ex.Message, "Lỗi Hệ Thống");
-            }
-        }
-
-        private async void FrmButdanh_Load(object sender, EventArgs e)
-        {
-            // Cho phép gõ vào ô mã để tìm kiếm
-            txtMaso.ReadOnly = false;
-
             dgvButDanh.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dgvButDanh.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
-
-            await LoadDanhSachTacGiaAsync();
             await LoadDataAsync();
         }
 
-        // --- NẠP TÁC GIẢ VÀO COMBOBOX ---
-        private async Task LoadDanhSachTacGiaAsync()
-        {
-            try
-            {
-                var list = await tacgiaCollection.Find(new BsonDocument()).ToListAsync();
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Maso");
-                dt.Columns.Add("Hoten");
-
-                foreach (var doc in list)
-                {
-                    dt.Rows.Add(doc["Maso"].ToString(), doc["Hoten"].ToString());
-                }
-
-                cboTacGia.DisplayMember = "Hoten";
-                cboTacGia.ValueMember = "Maso";
-                cboTacGia.DataSource = dt;
-            }
-            catch { }
-        }
-
-        // --- TẢI DỮ LIỆU BÚT DANH ---
         private async Task LoadDataAsync()
         {
             try
             {
-                var docs = await butdanhCollection.Find(new BsonDocument()).ToListAsync();
-                var authors = await tacgiaCollection.Find(new BsonDocument()).ToListAsync();
+                var list = await _butDanhColl.Find(_ => true).ToListAsync();
 
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Maso");
-                dt.Columns.Add("Butdanh");
-                dt.Columns.Add("TenTacGia");
-                dt.Columns.Add("MsTacgia");
+                dgvButDanh.DataSource = list.Select(b => new {
+                    b.Id,
+                    Maso = b.Maso,
+                    Butdanh = b.Butdanh,
+                    MsTacgia = b.MsTacgia
+                }).OrderBy(x => x.Maso).ToList();
 
-                foreach (var doc in docs)
+                if (dgvButDanh.Columns["Id"] != null) dgvButDanh.Columns["Id"].Visible = false;
+
+                if (dgvButDanh.Columns.Count > 0)
                 {
-                    string msTG = doc.GetValue("MsTacgia", "").ToString();
-                    var authorDoc = authors.Find(x => x["Maso"].ToString() == msTG);
-                    string tenTG = authorDoc != null ? authorDoc["Hoten"].ToString() : "N/A";
-
-                    dt.Rows.Add(doc.GetValue("Maso", ""), doc.GetValue("Butdanh", ""), tenTG, msTG);
+                    dgvButDanh.Columns["Maso"].HeaderText = "Mã số (ID)";
+                    dgvButDanh.Columns["Butdanh"].HeaderText = "Bút danh hiển thị";
+                    dgvButDanh.Columns["MsTacgia"].HeaderText = "Mã tác giả gốc";
                 }
-
-                dgvButDanh.DataSource = dt;
-                if (dgvButDanh.Columns["MsTacgia"] != null) dgvButDanh.Columns["MsTacgia"].Visible = false;
             }
-            catch { }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
         }
 
-        // --- THAO TÁC TÌM KIẾM KHI NHẬP MÃ ---
-        private void txtMaso_TextChanged(object sender, EventArgs e)
+        private async void btnThem_Click(object sender, EventArgs e)
         {
-            if (dgvButDanh.DataSource is DataTable dt)
+            if (string.IsNullOrWhiteSpace(txtMaso.Text) || string.IsNullOrWhiteSpace(txtButDanh.Text))
             {
-                dt.DefaultView.RowFilter = string.Format("Convert(Maso, 'System.String') LIKE '%{0}%'", txtMaso.Text);
+                MessageBox.Show("Đồng chí Tí nhập đầy đủ Mã số và Bút danh giúp Thanh nhé!", "Nhắc nhở");
+                return;
             }
-        }
 
-        // --- TÌM KIẾM THEO TÊN BÚT DANH ---
-        private void txtButDanh_TextChanged(object sender, EventArgs e)
-        {
-            if (dgvButDanh.DataSource is DataTable dt)
+            // Ép kiểu Mã số về đúng chuẩn Int giống hình SQL
+            if (!int.TryParse(txtMaso.Text.Trim(), out int maSo))
             {
-                dt.DefaultView.RowFilter = string.Format("Butdanh LIKE '%{0}%'", txtButDanh.Text);
-            }
-        }
-
-        private void btnThem_Click(object sender, EventArgs e)
-        {
-            txtMaso.Clear();
-            txtButDanh.Clear();
-            txtMaso.ReadOnly = false; // Mở để gõ mã mới (nếu muốn nhập tay) hoặc tìm kiếm
-            txtButDanh.Focus();
-        }
-
-        private async void btnLuu_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtButDanh.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Tên bút danh!", "Nhắc nhở");
+                MessageBox.Show("Mã số phải là con số (Ví dụ: 1000, 1692...)!", "Cảnh báo");
                 return;
             }
 
             try
             {
-                long count = await butdanhCollection.CountDocumentsAsync(new BsonDocument());
-                string newId = (1000 + count + 1).ToString();
+                var exist = await _butDanhColl.Find(b => b.Maso == maSo).FirstOrDefaultAsync();
+                if (exist != null) { MessageBox.Show("Mã số Bút danh này đã tồn tại rồi anh Tí ơi!"); return; }
 
-                var newDoc = new BsonDocument {
-                    { "Maso", newId },
-                    { "Butdanh", txtButDanh.Text },
-                    { "MsTacgia", cboTacGia.SelectedValue.ToString() }
+                var bd = new ButDanh
+                {
+                    Maso = maSo,
+                    Butdanh = txtButDanh.Text.Trim(),
+                    MsTacgia = txtMsTacGia.Text.Trim() // Ví dụ: PV1000
                 };
 
-                await butdanhCollection.InsertOneAsync(newDoc);
-                MessageBox.Show("Đã lưu bút danh mới!", "Thông báo");
+                await _butDanhColl.InsertOneAsync(bd);
+                MessageBox.Show("Thêm Bút danh thành công rực rỡ!");
                 await LoadDataAsync();
+                btnLamMoi_Click(null, null);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnSua_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtMaso.Text)) return;
+            if (dgvButDanh.CurrentRow == null) return;
+            if (!int.TryParse(txtMaso.Text.Trim(), out int maSo)) return;
+
             try
             {
-                var filter = Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text);
-                var update = Builders<BsonDocument>.Update
-                    .Set("Butdanh", txtButDanh.Text)
-                    .Set("MsTacgia", cboTacGia.SelectedValue.ToString());
+                string id = dgvButDanh.CurrentRow.Cells["Id"].Value.ToString();
+                var update = Builders<ButDanh>.Update
+                    .Set(b => b.Maso, maSo)
+                    .Set(b => b.Butdanh, txtButDanh.Text.Trim())
+                    .Set(b => b.MsTacgia, txtMsTacGia.Text.Trim());
 
-                await butdanhCollection.UpdateOneAsync(filter, update);
+                await _butDanhColl.UpdateOneAsync(b => b.Id == id, update);
                 MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
@@ -173,39 +107,32 @@ namespace HETHONGTINHNHUANBUT
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtMaso.Text)) return;
-            if (MessageBox.Show("Đồng chí có chắc muốn xóa bút danh này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (dgvButDanh.CurrentRow == null) return;
+            if (MessageBox.Show("Chắc chắn muốn xóa bút danh này chứ?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                await butdanhCollection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("Maso", txtMaso.Text));
-                btnThem_Click(sender, e);
+                string id = dgvButDanh.CurrentRow.Cells["Id"].Value.ToString();
+                await _butDanhColl.DeleteOneAsync(b => b.Id == id);
                 await LoadDataAsync();
+                btnLamMoi_Click(null, null);
             }
         }
 
-        private void btnHuy_Click(object sender, EventArgs e) => btnThem_Click(sender, e);
+        private void btnLamMoi_Click(object sender, EventArgs e)
+        {
+            txtMaso.Clear();
+            txtButDanh.Clear();
+            txtMsTacGia.Clear();
+            txtMaso.Focus();
+        }
+
         private void dgvButDanh_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
-
-            // Sử dụng DataBoundItem để lấy dữ liệu ngầm từ DataTable, tránh lỗi sai tên cột UI
-            if (dgvButDanh.Rows[e.RowIndex].DataBoundItem is DataRowView rowView)
+            if (e.RowIndex >= 0)
             {
-                txtMaso.Text = rowView["Maso"]?.ToString() ?? "";
-                txtButDanh.Text = rowView["Butdanh"]?.ToString() ?? "";
-
-                // Khóa mã lại không cho sửa khi đang xem thông tin cũ
-                txtMaso.ReadOnly = true;
-
-                string msTG = rowView["MsTacgia"]?.ToString() ?? "";
-                if (!string.IsNullOrEmpty(msTG)) cboTacGia.SelectedValue = msTG;
-            }
-            else
-            {
-                // Backup dự phòng nếu DataGridView không được bind qua DataTable
-                var row = dgvButDanh.Rows[e.RowIndex];
-                txtMaso.Text = row.Cells[0].Value?.ToString() ?? "";
-                txtButDanh.Text = row.Cells[1].Value?.ToString() ?? "";
-                txtMaso.ReadOnly = true;
+                DataGridViewRow row = dgvButDanh.Rows[e.RowIndex];
+                txtMaso.Text = row.Cells["Maso"].Value?.ToString();
+                txtButDanh.Text = row.Cells["Butdanh"].Value?.ToString();
+                txtMsTacGia.Text = row.Cells["MsTacgia"].Value?.ToString();
             }
         }
     }

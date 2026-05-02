@@ -25,41 +25,46 @@
             this.lblTitle = new System.Windows.Forms.Label();
             this.picAvatar = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.btnChonAnh = new Guna.UI2.WinForms.Guna2Button();
+
+            // Hàng 1
             this.lblMaHT = new System.Windows.Forms.Label();
             this.txtMaHT = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblMaThe = new System.Windows.Forms.Label();
             this.txtMaThe = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblHoTen = new System.Windows.Forms.Label();
             this.txtHoTen = new Guna.UI2.WinForms.Guna2TextBox();
-
-            // ĐÃ SỬA: Bút danh -> Số tài khoản
             this.lblSoTaiKhoan = new System.Windows.Forms.Label();
             this.txtSoTaiKhoan = new Guna.UI2.WinForms.Guna2TextBox();
 
+            // Hàng 2
             this.lblNgaySinh = new System.Windows.Forms.Label();
             this.dtpNgaySinh = new Guna.UI2.WinForms.Guna2DateTimePicker();
+
+            // --- MỚI THÊM: ĐIỆN THOẠI ---
+            this.lblDienThoai = new System.Windows.Forms.Label();
+            this.txtDienThoai = new Guna.UI2.WinForms.Guna2TextBox();
+
             this.lblPhanLoai = new System.Windows.Forms.Label();
             this.cboPhanLoai = new Guna.UI2.WinForms.Guna2ComboBox();
-
-            // ĐÃ SỬA: Điện thoại -> Phòng ban
             this.lblPhongBan = new System.Windows.Forms.Label();
             this.txtPhongBan = new Guna.UI2.WinForms.Guna2TextBox();
-
             this.lblEmail = new System.Windows.Forms.Label();
             this.txtEmail = new Guna.UI2.WinForms.Guna2TextBox();
 
-            // ĐÃ SỬA: Địa chỉ -> Ngân hàng
+            // Hàng 3
             this.lblNganHang = new System.Windows.Forms.Label();
             this.txtNganHang = new Guna.UI2.WinForms.Guna2TextBox();
-
             this.btnChonPDF = new Guna.UI2.WinForms.Guna2Button();
             this.btnXemPDF = new Guna.UI2.WinForms.Guna2Button();
             this.lblFilePDF = new System.Windows.Forms.Label();
+
+            // Nút bấm
             this.btnThem = new Guna.UI2.WinForms.Guna2Button();
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoi = new Guna.UI2.WinForms.Guna2Button();
 
+            // Dưới
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDataTitle = new System.Windows.Forms.Label();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
@@ -76,33 +81,36 @@
             this.pnlTop.Controls.Add(this.lblTitle);
             this.pnlTop.Controls.Add(this.picAvatar);
             this.pnlTop.Controls.Add(this.btnChonAnh);
+
             this.pnlTop.Controls.Add(this.lblMaHT);
             this.pnlTop.Controls.Add(this.txtMaHT);
             this.pnlTop.Controls.Add(this.lblMaThe);
             this.pnlTop.Controls.Add(this.txtMaThe);
             this.pnlTop.Controls.Add(this.lblHoTen);
             this.pnlTop.Controls.Add(this.txtHoTen);
-
             this.pnlTop.Controls.Add(this.lblSoTaiKhoan);
             this.pnlTop.Controls.Add(this.txtSoTaiKhoan);
 
             this.pnlTop.Controls.Add(this.lblNgaySinh);
             this.pnlTop.Controls.Add(this.dtpNgaySinh);
+
+            // Thêm Control Điện Thoại
+            this.pnlTop.Controls.Add(this.lblDienThoai);
+            this.pnlTop.Controls.Add(this.txtDienThoai);
+
             this.pnlTop.Controls.Add(this.lblPhanLoai);
             this.pnlTop.Controls.Add(this.cboPhanLoai);
-
             this.pnlTop.Controls.Add(this.lblPhongBan);
             this.pnlTop.Controls.Add(this.txtPhongBan);
-
             this.pnlTop.Controls.Add(this.lblEmail);
             this.pnlTop.Controls.Add(this.txtEmail);
 
             this.pnlTop.Controls.Add(this.lblNganHang);
             this.pnlTop.Controls.Add(this.txtNganHang);
-
             this.pnlTop.Controls.Add(this.btnChonPDF);
             this.pnlTop.Controls.Add(this.btnXemPDF);
             this.pnlTop.Controls.Add(this.lblFilePDF);
+
             this.pnlTop.Controls.Add(this.btnThem);
             this.pnlTop.Controls.Add(this.btnSua);
             this.pnlTop.Controls.Add(this.btnXoa);
@@ -110,7 +118,8 @@
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(1200, 340);
+            // Kéo dài Panel Top ra một chút để đủ chỗ
+            this.pnlTop.Size = new System.Drawing.Size(1200, 360);
             this.pnlTop.TabIndex = 0;
 
             // lblTitle
@@ -157,11 +166,11 @@
             this.txtMaHT.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtMaHT.Location = new System.Drawing.Point(180, 70);
             this.txtMaHT.Name = "txtMaHT";
-            this.txtMaHT.Size = new System.Drawing.Size(150, 36);
+            this.txtMaHT.Size = new System.Drawing.Size(120, 36);
             this.txtMaHT.TabIndex = 5;
 
             this.lblMaThe.ForeColor = System.Drawing.Color.Gray;
-            this.lblMaThe.Location = new System.Drawing.Point(350, 50);
+            this.lblMaThe.Location = new System.Drawing.Point(320, 50);
             this.lblMaThe.Name = "lblMaThe";
             this.lblMaThe.Size = new System.Drawing.Size(100, 20);
             this.lblMaThe.TabIndex = 6;
@@ -169,13 +178,13 @@
 
             this.txtMaThe.BorderRadius = 5;
             this.txtMaThe.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtMaThe.Location = new System.Drawing.Point(350, 70);
+            this.txtMaThe.Location = new System.Drawing.Point(320, 70);
             this.txtMaThe.Name = "txtMaThe";
-            this.txtMaThe.Size = new System.Drawing.Size(150, 36);
+            this.txtMaThe.Size = new System.Drawing.Size(120, 36);
             this.txtMaThe.TabIndex = 7;
 
             this.lblHoTen.ForeColor = System.Drawing.Color.Gray;
-            this.lblHoTen.Location = new System.Drawing.Point(520, 50);
+            this.lblHoTen.Location = new System.Drawing.Point(460, 50);
             this.lblHoTen.Name = "lblHoTen";
             this.lblHoTen.Size = new System.Drawing.Size(100, 20);
             this.lblHoTen.TabIndex = 8;
@@ -183,14 +192,13 @@
 
             this.txtHoTen.BorderRadius = 5;
             this.txtHoTen.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtHoTen.Location = new System.Drawing.Point(520, 70);
+            this.txtHoTen.Location = new System.Drawing.Point(460, 70);
             this.txtHoTen.Name = "txtHoTen";
             this.txtHoTen.Size = new System.Drawing.Size(250, 36);
             this.txtHoTen.TabIndex = 9;
 
-            // Số tài khoản
             this.lblSoTaiKhoan.ForeColor = System.Drawing.Color.Gray;
-            this.lblSoTaiKhoan.Location = new System.Drawing.Point(790, 50);
+            this.lblSoTaiKhoan.Location = new System.Drawing.Point(730, 50);
             this.lblSoTaiKhoan.Name = "lblSoTaiKhoan";
             this.lblSoTaiKhoan.Size = new System.Drawing.Size(100, 20);
             this.lblSoTaiKhoan.TabIndex = 10;
@@ -198,9 +206,9 @@
 
             this.txtSoTaiKhoan.BorderRadius = 5;
             this.txtSoTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtSoTaiKhoan.Location = new System.Drawing.Point(790, 70);
+            this.txtSoTaiKhoan.Location = new System.Drawing.Point(730, 70);
             this.txtSoTaiKhoan.Name = "txtSoTaiKhoan";
-            this.txtSoTaiKhoan.Size = new System.Drawing.Size(250, 36);
+            this.txtSoTaiKhoan.Size = new System.Drawing.Size(200, 36);
             this.txtSoTaiKhoan.TabIndex = 11;
 
             // --- HÀNG 2 ---
@@ -220,12 +228,27 @@
             this.dtpNgaySinh.MaxDate = new System.DateTime(9998, 12, 31, 0, 0, 0, 0);
             this.dtpNgaySinh.MinDate = new System.DateTime(1753, 1, 1, 0, 0, 0, 0);
             this.dtpNgaySinh.Name = "dtpNgaySinh";
-            this.dtpNgaySinh.Size = new System.Drawing.Size(150, 36);
+            this.dtpNgaySinh.Size = new System.Drawing.Size(120, 36);
             this.dtpNgaySinh.TabIndex = 13;
             this.dtpNgaySinh.Value = new System.DateTime(2026, 5, 1, 0, 0, 0, 0);
 
+            // MỚI: ĐIỆN THOẠI
+            this.lblDienThoai.ForeColor = System.Drawing.Color.Gray;
+            this.lblDienThoai.Location = new System.Drawing.Point(320, 120);
+            this.lblDienThoai.Name = "lblDienThoai";
+            this.lblDienThoai.Size = new System.Drawing.Size(100, 20);
+            this.lblDienThoai.TabIndex = 90;
+            this.lblDienThoai.Text = "Số điện thoại";
+
+            this.txtDienThoai.BorderRadius = 5;
+            this.txtDienThoai.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtDienThoai.Location = new System.Drawing.Point(320, 140);
+            this.txtDienThoai.Name = "txtDienThoai";
+            this.txtDienThoai.Size = new System.Drawing.Size(140, 36);
+            this.txtDienThoai.TabIndex = 91;
+
             this.lblPhanLoai.ForeColor = System.Drawing.Color.Gray;
-            this.lblPhanLoai.Location = new System.Drawing.Point(350, 120);
+            this.lblPhanLoai.Location = new System.Drawing.Point(480, 120);
             this.lblPhanLoai.Name = "lblPhanLoai";
             this.lblPhanLoai.Size = new System.Drawing.Size(100, 20);
             this.lblPhanLoai.TabIndex = 14;
@@ -242,28 +265,27 @@
             "Phóng viên",
             "Cộng tác viên",
             "Khách mời"});
-            this.cboPhanLoai.Location = new System.Drawing.Point(350, 140);
+            this.cboPhanLoai.Location = new System.Drawing.Point(480, 140);
             this.cboPhanLoai.Name = "cboPhanLoai";
-            this.cboPhanLoai.Size = new System.Drawing.Size(150, 36);
+            this.cboPhanLoai.Size = new System.Drawing.Size(140, 36);
             this.cboPhanLoai.TabIndex = 15;
 
-            // Phòng ban
             this.lblPhongBan.ForeColor = System.Drawing.Color.Gray;
-            this.lblPhongBan.Location = new System.Drawing.Point(520, 120);
+            this.lblPhongBan.Location = new System.Drawing.Point(640, 120);
             this.lblPhongBan.Name = "lblPhongBan";
-            this.lblPhongBan.Size = new System.Drawing.Size(200, 20);
+            this.lblPhongBan.Size = new System.Drawing.Size(150, 20);
             this.lblPhongBan.TabIndex = 16;
-            this.lblPhongBan.Text = "Phòng ban / Trạng thái";
+            this.lblPhongBan.Text = "Phòng ban";
 
             this.txtPhongBan.BorderRadius = 5;
             this.txtPhongBan.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtPhongBan.Location = new System.Drawing.Point(520, 140);
+            this.txtPhongBan.Location = new System.Drawing.Point(640, 140);
             this.txtPhongBan.Name = "txtPhongBan";
-            this.txtPhongBan.Size = new System.Drawing.Size(250, 36);
+            this.txtPhongBan.Size = new System.Drawing.Size(150, 36);
             this.txtPhongBan.TabIndex = 17;
 
             this.lblEmail.ForeColor = System.Drawing.Color.Gray;
-            this.lblEmail.Location = new System.Drawing.Point(790, 120);
+            this.lblEmail.Location = new System.Drawing.Point(810, 120);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(100, 20);
             this.lblEmail.TabIndex = 18;
@@ -271,13 +293,12 @@
 
             this.txtEmail.BorderRadius = 5;
             this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtEmail.Location = new System.Drawing.Point(790, 140);
+            this.txtEmail.Location = new System.Drawing.Point(810, 140);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(250, 36);
+            this.txtEmail.Size = new System.Drawing.Size(150, 36);
             this.txtEmail.TabIndex = 19;
 
             // --- HÀNG 3 ---
-            // Ngân hàng
             this.lblNganHang.ForeColor = System.Drawing.Color.Gray;
             this.lblNganHang.Location = new System.Drawing.Point(180, 190);
             this.lblNganHang.Name = "lblNganHang";
@@ -289,14 +310,14 @@
             this.txtNganHang.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtNganHang.Location = new System.Drawing.Point(180, 210);
             this.txtNganHang.Name = "txtNganHang";
-            this.txtNganHang.Size = new System.Drawing.Size(510, 36);
+            this.txtNganHang.Size = new System.Drawing.Size(440, 36);
             this.txtNganHang.TabIndex = 21;
 
             this.btnChonPDF.BorderRadius = 5;
             this.btnChonPDF.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.btnChonPDF.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnChonPDF.ForeColor = System.Drawing.Color.White;
-            this.btnChonPDF.Location = new System.Drawing.Point(720, 210);
+            this.btnChonPDF.Location = new System.Drawing.Point(640, 210);
             this.btnChonPDF.Name = "btnChonPDF";
             this.btnChonPDF.Size = new System.Drawing.Size(150, 36);
             this.btnChonPDF.TabIndex = 22;
@@ -307,7 +328,7 @@
             this.btnXemPDF.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnXemPDF.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnXemPDF.ForeColor = System.Drawing.Color.White;
-            this.btnXemPDF.Location = new System.Drawing.Point(880, 210);
+            this.btnXemPDF.Location = new System.Drawing.Point(810, 210);
             this.btnXemPDF.Name = "btnXemPDF";
             this.btnXemPDF.Size = new System.Drawing.Size(100, 36);
             this.btnXemPDF.TabIndex = 23;
@@ -315,7 +336,7 @@
 
             this.lblFilePDF.AutoSize = true;
             this.lblFilePDF.ForeColor = System.Drawing.Color.Gray;
-            this.lblFilePDF.Location = new System.Drawing.Point(720, 255);
+            this.lblFilePDF.Location = new System.Drawing.Point(640, 255);
             this.lblFilePDF.Name = "lblFilePDF";
             this.lblFilePDF.Size = new System.Drawing.Size(91, 19);
             this.lblFilePDF.TabIndex = 24;
@@ -326,7 +347,7 @@
             this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnThem.ForeColor = System.Drawing.Color.White;
-            this.btnThem.Location = new System.Drawing.Point(180, 275);
+            this.btnThem.Location = new System.Drawing.Point(180, 290);
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(130, 40);
             this.btnThem.TabIndex = 25;
@@ -336,7 +357,7 @@
             this.btnSua.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
             this.btnSua.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSua.ForeColor = System.Drawing.Color.White;
-            this.btnSua.Location = new System.Drawing.Point(325, 275);
+            this.btnSua.Location = new System.Drawing.Point(325, 290);
             this.btnSua.Name = "btnSua";
             this.btnSua.Size = new System.Drawing.Size(130, 40);
             this.btnSua.TabIndex = 26;
@@ -348,7 +369,7 @@
             this.btnXoa.FillColor = System.Drawing.Color.White;
             this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnXoa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-            this.btnXoa.Location = new System.Drawing.Point(470, 275);
+            this.btnXoa.Location = new System.Drawing.Point(470, 290);
             this.btnXoa.Name = "btnXoa";
             this.btnXoa.Size = new System.Drawing.Size(130, 40);
             this.btnXoa.TabIndex = 27;
@@ -358,7 +379,7 @@
             this.btnLamMoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnLamMoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            this.btnLamMoi.Location = new System.Drawing.Point(615, 275);
+            this.btnLamMoi.Location = new System.Drawing.Point(615, 290);
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.Size = new System.Drawing.Size(130, 40);
             this.btnLamMoi.TabIndex = 28;
@@ -370,9 +391,10 @@
             this.pnlBottom.Controls.Add(this.txtTimKiem);
             this.pnlBottom.Controls.Add(this.dgvTacGia);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 340);
+            // Chỉnh lại tọa độ Y vì panel trên đã kéo dài
+            this.pnlBottom.Location = new System.Drawing.Point(0, 360);
             this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(1200, 410);
+            this.pnlBottom.Size = new System.Drawing.Size(1200, 390);
             this.pnlBottom.TabIndex = 1;
 
             // lblDataTitle
@@ -392,7 +414,7 @@
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtTimKiem.Location = new System.Drawing.Point(890, 15);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.PlaceholderText = "🔍 Nhập tên, mã thẻ...";
+            this.txtTimKiem.PlaceholderText = "🔍 Nhập tên, mã thẻ, SĐT...";
             this.txtTimKiem.Size = new System.Drawing.Size(280, 36);
             this.txtTimKiem.TabIndex = 1;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
@@ -428,7 +450,7 @@
             this.dgvTacGia.ReadOnly = true;
             this.dgvTacGia.RowHeadersVisible = false;
             this.dgvTacGia.RowTemplate.Height = 40;
-            this.dgvTacGia.Size = new System.Drawing.Size(1150, 320);
+            this.dgvTacGia.Size = new System.Drawing.Size(1150, 300);
             this.dgvTacGia.TabIndex = 2;
             this.dgvTacGia.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvTacGia.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -497,24 +519,22 @@
         private Guna.UI2.WinForms.Guna2TextBox txtMaThe;
         private System.Windows.Forms.Label lblHoTen;
         private Guna.UI2.WinForms.Guna2TextBox txtHoTen;
-
-        // Đã đổi tên Control cho đồng bộ
         private System.Windows.Forms.Label lblSoTaiKhoan;
         private Guna.UI2.WinForms.Guna2TextBox txtSoTaiKhoan;
 
         private System.Windows.Forms.Label lblNgaySinh;
         private Guna.UI2.WinForms.Guna2DateTimePicker dtpNgaySinh;
+
+        // MỚI
+        private System.Windows.Forms.Label lblDienThoai;
+        private Guna.UI2.WinForms.Guna2TextBox txtDienThoai;
+
         private System.Windows.Forms.Label lblPhanLoai;
         private Guna.UI2.WinForms.Guna2ComboBox cboPhanLoai;
-
-        // Đã đổi tên Control
         private System.Windows.Forms.Label lblPhongBan;
         private Guna.UI2.WinForms.Guna2TextBox txtPhongBan;
-
         private System.Windows.Forms.Label lblEmail;
         private Guna.UI2.WinForms.Guna2TextBox txtEmail;
-
-        // Đã đổi tên Control
         private System.Windows.Forms.Label lblNganHang;
         private Guna.UI2.WinForms.Guna2TextBox txtNganHang;
 

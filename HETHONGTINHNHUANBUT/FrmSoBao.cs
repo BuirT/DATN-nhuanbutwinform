@@ -44,9 +44,10 @@ namespace HETHONGTINHNHUANBUT
 
                 dgvSoBao.DataSource = list.Select(b => new {
                     b.Id,
-                    Maso = b.Maso?.ToString() ?? "", // Xử lý object sang string để hiện lên lưới[cite: 1]
+                    Maso = b.Maso?.ToString() ?? "",
                     Tenbao = b.Tenbao,
-                    Ngayra = b.Ngayra.ToString("dd/MM/yyyy"),
+                    // ĐÃ THÊM THẦN CHÚ: Kéo thời gian về múi giờ địa phương (Việt Nam)
+                    Ngayra = b.Ngayra.ToLocalTime().ToString("dd/MM/yyyy"),
                     Sobao = b.Sobao,
                     Sobo = b.Sobo,
                     Loaibao = b.Loaibao,
@@ -61,7 +62,6 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // ĐÂY LÀ HÀM ĐANG THIẾU KHIẾN DESIGNER BÁO LỖI
         private async void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             await LoadDataAsync(txtTimKiem.Text);
@@ -159,7 +159,12 @@ namespace HETHONGTINHNHUANBUT
                 txtSoBao.Text = row.Cells["Sobao"].Value?.ToString();
                 txtSoBo.Text = row.Cells["Sobo"].Value?.ToString();
                 cboLoaiBao.Text = row.Cells["Loaibao"].Value?.ToString();
-                if (DateTime.TryParse(row.Cells["Ngayra"].Value?.ToString(), out DateTime dt)) dtpNgayRa.Value = dt;
+
+                // CẬP NHẬT: Xử lý gán lại ngày từ lưới lên DatePicker cho chuẩn
+                if (DateTime.TryParseExact(row.Cells["Ngayra"].Value?.ToString(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime dt))
+                {
+                    dtpNgayRa.Value = dt;
+                }
             }
         }
     }

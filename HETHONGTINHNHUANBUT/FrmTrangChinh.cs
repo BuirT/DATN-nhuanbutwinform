@@ -61,6 +61,12 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(new FrmTacGia());
         }
 
+        // ĐÃ SỬA: Bỏ chữ "sender" đi để khớp với cấu trúc hàm OpenChildForm
+        private void btnButDanh_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmButDanh());
+        }
+
         private void btnTaiKhoan_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmTaiKhoan());
@@ -102,7 +108,7 @@ namespace HETHONGTINHNHUANBUT
         // --- ĐĂNG XUẤT ---
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Đồng chí có chắc chắn muốn đăng xuất khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 this.Hide();
                 FormLogin login = new FormLogin();

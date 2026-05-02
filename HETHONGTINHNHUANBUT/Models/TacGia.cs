@@ -21,6 +21,7 @@ namespace HETHONGTINHNHUANBUT.Models
         public string NganHang { get; set; }
         public string PhongBan { get; set; }
         public string SoTaiKhoan { get; set; }
+        public string DienThoai { get; set; }
         public string AvatarPath { get; set; }
         public string PdfPath { get; set; }
 

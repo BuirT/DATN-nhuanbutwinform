@@ -42,8 +42,9 @@ namespace HETHONGTINHNHUANBUT
                         (t.MaHT != null && t.MaHT.ToLower().Contains(keyword)) ||
                         (t.HoTen != null && t.HoTen.ToLower().Contains(keyword)) ||
                         (t.MaThe != null && t.MaThe.ToLower().Contains(keyword)) ||
-                        // Tìm kiếm bằng Số tài khoản mới
-                        (t.SoTaiKhoan != null && t.SoTaiKhoan.ToLower().Contains(keyword))
+                        (t.SoTaiKhoan != null && t.SoTaiKhoan.ToLower().Contains(keyword)) ||
+                        // MỚI: Thêm tìm kiếm theo số điện thoại
+                        (t.DienThoai != null && t.DienThoai.ToLower().Contains(keyword))
                     ).ToList();
                 }
 
@@ -56,9 +57,10 @@ namespace HETHONGTINHNHUANBUT
                     NgaySinh = t.NgaySinh.ToString("dd/MM/yyyy"),
                     PhanLoai = t.PhanLoai,
                     Email = t.Email,
-                    PhongBan = t.PhongBan,     // MỚI
-                    SoTaiKhoan = t.SoTaiKhoan, // MỚI
-                    NganHang = t.NganHang,     // MỚI
+                    DienThoai = t.DienThoai,   // MỚI
+                    PhongBan = t.PhongBan,
+                    SoTaiKhoan = t.SoTaiKhoan,
+                    NganHang = t.NganHang,
                     AvatarPath = t.AvatarPath,
                     PdfPath = t.PdfPath
                 }).OrderByDescending(x => x.MaHT).ToList();
@@ -75,10 +77,11 @@ namespace HETHONGTINHNHUANBUT
                     dgvTacGia.Columns["MaThe"].HeaderText = "Mã Thẻ";
                     dgvTacGia.Columns["HoTen"].HeaderText = "Họ và Tên";
                     dgvTacGia.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    dgvTacGia.Columns["SoTaiKhoan"].HeaderText = "Số Tài Khoản"; // Tiêu đề mới
+                    dgvTacGia.Columns["SoTaiKhoan"].HeaderText = "Số Tài Khoản";
+                    dgvTacGia.Columns["DienThoai"].HeaderText = "Điện Thoại"; // Tiêu đề mới
                     dgvTacGia.Columns["NgaySinh"].HeaderText = "Ngày Sinh";
                     dgvTacGia.Columns["PhanLoai"].HeaderText = "Phân Loại";
-                    dgvTacGia.Columns["PhongBan"].HeaderText = "Phòng Ban";    // Tiêu đề mới
+                    dgvTacGia.Columns["PhongBan"].HeaderText = "Phòng Ban";
                     dgvTacGia.Columns["Email"].HeaderText = "Email";
                 }
             }
@@ -155,7 +158,9 @@ namespace HETHONGTINHNHUANBUT
                     Ngaysinh = dtpNgaySinh.Value,
                     LoaiTacgia = cboPhanLoai.Text,
                     Email = txtEmail.Text.Trim(),
-                    // Gán vào 3 biến mới toanh
+
+                    DienThoai = txtDienThoai.Text.Trim(), // Lấy từ Form
+
                     SoTaiKhoan = txtSoTaiKhoan.Text.Trim(),
                     PhongBan = txtPhongBan.Text.Trim(),
                     NganHang = txtNganHang.Text.Trim(),
@@ -186,7 +191,9 @@ namespace HETHONGTINHNHUANBUT
                     .Set(t => t.Ngaysinh, dtpNgaySinh.Value)
                     .Set(t => t.LoaiTacgia, cboPhanLoai.Text)
                     .Set(t => t.Email, txtEmail.Text.Trim())
-                    // Cập nhật bằng 3 biến mới
+
+                    .Set(t => t.DienThoai, txtDienThoai.Text.Trim()) // Cập nhật Số điện thoại
+
                     .Set(t => t.SoTaiKhoan, txtSoTaiKhoan.Text.Trim())
                     .Set(t => t.PhongBan, txtPhongBan.Text.Trim())
                     .Set(t => t.NganHang, txtNganHang.Text.Trim())
@@ -218,6 +225,9 @@ namespace HETHONGTINHNHUANBUT
         {
             txtMaHT.Clear(); txtMaThe.Clear(); txtHoTen.Clear();
             txtEmail.Clear(); txtPhongBan.Clear(); txtSoTaiKhoan.Clear(); txtNganHang.Clear();
+
+            txtDienThoai.Clear(); // MỚI
+
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
             dtpNgaySinh.Value = DateTime.Now;
 
@@ -238,7 +248,8 @@ namespace HETHONGTINHNHUANBUT
                 cboPhanLoai.Text = row.Cells["PhanLoai"].Value?.ToString();
                 txtEmail.Text = row.Cells["Email"].Value?.ToString();
 
-                // Đổ dữ liệu từ 3 cột mới
+                txtDienThoai.Text = row.Cells["DienThoai"].Value?.ToString(); // MỚI
+
                 txtPhongBan.Text = row.Cells["PhongBan"].Value?.ToString();
                 txtSoTaiKhoan.Text = row.Cells["SoTaiKhoan"].Value?.ToString();
                 txtNganHang.Text = row.Cells["NganHang"].Value?.ToString();

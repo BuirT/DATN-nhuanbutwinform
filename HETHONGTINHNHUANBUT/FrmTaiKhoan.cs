@@ -15,7 +15,7 @@ namespace HETHONGTINHNHUANBUT
         public FrmTaiKhoan()
         {
             InitializeComponent();
-            _taiKhoanColl = MongoProvider.Instance.GetCollection<User>("TaiKhoan");
+            _taiKhoanColl = MongoProvider.Instance.GetCollection<User>("User");
         }
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)
