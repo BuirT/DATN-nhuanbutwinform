@@ -20,61 +20,66 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)
         {
-            dgvTaiKhoan.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            // Thiết lập vai trò chuẩn theo quy trình tòa soạn
+            cboQuyen.Items.Clear();
+            cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán" });
             if (cboQuyen.Items.Count > 0) cboQuyen.SelectedIndex = 0;
 
             await LoadDataAsync();
         }
 
-        private async Task LoadDataAsync()
+        private async Task LoadDataAsync(string keyword = "")
         {
             try
             {
                 var list = await _taiKhoanColl.Find(_ => true).ToListAsync();
 
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    keyword = keyword.ToLower().Trim();
+                    list = list.Where(t =>
+                        (t.TenDangNhap != null && t.TenDangNhap.ToLower().Contains(keyword)) ||
+                        (t.HoTen != null && t.HoTen.ToLower().Contains(keyword))
+                    ).ToList();
+                }
+
                 dgvTaiKhoan.DataSource = list.Select(tk => new {
                     tk.Id,
                     TenDangNhap = tk.TenDangNhap,
-                    // Che pass trên GridView nhìn cho ngầu
                     MatKhau = "********",
-                    HoTen = tk.HoTen,
-                    Quyen = tk.Quyen,
-                    HoatDong = tk.HoatDong ? "Mở" : "Khóa"
+                    tk.HoTen,
+                    tk.Quyen,
+                    TrangThai = tk.HoatDong ? "Đang hoạt động" : "Bị khóa"
                 }).ToList();
 
                 if (dgvTaiKhoan.Columns["Id"] != null) dgvTaiKhoan.Columns["Id"].Visible = false;
 
-                // Đổi tên cột
                 if (dgvTaiKhoan.Columns.Count > 0)
                 {
-                    dgvTaiKhoan.Columns["TenDangNhap"].HeaderText = "Username";
-                    dgvTaiKhoan.Columns["MatKhau"].HeaderText = "Password";
+                    dgvTaiKhoan.Columns["TenDangNhap"].HeaderText = "Tên đăng nhập";
+                    dgvTaiKhoan.Columns["MatKhau"].HeaderText = "Mật khẩu";
                     dgvTaiKhoan.Columns["HoTen"].HeaderText = "Họ và Tên";
-                    dgvTaiKhoan.Columns["Quyen"].HeaderText = "Vai Trò";
-                    dgvTaiKhoan.Columns["HoatDong"].HeaderText = "Trạng Thái";
+                    dgvTaiKhoan.Columns["Quyen"].HeaderText = "Vai trò";
+                    dgvTaiKhoan.Columns["TrangThai"].HeaderText = "Trạng thái";
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnThem_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTenDangNhap.Text) || string.IsNullOrWhiteSpace(txtMatKhau.Text))
             {
-                MessageBox.Show("Tên đăng nhập và Mật khẩu không được để trống!", "Cảnh báo");
+                MessageBox.Show("Vui lòng nhập đủ Tên đăng nhập và Mật khẩu!", "Nhắc nhở");
                 return;
             }
 
             try
             {
-                // Kiểm tra trùng username
                 var exist = await _taiKhoanColl.Find(t => t.TenDangNhap == txtTenDangNhap.Text.Trim()).FirstOrDefaultAsync();
                 if (exist != null)
                 {
-                    MessageBox.Show("Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác!", "Lỗi");
+                    MessageBox.Show("Tên đăng nhập đã tồn tại!", "Cảnh báo");
                     return;
                 }
 
@@ -98,25 +103,19 @@ namespace HETHONGTINHNHUANBUT
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvTaiKhoan.CurrentRow == null) return;
-
             try
             {
                 string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
-                var filter = Builders<User>.Filter.Eq(t => t.Id, id);
-
-                // Tránh tình trạng update đè mật khẩu rỗng nếu user không nhập gì vào ô mk lúc sửa
-                var updateDef = Builders<User>.Update
+                var update = Builders<User>.Update
                     .Set(t => t.HoTen, txtHoTen.Text.Trim())
                     .Set(t => t.Quyen, cboQuyen.Text)
                     .Set(t => t.HoatDong, chkHoatDong.Checked);
 
                 if (!string.IsNullOrWhiteSpace(txtMatKhau.Text))
-                {
-                    updateDef = updateDef.Set(t => t.MatKhau, txtMatKhau.Text.Trim());
-                }
+                    update = update.Set(t => t.MatKhau, txtMatKhau.Text.Trim());
 
-                await _taiKhoanColl.UpdateOneAsync(filter, updateDef);
-                MessageBox.Show("Cập nhật thông tin thành công!");
+                await _taiKhoanColl.UpdateOneAsync(t => t.Id == id, update);
+                MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
@@ -125,18 +124,12 @@ namespace HETHONGTINHNHUANBUT
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvTaiKhoan.CurrentRow == null) return;
-
-            string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
             string user = dgvTaiKhoan.CurrentRow.Cells["TenDangNhap"].Value.ToString();
+            if (user.ToLower() == "admin") { MessageBox.Show("Không thể xóa Admin hệ thống!"); return; }
 
-            if (user == "admin")
+            if (MessageBox.Show($"Xác nhận xóa tài khoản {user}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                MessageBox.Show("Không thể xóa tài khoản Quản trị gốc!", "Từ chối");
-                return;
-            }
-
-            if (MessageBox.Show($"Đồng chí chắc chắn muốn xóa tài khoản {user}?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
+                string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
                 await _taiKhoanColl.DeleteOneAsync(t => t.Id == id);
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
@@ -145,13 +138,9 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
-            txtTenDangNhap.Clear();
-            txtMatKhau.Clear();
-            txtHoTen.Clear();
-            cboQuyen.SelectedIndex = 0;
-            chkHoatDong.Checked = true;
-            txtTenDangNhap.ReadOnly = false;
-            txtTenDangNhap.Focus();
+            txtTenDangNhap.Clear(); txtMatKhau.Clear(); txtHoTen.Clear();
+            cboQuyen.SelectedIndex = 0; chkHoatDong.Checked = true;
+            txtTenDangNhap.ReadOnly = false; txtTenDangNhap.Focus();
         }
 
         private void dgvTaiKhoan_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -159,14 +148,17 @@ namespace HETHONGTINHNHUANBUT
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvTaiKhoan.Rows[e.RowIndex];
-
-                txtTenDangNhap.Text = row.Cells["TenDangNhap"].Value.ToString();
-                txtTenDangNhap.ReadOnly = true; // Không cho sửa Username
-                txtMatKhau.Clear(); // Bỏ trống ô MK để nếu muốn đổi MK thì nhập mới
-                txtHoTen.Text = row.Cells["HoTen"].Value.ToString();
-                cboQuyen.Text = row.Cells["Quyen"].Value.ToString();
-                chkHoatDong.Checked = row.Cells["HoatDong"].Value.ToString() == "Mở";
+                txtTenDangNhap.Text = row.Cells["TenDangNhap"].Value?.ToString();
+                txtTenDangNhap.ReadOnly = true;
+                txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
+                cboQuyen.Text = row.Cells["Quyen"].Value?.ToString();
+                chkHoatDong.Checked = row.Cells["TrangThai"].Value?.ToString() == "Đang hoạt động";
             }
+        }
+
+        private async void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            await LoadDataAsync(txtTimKiem.Text);
         }
     }
 }
