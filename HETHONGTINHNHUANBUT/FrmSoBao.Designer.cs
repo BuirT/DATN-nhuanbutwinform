@@ -2,15 +2,8 @@
 {
     partial class FrmSoBao
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -50,6 +39,10 @@
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoi = new Guna.UI2.WinForms.Guna2Button();
+
+            // NÚT KHÓA SỔ
+            this.btnKhoaSo = new Guna.UI2.WinForms.Guna2Button();
+
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.dgvSoBao = new Guna.UI2.WinForms.Guna2DataGridView();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
@@ -80,6 +73,7 @@
             this.pnlTop.Controls.Add(this.btnSua);
             this.pnlTop.Controls.Add(this.btnXoa);
             this.pnlTop.Controls.Add(this.btnLamMoi);
+            this.pnlTop.Controls.Add(this.btnKhoaSo);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
@@ -314,7 +308,19 @@
             this.btnLamMoi.TabIndex = 22;
             this.btnLamMoi.Text = "LÀM MỚI";
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
-            // 
+
+            // NÚT KHÓA SỔ
+            this.btnKhoaSo.BorderRadius = 5;
+            this.btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.btnKhoaSo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnKhoaSo.ForeColor = System.Drawing.Color.White;
+            this.btnKhoaSo.Location = new System.Drawing.Point(770, 155);
+            this.btnKhoaSo.Name = "btnKhoaSo";
+            this.btnKhoaSo.Size = new System.Drawing.Size(150, 42);
+            this.btnKhoaSo.TabIndex = 23;
+            this.btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
+            this.btnKhoaSo.Click += new System.EventHandler(this.btnKhoaSo_Click);
+
             // pnlBottom
             // 
             this.pnlBottom.BackColor = System.Drawing.Color.Transparent;
@@ -430,7 +436,6 @@
 
         #endregion
 
-        // PHẦN QUAN TRỌNG NHẤT: Khai báo tất cả linh kiện tại đây
         private Guna.UI2.WinForms.Guna2Panel pnlTop;
         private Guna.UI2.WinForms.Guna2Panel pnlBottom;
         private System.Windows.Forms.Label lblTitle;
@@ -454,5 +459,8 @@
         private System.Windows.Forms.Label lblXinChao;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiem;
         private Guna.UI2.WinForms.Guna2DataGridView dgvSoBao;
+
+        // Nút Khóa Sổ
+        private Guna.UI2.WinForms.Guna2Button btnKhoaSo;
     }
 }

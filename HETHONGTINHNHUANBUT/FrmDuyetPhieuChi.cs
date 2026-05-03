@@ -11,10 +11,10 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmDuyetPhieuChi : Form
     {
         private readonly IMongoCollection<PhieuChi> _phieuChiColl;
-        private readonly IMongoCollection<NhuanBut> _nhuanButColl; // Thêm để mở khóa bài khi bị từ chối
+        private readonly IMongoCollection<NhuanBut> _nhuanButColl;
         private string _selectedId = "";
 
-        public string NguoiDuyet { get; set; } = "Ban Giám Đốc"; // Lấy từ session lúc login
+        public string NguoiDuyet { get; set; } = "Ban Giám Đốc";
 
         public FrmDuyetPhieuChi()
         {
@@ -25,7 +25,6 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmDuyetPhieuChi_Load(object sender, EventArgs e)
         {
-            // 0: Chờ duyệt, 1: Đã duyệt, 2: Từ chối
             cboTrangThai.SelectedIndex = 0;
             await LoadDataAsync();
         }
@@ -73,12 +72,10 @@ namespace HETHONGTINHNHUANBUT
         {
             await LoadDataAsync();
 
-            // Ẩn hiện nút duyệt tùy trạng thái
             bool isChoDuyet = cboTrangThai.SelectedIndex == 0;
             btnDuyet.Visible = isChoDuyet;
             btnTuChoi.Visible = isChoDuyet;
 
-            // Chỉ hiện ô nhập lý do khi đang ở tab Chờ duyệt (để nhập) hoặc tab Từ chối (để xem)
             txtLyDoTuChoi.Visible = isChoDuyet || cboTrangThai.SelectedIndex == 2;
             lblLyDoTuChoi.Visible = isChoDuyet || cboTrangThai.SelectedIndex == 2;
         }
@@ -94,14 +91,16 @@ namespace HETHONGTINHNHUANBUT
                 lblChiTietTacGia.Text = "Thanh toán cho: " + row.Cells["TenTacGia"].Value?.ToString();
                 lblChiTietTien.Text = row.Cells["ThucLinh"].Value?.ToString() + " VNĐ";
 
-                if (cboTrangThai.SelectedIndex == 2) // Nếu đang ở tab Từ chối, load lý do từ chối lên
+                if (cboTrangThai.SelectedIndex == 2)
                 {
                     var phieu = _phieuChiColl.Find(p => p.Id == _selectedId).FirstOrDefault();
                     if (phieu != null) txtLyDoTuChoi.Text = phieu.LyDoTuChoi;
                 }
                 else
                 {
-                    txtLyDoTuChoi.Clear();
+                    var phieu = _phieuChiColl.Find(p => p.Id == _selectedId).FirstOrDefault();
+                    if (phieu != null && cboTrangThai.SelectedIndex == 0) txtLyDoTuChoi.Text = phieu.LyDo;
+                    else txtLyDoTuChoi.Clear();
                 }
             }
         }
@@ -138,7 +137,6 @@ namespace HETHONGTINHNHUANBUT
 
             if (MessageBox.Show("Xác nhận TỪ CHỐI phiếu chi này? Các bài viết trong phiếu sẽ được mở khóa để Kế toán làm lại.", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                // 1. Cập nhật trạng thái Phiếu Chi thành Từ Chối
                 var update = Builders<PhieuChi>.Update
                     .Set(p => p.TrangThaiDuyet, -1)
                     .Set(p => p.LyDoTuChoi, txtLyDoTuChoi.Text.Trim())
@@ -146,19 +144,45 @@ namespace HETHONGTINHNHUANBUT
                     .Set(p => p.NgayDuyet, DateTime.Now);
                 await _phieuChiColl.UpdateOneAsync(p => p.Id == _selectedId, update);
 
-                // 2. TUYỆT CHIÊU: Mở khóa các bài viết trong phiếu này
                 var phieuInfo = await _phieuChiColl.Find(p => p.Id == _selectedId).FirstOrDefaultAsync();
                 if (phieuInfo != null && phieuInfo.DanhSachBaiViet != null && phieuInfo.DanhSachBaiViet.Count > 0)
                 {
                     var filterNb = Builders<NhuanBut>.Filter.In(n => n.Id, phieuInfo.DanhSachBaiViet);
                     var updateNb = Builders<NhuanBut>.Update
-                                    .Set(n => n.DaThanhToan, false) // Trả nợ lại
-                                    .Set(n => n.MaPhieuChi, "");    // Xóa mã phiếu cũ
+                                    .Set(n => n.DaThanhToan, false)
+                                    .Set(n => n.MaPhieuChi, "");
                     await _nhuanButColl.UpdateManyAsync(filterNb, updateNb);
                 }
 
                 MessageBox.Show("Đã từ chối phiếu chi! Hệ thống đã nhả các bài viết ra để làm lại.");
                 await LoadDataAsync();
+            }
+        }
+
+        private async void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_selectedId)) { MessageBox.Show("Vui lòng chọn phiếu cần xóa!"); return; }
+
+            if (MessageBox.Show("Xác nhận XÓA VĨNH VIỄN phiếu chi này? Các bài viết trong phiếu sẽ được mở khóa.", "Xác nhận Xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+            {
+                try
+                {
+                    var phieuInfo = await _phieuChiColl.Find(p => p.Id == _selectedId).FirstOrDefaultAsync();
+                    if (phieuInfo != null && phieuInfo.DanhSachBaiViet != null && phieuInfo.DanhSachBaiViet.Count > 0)
+                    {
+                        var filterNb = Builders<NhuanBut>.Filter.In(n => n.Id, phieuInfo.DanhSachBaiViet);
+                        var updateNb = Builders<NhuanBut>.Update
+                                        .Set(n => n.DaThanhToan, false)
+                                        .Set(n => n.MaPhieuChi, "");
+                        await _nhuanButColl.UpdateManyAsync(filterNb, updateNb);
+                    }
+
+                    await _phieuChiColl.DeleteOneAsync(p => p.Id == _selectedId);
+
+                    MessageBox.Show("Đã xóa phiếu chi thành công! Hệ thống đã nhả các bài viết ra.");
+                    await LoadDataAsync();
+                }
+                catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
             }
         }
 

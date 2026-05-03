@@ -38,6 +38,7 @@
             this.txtLyDoTuChoi = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnDuyet = new Guna.UI2.WinForms.Guna2Button();
             this.btnTuChoi = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
 
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhieuChi)).BeginInit();
@@ -136,6 +137,7 @@
             this.pnlBottom.Controls.Add(this.lblChiTietTien);
             this.pnlBottom.Controls.Add(this.lblLyDoTuChoi);
             this.pnlBottom.Controls.Add(this.txtLyDoTuChoi);
+            this.pnlBottom.Controls.Add(this.btnXoa);
             this.pnlBottom.Controls.Add(this.btnDuyet);
             this.pnlBottom.Controls.Add(this.btnTuChoi);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -184,22 +186,37 @@
             // lblLyDoTuChoi
             this.lblLyDoTuChoi.AutoSize = true;
             this.lblLyDoTuChoi.ForeColor = System.Drawing.Color.Gray;
-            this.lblLyDoTuChoi.Location = new System.Drawing.Point(400, 20);
+            this.lblLyDoTuChoi.Location = new System.Drawing.Point(350, 20);
             this.lblLyDoTuChoi.Name = "lblLyDoTuChoi";
             this.lblLyDoTuChoi.Size = new System.Drawing.Size(193, 19);
             this.lblLyDoTuChoi.TabIndex = 4;
-            this.lblLyDoTuChoi.Text = "Lý do từ chối (bắt buộc nhập):";
+            this.lblLyDoTuChoi.Text = "Lý do phiếu / Lý do từ chối:";
 
             // txtLyDoTuChoi
             this.txtLyDoTuChoi.BorderRadius = 5;
             this.txtLyDoTuChoi.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtLyDoTuChoi.DefaultText = "";
             this.txtLyDoTuChoi.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtLyDoTuChoi.Location = new System.Drawing.Point(400, 45);
+            this.txtLyDoTuChoi.Location = new System.Drawing.Point(350, 45);
             this.txtLyDoTuChoi.Multiline = true;
             this.txtLyDoTuChoi.Name = "txtLyDoTuChoi";
-            this.txtLyDoTuChoi.Size = new System.Drawing.Size(400, 100);
+            this.txtLyDoTuChoi.Size = new System.Drawing.Size(350, 100);
             this.txtLyDoTuChoi.TabIndex = 5;
+
+            // btnXoa - ĐÃ CĂN CHỈNH CAO BẰNG CÁC NÚT KHÁC
+            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXoa.BorderRadius = 5;
+            this.btnXoa.FillColor = System.Drawing.Color.White;
+            this.btnXoa.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68))))); // Đỏ
+            this.btnXoa.BorderThickness = 1;
+            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnXoa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this.btnXoa.Location = new System.Drawing.Point(720, 45);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(110, 100);
+            this.btnXoa.TabIndex = 9;
+            this.btnXoa.Text = "XÓA\nPHIẾU";
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
 
             // btnDuyet
             this.btnDuyet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -265,5 +282,6 @@
         private Guna.UI2.WinForms.Guna2TextBox txtLyDoTuChoi;
         private Guna.UI2.WinForms.Guna2Button btnDuyet;
         private Guna.UI2.WinForms.Guna2Button btnTuChoi;
+        private Guna.UI2.WinForms.Guna2Button btnXoa;
     }
 }

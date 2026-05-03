@@ -12,6 +12,7 @@ namespace HETHONGTINHNHUANBUT
     {
         private readonly IMongoCollection<Bao> _baoColl;
         private string _tenNguoiDung;
+        private string _selectedId = "";
 
         public FrmSoBao(string tenNguoiDung = "Admin")
         {
@@ -22,7 +23,11 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmSoBao_Load(object sender, EventArgs e)
         {
-            lblXinChao.Text = $"Xin chào, {_tenNguoiDung} 👋";
+            if (this.Controls.Find("lblXinChao", true).FirstOrDefault() is Label lblXinChao)
+            {
+                lblXinChao.Text = $"Xin chào, {_tenNguoiDung} 👋";
+            }
+
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
             await LoadDataAsync();
         }
@@ -46,15 +51,34 @@ namespace HETHONGTINHNHUANBUT
                     b.Id,
                     Maso = b.Maso?.ToString() ?? "",
                     Tenbao = b.Tenbao,
-                    // ĐÃ THÊM THẦN CHÚ: Kéo thời gian về múi giờ địa phương (Việt Nam)
                     Ngayra = b.Ngayra.ToLocalTime().ToString("dd/MM/yyyy"),
                     Sobao = b.Sobao,
                     Sobo = b.Sobo,
                     Loaibao = b.Loaibao,
-                    DaDuyet = b.DaDuyet == "Y" ? "Đã duyệt" : "Chưa duyệt"
+                    // ĐÃ SỬA: Thay đổi hoàn toàn thuật ngữ hiển thị
+                    DaDuyet = b.DaDuyet == "Y" ? "🔒 Đã khóa sổ" : "Đang mở"
                 }).OrderByDescending(x => x.Ngayra).ToList();
 
                 if (dgvSoBao.Columns["Id"] != null) dgvSoBao.Columns["Id"].Visible = false;
+
+                if (dgvSoBao.Columns.Count > 0)
+                {
+                    dgvSoBao.Columns["Maso"].HeaderText = "Mã số";
+                    dgvSoBao.Columns["Tenbao"].HeaderText = "Tên kỳ báo";
+                    dgvSoBao.Columns["Ngayra"].HeaderText = "Ngày ra";
+                    dgvSoBao.Columns["Sobao"].HeaderText = "Số báo";
+                    dgvSoBao.Columns["Sobo"].HeaderText = "Số bộ";
+                    dgvSoBao.Columns["Loaibao"].HeaderText = "Loại báo";
+                    // ĐÃ SỬA: Đổi tên cột
+                    dgvSoBao.Columns["DaDuyet"].HeaderText = "Tình trạng sổ";
+                }
+
+                // Tự động reset lại nút khi tải xong dữ liệu
+                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
+                {
+                    btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
+                    btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(16, 185, 129); // Xanh lá
+                }
             }
             catch (Exception ex)
             {
@@ -93,7 +117,7 @@ namespace HETHONGTINHNHUANBUT
                     Sobao = txtSoBao.Text.Trim(),
                     Sobo = txtSoBo.Text.Trim(),
                     Loaibao = cboLoaiBao.Text,
-                    DaDuyet = "N"
+                    DaDuyet = "N" // Mặc định là Đang mở
                 };
 
                 await _baoColl.InsertOneAsync(bao);
@@ -106,10 +130,9 @@ namespace HETHONGTINHNHUANBUT
 
         private async void btnSua_Click(object sender, EventArgs e)
         {
-            if (dgvSoBao.CurrentRow == null) return;
+            if (string.IsNullOrEmpty(_selectedId)) return;
             try
             {
-                string id = dgvSoBao.CurrentRow.Cells["Id"].Value.ToString();
                 var update = Builders<Bao>.Update
                     .Set(b => b.Maso, txtMaso.Text.Trim())
                     .Set(b => b.Tenbao, txtTenBao.Text.Trim())
@@ -118,7 +141,7 @@ namespace HETHONGTINHNHUANBUT
                     .Set(b => b.Sobo, txtSoBo.Text.Trim())
                     .Set(b => b.Loaibao, cboLoaiBao.Text);
 
-                await _baoColl.UpdateOneAsync(b => b.Id == id, update);
+                await _baoColl.UpdateOneAsync(b => b.Id == _selectedId, update);
                 MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
@@ -127,18 +150,45 @@ namespace HETHONGTINHNHUANBUT
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
-            if (dgvSoBao.CurrentRow == null) return;
+            if (string.IsNullOrEmpty(_selectedId)) return;
             if (MessageBox.Show("Chắc chắn muốn xóa kỳ báo này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                string id = dgvSoBao.CurrentRow.Cells["Id"].Value.ToString();
-                await _baoColl.DeleteOneAsync(b => b.Id == id);
+                await _baoColl.DeleteOneAsync(b => b.Id == _selectedId);
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
             }
         }
 
+        // --- ĐÃ SỬA: SỰ KIỆN NÚT KHÓA SỔ ---
+        private async void btnKhoaSo_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_selectedId))
+            {
+                MessageBox.Show("Vui lòng chọn 1 kỳ báo từ danh sách bên dưới để Khóa hoặc Mở sổ!", "Nhắc nhở");
+                return;
+            }
+
+            try
+            {
+                var bao = await _baoColl.Find(b => b.Id == _selectedId).FirstOrDefaultAsync();
+                if (bao != null)
+                {
+                    string newStatus = bao.DaDuyet == "Y" ? "N" : "Y";
+                    string action = newStatus == "Y" ? "KHÓA SỔ" : "MỞ KHÓA SỔ";
+
+                    var update = Builders<Bao>.Update.Set(b => b.DaDuyet, newStatus);
+                    await _baoColl.UpdateOneAsync(b => b.Id == _selectedId, update);
+
+                    MessageBox.Show($"Đã {action} kỳ báo thành công!");
+                    await LoadDataAsync();
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+        }
+
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
+            _selectedId = "";
             txtMaso.Clear();
             txtTenBao.Clear();
             txtSoBao.Clear();
@@ -147,6 +197,12 @@ namespace HETHONGTINHNHUANBUT
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
             if (txtTimKiem != null) txtTimKiem.Clear();
             txtMaso.Focus();
+
+            if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
+            {
+                btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
+                btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(16, 185, 129);
+            }
         }
 
         private void dgvSoBao_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -154,16 +210,33 @@ namespace HETHONGTINHNHUANBUT
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvSoBao.Rows[e.RowIndex];
+                _selectedId = row.Cells["Id"].Value?.ToString();
+
                 txtMaso.Text = row.Cells["Maso"].Value?.ToString();
                 txtTenBao.Text = row.Cells["Tenbao"].Value?.ToString();
                 txtSoBao.Text = row.Cells["Sobao"].Value?.ToString();
                 txtSoBo.Text = row.Cells["Sobo"].Value?.ToString();
                 cboLoaiBao.Text = row.Cells["Loaibao"].Value?.ToString();
 
-                // CẬP NHẬT: Xử lý gán lại ngày từ lưới lên DatePicker cho chuẩn
                 if (DateTime.TryParseExact(row.Cells["Ngayra"].Value?.ToString(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime dt))
                 {
                     dtpNgayRa.Value = dt;
+                }
+
+                // Xử lý đổi trạng thái nút Khóa sổ
+                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
+                {
+                    string trangThai = row.Cells["DaDuyet"].Value?.ToString();
+                    if (trangThai == "🔒 Đã khóa sổ")
+                    {
+                        btnKhoaSo.Text = "MỞ KHÓA LẠI";
+                        btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(239, 68, 68); // Đỏ
+                    }
+                    else
+                    {
+                        btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
+                        btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(16, 185, 129); // Xanh lá
+                    }
                 }
             }
         }

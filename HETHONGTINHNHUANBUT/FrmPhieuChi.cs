@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
@@ -15,8 +16,6 @@ namespace HETHONGTINHNHUANBUT
         private readonly IMongoCollection<NhuanBut> _nhuanButColl;
         private readonly IMongoCollection<TacGia> _tacGiaColl;
         private readonly IMongoCollection<PhieuChi> _phieuChiColl;
-
-        // ĐÃ THÊM: Khai báo Collection Bút Danh
         private readonly IMongoCollection<ButDanh> _butDanhColl;
 
         public string NguoiLapPhieu { get; set; }
@@ -27,14 +26,11 @@ namespace HETHONGTINHNHUANBUT
             _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
             _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
             _phieuChiColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
-
-            // ĐÃ THÊM: Kết nối CSDL Bút Danh
             _butDanhColl = MongoProvider.Instance.GetCollection<ButDanh>("Butdanh");
         }
 
         private async void FrmPhieuChi_Load(object sender, EventArgs e)
         {
-            // Tạm tắt sự kiện để load dữ liệu an toàn
             cboTacGia.SelectedIndexChanged -= cboTacGia_SelectedIndexChanged;
             await LoadAuthorsAsync();
             cboTacGia.SelectedIndexChanged += cboTacGia_SelectedIndexChanged;
@@ -42,7 +38,6 @@ namespace HETHONGTINHNHUANBUT
             cboHinhThuc.SelectedIndex = 0;
             txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
 
-            // Tự động kích hoạt hiển thị cho người đầu tiên trong danh sách nợ
             if (cboTacGia.Items.Count > 0)
             {
                 cboTacGia.SelectedIndex = 0;
@@ -54,7 +49,6 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                // Lọc những bài chưa thanh toán
                 var listChuaThanhToan = await _nhuanButColl.Find(n => n.DaThanhToan == false).ToListAsync();
 
                 var pendingAuthors = listChuaThanhToan
@@ -85,29 +79,20 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // 1. DÒ TÌM TÁC GIẢ GỐC TỪ BÚT DANH
                 var butDanhInfo = await _butDanhColl.Find(b => b.Butdanh == penName).FirstOrDefaultAsync();
 
                 if (butDanhInfo != null && !string.IsNullOrEmpty(butDanhInfo.MsTacgia))
                 {
                     string maTacGiaGoc = butDanhInfo.MsTacgia;
-
-                    // ĐÃ SỬA CHUẨN: Dùng 'Maso' vì 'MaHT' bị gắn cờ [BsonIgnore][cite: 6]
                     var tacGiaInfo = await _tacGiaColl.Find(t => t.Maso == maTacGiaGoc).FirstOrDefaultAsync();
 
                     if (tacGiaInfo != null)
                     {
-                        // Đã tìm thấy "chính chủ"! Gán thông tin lên Form Phiếu Chi[cite: 6]
-                        txtNguoiNhan.Text = tacGiaInfo.Hoten;  // Dùng Hoten chuẩn
-                        txtCMND.Text = tacGiaInfo.MsTG;        // Dùng MsTG chuẩn thay vì MaThe
-
-                        // Nếu anh có lưu Điện thoại hay Mã số thuế trong database thì mở comment ra dùng nhé
-                        // txtDienThoai.Text = tacGiaInfo.Email; // Ví dụ tạm
-                        // txtMST.Text = tacGiaInfo.SoTaiKhoan; 
+                        txtNguoiNhan.Text = tacGiaInfo.Hoten;
+                        txtCMND.Text = tacGiaInfo.MsTG;
                     }
                     else
                     {
-                        // Không tìm thấy tác giả gốc
                         txtNguoiNhan.Text = penName;
                         ClearTacGiaInfo();
                     }
@@ -118,20 +103,24 @@ namespace HETHONGTINHNHUANBUT
                     ClearTacGiaInfo();
                 }
 
-                // 2. LOAD LƯỚI BÀI VIẾT
                 var list = await _nhuanButColl.Find(n => n.Butdanh == penName && n.DaThanhToan == false).ToListAsync();
 
                 dgvChuaThanhToan.DataSource = list.Select(n => new {
                     n.Id,
-                    n.TenSoBao,
+                    TenSoBao = string.IsNullOrEmpty(n.TenSoBao) ? "" : Regex.Replace(n.TenSoBao, @"^Số\s+\d+\s+-\s+", ""),
                     n.TenBai,
                     TienNhuanBut = n.TienNhuanbut
                 }).ToList();
 
                 if (dgvChuaThanhToan.Columns["Id"] != null) dgvChuaThanhToan.Columns["Id"].Visible = false;
 
+                if (dgvChuaThanhToan.Columns["TenSoBao"] != null) dgvChuaThanhToan.Columns["TenSoBao"].HeaderText = "Kỳ báo xuất bản";
+                if (dgvChuaThanhToan.Columns["TenBai"] != null) dgvChuaThanhToan.Columns["TenBai"].HeaderText = "Tên bài viết";
                 if (dgvChuaThanhToan.Columns["TienNhuanBut"] != null)
+                {
+                    dgvChuaThanhToan.Columns["TienNhuanBut"].HeaderText = "Số tiền (VNĐ)";
                     dgvChuaThanhToan.Columns["TienNhuanBut"].DefaultCellStyle.Format = "N0";
+                }
 
                 TinhToanTien();
             }
@@ -214,6 +203,7 @@ namespace HETHONGTINHNHUANBUT
 
                     HinhThuc = hinhThucSQL,
                     DaThuTien = "N",
+                    TrangThaiDuyet = 0, // 0 = Chờ duyệt
 
                     NguoiLap = string.IsNullOrEmpty(this.NguoiLapPhieu) ? "Admin" : this.NguoiLapPhieu,
                     AddBy = string.IsNullOrEmpty(this.NguoiLapPhieu) ? "Admin" : this.NguoiLapPhieu,
@@ -227,7 +217,6 @@ namespace HETHONGTINHNHUANBUT
 
                 await _phieuChiColl.InsertOneAsync(phieu);
 
-                // Cập nhật các bài viết này thành Đã thanh toán
                 var filter = Builders<NhuanBut>.Filter.In(n => n.Id, selectedIds);
                 var update = Builders<NhuanBut>.Update
                     .Set(n => n.DaThanhToan, true)
@@ -235,12 +224,10 @@ namespace HETHONGTINHNHUANBUT
 
                 await _nhuanButColl.UpdateManyAsync(filter, update);
 
-                MessageBox.Show("Lập phiếu chi thành công rực rỡ!", "Thông báo");
+                MessageBox.Show("Lập phiếu chi thành công! Đang chờ Sếp duyệt.", "Thông báo");
 
-                // Khởi tạo lại form sau khi trả tiền xong
                 txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
 
-                // Tạm tắt sự kiện để load lại danh sách
                 cboTacGia.SelectedIndexChanged -= cboTacGia_SelectedIndexChanged;
                 await LoadAuthorsAsync();
                 cboTacGia.SelectedIndexChanged += cboTacGia_SelectedIndexChanged;
@@ -262,6 +249,19 @@ namespace HETHONGTINHNHUANBUT
 
             }
             catch (Exception ex) { MessageBox.Show("Lỗi lưu phiếu chi: " + ex.Message); }
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
+            txtCMND.Clear(); txtDienThoai.Clear(); txtMST.Clear();
+            txtLyDo.Text = "Chi trả nhuận bút";
+            txtTongTien.Text = "0"; txtThueSuat.Text = "10"; txtTienThue.Text = "0"; txtThucLinh.Text = "0";
+
+            foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
+                row.Cells["colCheck"].Value = false;
+
+            if (cboTacGia.Items.Count > 0) cboTacGia.Focus();
         }
 
         private void dgvChuaThanhToan_CellValueChanged(object sender, DataGridViewCellEventArgs e)

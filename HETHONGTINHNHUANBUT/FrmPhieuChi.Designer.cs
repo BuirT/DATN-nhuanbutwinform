@@ -241,6 +241,7 @@
             this.dgvChuaThanhToan.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.Black;
             this.dgvChuaThanhToan.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChuaThanhToan_CellValueChanged);
             this.dgvChuaThanhToan.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvChuaThanhToan_CurrentCellDirtyStateChanged);
+
             // 
             // colCheck
             // 
@@ -404,6 +405,7 @@
             this.btnHuy.Size = new System.Drawing.Size(120, 42);
             this.btnHuy.TabIndex = 4;
             this.btnHuy.Text = "HỦY BỎ";
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
 
             // 
             // FrmPhieuChi
@@ -412,10 +414,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(984, 761);
-
             this.Controls.Add(this.btnHuy);
             this.Controls.Add(this.btnLapPhieu);
-
             this.Controls.Add(this.txtTienThue);
             this.Controls.Add(this.labelThue);
             this.Controls.Add(this.cboHinhThuc);
@@ -427,9 +427,7 @@
             this.Controls.Add(this.txtTongTien);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblTitle2);
-
             this.Controls.Add(this.dgvChuaThanhToan);
-
             this.Controls.Add(this.txtLyDo);
             this.Controls.Add(this.labelLyDo);
             this.Controls.Add(this.txtMST);
@@ -445,16 +443,15 @@
             this.Controls.Add(this.cboTacGia);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblTitle1);
-
             this.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.Name = "FrmPhieuChi";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lập Phiếu Chi Nhuận Bút";
             this.Load += new System.EventHandler(this.FrmPhieuChi_Load);
-
             ((System.ComponentModel.ISupportInitialize)(this.dgvChuaThanhToan)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

@@ -49,19 +49,19 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                // 1. Load Kỳ Báo[cite: 5]
+                // 1. Load Kỳ Báo - ĐÃ SỬA: Loại bỏ "Số {b.Sobao}" cho đỡ rối mắt
                 var listBaoRaw = await _baoColl.Find(b => b.DaDuyet == "N").ToListAsync();
                 var displayListBao = listBaoRaw.Select(b => new CboBaoItem
                 {
                     MaSoBao = b.Maso?.ToString() ?? "",
-                    HienThi = $"Số {b.Sobao} - {b.Tenbao} ({b.Ngayra.ToLocalTime():dd/MM/yyyy})"
+                    HienThi = $"{b.Tenbao} ({b.Ngayra.ToLocalTime():dd/MM/yyyy})" // Chuẩn xịn
                 }).ToList();
 
                 cboSoBao.DataSource = displayListBao;
                 cboSoBao.DisplayMember = "HienThi";
                 cboSoBao.ValueMember = "MaSoBao";
 
-                // 2. Load BÚT DANH (Từ bảng Butdanh chuẩn)[cite: 5]
+                // 2. Load BÚT DANH
                 var listButDanh = await _butDanhColl.Find(_ => true).ToListAsync();
                 List<string> tatCaButDanh = listButDanh
                     .Where(b => !string.IsNullOrWhiteSpace(b.Butdanh))
@@ -102,13 +102,11 @@ namespace HETHONGTINHNHUANBUT
                     Trang = n.Trang,
                     Muc = n.Muc,
                     ButDanh = n.Butdanh,
-                    // Bổ sung Vùng vào lưới ngầm để lấy data khi Click[cite: 5]
                     VungPhatHanh = n.Vung ?? "",
                     VungTaiBan = n.VungChuyenDen ?? "",
                     TienNhuanBut = n.TienNhuanbut.ToString("N0") + " VNĐ"
                 }).ToList();
 
-                // Ẩn các cột dữ liệu ID và Vùng không cần hiện lên giao diện[cite: 5]
                 if (dgvNhuanBut.Columns["Id"] != null) dgvNhuanBut.Columns["Id"].Visible = false;
                 if (dgvNhuanBut.Columns["VungPhatHanh"] != null) dgvNhuanBut.Columns["VungPhatHanh"].Visible = false;
                 if (dgvNhuanBut.Columns["VungTaiBan"] != null) dgvNhuanBut.Columns["VungTaiBan"].Visible = false;
@@ -133,7 +131,6 @@ namespace HETHONGTINHNHUANBUT
             string tienRaw = row.Cells["TienNhuanBut"].Value?.ToString().Replace(" VNĐ", "").Replace(",", "");
             txtTienNhuanBut.Text = tienRaw;
 
-            // Load lại vùng phát hành lên Form khi click[cite: 5, 6]
             cboVung.Text = row.Cells["VungPhatHanh"].Value?.ToString();
             cboVungChuyenDen.Text = row.Cells["VungTaiBan"].Value?.ToString();
 
@@ -153,9 +150,10 @@ namespace HETHONGTINHNHUANBUT
                 var baoInfo = await _baoColl.Find(b => b.Maso.ToString() == maSoBao).FirstOrDefaultAsync();
                 string tenSoBaoHienThi = cboSoBao.Text;
 
+                // ĐÃ SỬA: Đồng bộ cách hiển thị Tên báo khi lưu vào DB NhuanBut
                 if (baoInfo != null)
                 {
-                    tenSoBaoHienThi = $"Số {baoInfo.Sobao} - {baoInfo.Tenbao} ({baoInfo.Ngayra.ToLocalTime():dd/MM/yyyy})";
+                    tenSoBaoHienThi = $"{baoInfo.Tenbao} ({baoInfo.Ngayra.ToLocalTime():dd/MM/yyyy})";
                 }
 
                 if (string.IsNullOrEmpty(_selectedNhuanButId))
@@ -170,11 +168,8 @@ namespace HETHONGTINHNHUANBUT
                         Muc = txtMuc.Text.Trim(),
                         Butdanh = cboButDanh.Text,
                         TienNhuanbut = tien,
-
-                        // Lấy chuẩn tên từ Giao diện anh vừa gởi[cite: 6]
                         Vung = cboVung.Text,
                         VungChuyenDen = cboVungChuyenDen.Text,
-
                         addby = this.NguoiDangNhap,
                         ngaychuyen = DateTime.Now,
                         STT = (dgvNhuanBut.Rows.Count + 1).ToString()
@@ -189,11 +184,8 @@ namespace HETHONGTINHNHUANBUT
                         .Set(x => x.Muc, txtMuc.Text.Trim())
                         .Set(x => x.Butdanh, cboButDanh.Text)
                         .Set(x => x.TienNhuanbut, tien)
-
-                        // Cập nhật chuẩn tên từ Giao diện anh vừa gởi[cite: 6]
                         .Set(x => x.Vung, cboVung.Text)
                         .Set(x => x.VungChuyenDen, cboVungChuyenDen.Text)
-
                         .Set(x => x.TenSoBao, tenSoBaoHienThi)
                         .Set(x => x.addby, this.NguoiDangNhap)
                         .Set(x => x.ngaychuyen, DateTime.Now);
@@ -231,11 +223,8 @@ namespace HETHONGTINHNHUANBUT
             txtTrang.Clear();
             txtMuc.Clear();
             txtTienNhuanBut.Clear();
-
-            // Xóa rỗng luôn các vùng chọn sau khi xong[cite: 5, 6]
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
-
             txtTenBai.Focus();
         }
     }
