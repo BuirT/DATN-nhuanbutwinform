@@ -1,21 +1,20 @@
 using System;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models; // Bắt buộc phải có để xài model TaiKhoan
+using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FormLogin : Form
     {
-        // ĐÃ SỬA: Đổi từ User sang TaiKhoan cho đồng bộ với hệ thống mới
         private readonly IMongoCollection<User> _UserColl;
 
         public FormLogin()
         {
             InitializeComponent();
-            // ĐÃ SỬA: Trỏ về đúng bảng "TaiKhoan" mà FrmTaiKhoan đang lưu
             _UserColl = MongoProvider.Instance.GetCollection<User>("User");
         }
 
@@ -26,7 +25,8 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnexit_Click(object sender, EventArgs e) => Application.Exit();
 
-        private void btnlogin_Click(object sender, EventArgs e)
+        // Thêm async để có thể await khi cập nhật Database
+        private async void btnlogin_Click(object sender, EventArgs e)
         {
             string tenDangNhap = txtUsername.Text.Trim();
             string matKhau = txtPassword.Text.Trim();
@@ -39,7 +39,6 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // ĐÃ SỬA: Tìm theo TenDangNhap trong bảng TaiKhoan
                 var user = _UserColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefault();
 
                 if (user == null)
@@ -48,36 +47,55 @@ namespace HETHONGTINHNHUANBUT
                     return;
                 }
 
-                // TÍNH NĂNG MỚI: Check xem tài khoản có đang bị khóa không (Checkbox HoatDong bên FrmTaiKhoan)
                 if (!user.HoatDong)
                 {
                     MessageBox.Show("Tài khoản này đã bị khóa. Vui lòng liên hệ Admin!", "Từ chối", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     return;
                 }
 
-                string hashedInput = HashHelper.ComputeSha256(matKhau);
                 bool loginSuccess = false;
+                bool needUpgrade = false;
 
-                // Kiểm tra mật khẩu (hỗ trợ cả pass chưa hash và pass đã hash)
-                if (HashHelper.IsSha256Hash(user.MatKhau))
+                // 1. KIỂM TRA MẬT KHẨU CÓ SALT (Chuẩn mới)
+                if (!string.IsNullOrEmpty(user.Salt))
                 {
+                    string hashedInput = HashHelper.ComputeSha256(matKhau, user.Salt);
                     loginSuccess = string.Equals(user.MatKhau, hashedInput, StringComparison.OrdinalIgnoreCase);
                 }
                 else
                 {
-                    loginSuccess = (user.MatKhau == matKhau);
+                    // 2. KIỂM TRA THEO CHUẨN CŨ (Không Salt)
+                    // a665a459... là mã của "123" băm với salt rỗng
+                    string hashedOld = HashHelper.ComputeSha256(matKhau, "");
+                    if (user.MatKhau == matKhau || user.MatKhau == hashedOld)
+                    {
+                        loginSuccess = true;
+                        needUpgrade = true; // Đánh dấu để ép buộc đổi sang mã có Salt ngẫu nhiên
+                    }
                 }
 
                 if (loginSuccess)
                 {
+                    // --- THỰC HIỆN NÂNG CẤP BẢO MẬT ---
+                    if (needUpgrade)
+                    {
+                        string newSalt = HashHelper.GenerateSalt(); // Tạo muối ngẫu nhiên (Vd: "abcxyz")
+                        string newHashedPassword = HashHelper.ComputeSha256(matKhau, newSalt);
+
+                        var update = Builders<User>.Update
+                            .Set(u => u.Salt, newSalt)
+                            .Set(u => u.MatKhau, newHashedPassword);
+
+                        // Ép buộc cập nhật xuống MongoDB
+                        var result = await _UserColl.UpdateOneAsync(u => u.Id == user.Id, update);
+                    }
+
                     this.Hide();
                     FrmTrangChinh frm = new FrmTrangChinh();
-
-                    // ĐÃ SỬA: Map dữ liệu theo biến mới HoTen và Quyen của model TaiKhoan
                     frm.currentUserName = !string.IsNullOrEmpty(user.HoTen) ? user.HoTen : user.TenDangNhap;
                     frm.currentPrivilege = user.Quyen;
 
-                    MongoProvider.Instance.GhiNhatKy(tenDangNhap, "Đăng nhập hệ thống thành công");
+                    MongoProvider.Instance.GhiNhatKy(tenDangNhap, needUpgrade ? "Nâng cấp bảo mật Salt thành công" : "Đăng nhập thành công");
 
                     frm.FormClosed += (s, args) => this.Close();
                     frm.Show();
@@ -89,7 +107,7 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi kết nối cơ sở dữ liệu: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -97,10 +115,13 @@ namespace HETHONGTINHNHUANBUT
         {
             this.Hide();
             FormRegister frmReg = new FormRegister();
-
-            // Hiện lại form đăng nhập khi người dùng đóng form đăng ký
             frmReg.FormClosed += (s, args) => this.Show();
             frmReg.Show();
+        }
+
+        private void txtPassword_TextChanged(object sender, EventArgs e)
+        {
+            // Để trống để sửa lỗi Designer dòng 97
         }
     }
 }

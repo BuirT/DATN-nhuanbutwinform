@@ -29,22 +29,6 @@
             this.panelOverlay.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panelOverlay
-            // 
-            this.panelOverlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.panelOverlay.Controls.Add(this.lblTitle);
-            this.panelOverlay.Controls.Add(this.lblUsername);
-            this.panelOverlay.Controls.Add(this.lblPassword);
-            this.panelOverlay.Controls.Add(this.txtUsername);
-            this.panelOverlay.Controls.Add(this.txtPassword);
-            this.panelOverlay.Controls.Add(this.btnLogin);
-            this.panelOverlay.Controls.Add(this.btnRegister);
-            this.panelOverlay.Controls.Add(this.btnExit);
-            this.panelOverlay.Location = new System.Drawing.Point(150, 80);
-            this.panelOverlay.Name = "panelOverlay";
-            this.panelOverlay.Size = new System.Drawing.Size(500, 340);
-            this.panelOverlay.TabIndex = 0;
-            // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
@@ -53,7 +37,7 @@
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(120)))));
             this.lblTitle.Location = new System.Drawing.Point(50, 25);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(400, 41);
+            this.lblTitle.Size = new System.Drawing.Size(446, 41);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "HỆ THỐNG TÍNH NHUẬN BÚT";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -110,6 +94,7 @@
             this.txtPassword.SelectedText = "";
             this.txtPassword.Size = new System.Drawing.Size(280, 40);
             this.txtPassword.TabIndex = 2;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             // 
             // btnLogin
             // 
@@ -152,6 +137,22 @@
             this.btnExit.TabIndex = 5;
             this.btnExit.Text = "Thoát";
             this.btnExit.Click += new System.EventHandler(this.btnexit_Click);
+            // 
+            // panelOverlay
+            // 
+            this.panelOverlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.panelOverlay.Controls.Add(this.lblTitle);
+            this.panelOverlay.Controls.Add(this.lblUsername);
+            this.panelOverlay.Controls.Add(this.lblPassword);
+            this.panelOverlay.Controls.Add(this.txtUsername);
+            this.panelOverlay.Controls.Add(this.txtPassword);
+            this.panelOverlay.Controls.Add(this.btnLogin);
+            this.panelOverlay.Controls.Add(this.btnRegister);
+            this.panelOverlay.Controls.Add(this.btnExit);
+            this.panelOverlay.Location = new System.Drawing.Point(150, 80);
+            this.panelOverlay.Name = "panelOverlay";
+            this.panelOverlay.Size = new System.Drawing.Size(500, 340);
+            this.panelOverlay.TabIndex = 0;
             // 
             // FormLogin
             // 

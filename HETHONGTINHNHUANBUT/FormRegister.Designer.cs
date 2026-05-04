@@ -30,8 +30,8 @@ namespace HETHONGTINHNHUANBUT
             this.btnregister = new Guna.UI2.WinForms.Guna2Button();
             this.btnExit = new Guna.UI2.WinForms.Guna2Button();
             this.panelOverlay = new System.Windows.Forms.Panel();
-            this.lblRole = new System.Windows.Forms.Label();
             this.cboRole = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.lblRole = new System.Windows.Forms.Label();
             this.panelOverlay.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +45,7 @@ namespace HETHONGTINHNHUANBUT
             this.textBox1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.textBox1.Name = "textBox1";
             this.textBox1.PlaceholderText = "Nhập tên đăng nhập";
+            this.textBox1.SelectedText = "";
             this.textBox1.Size = new System.Drawing.Size(280, 40);
             this.textBox1.TabIndex = 1;
             // 
@@ -59,8 +60,10 @@ namespace HETHONGTINHNHUANBUT
             this.textBox2.Name = "textBox2";
             this.textBox2.PasswordChar = '*';
             this.textBox2.PlaceholderText = "Nhập mật khẩu";
+            this.textBox2.SelectedText = "";
             this.textBox2.Size = new System.Drawing.Size(280, 40);
             this.textBox2.TabIndex = 2;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox3
             // 
@@ -73,8 +76,10 @@ namespace HETHONGTINHNHUANBUT
             this.textBox3.Name = "textBox3";
             this.textBox3.PasswordChar = '*';
             this.textBox3.PlaceholderText = "Nhập lại mật khẩu";
+            this.textBox3.SelectedText = "";
             this.textBox3.Size = new System.Drawing.Size(280, 40);
             this.textBox3.TabIndex = 3;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // txtUsername
             // 
@@ -111,32 +116,6 @@ namespace HETHONGTINHNHUANBUT
             this.txtpasswordagain.TabIndex = 3;
             this.txtpasswordagain.Text = "Nhập lại MK:";
             this.txtpasswordagain.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblRole
-            // 
-            this.lblRole.BackColor = System.Drawing.Color.Transparent;
-            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblRole.ForeColor = System.Drawing.Color.Black;
-            this.lblRole.Location = new System.Drawing.Point(30, 260);
-            this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(150, 40);
-            this.lblRole.TabIndex = 6;
-            this.lblRole.Text = "Loại tài khoản:";
-            this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cboRole
-            // 
-            this.cboRole.BackColor = System.Drawing.Color.Transparent;
-            this.cboRole.BorderRadius = 8;
-            this.cboRole.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cboRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRole.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.cboRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cboRole.ItemHeight = 34;
-            this.cboRole.Location = new System.Drawing.Point(190, 260);
-            this.cboRole.Name = "cboRole";
-            this.cboRole.Size = new System.Drawing.Size(280, 40);
-            this.cboRole.TabIndex = 7;
             // 
             // label1
             // 
@@ -195,6 +174,33 @@ namespace HETHONGTINHNHUANBUT
             this.panelOverlay.Name = "panelOverlay";
             this.panelOverlay.Size = new System.Drawing.Size(521, 410);
             this.panelOverlay.TabIndex = 0;
+            // 
+            // cboRole
+            // 
+            this.cboRole.BackColor = System.Drawing.Color.Transparent;
+            this.cboRole.BorderRadius = 8;
+            this.cboRole.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboRole.FocusedColor = System.Drawing.Color.Empty;
+            this.cboRole.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cboRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cboRole.ItemHeight = 34;
+            this.cboRole.Location = new System.Drawing.Point(190, 260);
+            this.cboRole.Name = "cboRole";
+            this.cboRole.Size = new System.Drawing.Size(280, 40);
+            this.cboRole.TabIndex = 7;
+            // 
+            // lblRole
+            // 
+            this.lblRole.BackColor = System.Drawing.Color.Transparent;
+            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblRole.ForeColor = System.Drawing.Color.Black;
+            this.lblRole.Location = new System.Drawing.Point(30, 260);
+            this.lblRole.Name = "lblRole";
+            this.lblRole.Size = new System.Drawing.Size(150, 40);
+            this.lblRole.TabIndex = 6;
+            this.lblRole.Text = "Loại tài khoản:";
+            this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormRegister
             // 
