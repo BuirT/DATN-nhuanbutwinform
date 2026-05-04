@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
@@ -21,6 +22,24 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
+
+            // Gán sự kiện chặn nhập chữ ngay từ lúc khởi tạo
+            txtDienThoai.KeyPress += txtDienThoai_KeyPress;
+        }
+
+        // Kiểm tra định dạng 10 chữ số
+        private bool IsValidPhone(string phone)
+        {
+            return Regex.IsMatch(phone, @"^\d{10}$");
+        }
+
+        // Chặn nhập ký tự không phải là số
+        private void txtDienThoai_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
         private async void FrmTacGia_Load(object sender, EventArgs e)
@@ -43,12 +62,10 @@ namespace HETHONGTINHNHUANBUT
                         (t.HoTen != null && t.HoTen.ToLower().Contains(keyword)) ||
                         (t.MaThe != null && t.MaThe.ToLower().Contains(keyword)) ||
                         (t.SoTaiKhoan != null && t.SoTaiKhoan.ToLower().Contains(keyword)) ||
-                        // MỚI: Thêm tìm kiếm theo số điện thoại
                         (t.DienThoai != null && t.DienThoai.ToLower().Contains(keyword))
                     ).ToList();
                 }
 
-                // Gắn dữ liệu với các Tên Biến Mới
                 dgvTacGia.DataSource = list.Select(t => new {
                     t.Id,
                     MaHT = t.MaHT,
@@ -57,7 +74,7 @@ namespace HETHONGTINHNHUANBUT
                     NgaySinh = t.NgaySinh.ToString("dd/MM/yyyy"),
                     PhanLoai = t.PhanLoai,
                     Email = t.Email,
-                    DienThoai = t.DienThoai,   // MỚI
+                    DienThoai = t.DienThoai,
                     PhongBan = t.PhongBan,
                     SoTaiKhoan = t.SoTaiKhoan,
                     NganHang = t.NganHang,
@@ -68,7 +85,6 @@ namespace HETHONGTINHNHUANBUT
                 if (dgvTacGia.Columns["Id"] != null) dgvTacGia.Columns["Id"].Visible = false;
                 if (dgvTacGia.Columns["AvatarPath"] != null) dgvTacGia.Columns["AvatarPath"].Visible = false;
                 if (dgvTacGia.Columns["PdfPath"] != null) dgvTacGia.Columns["PdfPath"].Visible = false;
-                // Vẫn ẩn cột Ngân hàng để lưới đỡ dài
                 if (dgvTacGia.Columns["NganHang"] != null) dgvTacGia.Columns["NganHang"].Visible = false;
 
                 if (dgvTacGia.Columns.Count > 0)
@@ -78,7 +94,7 @@ namespace HETHONGTINHNHUANBUT
                     dgvTacGia.Columns["HoTen"].HeaderText = "Họ và Tên";
                     dgvTacGia.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvTacGia.Columns["SoTaiKhoan"].HeaderText = "Số Tài Khoản";
-                    dgvTacGia.Columns["DienThoai"].HeaderText = "Điện Thoại"; // Tiêu đề mới
+                    dgvTacGia.Columns["DienThoai"].HeaderText = "Điện Thoại";
                     dgvTacGia.Columns["NgaySinh"].HeaderText = "Ngày Sinh";
                     dgvTacGia.Columns["PhanLoai"].HeaderText = "Phân Loại";
                     dgvTacGia.Columns["PhongBan"].HeaderText = "Phòng Ban";
@@ -87,7 +103,7 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi lấy dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi lấy dữ liệu: " + ex.Message);
             }
         }
 
@@ -96,7 +112,6 @@ namespace HETHONGTINHNHUANBUT
             await LoadDataAsync(txtTimKiem.Text);
         }
 
-        // CHỌN ẢNH VÀ PDF GIỮ NGUYÊN
         private void btnChonAnh_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -130,14 +145,22 @@ namespace HETHONGTINHNHUANBUT
             if (!string.IsNullOrEmpty(currentPdfPath) && File.Exists(currentPdfPath))
                 Process.Start(new ProcessStartInfo(currentPdfPath) { UseShellExecute = true });
             else
-                MessageBox.Show("Không tìm thấy file PDF!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Không tìm thấy file PDF!");
         }
 
         private async void btnThem_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtMaHT.Text) || string.IsNullOrWhiteSpace(txtHoTen.Text))
             {
-                MessageBox.Show("Mã hệ thống và Họ tên không được trống!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Mã hệ thống và Họ tên không được trống!");
+                return;
+            }
+
+            // Kiểm tra 10 số điện thoại
+            if (!IsValidPhone(txtDienThoai.Text.Trim()))
+            {
+                MessageBox.Show("Số điện thoại phải nhập đúng 10 chữ số!", "Lỗi nhập liệu");
+                txtDienThoai.Focus();
                 return;
             }
 
@@ -146,7 +169,7 @@ namespace HETHONGTINHNHUANBUT
                 var exist = await _tacGiaColl.Find(t => t.Maso == txtMaHT.Text.Trim()).FirstOrDefaultAsync();
                 if (exist != null)
                 {
-                    MessageBox.Show("Mã hệ thống đã tồn tại!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Mã hệ thống đã tồn tại!");
                     return;
                 }
 
@@ -158,28 +181,32 @@ namespace HETHONGTINHNHUANBUT
                     Ngaysinh = dtpNgaySinh.Value,
                     LoaiTacgia = cboPhanLoai.Text,
                     Email = txtEmail.Text.Trim(),
-
-                    DienThoai = txtDienThoai.Text.Trim(), // Lấy từ Form
-
+                    DienThoai = txtDienThoai.Text.Trim(),
                     SoTaiKhoan = txtSoTaiKhoan.Text.Trim(),
                     PhongBan = txtPhongBan.Text.Trim(),
                     NganHang = txtNganHang.Text.Trim(),
-
                     AvatarPath = currentImagePath,
                     PdfPath = currentPdfPath
                 };
 
                 await _tacGiaColl.InsertOneAsync(tg);
-                MessageBox.Show("Thêm hồ sơ thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Thêm hồ sơ thành công!");
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvTacGia.CurrentRow == null) return;
+
+            if (!IsValidPhone(txtDienThoai.Text.Trim()))
+            {
+                MessageBox.Show("Số điện thoại phải nhập đúng 10 chữ số!", "Lỗi nhập liệu");
+                txtDienThoai.Focus();
+                return;
+            }
 
             try
             {
@@ -191,28 +218,25 @@ namespace HETHONGTINHNHUANBUT
                     .Set(t => t.Ngaysinh, dtpNgaySinh.Value)
                     .Set(t => t.LoaiTacgia, cboPhanLoai.Text)
                     .Set(t => t.Email, txtEmail.Text.Trim())
-
-                    .Set(t => t.DienThoai, txtDienThoai.Text.Trim()) // Cập nhật Số điện thoại
-
+                    .Set(t => t.DienThoai, txtDienThoai.Text.Trim())
                     .Set(t => t.SoTaiKhoan, txtSoTaiKhoan.Text.Trim())
                     .Set(t => t.PhongBan, txtPhongBan.Text.Trim())
                     .Set(t => t.NganHang, txtNganHang.Text.Trim())
-
                     .Set(t => t.AvatarPath, currentImagePath)
                     .Set(t => t.PdfPath, currentPdfPath);
 
                 await _tacGiaColl.UpdateOneAsync(t => t.Id == id, update);
-                MessageBox.Show("Cập nhật thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvTacGia.CurrentRow == null) return;
 
-            if (MessageBox.Show("Chắc chắn muốn xóa?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show("Chắc chắn muốn xóa?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 string id = dgvTacGia.CurrentRow.Cells["Id"].Value.ToString();
                 await _tacGiaColl.DeleteOneAsync(t => t.Id == id);
@@ -225,8 +249,7 @@ namespace HETHONGTINHNHUANBUT
         {
             txtMaHT.Clear(); txtMaThe.Clear(); txtHoTen.Clear();
             txtEmail.Clear(); txtPhongBan.Clear(); txtSoTaiKhoan.Clear(); txtNganHang.Clear();
-
-            txtDienThoai.Clear(); // MỚI
+            txtDienThoai.Clear();
 
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
             dtpNgaySinh.Value = DateTime.Now;
@@ -247,9 +270,7 @@ namespace HETHONGTINHNHUANBUT
                 txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
                 cboPhanLoai.Text = row.Cells["PhanLoai"].Value?.ToString();
                 txtEmail.Text = row.Cells["Email"].Value?.ToString();
-
-                txtDienThoai.Text = row.Cells["DienThoai"].Value?.ToString(); // MỚI
-
+                txtDienThoai.Text = row.Cells["DienThoai"].Value?.ToString();
                 txtPhongBan.Text = row.Cells["PhongBan"].Value?.ToString();
                 txtSoTaiKhoan.Text = row.Cells["SoTaiKhoan"].Value?.ToString();
                 txtNganHang.Text = row.Cells["NganHang"].Value?.ToString();
@@ -277,6 +298,11 @@ namespace HETHONGTINHNHUANBUT
                     btnXemPDF.Enabled = false;
                 }
             }
+        }
+
+        // Đã bổ sung hàm này để hết lỗi dòng 277
+        private void txtDienThoai_TextChanged(object sender, EventArgs e)
+        {
         }
     }
 }
