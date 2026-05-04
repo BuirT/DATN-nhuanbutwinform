@@ -12,17 +12,33 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmButDanh : Form
     {
         private readonly IMongoCollection<ButDanh> _butDanhColl;
+        private readonly IMongoCollection<TacGia> _tacGiaColl; // KHAI BÁO THÊM BẢNG TÁC GIẢ
 
         public FrmButDanh()
         {
             InitializeComponent();
             _butDanhColl = MongoProvider.Instance.GetCollection<ButDanh>("Butdanh");
+            _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia"); // KHỞI TẠO
         }
 
         private async void FrmButDanh_Load(object sender, EventArgs e)
         {
             dgvButDanh.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            await LoadComboBoxTacGia(); // GỌI HÀM LOAD COMBOBOX TRƯỚC
             await LoadDataAsync();
+        }
+
+        // VIẾT THÊM HÀM NÀY ĐỂ ĐỔ DỮ LIỆU VÀO COMBOBOX
+        private async Task LoadComboBoxTacGia()
+        {
+            try
+            {
+                var listTacGia = await _tacGiaColl.Find(_ => true).ToListAsync();
+                cboTacGia.DataSource = listTacGia;
+                cboTacGia.DisplayMember = "Hoten"; // Hiển thị tên
+                cboTacGia.ValueMember = "Maso";    // Giá trị là mã hệ thống
+            }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách tác giả: " + ex.Message); }
         }
 
         private async Task LoadDataAsync()
@@ -58,23 +74,44 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
-            // Ép kiểu Mã số về đúng chuẩn Int giống hình SQL
             if (!int.TryParse(txtMaso.Text.Trim(), out int maSo))
             {
                 MessageBox.Show("Mã số phải là con số (Ví dụ: 1000, 1692...)!", "Cảnh báo");
                 return;
             }
 
+            // BẮT LỖI CHƯA CHỌN TÁC GIẢ
+            if (cboTacGia.SelectedValue == null)
+            {
+                MessageBox.Show("Chưa chọn Tác giả chủ quản kìa!", "Bắt lỗi");
+                return;
+            }
+
             try
             {
-                var exist = await _butDanhColl.Find(b => b.Maso == maSo).FirstOrDefaultAsync();
-                if (exist != null) { MessageBox.Show("Mã số Bút danh này đã tồn tại rồi anh Tí ơi!"); return; }
+                string tenBD = txtButDanh.Text.Trim();
+
+                // FILTER BẮT LỖI TRÙNG MÃ HOẶC TRÙNG TÊN BÚT DANH
+                var filter = Builders<ButDanh>.Filter.Or(
+                    Builders<ButDanh>.Filter.Eq(b => b.Maso, maSo),
+                    Builders<ButDanh>.Filter.Eq(b => b.Butdanh, tenBD)
+                );
+
+                var exist = await _butDanhColl.Find(filter).FirstOrDefaultAsync();
+                if (exist != null)
+                {
+                    if (exist.Maso == maSo)
+                        MessageBox.Show("Mã số Bút danh này đã tồn tại rồi anh Tí ơi!");
+                    else
+                        MessageBox.Show("Tên Bút danh này đã bị người khác chiếm mất rồi, chọn tên khác đi!");
+                    return;
+                }
 
                 var bd = new ButDanh
                 {
                     Maso = maSo,
-                    Butdanh = txtButDanh.Text.Trim(),
-                    MsTacgia = txtMsTacGia.Text.Trim() // Ví dụ: PV1000
+                    Butdanh = tenBD,
+                    MsTacgia = cboTacGia.SelectedValue.ToString() // LẤY MÃ TỪ COMBOBOX
                 };
 
                 await _butDanhColl.InsertOneAsync(bd);
@@ -89,14 +126,33 @@ namespace HETHONGTINHNHUANBUT
         {
             if (dgvButDanh.CurrentRow == null) return;
             if (!int.TryParse(txtMaso.Text.Trim(), out int maSo)) return;
+            if (cboTacGia.SelectedValue == null) return;
 
             try
             {
                 string id = dgvButDanh.CurrentRow.Cells["Id"].Value.ToString();
+                string tenBD = txtButDanh.Text.Trim();
+
+                // KIỂM TRA TRÙNG KHI CẬP NHẬT (LOẠI TRỪ CHÍNH NÓ RA)
+                var filter = Builders<ButDanh>.Filter.And(
+                    Builders<ButDanh>.Filter.Ne(b => b.Id, id),
+                    Builders<ButDanh>.Filter.Or(
+                        Builders<ButDanh>.Filter.Eq(b => b.Maso, maSo),
+                        Builders<ButDanh>.Filter.Eq(b => b.Butdanh, tenBD)
+                    )
+                );
+
+                var exist = await _butDanhColl.Find(filter).FirstOrDefaultAsync();
+                if (exist != null)
+                {
+                    MessageBox.Show("Lỗi: Mã số hoặc Tên Bút danh định sửa thành đã bị trùng với dữ liệu khác!");
+                    return;
+                }
+
                 var update = Builders<ButDanh>.Update
                     .Set(b => b.Maso, maSo)
-                    .Set(b => b.Butdanh, txtButDanh.Text.Trim())
-                    .Set(b => b.MsTacgia, txtMsTacGia.Text.Trim());
+                    .Set(b => b.Butdanh, tenBD)
+                    .Set(b => b.MsTacgia, cboTacGia.SelectedValue.ToString()); // LẤY TỪ COMBOBOX
 
                 await _butDanhColl.UpdateOneAsync(b => b.Id == id, update);
                 MessageBox.Show("Cập nhật thành công!");
@@ -121,7 +177,7 @@ namespace HETHONGTINHNHUANBUT
         {
             txtMaso.Clear();
             txtButDanh.Clear();
-            txtMsTacGia.Clear();
+            if (cboTacGia.Items.Count > 0) cboTacGia.SelectedIndex = 0; // RESET LUÔN COMBOBOX
             txtMaso.Focus();
         }
 
@@ -132,7 +188,13 @@ namespace HETHONGTINHNHUANBUT
                 DataGridViewRow row = dgvButDanh.Rows[e.RowIndex];
                 txtMaso.Text = row.Cells["Maso"].Value?.ToString();
                 txtButDanh.Text = row.Cells["Butdanh"].Value?.ToString();
-                txtMsTacGia.Text = row.Cells["MsTacgia"].Value?.ToString();
+
+                // HIỂN THỊ LẠI ĐÚNG TÁC GIẢ TRÊN COMBOBOX
+                string maTacGia = row.Cells["MsTacgia"].Value?.ToString();
+                if (!string.IsNullOrEmpty(maTacGia))
+                {
+                    cboTacGia.SelectedValue = maTacGia;
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,9 +58,9 @@ namespace HETHONGTINHNHUANBUT
                 {
                     keyword = keyword.ToLower().Trim();
                     list = list.Where(t =>
-                        (t.MaHT != null && t.MaHT.ToLower().Contains(keyword)) ||
-                        (t.HoTen != null && t.HoTen.ToLower().Contains(keyword)) ||
-                        (t.MaThe != null && t.MaThe.ToLower().Contains(keyword)) ||
+                        (t.Maso != null && t.Maso.ToLower().Contains(keyword)) ||
+                        (t.Hoten != null && t.Hoten.ToLower().Contains(keyword)) ||
+                        (t.MsTG != null && t.MsTG.ToLower().Contains(keyword)) ||
                         (t.SoTaiKhoan != null && t.SoTaiKhoan.ToLower().Contains(keyword)) ||
                         (t.DienThoai != null && t.DienThoai.ToLower().Contains(keyword))
                     ).ToList();
@@ -68,11 +68,11 @@ namespace HETHONGTINHNHUANBUT
 
                 dgvTacGia.DataSource = list.Select(t => new {
                     t.Id,
-                    MaHT = t.MaHT,
-                    MaThe = t.MaThe,
-                    HoTen = t.HoTen,
-                    NgaySinh = t.NgaySinh.ToString("dd/MM/yyyy"),
-                    PhanLoai = t.PhanLoai,
+                    MaHT = t.Maso,
+                    MaThe = t.MsTG,
+                    HoTen = t.Hoten,
+                    NgaySinh = t.Ngaysinh.ToString("dd/MM/yyyy"),
+                    PhanLoai = t.LoaiTacgia,
                     Email = t.Email,
                     DienThoai = t.DienThoai,
                     PhongBan = t.PhongBan,
@@ -89,7 +89,7 @@ namespace HETHONGTINHNHUANBUT
 
                 if (dgvTacGia.Columns.Count > 0)
                 {
-                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã HT";
+                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã Số Tác Giả";
                     dgvTacGia.Columns["MaThe"].HeaderText = "Mã Thẻ";
                     dgvTacGia.Columns["HoTen"].HeaderText = "Họ và Tên";
                     dgvTacGia.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -156,7 +156,6 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
-            // Kiểm tra 10 số điện thoại
             if (!IsValidPhone(txtDienThoai.Text.Trim()))
             {
                 MessageBox.Show("Số điện thoại phải nhập đúng 10 chữ số!", "Lỗi nhập liệu");
@@ -166,22 +165,38 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                var exist = await _tacGiaColl.Find(t => t.Maso == txtMaHT.Text.Trim()).FirstOrDefaultAsync();
+                string maHT = txtMaHT.Text.Trim();
+                string maThe = txtMaThe.Text.Trim();
+                string sdt = txtDienThoai.Text.Trim();
+                string email = txtEmail.Text.Trim();
+
+                var builder = Builders<TacGia>.Filter;
+                var filter = builder.Eq(t => t.Maso, maHT);
+
+                if (!string.IsNullOrEmpty(maThe)) filter |= builder.Eq(t => t.MsTG, maThe);
+                if (!string.IsNullOrEmpty(sdt)) filter |= builder.Eq(t => t.DienThoai, sdt);
+                if (!string.IsNullOrEmpty(email)) filter |= builder.Eq(t => t.Email, email);
+
+                var exist = await _tacGiaColl.Find(filter).FirstOrDefaultAsync();
+
                 if (exist != null)
                 {
-                    MessageBox.Show("Mã hệ thống đã tồn tại!");
+                    if (exist.Maso == maHT) MessageBox.Show("Cái Mã hệ thống này đã bị người khác dùng rồi!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(maThe) && exist.MsTG == maThe) MessageBox.Show("Mã thẻ này đã được cấp cho tác giả khác!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(sdt) && exist.DienThoai == sdt) MessageBox.Show("Số điện thoại này đã có trong hệ thống!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(email) && exist.Email == email) MessageBox.Show("Email này đã được sử dụng rồi!", "Lỗi trùng lặp");
                     return;
                 }
 
                 var tg = new TacGia
                 {
-                    Maso = txtMaHT.Text.Trim(),
-                    MsTG = txtMaThe.Text.Trim(),
+                    Maso = maHT,
+                    MsTG = maThe,
                     Hoten = txtHoTen.Text.Trim(),
                     Ngaysinh = dtpNgaySinh.Value,
                     LoaiTacgia = cboPhanLoai.Text,
-                    Email = txtEmail.Text.Trim(),
-                    DienThoai = txtDienThoai.Text.Trim(),
+                    Email = email,
+                    DienThoai = sdt,
                     SoTaiKhoan = txtSoTaiKhoan.Text.Trim(),
                     PhongBan = txtPhongBan.Text.Trim(),
                     NganHang = txtNganHang.Text.Trim(),
@@ -211,14 +226,38 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string id = dgvTacGia.CurrentRow.Cells["Id"].Value.ToString();
+                string maHT = txtMaHT.Text.Trim();
+                string maThe = txtMaThe.Text.Trim();
+                string sdt = txtDienThoai.Text.Trim();
+                string email = txtEmail.Text.Trim();
+
+                var builder = Builders<TacGia>.Filter;
+                var filterCheck = builder.Eq(t => t.Maso, maHT);
+
+                if (!string.IsNullOrEmpty(maThe)) filterCheck |= builder.Eq(t => t.MsTG, maThe);
+                if (!string.IsNullOrEmpty(sdt)) filterCheck |= builder.Eq(t => t.DienThoai, sdt);
+                if (!string.IsNullOrEmpty(email)) filterCheck |= builder.Eq(t => t.Email, email);
+
+                var finalFilter = builder.And(builder.Ne(t => t.Id, id), filterCheck);
+                var exist = await _tacGiaColl.Find(finalFilter).FirstOrDefaultAsync();
+
+                if (exist != null)
+                {
+                    if (exist.Maso == maHT) MessageBox.Show("Đổi mã không thành công! Mã hệ thống này đã bị người khác dùng!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(maThe) && exist.MsTG == maThe) MessageBox.Show("Mã thẻ định đổi sang đã được cấp cho người khác!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(sdt) && exist.DienThoai == sdt) MessageBox.Show("Số điện thoại định sửa thành đã có trong hệ thống!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(email) && exist.Email == email) MessageBox.Show("Email định đổi sang đã bị sử dụng!", "Lỗi trùng lặp");
+                    return;
+                }
+
                 var update = Builders<TacGia>.Update
-                    .Set(t => t.Maso, txtMaHT.Text.Trim())
-                    .Set(t => t.MsTG, txtMaThe.Text.Trim())
+                    .Set(t => t.Maso, maHT)
+                    .Set(t => t.MsTG, maThe)
                     .Set(t => t.Hoten, txtHoTen.Text.Trim())
                     .Set(t => t.Ngaysinh, dtpNgaySinh.Value)
                     .Set(t => t.LoaiTacgia, cboPhanLoai.Text)
-                    .Set(t => t.Email, txtEmail.Text.Trim())
-                    .Set(t => t.DienThoai, txtDienThoai.Text.Trim())
+                    .Set(t => t.Email, email)
+                    .Set(t => t.DienThoai, sdt)
                     .Set(t => t.SoTaiKhoan, txtSoTaiKhoan.Text.Trim())
                     .Set(t => t.PhongBan, txtPhongBan.Text.Trim())
                     .Set(t => t.NganHang, txtNganHang.Text.Trim())
@@ -300,7 +339,6 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // Đã bổ sung hàm này để hết lỗi dòng 277
         private void txtDienThoai_TextChanged(object sender, EventArgs e)
         {
         }

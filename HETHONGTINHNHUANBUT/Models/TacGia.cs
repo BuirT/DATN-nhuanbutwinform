@@ -14,7 +14,7 @@ namespace HETHONGTINHNHUANBUT.Models
         public string Maso { get; set; }
         public string MsTG { get; set; }
         public string Hoten { get; set; }
-        public DateTime? Ngaysinh { get; set; }
+        public DateTime Ngaysinh { get; set; } // Chuyển về DateTime chuẩn, Form bắt buộc phải chọn ngày
         public string LoaiTacgia { get; set; }
         public string Email { get; set; }
         public string Hoten_Unicode { get; set; }
@@ -25,11 +25,6 @@ namespace HETHONGTINHNHUANBUT.Models
         public string AvatarPath { get; set; }
         public string PdfPath { get; set; }
 
-        [BsonIgnore] public string MaHT { get => Maso; set => Maso = value; }
-        [BsonIgnore] public string MaThe { get => MsTG; set => MsTG = value; }
-        [BsonIgnore] public string HoTen { get => Hoten; set => Hoten = value; }
-        [BsonIgnore] public DateTime NgaySinh { get => Ngaysinh ?? DateTime.Now; set => Ngaysinh = value; }
-        [BsonIgnore] public string PhanLoai { get => LoaiTacgia; set => LoaiTacgia = value; }
-        [BsonIgnore] public string ButDanh { get; set; }
+        // TÔI ĐÃ XÓA SẠCH MẤY CÁI [BsonIgnore] VỚ VẨN RỒI NHÉ!
     }
 }
