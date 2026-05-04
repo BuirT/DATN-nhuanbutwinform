@@ -1,13 +1,14 @@
-﻿using System;
+﻿using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
-using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -38,26 +39,25 @@ namespace HETHONGTINHNHUANBUT
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
                     keyword = keyword.ToLower().Trim();
+                    // MỞ TO MẮT RA NHÌN ĐOẠN NÀY! ĐÃ ĐỔI HẾT SANG TÊN THẬT (Maso, Hoten, MsTG) RỒI ĐẤY!
                     list = list.Where(t =>
-                        (t.MaHT != null && t.MaHT.ToLower().Contains(keyword)) ||
-                        (t.HoTen != null && t.HoTen.ToLower().Contains(keyword)) ||
-                        (t.MaThe != null && t.MaThe.ToLower().Contains(keyword)) ||
+                        (t.Maso != null && t.Maso.ToLower().Contains(keyword)) ||
+                        (t.Hoten != null && t.Hoten.ToLower().Contains(keyword)) ||
+                        (t.MsTG != null && t.MsTG.ToLower().Contains(keyword)) ||
                         (t.SoTaiKhoan != null && t.SoTaiKhoan.ToLower().Contains(keyword)) ||
-                        // MỚI: Thêm tìm kiếm theo số điện thoại
                         (t.DienThoai != null && t.DienThoai.ToLower().Contains(keyword))
                     ).ToList();
                 }
 
-                // Gắn dữ liệu với các Tên Biến Mới
                 dgvTacGia.DataSource = list.Select(t => new {
                     t.Id,
-                    MaHT = t.MaHT,
-                    MaThe = t.MaThe,
-                    HoTen = t.HoTen,
-                    NgaySinh = t.NgaySinh.ToString("dd/MM/yyyy"),
-                    PhanLoai = t.PhanLoai,
+                    MaHT = t.Maso,
+                    MaThe = t.MsTG,
+                    HoTen = t.Hoten,
+                    NgaySinh = t.Ngaysinh.ToString("dd/MM/yyyy"),
+                    PhanLoai = t.LoaiTacgia,
                     Email = t.Email,
-                    DienThoai = t.DienThoai,   // MỚI
+                    DienThoai = t.DienThoai,
                     PhongBan = t.PhongBan,
                     SoTaiKhoan = t.SoTaiKhoan,
                     NganHang = t.NganHang,
@@ -68,17 +68,16 @@ namespace HETHONGTINHNHUANBUT
                 if (dgvTacGia.Columns["Id"] != null) dgvTacGia.Columns["Id"].Visible = false;
                 if (dgvTacGia.Columns["AvatarPath"] != null) dgvTacGia.Columns["AvatarPath"].Visible = false;
                 if (dgvTacGia.Columns["PdfPath"] != null) dgvTacGia.Columns["PdfPath"].Visible = false;
-                // Vẫn ẩn cột Ngân hàng để lưới đỡ dài
                 if (dgvTacGia.Columns["NganHang"] != null) dgvTacGia.Columns["NganHang"].Visible = false;
 
                 if (dgvTacGia.Columns.Count > 0)
                 {
-                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã HT";
+                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã Số Tác Giả";
                     dgvTacGia.Columns["MaThe"].HeaderText = "Mã Thẻ";
                     dgvTacGia.Columns["HoTen"].HeaderText = "Họ và Tên";
                     dgvTacGia.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvTacGia.Columns["SoTaiKhoan"].HeaderText = "Số Tài Khoản";
-                    dgvTacGia.Columns["DienThoai"].HeaderText = "Điện Thoại"; // Tiêu đề mới
+                    dgvTacGia.Columns["DienThoai"].HeaderText = "Điện Thoại";
                     dgvTacGia.Columns["NgaySinh"].HeaderText = "Ngày Sinh";
                     dgvTacGia.Columns["PhanLoai"].HeaderText = "Phân Loại";
                     dgvTacGia.Columns["PhongBan"].HeaderText = "Phòng Ban";
@@ -96,7 +95,6 @@ namespace HETHONGTINHNHUANBUT
             await LoadDataAsync(txtTimKiem.Text);
         }
 
-        // CHỌN ẢNH VÀ PDF GIỮ NGUYÊN
         private void btnChonAnh_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -143,28 +141,42 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                var exist = await _tacGiaColl.Find(t => t.Maso == txtMaHT.Text.Trim()).FirstOrDefaultAsync();
+                string maHT = txtMaHT.Text.Trim();
+                string maThe = txtMaThe.Text.Trim();
+                string sdt = txtDienThoai.Text.Trim();
+                string email = txtEmail.Text.Trim();
+
+                // BỘ LỌC BẮT LỖI TRÙNG LẶP CHẶT CHẼ
+                var builder = Builders<TacGia>.Filter;
+                var filter = builder.Eq(t => t.Maso, maHT);
+
+                if (!string.IsNullOrEmpty(maThe)) filter |= builder.Eq(t => t.MsTG, maThe);
+                if (!string.IsNullOrEmpty(sdt)) filter |= builder.Eq(t => t.DienThoai, sdt);
+                if (!string.IsNullOrEmpty(email)) filter |= builder.Eq(t => t.Email, email);
+
+                var exist = await _tacGiaColl.Find(filter).FirstOrDefaultAsync();
+
                 if (exist != null)
                 {
-                    MessageBox.Show("Mã hệ thống đã tồn tại!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (exist.Maso == maHT) MessageBox.Show("Cái Mã hệ thống này đã bị người khác dùng rồi!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(maThe) && exist.MsTG == maThe) MessageBox.Show("Mã thẻ này đã được cấp cho tác giả khác!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(sdt) && exist.DienThoai == sdt) MessageBox.Show("Số điện thoại này đã có trong hệ thống!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(email) && exist.Email == email) MessageBox.Show("Email này đã được sử dụng rồi!", "Lỗi trùng lặp");
                     return;
                 }
 
                 var tg = new TacGia
                 {
-                    Maso = txtMaHT.Text.Trim(),
-                    MsTG = txtMaThe.Text.Trim(),
+                    Maso = maHT,
+                    MsTG = maThe,
                     Hoten = txtHoTen.Text.Trim(),
                     Ngaysinh = dtpNgaySinh.Value,
                     LoaiTacgia = cboPhanLoai.Text,
-                    Email = txtEmail.Text.Trim(),
-
-                    DienThoai = txtDienThoai.Text.Trim(), // Lấy từ Form
-
+                    Email = email,
+                    DienThoai = sdt,
                     SoTaiKhoan = txtSoTaiKhoan.Text.Trim(),
                     PhongBan = txtPhongBan.Text.Trim(),
                     NganHang = txtNganHang.Text.Trim(),
-
                     AvatarPath = currentImagePath,
                     PdfPath = currentPdfPath
                 };
@@ -184,20 +196,43 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string id = dgvTacGia.CurrentRow.Cells["Id"].Value.ToString();
+                string maHT = txtMaHT.Text.Trim();
+                string maThe = txtMaThe.Text.Trim();
+                string sdt = txtDienThoai.Text.Trim();
+                string email = txtEmail.Text.Trim();
+
+                // LỌC TRÙNG NHƯNG PHẢI LOẠI TRỪ CHÍNH NÓ (Id đang sửa) RA!
+                var builder = Builders<TacGia>.Filter;
+                var filterCheck = builder.Eq(t => t.Maso, maHT);
+
+                if (!string.IsNullOrEmpty(maThe)) filterCheck |= builder.Eq(t => t.MsTG, maThe);
+                if (!string.IsNullOrEmpty(sdt)) filterCheck |= builder.Eq(t => t.DienThoai, sdt);
+                if (!string.IsNullOrEmpty(email)) filterCheck |= builder.Eq(t => t.Email, email);
+
+                var finalFilter = builder.And(builder.Ne(t => t.Id, id), filterCheck);
+
+                var exist = await _tacGiaColl.Find(finalFilter).FirstOrDefaultAsync();
+
+                if (exist != null)
+                {
+                    if (exist.Maso == maHT) MessageBox.Show("Đổi mã không thành công! Mã hệ thống này đã bị người khác dùng!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(maThe) && exist.MsTG == maThe) MessageBox.Show("Mã thẻ định đổi sang đã được cấp cho người khác!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(sdt) && exist.DienThoai == sdt) MessageBox.Show("Số điện thoại định sửa thành đã có trong hệ thống!", "Lỗi trùng lặp");
+                    else if (!string.IsNullOrEmpty(email) && exist.Email == email) MessageBox.Show("Email định đổi sang đã bị sử dụng!", "Lỗi trùng lặp");
+                    return;
+                }
+
                 var update = Builders<TacGia>.Update
-                    .Set(t => t.Maso, txtMaHT.Text.Trim())
-                    .Set(t => t.MsTG, txtMaThe.Text.Trim())
+                    .Set(t => t.Maso, maHT)
+                    .Set(t => t.MsTG, maThe)
                     .Set(t => t.Hoten, txtHoTen.Text.Trim())
                     .Set(t => t.Ngaysinh, dtpNgaySinh.Value)
                     .Set(t => t.LoaiTacgia, cboPhanLoai.Text)
-                    .Set(t => t.Email, txtEmail.Text.Trim())
-
-                    .Set(t => t.DienThoai, txtDienThoai.Text.Trim()) // Cập nhật Số điện thoại
-
+                    .Set(t => t.Email, email)
+                    .Set(t => t.DienThoai, sdt)
                     .Set(t => t.SoTaiKhoan, txtSoTaiKhoan.Text.Trim())
                     .Set(t => t.PhongBan, txtPhongBan.Text.Trim())
                     .Set(t => t.NganHang, txtNganHang.Text.Trim())
-
                     .Set(t => t.AvatarPath, currentImagePath)
                     .Set(t => t.PdfPath, currentPdfPath);
 
@@ -225,8 +260,7 @@ namespace HETHONGTINHNHUANBUT
         {
             txtMaHT.Clear(); txtMaThe.Clear(); txtHoTen.Clear();
             txtEmail.Clear(); txtPhongBan.Clear(); txtSoTaiKhoan.Clear(); txtNganHang.Clear();
-
-            txtDienThoai.Clear(); // MỚI
+            txtDienThoai.Clear();
 
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
             dtpNgaySinh.Value = DateTime.Now;
@@ -247,9 +281,7 @@ namespace HETHONGTINHNHUANBUT
                 txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
                 cboPhanLoai.Text = row.Cells["PhanLoai"].Value?.ToString();
                 txtEmail.Text = row.Cells["Email"].Value?.ToString();
-
-                txtDienThoai.Text = row.Cells["DienThoai"].Value?.ToString(); // MỚI
-
+                txtDienThoai.Text = row.Cells["DienThoai"].Value?.ToString();
                 txtPhongBan.Text = row.Cells["PhongBan"].Value?.ToString();
                 txtSoTaiKhoan.Text = row.Cells["SoTaiKhoan"].Value?.ToString();
                 txtNganHang.Text = row.Cells["NganHang"].Value?.ToString();

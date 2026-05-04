@@ -39,27 +39,23 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 var listTacGia = await _tacGiaColl.Find(_ => true).ToListAsync();
-                List<string> tatCaButDanh = new List<string>();
+                List<string> danhSachHienThi = new List<string>();
 
                 // Thêm mục "Tất cả" lên đầu danh sách để dễ lọc
-                tatCaButDanh.Add("--- Tất cả tác giả ---");
+                danhSachHienThi.Add("--- Tất cả tác giả ---");
 
                 foreach (var tg in listTacGia)
                 {
-                    // ĐÃ SỬA: Dùng tg.ButDanh thay vì tg.Ddong
-                    if (!string.IsNullOrWhiteSpace(tg.ButDanh))
+                    // CHỈ DÙNG TÊN THẬT LÀ "Hoten" (chữ t viết thường theo đúng Model)
+                    // Không còn tg.ButDanh hay tg.HoTen nữa nhé!
+                    if (!string.IsNullOrWhiteSpace(tg.Hoten))
                     {
-                        tatCaButDanh.Add(tg.ButDanh.Trim());
-                    }
-                    // ĐÃ SỬA: Dùng tg.HoTen thay vì tg.Hoten (chữ T viết hoa)
-                    else if (!string.IsNullOrWhiteSpace(tg.HoTen))
-                    {
-                        // Nếu không có bút danh thì lấy tạm Họ tên
-                        tatCaButDanh.Add(tg.HoTen.Trim());
+                        danhSachHienThi.Add(tg.Hoten.Trim());
                     }
                 }
 
-                cboTacGia.DataSource = tatCaButDanh.Distinct().ToList();
+                // Lọc trùng (Distinct) và đẩy lên ComboBox
+                cboTacGia.DataSource = danhSachHienThi.Distinct().ToList();
                 cboTacGia.SelectedIndex = 0;
             }
             catch (Exception ex)
