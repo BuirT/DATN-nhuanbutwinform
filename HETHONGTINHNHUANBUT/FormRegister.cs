@@ -66,41 +66,32 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // 1. Kiểm tra user đã tồn tại trong MongoDB chưa
                 var existUser = await _UserColl.Find(t => t.TenDangNhap == userId).FirstOrDefaultAsync();
-
                 if (existUser != null)
                 {
-                    MessageBox.Show("Tên đăng nhập đã tồn tại. Đồng chí vui lòng chọn tên khác nhé.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Tên đăng nhập đã tồn tại!");
                     return;
                 }
 
-                // 2. Xử lý mã hóa mật khẩu
-                string hashedPassword = password;
-                try
-                {
-                    hashedPassword = HashHelper.ComputeSha256(password);
-                }
-                catch
-                {
-                    // Đề phòng trường hợp đồng chí đã xóa HashHelper thì lưu tạm text thường
-                    hashedPassword = password;
-                }
+                // --- BẮT ĐẦU LOGIC SALTING ---
+                // 1. Tạo Salt riêng biệt cho người dùng này
+                string userSalt = HashHelper.GenerateSalt();
 
-                // 3. Tạo Object Tài Khoản mới (gán quyền từ ComboBox)
+                // 2. Băm mật khẩu kèm với Salt
+                string hashedPassword = HashHelper.ComputeSha256(password, userSalt);
+
                 var tkMoi = new User
                 {
                     TenDangNhap = userId,
                     MatKhau = hashedPassword,
-                    HoTen = userId, // Tạm lấy tên đăng nhập làm họ tên
-                    Quyen = selectedRole, // Cấp quyền người dùng chọn
+                    Salt = userSalt, // LƯU SALT VÀO DATABASE
+                    HoTen = userId,
+                    Quyen = selectedRole,
                     HoatDong = true
                 };
 
-                // 4. Lưu xuống Database
                 await _UserColl.InsertOneAsync(tkMoi);
-
-                MessageBox.Show($"Đăng ký thành công tài khoản {selectedRole}!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đăng ký thành công tài khoản {selectedRole}!");
                 ShowLoginAndClose();
             }
             catch (Exception ex)
@@ -136,6 +127,16 @@ namespace HETHONGTINHNHUANBUT
             {
                 this.Close();
             }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
