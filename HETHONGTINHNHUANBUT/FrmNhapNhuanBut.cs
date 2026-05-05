@@ -19,6 +19,11 @@ namespace HETHONGTINHNHUANBUT
         private string _selectedNhuanButId = null;
         public string NguoiDangNhap { get; set; }
 
+        // =======================================================
+        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (BẮT BUỘC)
+        public string QuyenHienTai { get; set; }
+        // =======================================================
+
         public FrmNhapNhuanBut()
         {
             InitializeComponent();
@@ -37,6 +42,51 @@ namespace HETHONGTINHNHUANBUT
 
             if (cboSoBao.SelectedValue != null)
                 await LoadDataGridAsync(cboSoBao.SelectedValue.ToString());
+
+            // GỌI HÀM KHÓA NÚT TẠI ĐÂY KHI VỪA MỞ FORM LÊN!
+            PhanQuyenThaoTac();
+        }
+
+        // =======================================================
+        // HÀM PHÂN QUYỀN: CHỈ THƯ KÝ, ADMIN LÀM, THẰNG KHÁC DÒM!
+        // =======================================================
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            // Nếu là Kế toán hoặc Lãnh đạo thì khóa hết!
+            if (role == "kế toán" || role == "lãnh đạo")
+            {
+                // Khóa 3 nút tác động DB
+                btnThem.Enabled = false;
+                btnXoa.Enabled = false;
+                btnLamMoi.Enabled = false;
+
+                // Khóa luôn các ô nhập cho chắc cốp
+                txtTenBai.ReadOnly = true;
+                txtTrang.ReadOnly = true;
+                txtMuc.ReadOnly = true;
+                txtTienNhuanBut.ReadOnly = true;
+                cboButDanh.Enabled = false;
+                cboVung.Enabled = false;
+                cboVungChuyenDen.Enabled = false;
+
+                // Mở DataGrid và Combobox chọn kỳ báo để họ dòm thôi
+            }
+            else // Thư ký, Admin, Quản trị viên
+            {
+                btnThem.Enabled = true;
+                btnXoa.Enabled = true;
+                btnLamMoi.Enabled = true;
+
+                txtTenBai.ReadOnly = false;
+                txtTrang.ReadOnly = false;
+                txtMuc.ReadOnly = false;
+                txtTienNhuanBut.ReadOnly = false;
+                cboButDanh.Enabled = true;
+                cboVung.Enabled = true;
+                cboVungChuyenDen.Enabled = true;
+            }
         }
 
         public class CboBaoItem
@@ -49,12 +99,12 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                // 1. Load Kỳ Báo - ĐÃ SỬA: Loại bỏ "Số {b.Sobao}" cho đỡ rối mắt
+                // 1. Load Kỳ Báo 
                 var listBaoRaw = await _baoColl.Find(b => b.DaDuyet == "N").ToListAsync();
                 var displayListBao = listBaoRaw.Select(b => new CboBaoItem
                 {
                     MaSoBao = b.Maso?.ToString() ?? "",
-                    HienThi = $"{b.Tenbao} ({b.Ngayra.ToLocalTime():dd/MM/yyyy})" // Chuẩn xịn
+                    HienThi = $"{b.Tenbao} ({b.Ngayra.ToLocalTime():dd/MM/yyyy})"
                 }).ToList();
 
                 cboSoBao.DataSource = displayListBao;
@@ -150,7 +200,6 @@ namespace HETHONGTINHNHUANBUT
                 var baoInfo = await _baoColl.Find(b => b.Maso.ToString() == maSoBao).FirstOrDefaultAsync();
                 string tenSoBaoHienThi = cboSoBao.Text;
 
-                // ĐÃ SỬA: Đồng bộ cách hiển thị Tên báo khi lưu vào DB NhuanBut
                 if (baoInfo != null)
                 {
                     tenSoBaoHienThi = $"{baoInfo.Tenbao} ({baoInfo.Ngayra.ToLocalTime():dd/MM/yyyy})";

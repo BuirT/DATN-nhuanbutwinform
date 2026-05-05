@@ -18,6 +18,11 @@ namespace HETHONGTINHNHUANBUT
         private string currentImagePath = "";
         private string currentPdfPath = "";
 
+        // =======================================================
+        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (KHÔNG ĐƯỢC XÓA)
+        public string QuyenHienTai { get; set; }
+        // =======================================================
+
         public FrmTacGia()
         {
             InitializeComponent();
@@ -46,6 +51,33 @@ namespace HETHONGTINHNHUANBUT
         {
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
             await LoadDataAsync();
+
+            // GỌI HÀM KHÓA TAY TẠI ĐÂY KHI VỪA MỞ FORM LÊN!
+            PhanQuyenThaoTac();
+        }
+
+        // =======================================================
+        // HÀM PHÂN QUYỀN THAO TÁC 
+        // =======================================================
+        private void PhanQuyenThaoTac()
+        {
+            // Nếu không có quyền hoặc quyền là Lãnh đạo / Kế toán thì KHÓA NÚT LẠI!
+            if (QuyenHienTai == "Lãnh đạo" || QuyenHienTai == "Kế toán")
+            {
+                btnThem.Enabled = false;
+                btnSua.Enabled = false;
+                btnXoa.Enabled = false;
+                btnChonAnh.Enabled = false;
+                btnChonPDF.Enabled = false;
+            }
+            else // Thư ký, Admin thì được phép làm
+            {
+                btnThem.Enabled = true;
+                btnSua.Enabled = true;
+                btnXoa.Enabled = true;
+                btnChonAnh.Enabled = true;
+                btnChonPDF.Enabled = true;
+            }
         }
 
         private async Task LoadDataAsync(string keyword = "")
@@ -89,7 +121,7 @@ namespace HETHONGTINHNHUANBUT
 
                 if (dgvTacGia.Columns.Count > 0)
                 {
-                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã Số Tác Giả";
+                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã HT";
                     dgvTacGia.Columns["MaThe"].HeaderText = "Mã Thẻ";
                     dgvTacGia.Columns["HoTen"].HeaderText = "Họ và Tên";
                     dgvTacGia.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -338,6 +370,9 @@ namespace HETHONGTINHNHUANBUT
                 }
             }
         }
+
+        private void lblMaHT_Click(object sender, EventArgs e)
+        {
 
         private void txtDienThoai_TextChanged(object sender, EventArgs e)
         {

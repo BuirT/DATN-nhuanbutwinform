@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,6 +18,11 @@ namespace HETHONGTINHNHUANBUT
 
         public string NguoiDuyet { get; set; } = "Ban Giám Đốc";
 
+        // =======================================================
+        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (CHỐT CHẶN CUỐI CÙNG)
+        public string QuyenHienTai { get; set; }
+        // =======================================================
+
         public FrmDuyetPhieuChi()
         {
             InitializeComponent();
@@ -27,6 +34,36 @@ namespace HETHONGTINHNHUANBUT
         {
             cboTrangThai.SelectedIndex = 0;
             await LoadDataAsync();
+
+            // GỌI HÀM KHÓA NÚT NGAY TẠI ĐÂY!
+            PhanQuyenThaoTac();
+        }
+
+        // =======================================================
+        // HÀM PHÂN QUYỀN: LÃNH ĐẠO LÀM, KẾ TOÁN CHỈ ĐƯỢC NHÌN!
+        // =======================================================
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            // Kế toán nhảy vào đây chỉ để xem tình trạng phiếu, CẤM ĐỤNG VÀO NÚT!
+            if (role == "kế toán" || role == "thư ký")
+            {
+                btnDuyet.Enabled = false;
+                btnTuChoi.Enabled = false;
+                btnXoa.Enabled = false;
+
+                // Khóa luôn cái ô nhập lý do từ chối, không cho gõ bậy
+                txtLyDoTuChoi.ReadOnly = true;
+            }
+            else // Lãnh đạo, Admin, Quản trị viên thì full quyền sinh sát
+            {
+                btnDuyet.Enabled = true;
+                btnTuChoi.Enabled = true;
+                btnXoa.Enabled = true;
+
+                txtLyDoTuChoi.ReadOnly = false;
+            }
         }
 
         private async Task LoadDataAsync()
@@ -73,6 +110,9 @@ namespace HETHONGTINHNHUANBUT
             await LoadDataAsync();
 
             bool isChoDuyet = cboTrangThai.SelectedIndex == 0;
+
+            // LƯU Ý: Không được đụng vào logic Enabled của PhanQuyenThaoTac
+            // Hàm này chỉ quản lý trạng thái Ẩn/Hiện (Visible) theo ComboBox
             btnDuyet.Visible = isChoDuyet;
             btnTuChoi.Visible = isChoDuyet;
 

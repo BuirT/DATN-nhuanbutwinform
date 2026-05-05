@@ -8,6 +8,8 @@ namespace HETHONGTINHNHUANBUT.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+
+
         public string Id { get; set; }
 
         public int Maso { get; set; }

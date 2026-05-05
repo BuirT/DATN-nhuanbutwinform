@@ -14,6 +14,11 @@ namespace HETHONGTINHNHUANBUT
         private string _tenNguoiDung;
         private string _selectedId = "";
 
+        // =======================================================
+        // BIẾN QUAN TRỌNG ĐỂ HỨNG QUYỀN TỪ FORM TRANG CHÍNH TRUYỀN SANG
+        public string QuyenHienTai { get; set; }
+        // =======================================================
+
         public FrmSoBao(string tenNguoiDung = "Admin")
         {
             InitializeComponent();
@@ -30,6 +35,43 @@ namespace HETHONGTINHNHUANBUT
 
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
             await LoadDataAsync();
+
+            // GỌI HÀM KHÓA NÚT NGAY LÚC MỞ FORM
+            PhanQuyenThaoTac();
+        }
+
+        // =======================================================
+        // HÀM PHÂN QUYỀN: CHỈ THƯ KÝ/ADMIN ĐƯỢC QUẢN LÝ SỐ BÁO
+        // =======================================================
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            // Nếu là Kế toán hoặc Lãnh đạo thì khóa hết các nút chức năng lại
+            if (role == "kế toán" || role == "lãnh đạo")
+            {
+                btnThem.Enabled = false;
+                btnSua.Enabled = false;
+                btnXoa.Enabled = false;
+
+                // Khóa luôn cái nút Khóa/Mở sổ (Tìm control bằng tên cho chắc ăn theo code cũ của ông)
+                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
+                {
+                    btnKhoaSo.Enabled = false;
+                }
+            }
+            else if (role == "thư ký" || role == "admin" || role == "quản trị viên")
+            {
+                // Thư ký và Admin được phép thao tác thoải mái
+                btnThem.Enabled = true;
+                btnSua.Enabled = true;
+                btnXoa.Enabled = true;
+
+                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
+                {
+                    btnKhoaSo.Enabled = true;
+                }
+            }
         }
 
         private async Task LoadDataAsync(string keyword = "")
@@ -55,7 +97,6 @@ namespace HETHONGTINHNHUANBUT
                     Sobao = b.Sobao,
                     Sobo = b.Sobo,
                     Loaibao = b.Loaibao,
-                    // ĐÃ SỬA: Thay đổi hoàn toàn thuật ngữ hiển thị
                     DaDuyet = b.DaDuyet == "Y" ? "🔒 Đã khóa sổ" : "Đang mở"
                 }).OrderByDescending(x => x.Ngayra).ToList();
 
@@ -69,11 +110,9 @@ namespace HETHONGTINHNHUANBUT
                     dgvSoBao.Columns["Sobao"].HeaderText = "Số báo";
                     dgvSoBao.Columns["Sobo"].HeaderText = "Số bộ";
                     dgvSoBao.Columns["Loaibao"].HeaderText = "Loại báo";
-                    // ĐÃ SỬA: Đổi tên cột
                     dgvSoBao.Columns["DaDuyet"].HeaderText = "Tình trạng sổ";
                 }
 
-                // Tự động reset lại nút khi tải xong dữ liệu
                 if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
                 {
                     btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
@@ -117,7 +156,7 @@ namespace HETHONGTINHNHUANBUT
                     Sobao = txtSoBao.Text.Trim(),
                     Sobo = txtSoBo.Text.Trim(),
                     Loaibao = cboLoaiBao.Text,
-                    DaDuyet = "N" // Mặc định là Đang mở
+                    DaDuyet = "N"
                 };
 
                 await _baoColl.InsertOneAsync(bao);
@@ -159,7 +198,6 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // --- ĐÃ SỬA: SỰ KIỆN NÚT KHÓA SỔ ---
         private async void btnKhoaSo_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_selectedId))
@@ -223,7 +261,6 @@ namespace HETHONGTINHNHUANBUT
                     dtpNgayRa.Value = dt;
                 }
 
-                // Xử lý đổi trạng thái nút Khóa sổ
                 if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
                 {
                     string trangThai = row.Cells["DaDuyet"].Value?.ToString();

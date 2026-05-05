@@ -12,6 +12,11 @@ namespace HETHONGTINHNHUANBUT
     {
         private readonly IMongoCollection<User> _taiKhoanColl;
 
+        // =======================================================
+        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (BẮT BUỘC PHẢI CÓ)
+        public string QuyenHienTai { get; set; }
+        // =======================================================
+
         public FrmTaiKhoan()
         {
             InitializeComponent();
@@ -20,9 +25,22 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)
         {
-            // Thiết lập vai trò chuẩn theo quy trình tòa soạn
+            // 1. KIỂM SOÁT COMBOBOX DỰA THEO QUYỀN
             cboQuyen.Items.Clear();
-            cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán" });
+
+            string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            if (currentRole == "admin" || currentRole == "quản trị viên")
+            {
+                // Admin thì hiển thị full option
+                cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán", "Quản trị viên" });
+            }
+            else
+            {
+                // Lãnh đạo (hoặc người khác) thì tuyệt đối KHÔNG ĐƯỢC THẤY chữ Quản trị viên
+                cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán" });
+            }
+
             if (cboQuyen.Items.Count > 0) cboQuyen.SelectedIndex = 0;
 
             await LoadDataAsync();
@@ -48,7 +66,7 @@ namespace HETHONGTINHNHUANBUT
                     TenDangNhap = tk.TenDangNhap,
                     MatKhau = "********",
                     tk.HoTen,
-                    tk.Quyen,
+                    Quyen = tk.Quyen, // Bỏ cái tk.Quyen cùi bắp đi, viết rõ ra thế này
                     TrangThai = tk.HoatDong ? "Đang hoạt động" : "Bị khóa"
                 }).ToList();
 
@@ -88,7 +106,7 @@ namespace HETHONGTINHNHUANBUT
                     TenDangNhap = txtTenDangNhap.Text.Trim(),
                     MatKhau = txtMatKhau.Text.Trim(),
                     HoTen = txtHoTen.Text.Trim(),
-                    Quyen = cboQuyen.Text,
+                    Quyen = cboQuyen.Text, // Lấy giá trị từ ComboBox đã được lọc
                     HoatDong = chkHoatDong.Checked
                 };
 
@@ -103,6 +121,18 @@ namespace HETHONGTINHNHUANBUT
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvTaiKhoan.CurrentRow == null) return;
+
+            // BẢO MẬT: Chặn không cho người khác sửa tài khoản Admin
+            string vaiTroCuaAccDangChon = dgvTaiKhoan.CurrentRow.Cells["Quyen"].Value?.ToString() ?? "";
+            string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            if ((vaiTroCuaAccDangChon.ToLower() == "admin" || vaiTroCuaAccDangChon.ToLower() == "quản trị viên") &&
+                (currentRole != "admin" && currentRole != "quản trị viên"))
+            {
+                MessageBox.Show("Tài khoản này là Quản trị viên, bạn không có quyền thay đổi thông tin!", "Cấm vượt quyền", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             try
             {
                 string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
@@ -125,6 +155,17 @@ namespace HETHONGTINHNHUANBUT
         {
             if (dgvTaiKhoan.CurrentRow == null) return;
             string user = dgvTaiKhoan.CurrentRow.Cells["TenDangNhap"].Value.ToString();
+            string vaiTroCuaAccDangChon = dgvTaiKhoan.CurrentRow.Cells["Quyen"].Value?.ToString() ?? "";
+            string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            // BẢO MẬT: Chặn không cho người khác xóa tài khoản Admin
+            if ((vaiTroCuaAccDangChon.ToLower() == "admin" || vaiTroCuaAccDangChon.ToLower() == "quản trị viên") &&
+                (currentRole != "admin" && currentRole != "quản trị viên"))
+            {
+                MessageBox.Show("Bảo vệ hệ thống: Bạn không thể xóa tài khoản Quản trị viên!", "Cấm vượt quyền", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (user.ToLower() == "admin") { MessageBox.Show("Không thể xóa Admin hệ thống!"); return; }
 
             if (MessageBox.Show($"Xác nhận xóa tài khoản {user}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -151,7 +192,18 @@ namespace HETHONGTINHNHUANBUT
                 txtTenDangNhap.Text = row.Cells["TenDangNhap"].Value?.ToString();
                 txtTenDangNhap.ReadOnly = true;
                 txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
-                cboQuyen.Text = row.Cells["Quyen"].Value?.ToString();
+
+                string vaiTro = row.Cells["Quyen"].Value?.ToString();
+                // Bắt lỗi nhẹ: Nếu Lãnh đạo click vào nick Admin thì combobox của lãnh đạo ko có chữ Admin để hiển thị đâu!
+                if (cboQuyen.Items.Contains(vaiTro))
+                {
+                    cboQuyen.Text = vaiTro;
+                }
+                else
+                {
+                    cboQuyen.SelectedIndex = -1; // Để trống nếu không được phép xem/chọn quyền này
+                }
+
                 chkHoatDong.Checked = row.Cells["TrangThai"].Value?.ToString() == "Đang hoạt động";
             }
         }

@@ -9,6 +9,8 @@ namespace HETHONGTINHNHUANBUT.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+
+
         public string Id { get; set; }
 
         // DÙNG KIỂU object: Để chấp nhận cả dữ liệu cũ (Int32) và mới (String)

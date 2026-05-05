@@ -20,11 +20,50 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmTrangChinh_Load(object sender, EventArgs e)
         {
-            // Khi vừa mở máy, hiển thị ngay màn hình Tổng Quan cho chuyên nghiệp
+            // BẮT BUỘC GỌI HÀM NÀY ĐỂ PHÂN QUYỀN TRƯỚC KHI MỞ FORM
+            ApplyPermissions();
+
+            // Khi vừa mở máy, hiển thị ngay màn hình Tổng Quan
             btnTongQuan_Click(null, null);
         }
 
-        // --- HÀM CỐT LÕI: MỞ FORM CON BÊN TRONG PANEL MAIN ---
+        // ==========================================
+        // HÀM QUYẾT ĐỊNH SỰ SỐNG CÒN CỦA MENU
+        // ==========================================
+        private void ApplyPermissions()
+        {
+            // 1. Tắt hết mấy cái form nhạy cảm đi (Phòng bệnh hơn chữa bệnh)
+            btnDuyetChi.Visible = false;
+            btnPhieuChi.Visible = false;
+            btnTaiKhoan.Visible = false;
+
+            // Dùng ToLower() để chống lỗi gõ hoa/thường sai lệch từ DB
+            string role = currentPrivilege?.Trim().ToLower() ?? "";
+
+            // 2. Cấp quyền hiển thị theo đúng vai trò
+            if (role == "lãnh đạo")
+            {
+                btnDuyetChi.Visible = true; // Sếp thì cho duyệt chi
+                btnTaiKhoan.Visible = true; // Sếp được xem danh sách tài khoản
+            }
+            else if (role == "kế toán")
+            {
+                btnPhieuChi.Visible = true; // Kế toán thì chỉ được lập phiếu chi
+            }
+            else if (role == "thư ký")
+            {
+                // Thư ký chỉ thao tác vòng ngoài (Tác giả, Bút danh...), không mở 3 form kia
+            }
+            else if (role == "admin" || role == "quản trị viên")
+            {
+                // TRÙM CUỐI: Mở khóa full tính năng
+                btnDuyetChi.Visible = true;
+                btnPhieuChi.Visible = true;
+                btnTaiKhoan.Visible = true;
+            }
+        }
+
+        // --- HÀM CỐT LÕI: MỞ FORM CON & TRUYỀN QUYỀN ---
         private void OpenChildForm(Form childForm)
         {
             if (activeForm != null)
@@ -33,6 +72,14 @@ namespace HETHONGTINHNHUANBUT
             }
 
             activeForm = childForm;
+
+            // TRUYỀN QUYỀN SANG FORM CON ĐỂ KHÓA NÚT THÊM/SỬA/XÓA BÊN TRONG
+            var property = childForm.GetType().GetProperty("QuyenHienTai");
+            if (property != null)
+            {
+                property.SetValue(childForm, currentPrivilege);
+            }
+
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
@@ -45,26 +92,10 @@ namespace HETHONGTINHNHUANBUT
 
         // --- CÁC SỰ KIỆN BẤM NÚT MENU ---
 
-        private void btnTongQuan_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmTongQuan());
-        }
-
-        private void btnSoBao_Click(object sender, EventArgs e)
-        {
-            // Sử dụng tên file frmSoBao (chữ f thường) như đồng chí đã tạo
-            OpenChildForm(new FrmSoBao());
-        }
-
-        private void btnTacGia_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmTacGia());
-        }
-
-        private void btnButDanh_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmButDanh());
-        }
+        private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan());
+        private void btnSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao());
+        private void btnTacGia_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia());
+        private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh());
 
         private void btnTaiKhoan_Click(object sender, EventArgs e)
         {
@@ -80,40 +111,21 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnPhieuChi_Click(object sender, EventArgs e)
         {
-            // Truyền tên người lập phiếu để lưu vết
             FrmPhieuChi frmChi = new FrmPhieuChi();
             frmChi.NguoiLapPhieu = this.currentUserName;
             OpenChildForm(frmChi);
         }
 
-        // ==========================================
-        // MỚI THÊM: SỰ KIỆN NÚT LÃNH ĐẠO DUYỆT CHI
-        // ==========================================
         private void btnDuyetChi_Click(object sender, EventArgs e)
         {
             FrmDuyetPhieuChi frmDuyet = new FrmDuyetPhieuChi();
-            // Truyền tên tài khoản đang đăng nhập vào làm người duyệt (nếu trống thì để mặc định)
             frmDuyet.NguoiDuyet = string.IsNullOrEmpty(this.currentUserName) ? "Ban Giám Đốc" : this.currentUserName;
             OpenChildForm(frmDuyet);
         }
 
-        // --- NHÓM MENU BÁO CÁO ---
-
-        private void btnBaoCao_Click(object sender, EventArgs e)
-        {
-            // Sử dụng đúng tên class baocaotonghop (không viết hoa, không dấu cách)
-            OpenChildForm(new FrmBaoCaoTongHop());
-        }
-
-        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmBaoCaoChiTiet());
-        }
-
-        private void btnBaoCaoCongNo_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmBaoCaoCongNo());
-        }
+        private void btnBaoCao_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop());
+        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoChiTiet());
+        private void btnBaoCaoCongNo_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo());
 
         // --- ĐĂNG XUẤT ---
         private void btnDangXuat_Click(object sender, EventArgs e)
