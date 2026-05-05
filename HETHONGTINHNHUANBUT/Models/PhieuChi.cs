@@ -10,6 +10,7 @@ namespace HETHONGTINHNHUANBUT.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+
         public string Id { get; set; }
 
         // --- 1. THÔNG TIN PHIẾU ---

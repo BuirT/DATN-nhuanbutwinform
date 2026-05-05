@@ -18,6 +18,11 @@ namespace HETHONGTINHNHUANBUT
         private string currentImagePath = "";
         private string currentPdfPath = "";
 
+        // =======================================================
+        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (KHÔNG ĐƯỢC XÓA)
+        public string QuyenHienTai { get; set; }
+        // =======================================================
+
         public FrmTacGia()
         {
             InitializeComponent();
@@ -28,6 +33,33 @@ namespace HETHONGTINHNHUANBUT
         {
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
             await LoadDataAsync();
+
+            // GỌI HÀM KHÓA TAY TẠI ĐÂY KHI VỪA MỞ FORM LÊN!
+            PhanQuyenThaoTac();
+        }
+
+        // =======================================================
+        // HÀM PHÂN QUYỀN THAO TÁC 
+        // =======================================================
+        private void PhanQuyenThaoTac()
+        {
+            // Nếu không có quyền hoặc quyền là Lãnh đạo / Kế toán thì KHÓA NÚT LẠI!
+            if (QuyenHienTai == "Lãnh đạo" || QuyenHienTai == "Kế toán")
+            {
+                btnThem.Enabled = false;
+                btnSua.Enabled = false;
+                btnXoa.Enabled = false;
+                btnChonAnh.Enabled = false;
+                btnChonPDF.Enabled = false;
+            }
+            else // Thư ký, Admin thì được phép làm
+            {
+                btnThem.Enabled = true;
+                btnSua.Enabled = true;
+                btnXoa.Enabled = true;
+                btnChonAnh.Enabled = true;
+                btnChonPDF.Enabled = true;
+            }
         }
 
         private async Task LoadDataAsync(string keyword = "")
@@ -39,7 +71,6 @@ namespace HETHONGTINHNHUANBUT
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
                     keyword = keyword.ToLower().Trim();
-                    // MỞ TO MẮT RA NHÌN ĐOẠN NÀY! ĐÃ ĐỔI HẾT SANG TÊN THẬT (Maso, Hoten, MsTG) RỒI ĐẤY!
                     list = list.Where(t =>
                         (t.Maso != null && t.Maso.ToLower().Contains(keyword)) ||
                         (t.Hoten != null && t.Hoten.ToLower().Contains(keyword)) ||
@@ -72,7 +103,7 @@ namespace HETHONGTINHNHUANBUT
 
                 if (dgvTacGia.Columns.Count > 0)
                 {
-                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã Số Tác Giả";
+                    dgvTacGia.Columns["MaHT"].HeaderText = "Mã HT";
                     dgvTacGia.Columns["MaThe"].HeaderText = "Mã Thẻ";
                     dgvTacGia.Columns["HoTen"].HeaderText = "Họ và Tên";
                     dgvTacGia.Columns["HoTen"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -146,7 +177,6 @@ namespace HETHONGTINHNHUANBUT
                 string sdt = txtDienThoai.Text.Trim();
                 string email = txtEmail.Text.Trim();
 
-                // BỘ LỌC BẮT LỖI TRÙNG LẶP CHẶT CHẼ
                 var builder = Builders<TacGia>.Filter;
                 var filter = builder.Eq(t => t.Maso, maHT);
 
@@ -201,7 +231,6 @@ namespace HETHONGTINHNHUANBUT
                 string sdt = txtDienThoai.Text.Trim();
                 string email = txtEmail.Text.Trim();
 
-                // LỌC TRÙNG NHƯNG PHẢI LOẠI TRỪ CHÍNH NÓ (Id đang sửa) RA!
                 var builder = Builders<TacGia>.Filter;
                 var filterCheck = builder.Eq(t => t.Maso, maHT);
 
@@ -309,6 +338,11 @@ namespace HETHONGTINHNHUANBUT
                     btnXemPDF.Enabled = false;
                 }
             }
+        }
+
+        private void lblMaHT_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

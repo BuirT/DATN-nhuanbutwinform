@@ -18,6 +18,9 @@ namespace HETHONGTINHNHUANBUT
         private readonly IMongoCollection<PhieuChi> _phieuChiColl;
         private readonly IMongoCollection<ButDanh> _butDanhColl;
 
+        // BIẾN QUAN TRỌNG ĐỂ HỨNG QUYỀN TỪ FORM TRANG CHÍNH TRUYỀN SANG
+        public string QuyenHienTai { get; set; }
+
         public string NguoiLapPhieu { get; set; }
 
         public FrmPhieuChi()
@@ -47,6 +50,31 @@ namespace HETHONGTINHNHUANBUT
             {
                 cboTacGia.SelectedIndex = 0;
                 cboTacGia_SelectedIndexChanged(null, null);
+            }
+
+            // GỌI HÀM PHÂN QUYỀN NGAY SAU KHI LOAD XONG GIAO DIỆN
+            PhanQuyenThaoTac();
+        }
+
+        // =======================================================
+        // HÀM PHÂN QUYỀN: KẾ TOÁN LÀM, THẰNG KHÁC CHỈ NHÌN
+        // =======================================================
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            // Kế toán và Admin thì được quyền Lập Phiếu
+            if (role == "kế toán" || role == "admin" || role == "quản trị viên")
+            {
+                btnLapPhieu.Enabled = true;
+            }
+            else
+            {
+                // Lãnh đạo hoặc Thư ký (nếu vô tình lọt vào) thì khóa nút Lập Phiếu lại
+                btnLapPhieu.Enabled = false;
+
+                // Khóa luôn cái lưới không cho tích chọn bài viết
+                dgvChuaThanhToan.Enabled = false;
             }
         }
 
@@ -121,8 +149,8 @@ namespace HETHONGTINHNHUANBUT
                     {
                         txtNguoiNhan.Text = tacGiaInfo.Hoten;
                         txtCMND.Text = tacGiaInfo.MsTG;
-                        txtDienThoai.Text = tacGiaInfo.DienThoai; // Khớp với TacGia.cs (Hoa chữ T)
-                        txtMST.Clear(); // TacGia.cs không có trường MST nên để người dùng tự nhập tay
+                        txtDienThoai.Text = tacGiaInfo.DienThoai;
+                        txtMST.Clear();
                     }
                     else
                     {
@@ -186,7 +214,6 @@ namespace HETHONGTINHNHUANBUT
 
         private async void btnLapPhieu_Click(object sender, EventArgs e)
         {
-            // Bước kiểm tra quan trọng: Chỉ cho phép lưu nếu SĐT và CCCD đúng định dạng
             if (!IsValidData()) return;
 
             List<string> selectedIds = new List<string>();
@@ -267,7 +294,6 @@ namespace HETHONGTINHNHUANBUT
 
         private void txtThueSuat_TextChanged(object sender, EventArgs e) => TinhToanTien();
 
-        // --- CÁC HÀM BỔ SUNG ĐỂ KHỚP VỚI FILE DESIGNER (TRÁNH LỖI GẠCH ĐỎ) ---
         private void txtCMND_TextChanged(object sender, EventArgs e) { }
         private void txtDienThoai_TextChanged(object sender, EventArgs e) { }
     }

@@ -285,6 +285,7 @@
     <Compile Include="FrmTroLyAI.Designer.cs">
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppManager.cs" />
     <Compile Include="Models\Bao.cs" />
     <Compile Include="Models\ButDanh.cs" />
     <Compile Include="Models\NhuanBut.cs" />

@@ -13,6 +13,7 @@ namespace HETHONGTINHNHUANBUT
     {
         private readonly IMongoCollection<ButDanh> _butDanhColl;
         private readonly IMongoCollection<TacGia> _tacGiaColl; // KHAI BÁO THÊM BẢNG TÁC GIẢ
+        public string QuyenHienTai { get; set; }
 
         public FrmButDanh()
         {
@@ -26,6 +27,7 @@ namespace HETHONGTINHNHUANBUT
             dgvButDanh.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
             await LoadComboBoxTacGia(); // GỌI HÀM LOAD COMBOBOX TRƯỚC
             await LoadDataAsync();
+            PhanQuyenThaoTac();
         }
 
         // VIẾT THÊM HÀM NÀY ĐỂ ĐỔ DỮ LIỆU VÀO COMBOBOX
@@ -195,6 +197,27 @@ namespace HETHONGTINHNHUANBUT
                 {
                     cboTacGia.SelectedValue = maTacGia;
                 }
+            }
+        }
+
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            // Lãnh đạo hoặc Kế toán vào đây thì trói tay lại!
+            if (role == "lãnh đạo" || role == "kế toán")
+            {
+                btnThem.Enabled = false;
+                btnSua.Enabled = false;
+                btnXoa.Enabled = false;
+                // Bắt lỗi nhẹ: Nếu ô text đang mở thì khóa lại luôn cho chắc cốp
+                // pnlInput.Enabled = false; 
+            }
+            else // Thư ký, Quản trị viên thì thả cửa
+            {
+                btnThem.Enabled = true;
+                btnSua.Enabled = true;
+                btnXoa.Enabled = true;
             }
         }
     }
