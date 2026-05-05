@@ -25,7 +25,6 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnexit_Click(object sender, EventArgs e) => Application.Exit();
 
-        // Thêm async để có thể await khi cập nhật Database
         private async void btnlogin_Click(object sender, EventArgs e)
         {
             string tenDangNhap = txtUsername.Text.Trim();
@@ -39,6 +38,7 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
+                // Tìm User trong DB
                 var user = _UserColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefault();
 
                 if (user == null)
@@ -49,7 +49,7 @@ namespace HETHONGTINHNHUANBUT
 
                 if (!user.HoatDong)
                 {
-                    MessageBox.Show("Tài khoản này đã bị khóa. Vui lòng liên hệ Admin!", "Từ chối", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    MessageBox.Show("Tài khoản này đã bị khóa!", "Từ chối", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     return;
                 }
 
@@ -64,38 +64,38 @@ namespace HETHONGTINHNHUANBUT
                 }
                 else
                 {
-                    // 2. KIỂM TRA THEO CHUẨN CŨ (Không Salt)
-                    // a665a459... là mã của "123" băm với salt rỗng
+                    // 2. KIỂM TRA CHUẨN CŨ (Để nâng cấp tài khoản cũ)
                     string hashedOld = HashHelper.ComputeSha256(matKhau, "");
                     if (user.MatKhau == matKhau || user.MatKhau == hashedOld)
                     {
                         loginSuccess = true;
-                        needUpgrade = true; // Đánh dấu để ép buộc đổi sang mã có Salt ngẫu nhiên
+                        needUpgrade = true;
                     }
                 }
 
                 if (loginSuccess)
                 {
-                    // --- THỰC HIỆN NÂNG CẤP BẢO MẬT ---
+                    // Nâng cấp bảo mật nếu cần
                     if (needUpgrade)
                     {
-                        string newSalt = HashHelper.GenerateSalt(); // Tạo muối ngẫu nhiên (Vd: "abcxyz")
+                        string newSalt = HashHelper.GenerateSalt();
                         string newHashedPassword = HashHelper.ComputeSha256(matKhau, newSalt);
-
-                        var update = Builders<User>.Update
-                            .Set(u => u.Salt, newSalt)
-                            .Set(u => u.MatKhau, newHashedPassword);
-
-                        // Ép buộc cập nhật xuống MongoDB
-                        var result = await _UserColl.UpdateOneAsync(u => u.Id == user.Id, update);
+                        var update = Builders<User>.Update.Set(u => u.Salt, newSalt).Set(u => u.MatKhau, newHashedPassword);
+                        await _UserColl.UpdateOneAsync(u => u.Id == user.Id, update);
                     }
 
+                    // --- ĐÂY LÀ ĐOẠN FIX LỖI "KHÔNG TÌM THẤY MÃ ĐỊNH DANH" ---
                     this.Hide();
                     FrmTrangChinh frm = new FrmTrangChinh();
+
+                    // Truyền thông tin sang Form Chính
                     frm.currentUserName = !string.IsNullOrEmpty(user.HoTen) ? user.HoTen : user.TenDangNhap;
                     frm.currentPrivilege = user.Quyen;
 
-                    MongoProvider.Instance.GhiNhatKy(tenDangNhap, needUpgrade ? "Nâng cấp bảo mật Salt thành công" : "Đăng nhập thành công");
+                    // CỰC KỲ QUAN TRỌNG: Truyền cái mã này sang thì Form Tra Cứu mới chạy được!
+                    frm.currentMaTacGia = user.MaTacGiaGoc;
+
+                    MongoProvider.Instance.GhiNhatKy(tenDangNhap, needUpgrade ? "Nâng cấp bảo mật & Đăng nhập thành công" : "Đăng nhập thành công");
 
                     frm.FormClosed += (s, args) => this.Close();
                     frm.Show();
@@ -119,9 +119,6 @@ namespace HETHONGTINHNHUANBUT
             frmReg.Show();
         }
 
-        private void txtPassword_TextChanged(object sender, EventArgs e)
-        {
-            // Để trống để sửa lỗi Designer dòng 97
-        }
+        private void txtPassword_TextChanged(object sender, EventArgs e) { }
     }
 }

@@ -16,5 +16,7 @@ namespace HETHONGTINHNHUANBUT.Models
         public string HoTen { get; set; }
         public string Quyen { get; set; } // Ví dụ: "Quản trị viên", "Kế toán", "Biên tập viên"
         public bool HoatDong { get; set; } = true; // Cờ khóa tài khoản
+                                                   // ĐÂY LÀ SỢI DÂY XÍCH BUỘC TÀI KHOẢN VÀO TÁC GIẢ TRONG CSDL
+        public string MaTacGiaGoc { get; set; }
     }
 }

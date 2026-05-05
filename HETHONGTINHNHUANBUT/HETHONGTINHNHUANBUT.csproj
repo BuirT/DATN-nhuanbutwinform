@@ -194,6 +194,12 @@
     <Compile Include="FrmTaiKhoan.Designer.cs">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmTraCuuNhuanBut.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmTraCuuNhuanBut.Designer.cs">
+      <DependentUpon>FrmTraCuuNhuanBut.cs</DependentUpon>
+    </Compile>
     <Compile Include="HashHelper.cs" />
     <Compile Include="FormLogin.cs">
       <SubType>Form</SubType>
