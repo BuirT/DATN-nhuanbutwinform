@@ -1,14 +1,14 @@
-﻿using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -27,6 +27,24 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
+
+            // Gán sự kiện chặn nhập chữ ngay từ lúc khởi tạo
+            txtDienThoai.KeyPress += txtDienThoai_KeyPress;
+        }
+
+        // Kiểm tra định dạng 10 chữ số
+        private bool IsValidPhone(string phone)
+        {
+            return Regex.IsMatch(phone, @"^\d{10}$");
+        }
+
+        // Chặn nhập ký tự không phải là số
+        private void txtDienThoai_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
         private async void FrmTacGia_Load(object sender, EventArgs e)
@@ -117,7 +135,7 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi lấy dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi lấy dữ liệu: " + ex.Message);
             }
         }
 
@@ -159,14 +177,21 @@ namespace HETHONGTINHNHUANBUT
             if (!string.IsNullOrEmpty(currentPdfPath) && File.Exists(currentPdfPath))
                 Process.Start(new ProcessStartInfo(currentPdfPath) { UseShellExecute = true });
             else
-                MessageBox.Show("Không tìm thấy file PDF!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Không tìm thấy file PDF!");
         }
 
         private async void btnThem_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtMaHT.Text) || string.IsNullOrWhiteSpace(txtHoTen.Text))
             {
-                MessageBox.Show("Mã hệ thống và Họ tên không được trống!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Mã hệ thống và Họ tên không được trống!");
+                return;
+            }
+
+            if (!IsValidPhone(txtDienThoai.Text.Trim()))
+            {
+                MessageBox.Show("Số điện thoại phải nhập đúng 10 chữ số!", "Lỗi nhập liệu");
+                txtDienThoai.Focus();
                 return;
             }
 
@@ -212,16 +237,23 @@ namespace HETHONGTINHNHUANBUT
                 };
 
                 await _tacGiaColl.InsertOneAsync(tg);
-                MessageBox.Show("Thêm hồ sơ thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Thêm hồ sơ thành công!");
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvTacGia.CurrentRow == null) return;
+
+            if (!IsValidPhone(txtDienThoai.Text.Trim()))
+            {
+                MessageBox.Show("Số điện thoại phải nhập đúng 10 chữ số!", "Lỗi nhập liệu");
+                txtDienThoai.Focus();
+                return;
+            }
 
             try
             {
@@ -239,7 +271,6 @@ namespace HETHONGTINHNHUANBUT
                 if (!string.IsNullOrEmpty(email)) filterCheck |= builder.Eq(t => t.Email, email);
 
                 var finalFilter = builder.And(builder.Ne(t => t.Id, id), filterCheck);
-
                 var exist = await _tacGiaColl.Find(finalFilter).FirstOrDefaultAsync();
 
                 if (exist != null)
@@ -266,17 +297,17 @@ namespace HETHONGTINHNHUANBUT
                     .Set(t => t.PdfPath, currentPdfPath);
 
                 await _tacGiaColl.UpdateOneAsync(t => t.Id == id, update);
-                MessageBox.Show("Cập nhật thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvTacGia.CurrentRow == null) return;
 
-            if (MessageBox.Show("Chắc chắn muốn xóa?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show("Chắc chắn muốn xóa?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 string id = dgvTacGia.CurrentRow.Cells["Id"].Value.ToString();
                 await _tacGiaColl.DeleteOneAsync(t => t.Id == id);
@@ -343,6 +374,8 @@ namespace HETHONGTINHNHUANBUT
         private void lblMaHT_Click(object sender, EventArgs e)
         {
 
+        private void txtDienThoai_TextChanged(object sender, EventArgs e)
+        {
         }
     }
 }
