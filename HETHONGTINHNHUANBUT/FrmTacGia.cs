@@ -372,10 +372,10 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void lblMaHT_Click(object sender, EventArgs e)
-        {
+        { }
 
         private void txtDienThoai_TextChanged(object sender, EventArgs e)
         {
         }
     }
-}
+}   

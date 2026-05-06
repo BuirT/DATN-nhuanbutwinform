@@ -20,88 +20,96 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlHeader = new System.Windows.Forms.Panel();
+            this.lblUpdate = new System.Windows.Forms.Label();
             this.lblWelcome = new System.Windows.Forms.Label();
-            this.pnlLeftContent = new Guna.UI2.WinForms.Guna2Panel();
-            this.pnlBieuDo = new Guna.UI2.WinForms.Guna2Panel();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpCards = new System.Windows.Forms.TableLayoutPanel();
-            this.pnlTacGia = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblSoTacGia = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.pnlBaiViet = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblSoBaiViet = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.pnlSoBao = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblSoBaoCho = new System.Windows.Forms.Label();
+            this.cardRed = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.label4 = new System.Windows.Forms.Label();
-            this.pnlTien = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblSoBaoCho = new System.Windows.Forms.Label();
+            this.cardOrange = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.label3 = new System.Windows.Forms.Label();
             this.lblTongTien = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.pnlRightSidebar = new Guna.UI2.WinForms.Guna2Panel();
-            this.dgvHoatDong = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.pnlClockWidget = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblClock = new System.Windows.Forms.Label();
+            this.cardGreen = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblSoTacGia = new System.Windows.Forms.Label();
+            this.cardBlue = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblSoBaiViet = new System.Windows.Forms.Label();
+            this.tlpCharts = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlBoxPie = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlChartPie = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.pnlBoxMain = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlChartMain = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.pnlTableBox = new Guna.UI2.WinForms.Guna2Panel();
+            this.dgvHoatDong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.label7 = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
-            this.pnlLeftContent.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.tlpCards.SuspendLayout();
-            this.pnlTacGia.SuspendLayout();
-            this.pnlBaiViet.SuspendLayout();
-            this.pnlSoBao.SuspendLayout();
-            this.pnlTien.SuspendLayout();
-            this.pnlRightSidebar.SuspendLayout();
+            this.cardRed.SuspendLayout();
+            this.cardOrange.SuspendLayout();
+            this.cardGreen.SuspendLayout();
+            this.cardBlue.SuspendLayout();
+            this.tlpCharts.SuspendLayout();
+            this.pnlBoxPie.SuspendLayout();
+            this.pnlBoxMain.SuspendLayout();
+            this.pnlTableBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHoatDong)).BeginInit();
-            this.pnlClockWidget.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlHeader
             // 
-            this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
+            this.pnlHeader.Controls.Add(this.lblUpdate);
             this.pnlHeader.Controls.Add(this.lblWelcome);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Location = new System.Drawing.Point(30, 20);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(1200, 70);
-            this.pnlHeader.TabIndex = 4;
+            this.pnlHeader.Size = new System.Drawing.Size(1124, 60);
+            this.pnlHeader.TabIndex = 0;
+            // 
+            // lblUpdate
+            // 
+            this.lblUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblUpdate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblUpdate.Location = new System.Drawing.Point(824, 20);
+            this.lblUpdate.Name = "lblUpdate";
+            this.lblUpdate.Size = new System.Drawing.Size(300, 30);
+            this.lblUpdate.TabIndex = 1;
+            this.lblUpdate.Text = "Cập nhật: Hôm nay";
+            this.lblUpdate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWelcome
             // 
             this.lblWelcome.AutoSize = true;
             this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold);
-            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.lblWelcome.Location = new System.Drawing.Point(12, 13);
+            this.lblWelcome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
+            this.lblWelcome.Location = new System.Drawing.Point(-5, 0);
             this.lblWelcome.Name = "lblWelcome";
-            this.lblWelcome.Size = new System.Drawing.Size(343, 45);
-            this.lblWelcome.TabIndex = 28;
-            this.lblWelcome.Text = "Tổng Quan Hệ Thống";
+            this.lblWelcome.Size = new System.Drawing.Size(364, 45);
+            this.lblWelcome.TabIndex = 0;
+            this.lblWelcome.Text = "DASHBOARD HỆ THỐNG";
             // 
-            // pnlLeftContent
+            // tlpMain
             // 
-            this.pnlLeftContent.Controls.Add(this.pnlBieuDo);
-            this.pnlLeftContent.Controls.Add(this.tlpCards);
-            this.pnlLeftContent.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlLeftContent.Location = new System.Drawing.Point(0, 70);
-            this.pnlLeftContent.Name = "pnlLeftContent";
-            this.pnlLeftContent.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
-            this.pnlLeftContent.Size = new System.Drawing.Size(840, 730);
-            this.pnlLeftContent.TabIndex = 5;
-            // 
-            // pnlBieuDo
-            // 
-            this.pnlBieuDo.BackColor = System.Drawing.Color.Transparent;
-            this.pnlBieuDo.BorderRadius = 20;
-            this.pnlBieuDo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBieuDo.FillColor = System.Drawing.Color.White;
-            this.pnlBieuDo.Location = new System.Drawing.Point(10, 150);
-            this.pnlBieuDo.Name = "pnlBieuDo";
-            this.pnlBieuDo.Padding = new System.Windows.Forms.Padding(15);
-            this.pnlBieuDo.ShadowDecoration.BorderRadius = 20;
-            this.pnlBieuDo.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
-            this.pnlBieuDo.ShadowDecoration.Enabled = true;
-            this.pnlBieuDo.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlBieuDo.Size = new System.Drawing.Size(820, 570);
-            this.pnlBieuDo.TabIndex = 1;
+            this.tlpMain.ColumnCount = 1;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.tlpCards, 0, 0);
+            this.tlpMain.Controls.Add(this.tlpCharts, 0, 1);
+            this.tlpMain.Controls.Add(this.pnlTableBox, 0, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(30, 80);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 380F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Size = new System.Drawing.Size(1124, 781);
+            this.tlpMain.TabIndex = 1;
             // 
             // tlpCards
             // 
@@ -110,391 +118,404 @@
             this.tlpCards.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpCards.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpCards.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpCards.Controls.Add(this.pnlTacGia, 0, 0);
-            this.tlpCards.Controls.Add(this.pnlBaiViet, 1, 0);
-            this.tlpCards.Controls.Add(this.pnlSoBao, 2, 0);
-            this.tlpCards.Controls.Add(this.pnlTien, 3, 0);
-            this.tlpCards.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tlpCards.Location = new System.Drawing.Point(10, 0);
+            this.tlpCards.Controls.Add(this.cardRed, 3, 0);
+            this.tlpCards.Controls.Add(this.cardOrange, 2, 0);
+            this.tlpCards.Controls.Add(this.cardGreen, 1, 0);
+            this.tlpCards.Controls.Add(this.cardBlue, 0, 0);
+            this.tlpCards.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCards.Location = new System.Drawing.Point(0, 0);
+            this.tlpCards.Margin = new System.Windows.Forms.Padding(0);
             this.tlpCards.Name = "tlpCards";
             this.tlpCards.RowCount = 1;
             this.tlpCards.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCards.Size = new System.Drawing.Size(820, 150);
+            this.tlpCards.Size = new System.Drawing.Size(1124, 150);
             this.tlpCards.TabIndex = 0;
             // 
-            // pnlTacGia
+            // cardRed
             // 
-            this.pnlTacGia.BackColor = System.Drawing.Color.Transparent;
-            this.pnlTacGia.BorderRadius = 15;
-            this.pnlTacGia.Controls.Add(this.lblSoTacGia);
-            this.pnlTacGia.Controls.Add(this.label2);
-            this.pnlTacGia.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
-            this.pnlTacGia.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.pnlTacGia.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTacGia.FillColor = System.Drawing.Color.White;
-            this.pnlTacGia.Location = new System.Drawing.Point(5, 10);
-            this.pnlTacGia.Margin = new System.Windows.Forms.Padding(5, 10, 5, 20);
-            this.pnlTacGia.Name = "pnlTacGia";
-            this.pnlTacGia.Padding = new System.Windows.Forms.Padding(15, 10, 10, 10);
-            this.pnlTacGia.ShadowDecoration.BorderRadius = 15;
-            this.pnlTacGia.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
-            this.pnlTacGia.ShadowDecoration.Enabled = true;
-            this.pnlTacGia.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlTacGia.Size = new System.Drawing.Size(195, 120);
-            this.pnlTacGia.TabIndex = 0;
-            // 
-            // lblSoTacGia
-            // 
-            this.lblSoTacGia.BackColor = System.Drawing.Color.Transparent;
-            this.lblSoTacGia.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblSoTacGia.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
-            this.lblSoTacGia.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.lblSoTacGia.Location = new System.Drawing.Point(15, 38);
-            this.lblSoTacGia.Name = "lblSoTacGia";
-            this.lblSoTacGia.Size = new System.Drawing.Size(170, 72);
-            this.lblSoTacGia.TabIndex = 0;
-            this.lblSoTacGia.Text = "0";
-            this.lblSoTacGia.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.label2.Location = new System.Drawing.Point(15, 10);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(170, 28);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "TÁC GIẢ";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // pnlBaiViet
-            // 
-            this.pnlBaiViet.BackColor = System.Drawing.Color.Transparent;
-            this.pnlBaiViet.BorderRadius = 15;
-            this.pnlBaiViet.Controls.Add(this.lblSoBaiViet);
-            this.pnlBaiViet.Controls.Add(this.label3);
-            this.pnlBaiViet.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
-            this.pnlBaiViet.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.pnlBaiViet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBaiViet.FillColor = System.Drawing.Color.White;
-            this.pnlBaiViet.Location = new System.Drawing.Point(210, 10);
-            this.pnlBaiViet.Margin = new System.Windows.Forms.Padding(5, 10, 5, 20);
-            this.pnlBaiViet.Name = "pnlBaiViet";
-            this.pnlBaiViet.Padding = new System.Windows.Forms.Padding(15, 10, 10, 10);
-            this.pnlBaiViet.ShadowDecoration.BorderRadius = 15;
-            this.pnlBaiViet.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
-            this.pnlBaiViet.ShadowDecoration.Enabled = true;
-            this.pnlBaiViet.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlBaiViet.Size = new System.Drawing.Size(195, 120);
-            this.pnlBaiViet.TabIndex = 1;
-            // 
-            // lblSoBaiViet
-            // 
-            this.lblSoBaiViet.BackColor = System.Drawing.Color.Transparent;
-            this.lblSoBaiViet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblSoBaiViet.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
-            this.lblSoBaiViet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.lblSoBaiViet.Location = new System.Drawing.Point(15, 38);
-            this.lblSoBaiViet.Name = "lblSoBaiViet";
-            this.lblSoBaiViet.Size = new System.Drawing.Size(170, 72);
-            this.lblSoBaiViet.TabIndex = 0;
-            this.lblSoBaiViet.Text = "0";
-            this.lblSoBaiViet.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label3
-            // 
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.label3.Location = new System.Drawing.Point(15, 10);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(170, 28);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "BÀI VIẾT";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // pnlSoBao
-            // 
-            this.pnlSoBao.BackColor = System.Drawing.Color.Transparent;
-            this.pnlSoBao.BorderRadius = 15;
-            this.pnlSoBao.Controls.Add(this.lblSoBaoCho);
-            this.pnlSoBao.Controls.Add(this.label4);
-            this.pnlSoBao.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
-            this.pnlSoBao.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.pnlSoBao.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlSoBao.FillColor = System.Drawing.Color.White;
-            this.pnlSoBao.Location = new System.Drawing.Point(415, 10);
-            this.pnlSoBao.Margin = new System.Windows.Forms.Padding(5, 10, 5, 20);
-            this.pnlSoBao.Name = "pnlSoBao";
-            this.pnlSoBao.Padding = new System.Windows.Forms.Padding(15, 10, 10, 10);
-            this.pnlSoBao.ShadowDecoration.BorderRadius = 15;
-            this.pnlSoBao.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
-            this.pnlSoBao.ShadowDecoration.Enabled = true;
-            this.pnlSoBao.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlSoBao.Size = new System.Drawing.Size(195, 120);
-            this.pnlSoBao.TabIndex = 2;
-            // 
-            // lblSoBaoCho
-            // 
-            this.lblSoBaoCho.BackColor = System.Drawing.Color.Transparent;
-            this.lblSoBaoCho.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblSoBaoCho.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
-            this.lblSoBaoCho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.lblSoBaoCho.Location = new System.Drawing.Point(15, 38);
-            this.lblSoBaoCho.Name = "lblSoBaoCho";
-            this.lblSoBaoCho.Size = new System.Drawing.Size(170, 72);
-            this.lblSoBaoCho.TabIndex = 0;
-            this.lblSoBaoCho.Text = "0";
-            this.lblSoBaoCho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cardRed.BorderRadius = 15;
+            this.cardRed.Controls.Add(this.label4);
+            this.cardRed.Controls.Add(this.lblSoBaoCho);
+            this.cardRed.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardRed.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this.cardRed.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.cardRed.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.cardRed.Location = new System.Drawing.Point(853, 10);
+            this.cardRed.Margin = new System.Windows.Forms.Padding(10, 10, 0, 15);
+            this.cardRed.Name = "cardRed";
+            this.cardRed.Padding = new System.Windows.Forms.Padding(20);
+            this.cardRed.Size = new System.Drawing.Size(271, 125);
+            this.cardRed.TabIndex = 3;
             // 
             // label4
             // 
+            this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.label4.Location = new System.Drawing.Point(15, 10);
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(20, 20);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(170, 28);
+            this.label4.Size = new System.Drawing.Size(195, 21);
             this.label4.TabIndex = 1;
-            this.label4.Text = "CHỜ DUYỆT";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label4.Text = "PHIẾU ĐANG CHỜ DUYỆT";
             // 
-            // pnlTien
+            // lblSoBaoCho
             // 
-            this.pnlTien.BackColor = System.Drawing.Color.Transparent;
-            this.pnlTien.BorderRadius = 15;
-            this.pnlTien.Controls.Add(this.lblTongTien);
-            this.pnlTien.Controls.Add(this.label6);
-            this.pnlTien.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(201)))), ((int)(((byte)(151)))));
-            this.pnlTien.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.pnlTien.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTien.FillColor = System.Drawing.Color.White;
-            this.pnlTien.Location = new System.Drawing.Point(620, 10);
-            this.pnlTien.Margin = new System.Windows.Forms.Padding(5, 10, 5, 20);
-            this.pnlTien.Name = "pnlTien";
-            this.pnlTien.Padding = new System.Windows.Forms.Padding(15, 10, 10, 10);
-            this.pnlTien.ShadowDecoration.BorderRadius = 15;
-            this.pnlTien.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
-            this.pnlTien.ShadowDecoration.Enabled = true;
-            this.pnlTien.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlTien.Size = new System.Drawing.Size(195, 120);
-            this.pnlTien.TabIndex = 3;
+            this.lblSoBaoCho.AutoSize = true;
+            this.lblSoBaoCho.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoBaoCho.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Bold);
+            this.lblSoBaoCho.ForeColor = System.Drawing.Color.White;
+            this.lblSoBaoCho.Location = new System.Drawing.Point(15, 45);
+            this.lblSoBaoCho.Name = "lblSoBaoCho";
+            this.lblSoBaoCho.Size = new System.Drawing.Size(50, 59);
+            this.lblSoBaoCho.TabIndex = 2;
+            this.lblSoBaoCho.Text = "0";
+            // 
+            // cardOrange
+            // 
+            this.cardOrange.BorderRadius = 15;
+            this.cardOrange.Controls.Add(this.label3);
+            this.cardOrange.Controls.Add(this.lblTongTien);
+            this.cardOrange.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardOrange.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
+            this.cardOrange.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(119)))), ((int)(((byte)(6)))));
+            this.cardOrange.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.cardOrange.Location = new System.Drawing.Point(572, 10);
+            this.cardOrange.Margin = new System.Windows.Forms.Padding(10, 10, 10, 15);
+            this.cardOrange.Name = "cardOrange";
+            this.cardOrange.Padding = new System.Windows.Forms.Padding(20);
+            this.cardOrange.Size = new System.Drawing.Size(261, 125);
+            this.cardOrange.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(20, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(189, 21);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "TỔNG TIỀN ĐÃ CHI (VNĐ)";
             // 
             // lblTongTien
             // 
+            this.lblTongTien.AutoSize = true;
             this.lblTongTien.BackColor = System.Drawing.Color.Transparent;
-            this.lblTongTien.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTongTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.lblTongTien.Location = new System.Drawing.Point(15, 38);
+            this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Bold);
+            this.lblTongTien.ForeColor = System.Drawing.Color.White;
+            this.lblTongTien.Location = new System.Drawing.Point(15, 45);
             this.lblTongTien.Name = "lblTongTien";
-            this.lblTongTien.Size = new System.Drawing.Size(170, 72);
-            this.lblTongTien.TabIndex = 0;
-            this.lblTongTien.Text = "0 ₫";
-            this.lblTongTien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTongTien.Size = new System.Drawing.Size(50, 59);
+            this.lblTongTien.TabIndex = 2;
+            this.lblTongTien.Text = "0";
+            // 
+            // cardGreen
+            // 
+            this.cardGreen.BorderRadius = 15;
+            this.cardGreen.Controls.Add(this.label2);
+            this.cardGreen.Controls.Add(this.lblSoTacGia);
+            this.cardGreen.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardGreen.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.cardGreen.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(5)))), ((int)(((byte)(150)))), ((int)(((byte)(105)))));
+            this.cardGreen.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.cardGreen.Location = new System.Drawing.Point(291, 10);
+            this.cardGreen.Margin = new System.Windows.Forms.Padding(10, 10, 10, 15);
+            this.cardGreen.Name = "cardGreen";
+            this.cardGreen.Padding = new System.Windows.Forms.Padding(20);
+            this.cardGreen.Size = new System.Drawing.Size(261, 125);
+            this.cardGreen.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(20, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(166, 21);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "TÁC GIẢ HOẠT ĐỘNG";
+            // 
+            // lblSoTacGia
+            // 
+            this.lblSoTacGia.AutoSize = true;
+            this.lblSoTacGia.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoTacGia.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Bold);
+            this.lblSoTacGia.ForeColor = System.Drawing.Color.White;
+            this.lblSoTacGia.Location = new System.Drawing.Point(15, 45);
+            this.lblSoTacGia.Name = "lblSoTacGia";
+            this.lblSoTacGia.Size = new System.Drawing.Size(50, 59);
+            this.lblSoTacGia.TabIndex = 2;
+            this.lblSoTacGia.Text = "0";
+            // 
+            // cardBlue
+            // 
+            this.cardBlue.BorderRadius = 15;
+            this.cardBlue.Controls.Add(this.label1);
+            this.cardBlue.Controls.Add(this.lblSoBaiViet);
+            this.cardBlue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardBlue.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
+            this.cardBlue.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.cardBlue.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.cardBlue.Location = new System.Drawing.Point(0, 10);
+            this.cardBlue.Margin = new System.Windows.Forms.Padding(0, 10, 10, 15);
+            this.cardBlue.Name = "cardBlue";
+            this.cardBlue.Padding = new System.Windows.Forms.Padding(20);
+            this.cardBlue.Size = new System.Drawing.Size(271, 125);
+            this.cardBlue.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(20, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(206, 21);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "BÀI VIẾT XUẤT BẢN (THÁNG)";
+            // 
+            // lblSoBaiViet
+            // 
+            this.lblSoBaiViet.AutoSize = true;
+            this.lblSoBaiViet.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoBaiViet.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Bold);
+            this.lblSoBaiViet.ForeColor = System.Drawing.Color.White;
+            this.lblSoBaiViet.Location = new System.Drawing.Point(15, 45);
+            this.lblSoBaiViet.Name = "lblSoBaiViet";
+            this.lblSoBaiViet.Size = new System.Drawing.Size(50, 59);
+            this.lblSoBaiViet.TabIndex = 2;
+            this.lblSoBaiViet.Text = "0";
+            // 
+            // tlpCharts
+            // 
+            this.tlpCharts.ColumnCount = 2;
+            this.tlpCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
+            this.tlpCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tlpCharts.Controls.Add(this.pnlBoxPie, 1, 0);
+            this.tlpCharts.Controls.Add(this.pnlBoxMain, 0, 0);
+            this.tlpCharts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCharts.Location = new System.Drawing.Point(0, 150);
+            this.tlpCharts.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpCharts.Name = "tlpCharts";
+            this.tlpCharts.RowCount = 1;
+            this.tlpCharts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpCharts.Size = new System.Drawing.Size(1124, 380);
+            this.tlpCharts.TabIndex = 1;
+            // 
+            // pnlBoxPie
+            // 
+            this.pnlBoxPie.BackColor = System.Drawing.Color.Transparent;
+            this.pnlBoxPie.BorderRadius = 15;
+            this.pnlBoxPie.Controls.Add(this.pnlChartPie);
+            this.pnlBoxPie.Controls.Add(this.label6);
+            this.pnlBoxPie.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlBoxPie.FillColor = System.Drawing.Color.White;
+            this.pnlBoxPie.Location = new System.Drawing.Point(740, 10);
+            this.pnlBoxPie.Margin = new System.Windows.Forms.Padding(10, 10, 0, 20);
+            this.pnlBoxPie.Name = "pnlBoxPie";
+            this.pnlBoxPie.Padding = new System.Windows.Forms.Padding(20);
+            this.pnlBoxPie.ShadowDecoration.BorderRadius = 15;
+            this.pnlBoxPie.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.pnlBoxPie.ShadowDecoration.Enabled = true;
+            this.pnlBoxPie.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 10, 10);
+            this.pnlBoxPie.Size = new System.Drawing.Size(384, 350);
+            this.pnlBoxPie.TabIndex = 1;
+            // 
+            // pnlChartPie
+            // 
+            this.pnlChartPie.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlChartPie.Location = new System.Drawing.Point(20, 50);
+            this.pnlChartPie.Name = "pnlChartPie";
+            this.pnlChartPie.Size = new System.Drawing.Size(344, 280);
+            this.pnlChartPie.TabIndex = 3;
             // 
             // label6
             // 
-            this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.label6.Location = new System.Drawing.Point(15, 10);
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.label6.Location = new System.Drawing.Point(20, 20);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(170, 28);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "QUỸ NHUẬN BÚT";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label6.Size = new System.Drawing.Size(344, 30);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "CƠ CẤU BÀI VIẾT THEO LOẠI BÁO";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // pnlRightSidebar
+            // pnlBoxMain
             // 
-            this.pnlRightSidebar.Controls.Add(this.dgvHoatDong);
-            this.pnlRightSidebar.Controls.Add(this.pnlClockWidget);
-            this.pnlRightSidebar.Controls.Add(this.label7);
-            this.pnlRightSidebar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRightSidebar.Location = new System.Drawing.Point(840, 70);
-            this.pnlRightSidebar.Name = "pnlRightSidebar";
-            this.pnlRightSidebar.Padding = new System.Windows.Forms.Padding(10, 0, 15, 10);
-            this.pnlRightSidebar.Size = new System.Drawing.Size(360, 730);
-            this.pnlRightSidebar.TabIndex = 6;
+            this.pnlBoxMain.BackColor = System.Drawing.Color.Transparent;
+            this.pnlBoxMain.BorderRadius = 15;
+            this.pnlBoxMain.Controls.Add(this.pnlChartMain);
+            this.pnlBoxMain.Controls.Add(this.label5);
+            this.pnlBoxMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlBoxMain.FillColor = System.Drawing.Color.White;
+            this.pnlBoxMain.Location = new System.Drawing.Point(0, 10);
+            this.pnlBoxMain.Margin = new System.Windows.Forms.Padding(0, 10, 10, 20);
+            this.pnlBoxMain.Name = "pnlBoxMain";
+            this.pnlBoxMain.Padding = new System.Windows.Forms.Padding(20);
+            this.pnlBoxMain.ShadowDecoration.BorderRadius = 15;
+            this.pnlBoxMain.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.pnlBoxMain.ShadowDecoration.Enabled = true;
+            this.pnlBoxMain.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 10, 10);
+            this.pnlBoxMain.Size = new System.Drawing.Size(720, 350);
+            this.pnlBoxMain.TabIndex = 0;
+            // 
+            // pnlChartMain
+            // 
+            this.pnlChartMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlChartMain.Location = new System.Drawing.Point(20, 50);
+            this.pnlChartMain.Name = "pnlChartMain";
+            this.pnlChartMain.Size = new System.Drawing.Size(680, 280);
+            this.pnlChartMain.TabIndex = 3;
+            // 
+            // label5
+            // 
+            this.label5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.label5.Location = new System.Drawing.Point(20, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(680, 30);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "BIẾN ĐỘNG CHI TRẢ NHUẬN BÚT (6 THÁNG QUA)";
+            // 
+            // pnlTableBox
+            // 
+            this.pnlTableBox.BackColor = System.Drawing.Color.Transparent;
+            this.pnlTableBox.BorderRadius = 15;
+            this.pnlTableBox.Controls.Add(this.dgvHoatDong);
+            this.pnlTableBox.Controls.Add(this.label7);
+            this.pnlTableBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlTableBox.FillColor = System.Drawing.Color.White;
+            this.pnlTableBox.Location = new System.Drawing.Point(0, 530);
+            this.pnlTableBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
+            this.pnlTableBox.Name = "pnlTableBox";
+            this.pnlTableBox.Padding = new System.Windows.Forms.Padding(20);
+            this.pnlTableBox.ShadowDecoration.BorderRadius = 15;
+            this.pnlTableBox.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.pnlTableBox.ShadowDecoration.Enabled = true;
+            this.pnlTableBox.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 10, 10);
+            this.pnlTableBox.Size = new System.Drawing.Size(1124, 231);
+            this.pnlTableBox.TabIndex = 2;
             // 
             // dgvHoatDong
             // 
             this.dgvHoatDong.AllowUserToAddRows = false;
             this.dgvHoatDong.AllowUserToDeleteRows = false;
-            this.dgvHoatDong.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvHoatDong.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvHoatDong.BackgroundColor = System.Drawing.Color.White;
             this.dgvHoatDong.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvHoatDong.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvHoatDong.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvHoatDong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvHoatDong.ColumnHeadersHeight = 35;
+            this.dgvHoatDong.ColumnHeadersHeight = 45;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvHoatDong.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvHoatDong.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHoatDong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(241)))), ((int)(((byte)(247)))));
-            this.dgvHoatDong.Location = new System.Drawing.Point(10, 110);
+            this.dgvHoatDong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.dgvHoatDong.Location = new System.Drawing.Point(20, 50);
             this.dgvHoatDong.Name = "dgvHoatDong";
             this.dgvHoatDong.ReadOnly = true;
             this.dgvHoatDong.RowHeadersVisible = false;
-            this.dgvHoatDong.RowTemplate.Height = 35;
-            this.dgvHoatDong.Size = new System.Drawing.Size(335, 610);
-            this.dgvHoatDong.TabIndex = 1;
-            this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
-            this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
-            this.dgvHoatDong.ThemeStyle.BackColor = System.Drawing.Color.White;
-            this.dgvHoatDong.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(241)))), ((int)(((byte)(247)))));
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvHoatDong.ThemeStyle.HeaderStyle.Height = 35;
-            this.dgvHoatDong.ThemeStyle.ReadOnly = true;
-            this.dgvHoatDong.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
-            this.dgvHoatDong.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvHoatDong.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.dgvHoatDong.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.dgvHoatDong.ThemeStyle.RowsStyle.Height = 35;
-            this.dgvHoatDong.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
-            this.dgvHoatDong.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
-            // 
-            // pnlClockWidget
-            // 
-            this.pnlClockWidget.BackColor = System.Drawing.Color.Transparent;
-            this.pnlClockWidget.BorderRadius = 15;
-            this.pnlClockWidget.Controls.Add(this.lblClock);
-            this.pnlClockWidget.Controls.Add(this.label1);
-            this.pnlClockWidget.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlClockWidget.FillColor = System.Drawing.Color.White;
-            this.pnlClockWidget.Location = new System.Drawing.Point(10, 0);
-            this.pnlClockWidget.Margin = new System.Windows.Forms.Padding(0, 0, 0, 15);
-            this.pnlClockWidget.Name = "pnlClockWidget";
-            this.pnlClockWidget.Padding = new System.Windows.Forms.Padding(15);
-            this.pnlClockWidget.ShadowDecoration.BorderRadius = 15;
-            this.pnlClockWidget.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(229)))), ((int)(((byte)(236)))));
-            this.pnlClockWidget.ShadowDecoration.Enabled = true;
-            this.pnlClockWidget.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 15, 15);
-            this.pnlClockWidget.Size = new System.Drawing.Size(335, 110);
-            this.pnlClockWidget.TabIndex = 2;
-            // 
-            // lblClock
-            // 
-            this.lblClock.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblClock.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblClock.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(97)))), ((int)(((byte)(238)))));
-            this.lblClock.Location = new System.Drawing.Point(15, 45);
-            this.lblClock.Name = "lblClock";
-            this.lblClock.Size = new System.Drawing.Size(305, 50);
-            this.lblClock.TabIndex = 27;
-            this.lblClock.Text = "00:00:00";
-            this.lblClock.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(143)))), ((int)(((byte)(155)))), ((int)(((byte)(186)))));
-            this.label1.Location = new System.Drawing.Point(15, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(305, 30);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "THỜI GIAN HỆ THỐNG";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.dgvHoatDong.RowTemplate.Height = 40;
+            this.dgvHoatDong.Size = new System.Drawing.Size(1084, 161);
+            this.dgvHoatDong.TabIndex = 4;
+            this.dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.dgvHoatDong.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.dgvHoatDong.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Dock = System.Windows.Forms.DockStyle.Top;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(45)))), ((int)(((byte)(66)))));
-            this.label7.Location = new System.Drawing.Point(10, 120);
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.label7.Location = new System.Drawing.Point(20, 20);
             this.label7.Name = "label7";
-            this.label7.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.label7.Size = new System.Drawing.Size(161, 31);
-            this.label7.TabIndex = 0;
-            this.label7.Text = "Hoạt Động Gần Đây";
+            this.label7.Size = new System.Drawing.Size(1084, 30);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "TOP PHIẾU CHI MỚI NHẤT CẦN XỬ LÝ";
             // 
             // FrmTongQuan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1200, 800);
-            this.Controls.Add(this.pnlRightSidebar);
-            this.Controls.Add(this.pnlLeftContent);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.ClientSize = new System.Drawing.Size(1184, 881);
+            this.Controls.Add(this.tlpMain);
             this.Controls.Add(this.pnlHeader);
-            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.Name = "FrmTongQuan";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Tổng quan tòa soạn";
+            this.Padding = new System.Windows.Forms.Padding(30, 20, 30, 20);
+            this.Text = "Dashboard Tổng Quan";
             this.Load += new System.EventHandler(this.FrmTongQuan_Load);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
-            this.pnlLeftContent.ResumeLayout(false);
+            this.tlpMain.ResumeLayout(false);
             this.tlpCards.ResumeLayout(false);
-            this.pnlTacGia.ResumeLayout(false);
-            this.pnlBaiViet.ResumeLayout(false);
-            this.pnlSoBao.ResumeLayout(false);
-            this.pnlTien.ResumeLayout(false);
-            this.pnlRightSidebar.ResumeLayout(false);
-            this.pnlRightSidebar.PerformLayout();
+            this.cardRed.ResumeLayout(false);
+            this.cardRed.PerformLayout();
+            this.cardOrange.ResumeLayout(false);
+            this.cardOrange.PerformLayout();
+            this.cardGreen.ResumeLayout(false);
+            this.cardGreen.PerformLayout();
+            this.cardBlue.ResumeLayout(false);
+            this.cardBlue.PerformLayout();
+            this.tlpCharts.ResumeLayout(false);
+            this.pnlBoxPie.ResumeLayout(false);
+            this.pnlBoxMain.ResumeLayout(false);
+            this.pnlTableBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvHoatDong)).EndInit();
-            this.pnlClockWidget.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Guna.UI2.WinForms.Guna2Panel pnlHeader;
+        private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblWelcome;
-        private Guna.UI2.WinForms.Guna2Panel pnlLeftContent;
+        private System.Windows.Forms.Label lblUpdate;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpCards;
-        private Guna.UI2.WinForms.Guna2Panel pnlTacGia;
-        private System.Windows.Forms.Label lblSoTacGia;
-        private System.Windows.Forms.Label label2;
-        private Guna.UI2.WinForms.Guna2Panel pnlBaiViet;
-        private System.Windows.Forms.Label lblSoBaiViet;
-        private System.Windows.Forms.Label label3;
-        private Guna.UI2.WinForms.Guna2Panel pnlSoBao;
-        private System.Windows.Forms.Label lblSoBaoCho;
-        private System.Windows.Forms.Label label4;
-        private Guna.UI2.WinForms.Guna2Panel pnlTien;
-        private System.Windows.Forms.Label lblTongTien;
-        private System.Windows.Forms.Label label6;
-        private Guna.UI2.WinForms.Guna2Panel pnlBieuDo;
-        private Guna.UI2.WinForms.Guna2Panel pnlRightSidebar;
-        private Guna.UI2.WinForms.Guna2DataGridView dgvHoatDong;
-        private System.Windows.Forms.Label label7;
-        private Guna.UI2.WinForms.Guna2Panel pnlClockWidget;
-        private System.Windows.Forms.Label lblClock;
+        private Guna.UI2.WinForms.Guna2GradientPanel cardBlue;
+        private Guna.UI2.WinForms.Guna2GradientPanel cardRed;
+        private Guna.UI2.WinForms.Guna2GradientPanel cardOrange;
+        private Guna.UI2.WinForms.Guna2GradientPanel cardGreen;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSoBaiViet;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblSoBaoCho;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblTongTien;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblSoTacGia;
+        private System.Windows.Forms.TableLayoutPanel tlpCharts;
+        private Guna.UI2.WinForms.Guna2Panel pnlBoxMain;
+        private Guna.UI2.WinForms.Guna2Panel pnlBoxPie;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private Guna.UI2.WinForms.Guna2Panel pnlTableBox;
+        private System.Windows.Forms.Label label7;
+        private Guna.UI2.WinForms.Guna2DataGridView dgvHoatDong;
+        private System.Windows.Forms.Panel pnlChartPie;
+        private System.Windows.Forms.Panel pnlChartMain;
     }
 }

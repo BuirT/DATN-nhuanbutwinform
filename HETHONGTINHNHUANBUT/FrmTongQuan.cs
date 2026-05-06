@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -17,17 +17,20 @@ namespace HETHONGTINHNHUANBUT
         private Timer timerClock;
         private readonly IMongoCollection<TacGia> _tacGiaColl;
         private readonly IMongoCollection<NhuanBut> _nhuanButColl;
+        private readonly IMongoCollection<PhieuChi> _phieuChiColl;
         private readonly IMongoCollection<Bao> _baoColl;
 
         public FrmTongQuan()
         {
             InitializeComponent();
 
-            // Khởi tạo các Collection
+            // Khởi tạo kết nối MongoDB
             _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
             _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
+            _phieuChiColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
             _baoColl = MongoProvider.Instance.GetCollection<Bao>("Bao");
 
+            // Cấu hình đồng hồ chạy mỗi 1 giây
             timerClock = new Timer();
             timerClock.Interval = 1000;
             timerClock.Tick += TimerClock_Tick;
@@ -37,126 +40,173 @@ namespace HETHONGTINHNHUANBUT
         {
             timerClock.Start();
 
-            // Chạy các tác vụ bất đồng bộ để tránh treo Form lúc Load
+            FormatGiaoDienBang();
+
             await ThongKe4TheAsync();
-            await LoadTopSoBaoAsync();
-            await VeBieuDoGunaChartAsync();
+            await LoadTopPhieuChiAsync();
+            await VeBieuDoDuongAsync();
+            await VeBieuDoTronAsync();
         }
 
         private void TimerClock_Tick(object sender, EventArgs e)
         {
-            lblClock.Text = "Hôm nay: " + DateTime.Now.ToString("dd/MM/yyyy | HH:mm:ss");
+            lblUpdate.Text = "Thời gian thực: " + DateTime.Now.ToString("dd/MM/yyyy | HH:mm:ss");
         }
 
-        // 1. Thống kê các con số tổng quát (Cards)
+        // ==========================================
+        // HÀM FORMAT GIAO DIỆN BẢNG DỮ LIỆU
+        // ==========================================
+        private void FormatGiaoDienBang()
+        {
+            // Màu Tiêu đề Cột
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 116, 139);
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvHoatDong.ColumnHeadersHeight = 45;
+
+            // Ép màu chọn của Tiêu đề (Chống xanh lè)
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(100, 116, 139);
+
+            // Màu Dòng chẵn lẻ
+            dgvHoatDong.DefaultCellStyle.BackColor = Color.White;
+            dgvHoatDong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+
+            // Màu Chữ và Selection (khi click vào dòng)
+            dgvHoatDong.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvHoatDong.DefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
+            dgvHoatDong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+
+            dgvHoatDong.RowTemplate.Height = 40;
+            dgvHoatDong.EnableHeadersVisualStyles = false;
+        }
+
+        // ==========================================
+        // 1. THỐNG KÊ 4 THẺ TỔNG QUAN
+        // ==========================================
         async Task ThongKe4TheAsync()
         {
             try
             {
-                // Đếm số tác giả
                 long soTacGia = await _tacGiaColl.CountDocumentsAsync(_ => true);
-                lblSoTacGia.Text = soTacGia.ToString();
+                lblSoTacGia.Text = soTacGia.ToString("N0");
 
-                // Đếm số bài viết (tổng số record trong NhuanBut)
                 long soBaiViet = await _nhuanButColl.CountDocumentsAsync(_ => true);
-                lblSoBaiViet.Text = soBaiViet.ToString();
+                lblSoBaiViet.Text = soBaiViet.ToString("N0");
 
-                // Tính tổng tiền nhuận bút (Dùng LINQ MongoDB)
-                var listNhuanBut = await _nhuanButColl.Find(_ => true).ToListAsync();
-                decimal tongTien = listNhuanBut.Sum(x => x.TienNhuanBut);
+                var listPhieuDuyet = await _phieuChiColl.Find(p => p.TrangThaiDuyet == 1).ToListAsync();
+                decimal tongTien = listPhieuDuyet.Sum(x => x.TongTien);
+                lblTongTien.Text = tongTien.ToString("N0");
 
-                lblTongTien.Text = tongTien.ToString("N0") + " VNĐ";
+                long soPhieuCho = await _phieuChiColl.CountDocumentsAsync(p => p.TrangThaiDuyet == 0);
+                lblSoBaoCho.Text = soPhieuCho.ToString("N0");
             }
-            catch (Exception ex)
-            {
-                lblSoTacGia.Text = "0";
-                lblSoBaiViet.Text = "0";
-                lblTongTien.Text = "0 VNĐ";
-                Console.WriteLine("Lỗi thống kê: " + ex.Message);
-            }
+            catch (Exception ex) { Console.WriteLine("Lỗi thống kê: " + ex.Message); }
         }
 
-        // 2. Load danh sách 10 số báo mới nhất lên Grid
-        async Task LoadTopSoBaoAsync()
+        // ==========================================
+        // 2. LOAD BẢNG TOP 5 PHIẾU CHI
+        // ==========================================
+        async Task LoadTopPhieuChiAsync()
         {
             try
             {
-                // Lấy 10 số báo mới nhất theo Ngày ra
-                var listBao = await _baoColl.Find(_ => true)
-                                            .SortByDescending(b => b.Ngayra)
-                                            .Limit(10)
+                var listPhieu = await _phieuChiColl.Find(_ => true)
+                                            .SortByDescending(p => p.NgayLap)
+                                            .Limit(5)
                                             .ToListAsync();
 
-                dgvHoatDong.DataSource = listBao.Select(b => new {
-                    TenBao = b.Tenbao,
-                    SoBao = b.Sobao,
-                    NgayRa = b.Ngayra.ToString("dd/MM/yyyy"),
-                    Loai = b.Loaibao
+                dgvHoatDong.DataSource = listPhieu.Select(p => new {
+                    SoPhieu = p.SoPhieu,
+                    NgayLap = p.NgayLap.ToString("dd/MM/yyyy HH:mm"),
+                    NguoiNhan = p.NguoiNhan,
+                    TongTien = p.TongTien.ToString("N0"),
+                    TrangThai = p.TrangThaiDuyet == 1 ? "Đã duyệt" : (p.TrangThaiDuyet == -1 ? "Từ chối" : "Đang chờ")
                 }).ToList();
 
-                // Đổi tiêu đề cột
-                dgvHoatDong.Columns[0].HeaderText = "Tên Báo";
-                dgvHoatDong.Columns[1].HeaderText = "Số";
-                dgvHoatDong.Columns[2].HeaderText = "Ngày XB";
-                dgvHoatDong.Columns[3].HeaderText = "Loại Hình";
+                if (dgvHoatDong.Columns.Count > 0)
+                {
+                    dgvHoatDong.Columns[0].HeaderText = "SỐ PHIẾU";
+                    dgvHoatDong.Columns[1].HeaderText = "NGÀY LẬP";
+                    dgvHoatDong.Columns[2].HeaderText = "TÁC GIẢ / NGƯỜI NHẬN";
+                    dgvHoatDong.Columns[3].HeaderText = "TỔNG TIỀN (VNĐ)";
+                    dgvHoatDong.Columns[4].HeaderText = "TRẠNG THÁI";
+                }
 
-                // Định dạng Font chữ
-                Font vniFont = new Font("Segoe UI", 10F); // Thay VNI-Times bằng Segoe UI cho hiện đại
-                dgvHoatDong.DefaultCellStyle.Font = vniFont;
-                dgvHoatDong.ThemeStyle.RowsStyle.Font = vniFont;
+                // Chống chọn mặc định gây lỗi màu dòng 1
+                dgvHoatDong.ClearSelection();
             }
-            catch (Exception ex) { Console.WriteLine("Lỗi load số báo: " + ex.Message); }
+            catch (Exception ex) { Console.WriteLine("Lỗi load phiếu chi: " + ex.Message); }
         }
 
-        // 3. Vẽ biểu đồ thống kê nhuận bút theo Số Báo (Guna Chart)
-        async Task VeBieuDoGunaChartAsync()
+        // ==========================================
+        // 3. VẼ BIỂU ĐỒ ĐƯỜNG (SPLINE CHART)
+        // ==========================================
+        async Task VeBieuDoDuongAsync()
         {
             try
             {
-                pnlBieuDo.Controls.Clear();
-                GunaChart gunaChart = new GunaChart();
-                gunaChart.Dock = DockStyle.Fill;
-                gunaChart.BackColor = Color.White;
+                GunaChart chartLine = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+                chartLine.YAxes.GridLines.Display = true;
+                chartLine.XAxes.GridLines.Display = false;
+                chartLine.Legend.Display = false;
 
-                gunaChart.Title.Text = "TOP 6 SỐ BÁO CÓ QUỸ NHUẬN BÚT CAO NHẤT";
-                gunaChart.Title.Font = new ChartFont { FontName = "Segoe UI", Size = 13, Style = ChartFontStyle.Bold };
+                GunaSplineDataset dataset = new GunaSplineDataset();
+                dataset.BorderColor = Color.FromArgb(59, 130, 246);
+                dataset.FillColor = Color.FromArgb(219, 234, 254);
+                dataset.BorderWidth = 3;
+                dataset.PointRadius = 4;
+                dataset.PointFillColors.Add(Color.White);
 
-                // Cấu hình hiển thị
-                gunaChart.Legend.LabelFont = new ChartFont { FontName = "Segoe UI", Size = 10 };
-                gunaChart.XAxes.GridLines.Display = false;
-                gunaChart.YAxes.GridLines.Display = false;
+                var listPhieu = await _phieuChiColl.Find(p => p.TrangThaiDuyet == 1).ToListAsync();
 
-                // Dataset dạng cột
-                GunaBarDataset dataset = new GunaBarDataset();
-                dataset.Label = "Tiền Nhuận Bút (VNĐ)";
-                dataset.FillColors.Add(Color.FromArgb(162, 110, 255)); // Màu tím Guna
+                var data = listPhieu.GroupBy(p => p.NgayLap.Month)
+                                    .Select(g => new { Thang = "Tháng " + g.Key, Tien = g.Sum(x => x.TongTien) })
+                                    .OrderBy(x => x.Thang).ToList();
 
-                // LOGIC TRUY VẤN MONGODB THAY THẾ SQL JOIN
-                // Bước 1: Lấy tất cả nhuận bút
-                var allNhuanBut = await _nhuanButColl.Find(_ => true).ToListAsync();
-
-                // Bước 2: Group by theo TenSoBao và Sum tiền
-                var reportData = allNhuanBut
-                    .GroupBy(n => n.TenSoBao)
-                    .Select(g => new {
-                        TenBao = g.Key,
-                        TongTien = g.Sum(x => x.TienNhuanBut)
-                    })
-                    .OrderByDescending(x => x.TongTien)
-                    .Take(6) // Lấy top 6
-                    .ToList();
-
-                // Đổ dữ liệu vào biểu đồ
-                foreach (var item in reportData)
+                foreach (var item in data)
                 {
-                    dataset.DataPoints.Add(item.TenBao, (double)item.TongTien);
+                    dataset.DataPoints.Add(item.Thang, (double)item.Tien);
                 }
 
-                gunaChart.Datasets.Add(dataset);
-                gunaChart.Update();
-                pnlBieuDo.Controls.Add(gunaChart);
+                chartLine.Datasets.Add(dataset);
+                chartLine.Update();
+                pnlChartMain.Controls.Add(chartLine);
             }
-            catch (Exception ex) { Console.WriteLine("Lỗi vẽ biểu đồ: " + ex.Message); }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
+        }
+
+        // ==========================================
+        // 4. VẼ BIỂU ĐỒ TRÒN (DOUGHNUT CHART)
+        // ==========================================
+        async Task VeBieuDoTronAsync()
+        {
+            try
+            {
+                GunaChart chartPie = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+                chartPie.Legend.Position = LegendPosition.Bottom;
+                chartPie.Legend.LabelFont = new ChartFont { FontName = "Segoe UI", Size = 10, Style = ChartFontStyle.Bold };
+
+                GunaDoughnutDataset dataset = new GunaDoughnutDataset();
+                dataset.FillColors.Add(Color.FromArgb(59, 130, 246));
+                dataset.FillColors.Add(Color.FromArgb(16, 185, 129));
+                dataset.FillColors.Add(Color.FromArgb(245, 158, 11));
+
+                var listBao = await _baoColl.Find(_ => true).ToListAsync();
+                var dataPie = listBao.GroupBy(b => b.Loaibao)
+                                     .Select(g => new { Loai = string.IsNullOrEmpty(g.Key) ? "Khác" : g.Key, Count = g.Count() })
+                                     .ToList();
+
+                foreach (var item in dataPie)
+                {
+                    dataset.DataPoints.Add(item.Loai, item.Count);
+                }
+
+                chartPie.Datasets.Add(dataset);
+                chartPie.Update();
+                pnlChartPie.Controls.Add(chartPie);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
     }
 }
