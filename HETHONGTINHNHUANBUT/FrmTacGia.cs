@@ -342,8 +342,8 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void lblMaHT_Click(object sender, EventArgs e)
-        {
+        { }
 
         }
     }
-}
+}   
