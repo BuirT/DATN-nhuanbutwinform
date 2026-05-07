@@ -1,18 +1,22 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient; // SỬ DỤNG THƯ VIỆN SQL SERVER
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmSoBao : Form
     {
-        private readonly IMongoCollection<Bao> _baoColl;
+        // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
+        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+
         private string _tenNguoiDung;
-        private string _selectedId = "";
+        private string _selectedMaso = ""; // Lưu mã số đang chọn thay vì ID Mongo
 
         // =======================================================
         // BIẾN QUAN TRỌNG ĐỂ HỨNG QUYỀN TỪ FORM TRANG CHÍNH TRUYỀN SANG
@@ -23,7 +27,6 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             _tenNguoiDung = tenNguoiDung;
-            _baoColl = MongoProvider.Instance.GetCollection<Bao>("Bao");
         }
 
         private async void FrmSoBao_Load(object sender, EventArgs e)
@@ -34,213 +37,246 @@ namespace HETHONGTINHNHUANBUT
             }
 
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
-            await LoadDataAsync();
 
-            // GỌI HÀM KHÓA NÚT NGAY LÚC MỞ FORM
+            // Làm đẹp giao diện bảng
+            FormatGiaoDienBang();
+
+            // Load dữ liệu từ SQL
+            await LoadDataSQLAsync();
+
+            // Phân quyền
             PhanQuyenThaoTac();
         }
 
-        // =======================================================
-        // HÀM PHÂN QUYỀN: CHỈ THƯ KÝ/ADMIN ĐƯỢC QUẢN LÝ SỐ BÁO
-        // =======================================================
+        private void FormatGiaoDienBang()
+        {
+            dgvSoBao.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 120, 215);
+            dgvSoBao.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvSoBao.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvSoBao.EnableHeadersVisualStyles = false;
+            dgvSoBao.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 245, 250);
+            dgvSoBao.DefaultCellStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
+            dgvSoBao.DefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
+            dgvSoBao.RowTemplate.Height = 40;
+        }
+
         private void PhanQuyenThaoTac()
         {
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
+            bool coQuyen = (role == "thư ký" || role == "admin" || role == "quản trị viên");
 
-            // Nếu là Kế toán hoặc Lãnh đạo thì khóa hết các nút chức năng lại
-            if (role == "kế toán" || role == "lãnh đạo")
+            btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = coQuyen;
+
+            if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
             {
-                btnThem.Enabled = false;
-                btnSua.Enabled = false;
-                btnXoa.Enabled = false;
-
-                // Khóa luôn cái nút Khóa/Mở sổ (Tìm control bằng tên cho chắc ăn theo code cũ của ông)
-                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
-                {
-                    btnKhoaSo.Enabled = false;
-                }
-            }
-            else if (role == "thư ký" || role == "admin" || role == "quản trị viên")
-            {
-                // Thư ký và Admin được phép thao tác thoải mái
-                btnThem.Enabled = true;
-                btnSua.Enabled = true;
-                btnXoa.Enabled = true;
-
-                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
-                {
-                    btnKhoaSo.Enabled = true;
-                }
+                btnKhoaSo.Enabled = coQuyen;
             }
         }
 
-        private async Task LoadDataAsync(string keyword = "")
+        // =======================================================
+        // 1. LOAD DANH SÁCH SỐ BÁO TỪ SQL SERVER
+        // =======================================================
+        private async Task LoadDataSQLAsync(string keyword = "")
         {
             try
             {
-                var list = await _baoColl.Find(_ => true).ToListAsync();
-
-                if (!string.IsNullOrWhiteSpace(keyword))
+                DataTable dt = new DataTable();
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    keyword = keyword.ToLower().Trim();
-                    list = list.Where(b =>
-                        (b.Maso != null && b.Maso.ToString().ToLower().Contains(keyword)) ||
-                        (b.Tenbao != null && b.Tenbao.ToLower().Contains(keyword))
-                    ).ToList();
+                    await conn.OpenAsync();
+                    string query = @"SELECT Maso, Tenbao, Ngayra, Sobao, Sobo, Loaibao, 
+                                            CASE WHEN DaDuyet = 'Y' THEN N'🔒 Đã khóa sổ' ELSE N'Đang mở' END AS TinhTrang 
+                                     FROM Bao";
+
+                    if (!string.IsNullOrWhiteSpace(keyword))
+                    {
+                        query += " WHERE Maso LIKE @kw OR Tenbao LIKE @kw OR Sobao LIKE @kw";
+                    }
+                    query += " ORDER BY Ngayra DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        if (!string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) { dt.Load(reader); }
+                    }
                 }
 
-                dgvSoBao.DataSource = list.Select(b => new {
-                    b.Id,
-                    Maso = b.Maso?.ToString() ?? "",
-                    Tenbao = b.Tenbao,
-                    Ngayra = b.Ngayra.ToLocalTime().ToString("dd/MM/yyyy"),
-                    Sobao = b.Sobao,
-                    Sobo = b.Sobo,
-                    Loaibao = b.Loaibao,
-                    DaDuyet = b.DaDuyet == "Y" ? "🔒 Đã khóa sổ" : "Đang mở"
-                }).OrderByDescending(x => x.Ngayra).ToList();
-
-                if (dgvSoBao.Columns["Id"] != null) dgvSoBao.Columns["Id"].Visible = false;
+                dgvSoBao.DataSource = dt;
 
                 if (dgvSoBao.Columns.Count > 0)
                 {
-                    dgvSoBao.Columns["Maso"].HeaderText = "Mã số";
-                    dgvSoBao.Columns["Tenbao"].HeaderText = "Tên kỳ báo";
-                    dgvSoBao.Columns["Ngayra"].HeaderText = "Ngày ra";
-                    dgvSoBao.Columns["Sobao"].HeaderText = "Số báo";
-                    dgvSoBao.Columns["Sobo"].HeaderText = "Số bộ";
-                    dgvSoBao.Columns["Loaibao"].HeaderText = "Loại báo";
-                    dgvSoBao.Columns["DaDuyet"].HeaderText = "Tình trạng sổ";
+                    dgvSoBao.Columns["Maso"].HeaderText = "MÃ SỐ";
+                    dgvSoBao.Columns["Tenbao"].HeaderText = "TÊN KỲ BÁO";
+                    dgvSoBao.Columns["Tenbao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    dgvSoBao.Columns["Ngayra"].HeaderText = "NGÀY RA";
+                    dgvSoBao.Columns["Ngayra"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    dgvSoBao.Columns["Sobao"].HeaderText = "SỐ BÁO";
+                    dgvSoBao.Columns["Sobo"].HeaderText = "SỐ BỘ";
+                    dgvSoBao.Columns["Loaibao"].HeaderText = "LOẠI BÁO";
+                    dgvSoBao.Columns["TinhTrang"].HeaderText = "TÌNH TRẠNG SỔ";
                 }
-
-                if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
-                {
-                    btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
-                    btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(16, 185, 129); // Xanh lá
-                }
+                dgvSoBao.ClearSelection();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi Hệ Thống");
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu SQL: " + ex.Message); }
         }
 
         private async void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            await LoadDataAsync(txtTimKiem.Text);
+            await LoadDataSQLAsync(txtTimKiem.Text);
         }
 
+        // =======================================================
+        // 2. THÊM SỐ BÁO MỚI (SQL)
+        // =======================================================
         private async void btnThem_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtMaso.Text) || string.IsNullOrWhiteSpace(txtTenBao.Text))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ Mã số và Tên báo!");
-                return;
+                MessageBox.Show("Vui lòng nhập đầy đủ Mã số và Tên báo!"); return;
             }
 
             try
             {
-                string maSoMoi = txtMaso.Text.Trim();
-                var exist = await _baoColl.Find(b => b.Maso.ToString() == maSoMoi).FirstOrDefaultAsync();
-                if (exist != null)
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    MessageBox.Show("Mã số báo này đã tồn tại!");
-                    return;
+                    await conn.OpenAsync();
+
+                    // Kiểm tra trùng mã
+                    string checkSql = "SELECT COUNT(*) FROM Bao WHERE Maso = @ma";
+                    using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
+                        if ((int)await checkCmd.ExecuteScalarAsync() > 0)
+                        {
+                            MessageBox.Show("Mã số báo này đã tồn tại trong SQL!"); return;
+                        }
+                    }
+
+                    string sql = @"INSERT INTO Bao (Maso, Tenbao, Ngayra, Sobao, Sobo, Loaibao, DaDuyet) 
+                                   VALUES (@ma, @ten, @ngay, @so, @bo, @loai, 'N')";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
+                        cmd.Parameters.AddWithValue("@ten", txtTenBao.Text.Trim());
+                        cmd.Parameters.AddWithValue("@ngay", dtpNgayRa.Value);
+                        cmd.Parameters.AddWithValue("@so", txtSoBao.Text.Trim());
+                        cmd.Parameters.AddWithValue("@bo", txtSoBo.Text.Trim());
+                        cmd.Parameters.AddWithValue("@loai", cboLoaiBao.Text);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
                 }
-
-                var bao = new Bao
-                {
-                    Maso = maSoMoi,
-                    Tenbao = txtTenBao.Text.Trim(),
-                    Ngayra = dtpNgayRa.Value,
-                    Sobao = txtSoBao.Text.Trim(),
-                    Sobo = txtSoBo.Text.Trim(),
-                    Loaibao = cboLoaiBao.Text,
-                    DaDuyet = "N"
-                };
-
-                await _baoColl.InsertOneAsync(bao);
-                MessageBox.Show("Thêm kỳ báo thành công!");
-                await LoadDataAsync();
+                MessageBox.Show("Thêm kỳ báo vào SQL thành công!");
+                await LoadDataSQLAsync();
                 btnLamMoi_Click(null, null);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
+        // =======================================================
+        // 3. CẬP NHẬT THÔNG TIN (SQL)
+        // =======================================================
         private async void btnSua_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_selectedId)) return;
+            if (string.IsNullOrEmpty(_selectedMaso)) return;
             try
             {
-                var update = Builders<Bao>.Update
-                    .Set(b => b.Maso, txtMaso.Text.Trim())
-                    .Set(b => b.Tenbao, txtTenBao.Text.Trim())
-                    .Set(b => b.Ngayra, dtpNgayRa.Value)
-                    .Set(b => b.Sobao, txtSoBao.Text.Trim())
-                    .Set(b => b.Sobo, txtSoBo.Text.Trim())
-                    .Set(b => b.Loaibao, cboLoaiBao.Text);
-
-                await _baoColl.UpdateOneAsync(b => b.Id == _selectedId, update);
-                MessageBox.Show("Cập nhật thành công!");
-                await LoadDataAsync();
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    string sql = @"UPDATE Bao SET Tenbao=@ten, Ngayra=@ngay, Sobao=@so, Sobo=@bo, Loaibao=@loai 
+                                   WHERE Maso=@ma";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                        cmd.Parameters.AddWithValue("@ten", txtTenBao.Text.Trim());
+                        cmd.Parameters.AddWithValue("@ngay", dtpNgayRa.Value);
+                        cmd.Parameters.AddWithValue("@so", txtSoBao.Text.Trim());
+                        cmd.Parameters.AddWithValue("@bo", txtSoBo.Text.Trim());
+                        cmd.Parameters.AddWithValue("@loai", cboLoaiBao.Text);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                MessageBox.Show("Cập nhật SQL thành công!");
+                await LoadDataSQLAsync();
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi sửa: " + ex.Message); }
         }
 
+        // =======================================================
+        // 4. XÓA KỲ BÁO (SQL)
+        // =======================================================
         private async void btnXoa_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_selectedId)) return;
-            if (MessageBox.Show("Chắc chắn muốn xóa kỳ báo này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (string.IsNullOrEmpty(_selectedMaso)) return;
+            if (MessageBox.Show("Xác nhận xóa kỳ báo này khỏi SQL Server?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                await _baoColl.DeleteOneAsync(b => b.Id == _selectedId);
-                await LoadDataAsync();
-                btnLamMoi_Click(null, null);
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                    {
+                        await conn.OpenAsync();
+                        using (SqlCommand cmd = new SqlCommand("DELETE FROM Bao WHERE Maso=@ma", conn))
+                        {
+                            cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    await LoadDataSQLAsync();
+                    btnLamMoi_Click(null, null);
+                }
+                catch (Exception ex) { MessageBox.Show("Lỗi xóa: " + ex.Message); }
             }
         }
 
+        // =======================================================
+        // 5. KHÓA / MỞ KHÓA SỔ BÁO (SQL)
+        // =======================================================
         private async void btnKhoaSo_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_selectedId))
+            if (string.IsNullOrEmpty(_selectedMaso))
             {
-                MessageBox.Show("Vui lòng chọn 1 kỳ báo từ danh sách bên dưới để Khóa hoặc Mở sổ!", "Nhắc nhở");
-                return;
+                MessageBox.Show("Chọn 1 kỳ báo để Khóa/Mở sổ!"); return;
             }
 
             try
             {
-                var bao = await _baoColl.Find(b => b.Id == _selectedId).FirstOrDefaultAsync();
-                if (bao != null)
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    string newStatus = bao.DaDuyet == "Y" ? "N" : "Y";
-                    string action = newStatus == "Y" ? "KHÓA SỔ" : "MỞ KHÓA SỔ";
+                    await conn.OpenAsync();
+                    // Lấy trạng thái hiện tại
+                    string currentStatus = "N";
+                    using (SqlCommand cmdGet = new SqlCommand("SELECT DaDuyet FROM Bao WHERE Maso=@ma", conn))
+                    {
+                        cmdGet.Parameters.AddWithValue("@ma", _selectedMaso);
+                        currentStatus = cmdGet.ExecuteScalar()?.ToString() ?? "N";
+                    }
 
-                    var update = Builders<Bao>.Update.Set(b => b.DaDuyet, newStatus);
-                    await _baoColl.UpdateOneAsync(b => b.Id == _selectedId, update);
+                    string nextStatus = currentStatus == "Y" ? "N" : "Y";
+                    string msg = nextStatus == "Y" ? "KHÓA SỔ" : "MỞ KHÓA SỔ";
 
-                    MessageBox.Show($"Đã {action} kỳ báo thành công!");
-                    await LoadDataAsync();
+                    using (SqlCommand cmdUpdate = new SqlCommand("UPDATE Bao SET DaDuyet=@st WHERE Maso=@ma", conn))
+                    {
+                        cmdUpdate.Parameters.AddWithValue("@st", nextStatus);
+                        cmdUpdate.Parameters.AddWithValue("@ma", _selectedMaso);
+                        await cmdUpdate.ExecuteNonQueryAsync();
+                    }
+
+                    MessageBox.Show($"Đã {msg} kỳ báo thành công!");
+                    await LoadDataSQLAsync();
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi khóa sổ: " + ex.Message); }
         }
 
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
-            _selectedId = "";
-            txtMaso.Clear();
-            txtTenBao.Clear();
-            txtSoBao.Clear();
-            txtSoBo.Clear();
+            _selectedMaso = "";
+            txtMaso.Clear(); txtTenBao.Clear(); txtSoBao.Clear(); txtSoBo.Clear();
             dtpNgayRa.Value = DateTime.Now;
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
-            if (txtTimKiem != null) txtTimKiem.Clear();
             txtMaso.Focus();
-
-            if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
-            {
-                btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
-                btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(16, 185, 129);
-            }
         }
 
         private void dgvSoBao_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -248,31 +284,28 @@ namespace HETHONGTINHNHUANBUT
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvSoBao.Rows[e.RowIndex];
-                _selectedId = row.Cells["Id"].Value?.ToString();
+                _selectedMaso = row.Cells["Maso"].Value?.ToString();
 
-                txtMaso.Text = row.Cells["Maso"].Value?.ToString();
+                txtMaso.Text = _selectedMaso;
                 txtTenBao.Text = row.Cells["Tenbao"].Value?.ToString();
                 txtSoBao.Text = row.Cells["Sobao"].Value?.ToString();
                 txtSoBo.Text = row.Cells["Sobo"].Value?.ToString();
                 cboLoaiBao.Text = row.Cells["Loaibao"].Value?.ToString();
 
-                if (DateTime.TryParseExact(row.Cells["Ngayra"].Value?.ToString(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime dt))
-                {
-                    dtpNgayRa.Value = dt;
-                }
+                if (DateTime.TryParse(row.Cells["Ngayra"].Value?.ToString(), out DateTime dt)) dtpNgayRa.Value = dt;
 
                 if (this.Controls.Find("btnKhoaSo", true).FirstOrDefault() is Guna.UI2.WinForms.Guna2Button btnKhoaSo)
                 {
-                    string trangThai = row.Cells["DaDuyet"].Value?.ToString();
+                    string trangThai = row.Cells["TinhTrang"].Value?.ToString();
                     if (trangThai == "🔒 Đã khóa sổ")
                     {
                         btnKhoaSo.Text = "MỞ KHÓA LẠI";
-                        btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(239, 68, 68); // Đỏ
+                        btnKhoaSo.FillColor = Color.FromArgb(239, 68, 68); // Đỏ
                     }
                     else
                     {
                         btnKhoaSo.Text = "🔒 KHÓA SỔ BÁO";
-                        btnKhoaSo.FillColor = System.Drawing.Color.FromArgb(16, 185, 129); // Xanh lá
+                        btnKhoaSo.FillColor = Color.FromArgb(16, 185, 129); // Xanh lá
                     }
                 }
             }
