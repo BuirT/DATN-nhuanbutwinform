@@ -1,37 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmPhieuChi : Form
     {
-        private readonly IMongoCollection<NhuanBut> _nhuanButColl;
-        private readonly IMongoCollection<TacGia> _tacGiaColl;
-        private readonly IMongoCollection<PhieuChi> _phieuChiColl;
-        private readonly IMongoCollection<ButDanh> _butDanhColl;
+        // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
+        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
-        // BIẾN QUAN TRỌNG ĐỂ HỨNG QUYỀN TỪ FORM TRANG CHÍNH TRUYỀN SANG
         public string QuyenHienTai { get; set; }
-
         public string NguoiLapPhieu { get; set; }
 
         public FrmPhieuChi()
         {
             InitializeComponent();
-            _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
-            _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
-            _phieuChiColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
-            _butDanhColl = MongoProvider.Instance.GetCollection<ButDanh>("Butdanh");
 
-            // Chặn nhập ký tự không phải số ngay tại các ô nhập liệu số
+            // Chặn nhập ký tự không phải số
             txtDienThoai.KeyPress += OnlyNumber_KeyPress;
             txtCMND.KeyPress += OnlyNumber_KeyPress;
             txtMST.KeyPress += OnlyNumber_KeyPress;
@@ -43,7 +35,7 @@ namespace HETHONGTINHNHUANBUT
             await LoadAuthorsAsync();
             cboTacGia.SelectedIndexChanged += cboTacGia_SelectedIndexChanged;
 
-            cboHinhThuc.SelectedIndex = 0;
+            if (cboHinhThuc.Items.Count > 0) cboHinhThuc.SelectedIndex = 0;
             txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
 
             if (cboTacGia.Items.Count > 0)
@@ -52,144 +44,116 @@ namespace HETHONGTINHNHUANBUT
                 cboTacGia_SelectedIndexChanged(null, null);
             }
 
-            // GỌI HÀM PHÂN QUYỀN NGAY SAU KHI LOAD XONG GIAO DIỆN
             PhanQuyenThaoTac();
         }
 
-        // =======================================================
-        // HÀM PHÂN QUYỀN: KẾ TOÁN LÀM, THẰNG KHÁC CHỈ NHÌN
-        // =======================================================
         private void PhanQuyenThaoTac()
         {
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
-
-            // Kế toán và Admin thì được quyền Lập Phiếu
-            if (role == "kế toán" || role == "admin" || role == "quản trị viên")
-            {
-                btnLapPhieu.Enabled = true;
-            }
-            else
-            {
-                // Lãnh đạo hoặc Thư ký (nếu vô tình lọt vào) thì khóa nút Lập Phiếu lại
-                btnLapPhieu.Enabled = false;
-
-                // Khóa luôn cái lưới không cho tích chọn bài viết
-                dgvChuaThanhToan.Enabled = false;
-            }
+            bool coQuyen = (role == "kế toán" || role == "admin" || role == "quản trị viên");
+            btnLapPhieu.Enabled = coQuyen;
+            dgvChuaThanhToan.Enabled = coQuyen;
         }
 
-        // --- HÀM KIỂM TRA ĐỊNH DẠNG DỮ LIỆU ---
         private bool IsValidData()
         {
-            // Kiểm tra Số điện thoại: Phải có đúng 10 chữ số
-            string phone = txtDienThoai.Text.Trim();
-            if (!Regex.IsMatch(phone, @"^\d{10}$"))
+            if (!Regex.IsMatch(txtDienThoai.Text.Trim(), @"^\d{10}$") && txtDienThoai.Text.Trim() != "")
             {
-                MessageBox.Show("Số điện thoại phải nhập đúng 10 chữ số!", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDienThoai.Focus();
+                MessageBox.Show("Số điện thoại phải đúng 10 chữ số!", "Lỗi");
                 return false;
             }
-
-            // Kiểm tra CCCD: Phải có đúng 12 chữ số
-            string cccd = txtCMND.Text.Trim();
-            if (!Regex.IsMatch(cccd, @"^\d{12}$"))
-            {
-                MessageBox.Show("Số CCCD/CMND phải nhập đúng 12 chữ số!", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtCMND.Focus();
-                return false;
-            }
-
             return true;
         }
 
         private void OnlyNumber_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar)) e.Handled = true;
         }
 
         private async Task LoadAuthorsAsync()
         {
             try
             {
-                var listChuaThanhToan = await _nhuanButColl.Find(n => n.DaThanhToan == false).ToListAsync();
-                var pendingAuthors = listChuaThanhToan
-                    .Where(n => !string.IsNullOrWhiteSpace(n.Butdanh))
-                    .Select(n => n.Butdanh.Trim())
-                    .Distinct()
-                    .OrderBy(x => x)
-                    .ToList();
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    string query = @"SELECT DISTINCT Butdanh FROM Nhuanbut 
+                                     WHERE Butdanh IS NOT NULL AND Butdanh <> ''
+                                     AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)
+                                     ORDER BY Butdanh";
 
-                cboTacGia.DataSource = null;
-                cboTacGia.DataSource = pendingAuthors;
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    List<string> authors = dt.AsEnumerable().Select(r => r.Field<string>("Butdanh")).ToList();
+                    cboTacGia.DataSource = authors;
+                }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách tác giả: " + ex.Message); }
         }
 
         private async void cboTacGia_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboTacGia.SelectedItem == null)
-            {
-                dgvChuaThanhToan.DataSource = null;
-                return;
-            }
-
+            if (cboTacGia.SelectedItem == null) return;
             string penName = cboTacGia.SelectedItem.ToString();
+
             try
             {
-                var butDanhInfo = await _butDanhColl.Find(b => b.Butdanh == penName).FirstOrDefaultAsync();
-                if (butDanhInfo != null && !string.IsNullOrEmpty(butDanhInfo.MsTacgia))
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    string maTacGiaGoc = butDanhInfo.MsTacgia;
-                    var tacGiaInfo = await _tacGiaColl.Find(t => t.Maso == maTacGiaGoc).FirstOrDefaultAsync();
+                    await conn.OpenAsync();
 
-                    if (tacGiaInfo != null)
+                    string sqlInfo = @"SELECT t.Hoten, t.MsTG, t.Dienthoai 
+                                       FROM TacGia t 
+                                       JOIN Butdanh b ON t.Maso = b.MsTacgia 
+                                       WHERE b.Butdanh = @butdanh";
+
+                    using (SqlCommand cmd = new SqlCommand(sqlInfo, conn))
                     {
-                        txtNguoiNhan.Text = tacGiaInfo.Hoten;
-                        txtCMND.Text = tacGiaInfo.MsTG;
-                        txtDienThoai.Text = tacGiaInfo.DienThoai;
-                        txtMST.Clear();
+                        cmd.Parameters.AddWithValue("@butdanh", penName);
+                        using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await r.ReadAsync())
+                            {
+                                txtNguoiNhan.Text = r["Hoten"].ToString();
+                                txtCMND.Text = r["MsTG"].ToString();
+                                txtDienThoai.Text = r["Dienthoai"].ToString();
+                            }
+                            else
+                            {
+                                txtNguoiNhan.Text = penName;
+                                ClearTacGiaInfo();
+                            }
+                        }
                     }
-                    else
-                    {
-                        txtNguoiNhan.Text = penName;
-                        ClearTacGiaInfo();
-                    }
-                }
-                else
-                {
-                    txtNguoiNhan.Text = penName;
-                    ClearTacGiaInfo();
-                }
 
-                var list = await _nhuanButColl.Find(n => n.Butdanh == penName && n.DaThanhToan == false).ToListAsync();
-                dgvChuaThanhToan.DataSource = list.Select(n => new {
-                    n.Id,
-                    TenSoBao = string.IsNullOrEmpty(n.TenSoBao) ? "" : Regex.Replace(n.TenSoBao, @"^Số\s+\d+\s+-\s+", ""),
-                    n.TenBai,
-                    TienNhuanBut = n.TienNhuanbut
-                }).ToList();
+                    string sqlArticles = @"SELECT Maso, Tenbai, TienNhuanbut 
+                                           FROM Nhuanbut 
+                                           WHERE Butdanh = @butdanh 
+                                           AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)";
 
-                if (dgvChuaThanhToan.Columns["Id"] != null) dgvChuaThanhToan.Columns["Id"].Visible = false;
-                if (dgvChuaThanhToan.Columns["TenSoBao"] != null) dgvChuaThanhToan.Columns["TenSoBao"].HeaderText = "Kỳ báo xuất bản";
-                if (dgvChuaThanhToan.Columns["TenBai"] != null) dgvChuaThanhToan.Columns["TenBai"].HeaderText = "Tên bài viết";
-                if (dgvChuaThanhToan.Columns["TienNhuanBut"] != null)
-                {
-                    dgvChuaThanhToan.Columns["TienNhuanBut"].HeaderText = "Số tiền (VNĐ)";
-                    dgvChuaThanhToan.Columns["TienNhuanBut"].DefaultCellStyle.Format = "N0";
+                    SqlDataAdapter da = new SqlDataAdapter(sqlArticles, conn);
+                    da.SelectCommand.Parameters.AddWithValue("@butdanh", penName);
+                    DataTable dtArticles = new DataTable();
+                    da.Fill(dtArticles);
+
+                    dgvChuaThanhToan.DataSource = dtArticles.AsEnumerable().Select(n => new {
+                        Id = n["Maso"],
+                        TenBai = n["Tenbai"],
+                        TienNhuanBut = n["TienNhuanbut"]
+                    }).ToList();
+
+                    if (dgvChuaThanhToan.Columns["Id"] != null) dgvChuaThanhToan.Columns["Id"].Visible = false;
+                    TinhToanTien();
                 }
-                TinhToanTien();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải chi tiết: " + ex.Message); }
         }
 
         private void ClearTacGiaInfo()
         {
-            txtCMND.Clear();
-            txtDienThoai.Clear();
-            txtMST.Clear();
+            txtCMND.Clear(); txtDienThoai.Clear(); txtMST.Clear();
         }
 
         private void TinhToanTien()
@@ -198,15 +162,13 @@ namespace HETHONGTINHNHUANBUT
             foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
             {
                 if (Convert.ToBoolean(row.Cells["colCheck"].Value))
-                {
                     tong += Convert.ToDecimal(row.Cells["TienNhuanBut"].Value);
-                }
             }
 
             txtTongTien.Text = tong.ToString("N0");
-            if (decimal.TryParse(txtThueSuat.Text, out decimal thuePhanTram))
+            if (decimal.TryParse(txtThueSuat.Text, out decimal thuePT))
             {
-                decimal thueVnd = tong * (thuePhanTram / 100);
+                decimal thueVnd = tong * (thuePT / 100);
                 txtTienThue.Text = thueVnd.ToString("N0");
                 txtThucLinh.Text = (tong - thueVnd).ToString("N0");
             }
@@ -216,70 +178,91 @@ namespace HETHONGTINHNHUANBUT
         {
             if (!IsValidData()) return;
 
-            List<string> selectedIds = new List<string>();
-            foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
+            var selectedItems = dgvChuaThanhToan.Rows.Cast<DataGridViewRow>()
+                                .Where(r => Convert.ToBoolean(r.Cells["colCheck"].Value))
+                                .ToList();
+
+            if (selectedItems.Count == 0)
             {
-                if (Convert.ToBoolean(row.Cells["colCheck"].Value))
-                    selectedIds.Add(row.Cells["Id"].Value.ToString());
+                MessageBox.Show("Vui lòng chọn bài viết!"); return;
             }
 
-            if (selectedIds.Count == 0)
+            using (SqlConnection conn = new SqlConnection(sqlConnectionString))
             {
-                MessageBox.Show("Vui lòng chọn ít nhất một bài viết để thanh toán!", "Cảnh báo");
-                return;
-            }
+                await conn.OpenAsync();
+                SqlTransaction trans = conn.BeginTransaction();
 
-            try
-            {
-                var phieu = new PhieuChi
+                try
                 {
-                    SoPhieu = txtSoPhieu.Text,
-                    NgayLap = DateTime.Now,
-                    LyDo = txtLyDo.Text.Trim(),
-                    TenTacGia = cboTacGia.Text,
-                    NguoiNhan = txtNguoiNhan.Text.Trim(),
-                    TongTien = decimal.Parse(txtTongTien.Text.Replace(",", "")),
-                    ThueSuat = decimal.Parse(txtThueSuat.Text.Replace(",", "")),
-                    Thue = decimal.Parse(txtTienThue.Text.Replace(",", "")),
-                    ThucLinh = decimal.Parse(txtThucLinh.Text.Replace(",", "")),
-                    HinhThuc = cboHinhThuc.Text.Contains("TM") ? "TM" : "CK",
-                    DaThuTien = "N",
-                    TrangThaiDuyet = 0,
-                    NguoiLap = string.IsNullOrEmpty(this.NguoiLapPhieu) ? "Admin" : this.NguoiLapPhieu,
-                    AddBy = string.IsNullOrEmpty(this.NguoiLapPhieu) ? "Admin" : this.NguoiLapPhieu,
-                    MST = txtMST.Text.Trim(),
-                    CMND = txtCMND.Text.Trim(),
-                    DienThoai = txtDienThoai.Text.Trim(),
-                    DanhSachBaiViet = selectedIds
-                };
+                    string sqlPhieu = @"INSERT INTO Phieuchi (Sophieu, Ngaylap, Sotien, Thue, Conlai, Lydo, Nguoinhan, Tacgia, Nguoilap, loaiTT, MST, CMND, Dienthoai, Thuesuat, Dathutien) 
+                                        VALUES (@so, @ngay, @tong, @thue, @cl, @lydo, @nhan, @tg, @lap, @loai, @mst, @cccd, @sdt, @ts, 'N')";
 
-                await _phieuChiColl.InsertOneAsync(phieu);
+                    using (SqlCommand cmd = new SqlCommand(sqlPhieu, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@so", txtSoPhieu.Text);
+                        cmd.Parameters.AddWithValue("@ngay", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@tong", decimal.Parse(txtTongTien.Text.Replace(",", "")));
+                        cmd.Parameters.AddWithValue("@thue", decimal.Parse(txtTienThue.Text.Replace(",", "")));
+                        cmd.Parameters.AddWithValue("@cl", decimal.Parse(txtThucLinh.Text.Replace(",", "")));
+                        cmd.Parameters.AddWithValue("@lydo", txtLyDo.Text);
+                        cmd.Parameters.AddWithValue("@nhan", txtNguoiNhan.Text);
+                        cmd.Parameters.AddWithValue("@tg", cboTacGia.Text);
+                        cmd.Parameters.AddWithValue("@lap", NguoiLapPhieu ?? "Admin");
+                        cmd.Parameters.AddWithValue("@loai", cboHinhThuc.Text.Contains("TM") ? "TM" : "CK");
+                        cmd.Parameters.AddWithValue("@mst", txtMST.Text);
+                        cmd.Parameters.AddWithValue("@cccd", txtCMND.Text);
+                        cmd.Parameters.AddWithValue("@sdt", txtDienThoai.Text);
+                        cmd.Parameters.AddWithValue("@ts", decimal.Parse(txtThueSuat.Text));
+                        await cmd.ExecuteNonQueryAsync();
+                    }
 
-                var filter = Builders<NhuanBut>.Filter.In(n => n.Id, selectedIds);
-                var update = Builders<NhuanBut>.Update
-                    .Set(n => n.DaThanhToan, true)
-                    .Set(n => n.MaPhieuChi, phieu.SoPhieu);
+                    string msTG = "";
+                    using (SqlCommand cmdGetMs = new SqlCommand("SELECT MsTacgia FROM Butdanh WHERE Butdanh = @bd", conn, trans))
+                    {
+                        cmdGetMs.Parameters.AddWithValue("@bd", cboTacGia.Text);
+                        msTG = cmdGetMs.ExecuteScalar()?.ToString() ?? "";
+                    }
 
-                await _nhuanButColl.UpdateManyAsync(filter, update);
+                    foreach (var row in selectedItems)
+                    {
+                        string sqlCT = @"INSERT INTO NhuanbutCT (MsTacgia, MsNhuanbut, Sotien, SoPC, SauThanhToan) 
+                                         VALUES (@ms, @nb, @tien, @pc, 'Y')";
+                        using (SqlCommand cmdCT = new SqlCommand(sqlCT, conn, trans))
+                        {
+                            cmdCT.Parameters.AddWithValue("@ms", msTG);
+                            cmdCT.Parameters.AddWithValue("@nb", row.Cells["Id"].Value);
+                            cmdCT.Parameters.AddWithValue("@tien", row.Cells["TienNhuanBut"].Value);
+                            cmdCT.Parameters.AddWithValue("@pc", txtSoPhieu.Text);
+                            await cmdCT.ExecuteNonQueryAsync();
+                        }
+                    }
 
-                MessageBox.Show("Lập phiếu chi thành công! Đang chờ Sếp duyệt.", "Thông báo");
-                btnHuy_Click(sender, e);
+                    trans.Commit();
+                    MessageBox.Show("Lập phiếu chi thành công!");
+                    await btnHuy_Click_Logic(); // Gọi hàm xử lý làm mới
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    MessageBox.Show("Lỗi lưu phiếu chi: " + ex.Message);
+                }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi lưu phiếu chi: " + ex.Message); }
         }
 
-        private void btnHuy_Click(object sender, EventArgs e)
+        // Đã sửa thành async để giải quyết cảnh báo "not awaited"
+        private async void btnHuy_Click(object sender, EventArgs e)
+        {
+            await btnHuy_Click_Logic();
+        }
+
+        // Tách logic hủy ra để dùng chung và đảm bảo có await
+        private async Task btnHuy_Click_Logic()
         {
             txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
             ClearTacGiaInfo();
             txtNguoiNhan.Clear();
-            txtLyDo.Text = "Chi trả nhuận bút";
-            txtTongTien.Text = "0"; txtThueSuat.Text = "10"; txtTienThue.Text = "0"; txtThucLinh.Text = "0";
-
-            foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
-                row.Cells["colCheck"].Value = false;
-
-            LoadAuthorsAsync();
+            txtTongTien.Text = "0"; txtTienThue.Text = "0"; txtThucLinh.Text = "0";
+            await LoadAuthorsAsync();
         }
 
         private void dgvChuaThanhToan_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -294,6 +277,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void txtThueSuat_TextChanged(object sender, EventArgs e) => TinhToanTien();
 
+        // --- ĐÃ BỔ SUNG 2 HÀM NÀY ĐỂ TRỊ DỨT ĐIỂM LỖI COMPILER TRONG DESIGNER ---
         private void txtCMND_TextChanged(object sender, EventArgs e) { }
         private void txtDienThoai_TextChanged(object sender, EventArgs e) { }
     }
