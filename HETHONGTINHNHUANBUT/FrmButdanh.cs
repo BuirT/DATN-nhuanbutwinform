@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient; // DÙNG SQL SERVER
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Reflection; // ĐÃ THÊM: Để kích hoạt đệm kép phần cứng chống lag
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
@@ -21,31 +22,63 @@ namespace HETHONGTINHNHUANBUT
         public FrmButDanh()
         {
             InitializeComponent();
+
+            // ĐÃ THÊM: Ép xung bộ đệm kép đồ họa cho bảng lưới để scroll chuột mượt mà 100%, không bị giật lag khi data lớn
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(dgvButDanh, true, null);
         }
 
         private async void FrmButDanh_Load(object sender, EventArgs e)
         {
-            // Làm đẹp giao diện bảng
+            // Làm đẹp giao diện bảng tĩnh
             FormatGiaoDienBang();
 
             // Load dữ liệu
             await LoadComboBoxTacGiaSQL();
             await LoadDataSQLAsync();
 
-            // Phân quyền
+            // Phân quyền tác vụ
             PhanQuyenThaoTac();
         }
 
         private void FormatGiaoDienBang()
         {
-            dgvButDanh.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 120, 215);
-            dgvButDanh.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            // Định dạng thanh tiêu đề cột nhã nhặn, chuẩn light-theme phẳng của Flowty
+            dgvButDanh.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
+            dgvButDanh.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
             dgvButDanh.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dgvButDanh.EnableHeadersVisualStyles = false;
-            dgvButDanh.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 245, 250);
-            dgvButDanh.DefaultCellStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            dgvButDanh.DefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            dgvButDanh.RowTemplate.Height = 40;
+
+            // Định dạng màu nền tĩnh chẵn lẻ cho các dòng bảng dữ liệu
+            dgvButDanh.DefaultCellStyle.BackColor = Color.White;
+            dgvButDanh.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvButDanh.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvButDanh.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
+
+            // CẤU HÌNH MÀU CHỌN DÒNG PASTEL CAO CẤP: Phản hồi xanh dương nhạt dịu mắt, chữ tối đen Slate rõ nét
+            Color selectedBg = Color.FromArgb(232, 240, 254);
+            Color selectedFg = Color.FromArgb(15, 23, 42);
+
+            dgvButDanh.DefaultCellStyle.SelectionBackColor = selectedBg;
+            dgvButDanh.DefaultCellStyle.SelectionForeColor = selectedFg;
+            dgvButDanh.AlternatingRowsDefaultCellStyle.SelectionBackColor = selectedBg;
+            dgvButDanh.AlternatingRowsDefaultCellStyle.SelectionForeColor = selectedFg;
+
+            // Đồng bộ trực tiếp vào bộ nhớ render Style nội bộ của Guna UI2 tránh lỗi ghi đè màu runtime
+            dgvButDanh.ThemeStyle.RowsStyle.BackColor = Color.White;
+            dgvButDanh.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvButDanh.ThemeStyle.RowsStyle.SelectionBackColor = selectedBg;
+            dgvButDanh.ThemeStyle.RowsStyle.SelectionForeColor = selectedFg;
+
+            dgvButDanh.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvButDanh.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvButDanh.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = selectedBg;
+            dgvButDanh.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = selectedFg;
+
+            dgvButDanh.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
+            dgvButDanh.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(71, 85, 105);
+
+            dgvButDanh.RowTemplate.Height = 38;
         }
 
         // =======================================================
@@ -83,7 +116,6 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    // Join với bảng TacGia để hiện tên tác giả cho dễ nhìn
                     string query = @"SELECT b.Maso, b.Butdanh, b.MsTacgia, t.Hoten 
                                      FROM Butdanh b 
                                      LEFT JOIN TacGia t ON b.MsTacgia = t.Maso 
@@ -99,10 +131,18 @@ namespace HETHONGTINHNHUANBUT
                 {
                     dgvButDanh.Columns["Maso"].HeaderText = "MÃ SỐ";
                     dgvButDanh.Columns["Butdanh"].HeaderText = "BÚT DANH HIỂN THỊ";
-                    dgvButDanh.Columns["Butdanh"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvButDanh.Columns["MsTacgia"].HeaderText = "MÃ TÁC GIẢ";
                     dgvButDanh.Columns["Hoten"].HeaderText = "TÊN TÁC GIẢ CHỦ QUẢN";
                 }
+
+                // CHỐT CHẶN BẤT TỬ: Quét qua toàn bộ đống cột vừa được tự động sinh ra khi gán dữ liệu động để khóa màu chọn pastel
+                // Triệt tiêu hoàn toàn 100% lỗi nhảy màu xanh Windows thô kệch khi click chuột
+                foreach (DataGridViewColumn col in dgvButDanh.Columns)
+                {
+                    col.DefaultCellStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
+                    col.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+                }
+
                 dgvButDanh.ClearSelection();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu Bút danh SQL: " + ex.Message); }
@@ -115,7 +155,7 @@ namespace HETHONGTINHNHUANBUT
         {
             if (string.IsNullOrWhiteSpace(txtMaso.Text) || string.IsNullOrWhiteSpace(txtButDanh.Text))
             {
-                MessageBox.Show("Nhập đủ Mã số và Bút danh giúp Thanh nhé!"); return;
+                MessageBox.Show("Vui lòng nhập đầy đủ Mã số và Tên bút danh nhé!"); return;
             }
 
             try
@@ -124,7 +164,6 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
 
-                    // Kiểm tra trùng mã hoặc trùng tên bút danh
                     string checkQuery = "SELECT COUNT(*) FROM Butdanh WHERE Maso = @ma OR Butdanh = @ten";
                     using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                     {
@@ -132,7 +171,7 @@ namespace HETHONGTINHNHUANBUT
                         checkCmd.Parameters.AddWithValue("@ten", txtButDanh.Text.Trim());
                         if ((int)await checkCmd.ExecuteScalarAsync() > 0)
                         {
-                            MessageBox.Show("Mã số hoặc Tên bút danh này đã tồn tại trong SQL!"); return;
+                            MessageBox.Show("Mã số hoặc Tên bút danh này đã tồn tại trong hệ thống!"); return;
                         }
                     }
 
@@ -145,11 +184,11 @@ namespace HETHONGTINHNHUANBUT
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
-                MessageBox.Show("Thêm Bút danh vào SQL thành công!");
+                MessageBox.Show("Thêm Bút danh thành công!");
                 await LoadDataSQLAsync();
                 btnLamMoi_Click(null, null);
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi thêm SQL: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi thêm: " + ex.Message); }
         }
 
         // =======================================================
@@ -157,7 +196,7 @@ namespace HETHONGTINHNHUANBUT
         // =======================================================
         private async void btnSua_Click(object sender, EventArgs e)
         {
-            if (dgvButDanh.CurrentRow == null) return;
+            if (dgvButDanh.CurrentRow == null) { MessageBox.Show("Vui lòng chọn một bút danh dưới bảng lưới!"); return; }
             string maCu = dgvButDanh.CurrentRow.Cells["Maso"].Value.ToString();
 
             try
@@ -174,10 +213,10 @@ namespace HETHONGTINHNHUANBUT
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
-                MessageBox.Show("Cập nhật SQL thành công!");
+                MessageBox.Show("Cập nhật thông tin bút danh thành công!");
                 await LoadDataSQLAsync();
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi sửa SQL: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi sửa: " + ex.Message); }
         }
 
         // =======================================================
@@ -185,8 +224,8 @@ namespace HETHONGTINHNHUANBUT
         // =======================================================
         private async void btnXoa_Click(object sender, EventArgs e)
         {
-            if (dgvButDanh.CurrentRow == null) return;
-            if (MessageBox.Show("Xóa bút danh này khỏi SQL Server?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (dgvButDanh.CurrentRow == null) { MessageBox.Show("Vui lòng chọn bút danh cần xóa!"); return; }
+            if (MessageBox.Show("Xác nhận xóa bút danh này khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
@@ -203,7 +242,7 @@ namespace HETHONGTINHNHUANBUT
                     await LoadDataSQLAsync();
                     btnLamMoi_Click(null, null);
                 }
-                catch (Exception ex) { MessageBox.Show("Lỗi xóa SQL: " + ex.Message); }
+                catch (Exception ex) { MessageBox.Show("Lỗi xóa: " + ex.Message); }
             }
         }
 
