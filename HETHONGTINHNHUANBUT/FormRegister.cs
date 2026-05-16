@@ -22,7 +22,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FormRegister_Load(object sender, EventArgs e)
         {
-            // CHỈ ĐỂ LẠI 3 NHÓM TÁC GIẢ ĐƯỢC TỰ ĐĂNG KÝ
+            // Đảm bảo chỉ nạp đúng 3 nhóm đối tượng được quyền tự đăng ký tài khoản
             cboRole.Items.Clear();
             cboRole.Items.AddRange(new object[] {
                 "Phóng viên",
@@ -43,64 +43,64 @@ namespace HETHONGTINHNHUANBUT
 
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tài khoản và mật khẩu!", "Nhắc nhở");
+                MessageBox.Show("Vui lòng nhập đầy đủ tài khoản và mật khẩu!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (password != confirm)
             {
-                MessageBox.Show("Mật khẩu nhập lại không khớp!", "Cảnh báo");
+                MessageBox.Show("Mật khẩu nhập lại không khớp!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (string.IsNullOrEmpty(maXacThuc))
             {
-                MessageBox.Show("Vui lòng nhập Mã Tác giả hoặc CCCD để xác thực hồ sơ!", "Yêu cầu");
+                MessageBox.Show("Vui lòng nhập Mã Tác giả hoặc CCCD để xác thực hồ sơ!", "Yêu cầu", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
 
             try
             {
-                // 1. Kiểm tra tài khoản tồn tại
+                // 1. Kiểm tra tài khoản trùng lặp
                 var existUser = await _UserColl.Find(t => t.TenDangNhap == userId).FirstOrDefaultAsync();
                 if (existUser != null)
                 {
-                    MessageBox.Show("Tên đăng nhập đã tồn tại trên hệ thống!");
+                    MessageBox.Show("Tên đăng nhập đã tồn tại trên hệ thống!", "Lỗi tài khoản", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // 2. Xác thực với bảng TacGia (Bắt buộc vì chỉ có 3 role tác giả)
+                // 2. Xác thực chéo thông tin với danh sách bảng TacGia SQL/Mongo
                 var author = await _TacGiaColl.Find(t => t.Maso == maXacThuc || t.MsTG == maXacThuc).FirstOrDefaultAsync();
 
                 if (author == null)
                 {
-                    MessageBox.Show("Mã xác thực không đúng hoặc chưa có hồ sơ trên hệ thống!", "Từ chối");
+                    MessageBox.Show("Mã xác thực không đúng hoặc chưa có hồ sơ tác giả trên hệ thống!", "Từ chối đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     return;
                 }
 
-                // 3. Hash mật khẩu (Giữ nguyên logic Salt của ông)
+                // 3. Tiến hành băm mật khẩu bảo mật an toàn với chuỗi Salt ngẫu nhiên
                 string userSalt = HashHelper.GenerateSalt();
                 string hashedPassword = HashHelper.ComputeSha256(password, userSalt);
 
-                // 4. Lưu User mới
+                // 4. Lưu thực thể người dùng mới vào cơ sở dữ liệu
                 var newUser = new User
                 {
                     TenDangNhap = userId,
                     MatKhau = hashedPassword,
                     Salt = userSalt,
-                    HoTen = author.Hoten,     // Lấy tên thật từ hồ sơ
+                    HoTen = author.Hoten,     // Kế thừa tên thật trực tiếp từ hồ sơ tác giả
                     Quyen = selectedRole,
                     HoatDong = true,
-                    MaTacGiaGoc = author.Maso // Liên kết để tra cứu nhuận bút
+                    MaTacGiaGoc = author.Maso // Đồng bộ khóa ngoại để tra cứu thông tin nhuận bút
                 };
 
                 await _UserColl.InsertOneAsync(newUser);
-                MessageBox.Show($"Đăng ký thành công! Chào mừng {author.Hoten} gia nhập hệ thống.");
+                MessageBox.Show($"Đăng ký thành công! Chào mừng đồng chí {author.Hoten} gia nhập hệ thống.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ShowLoginAndClose();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi vận hành", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -109,8 +109,15 @@ namespace HETHONGTINHNHUANBUT
         private void ShowLoginAndClose()
         {
             var loginForm = Application.OpenForms.OfType<FormLogin>().FirstOrDefault();
-            if (loginForm != null) { loginForm.Show(); loginForm.BringToFront(); }
-            else { new FormLogin().Show(); }
+            if (loginForm != null)
+            {
+                loginForm.Show();
+                loginForm.BringToFront();
+            }
+            else
+            {
+                new FormLogin().Show();
+            }
             this.Close();
         }
     }

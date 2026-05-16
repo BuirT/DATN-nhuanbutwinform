@@ -11,12 +11,12 @@ namespace HETHONGTINHNHUANBUT
     public partial class FormLogin : Form
     {
         private IMongoCollection<User> _UserColl;
+        private bool _isPasswordHidden = true; // Biến cờ theo dõi trạng thái mật khẩu
 
         public FormLogin()
         {
             InitializeComponent();
 
-            // Bọc try-catch để tránh văng ứng dụng nếu chưa kết nối được DB ngay từ đầu
             try
             {
                 _UserColl = MongoProvider.Instance.GetCollection<User>("User");
@@ -34,13 +34,26 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnexit_Click(object sender, EventArgs e) => Application.Exit();
 
-        // Sự kiện ấn Enter ở ô mật khẩu để đăng nhập nhanh
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true; // Tắt âm thanh "bíp" của Windows
+                e.SuppressKeyPress = true; // Chặn tiếng bíp khó chịu của Windows
                 btnlogin_Click(sender, e);
+            }
+        }
+
+        // --- ĐÃ BỔ SUNG: Chức năng click ẩn/hiện mật khẩu trực tiếp trên ô TextBox cực mượt ---
+        private void txtPassword_IconRightClick(object sender, EventArgs e)
+        {
+            _isPasswordHidden = !_isPasswordHidden;
+            if (_isPasswordHidden)
+            {
+                txtPassword.PasswordChar = '●';
+            }
+            else
+            {
+                txtPassword.PasswordChar = '\0'; // Hiển thị mật khẩu dạng chữ thường công khai
             }
         }
 
@@ -63,7 +76,6 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                // Dùng FirstOrDefaultAsync thay vì FirstOrDefault để form không bị đơ khi chờ mạng
                 var user = await _UserColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefaultAsync();
 
                 if (user == null)
@@ -81,7 +93,6 @@ namespace HETHONGTINHNHUANBUT
                 bool loginSuccess = false;
                 bool needUpgrade = false;
 
-                // 1. KIỂM TRA MẬT KHẨU CÓ SALT (Chuẩn mới)
                 if (!string.IsNullOrEmpty(user.Salt))
                 {
                     string hashedInput = HashHelper.ComputeSha256(matKhau, user.Salt);
@@ -89,7 +100,6 @@ namespace HETHONGTINHNHUANBUT
                 }
                 else
                 {
-                    // 2. KIỂM TRA CHUẨN CŨ (Để nâng cấp tài khoản cũ)
                     string hashedOld = HashHelper.ComputeSha256(matKhau, "");
                     if (user.MatKhau == matKhau || user.MatKhau == hashedOld)
                     {
@@ -100,7 +110,6 @@ namespace HETHONGTINHNHUANBUT
 
                 if (loginSuccess)
                 {
-                    // Nâng cấp bảo mật nếu cần
                     if (needUpgrade)
                     {
                         string newSalt = HashHelper.GenerateSalt();
@@ -111,13 +120,12 @@ namespace HETHONGTINHNHUANBUT
                         await _UserColl.UpdateOneAsync(u => u.Id == user.Id, update);
                     }
 
-                    // --- CHUYỂN HƯỚNG VÀ TRUYỀN DỮ LIỆU SANG FORM CHÍNH ---
                     this.Hide();
                     FrmTrangChinh frm = new FrmTrangChinh();
 
                     frm.currentUserName = !string.IsNullOrEmpty(user.HoTen) ? user.HoTen : user.TenDangNhap;
                     frm.currentPrivilege = user.Quyen;
-                    frm.currentMaTacGia = user.MaTacGiaGoc; // Quan trọng cho việc tra cứu
+                    frm.currentMaTacGia = user.MaTacGiaGoc;
 
                     MongoProvider.Instance.GhiNhatKy(tenDangNhap, needUpgrade ? "Nâng cấp bảo mật & Đăng nhập thành công" : "Đăng nhập thành công");
 
@@ -129,10 +137,7 @@ namespace HETHONGTINHNHUANBUT
                     MessageBox.Show("Mật khẩu không chính xác!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
         private void btnregister_Click(object sender, EventArgs e)
