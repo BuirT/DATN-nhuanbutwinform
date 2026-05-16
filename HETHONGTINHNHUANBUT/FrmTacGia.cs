@@ -46,6 +46,11 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTacGia_Load(object sender, EventArgs e)
         {
+            // Đảm bảo cboPhanLoai có đầy đủ danh mục mặc định để tránh lỗi hiển thị trắng khi nạp dữ liệu
+            if (cboPhanLoai.Items.Count == 0)
+            {
+                cboPhanLoai.Items.AddRange(new object[] { "Phóng viên", "Cộng tác viên" });
+            }
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
 
             await TuDongFixDatabaseSQL();
@@ -154,12 +159,16 @@ namespace HETHONGTINHNHUANBUT
 
                 if (dgvTacGia.Columns.Count > 0)
                 {
-                    dgvTacGia.Columns["MaHT"].HeaderText = "MÃ HT";
-                    dgvTacGia.Columns["HoTen"].HeaderText = "HỌ VÀ TÊN";
-                    dgvTacGia.Columns["NgaySinh"].HeaderText = "NGÀY SINH";
-                    dgvTacGia.Columns["NgaySinh"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                    dgvTacGia.Columns["MaThe"].HeaderText = "CCCD/CMND";
-                    dgvTacGia.Columns["SoTaiKhoan"].HeaderText = "SỐ TÀI KHOẢN";
+                    if (dgvTacGia.Columns["MaHT"] != null) dgvTacGia.Columns["MaHT"].HeaderText = "MÃ HT";
+                    if (dgvTacGia.Columns["HoTen"] != null) dgvTacGia.Columns["HoTen"].HeaderText = "HỌ VÀ TÊN";
+                    if (dgvTacGia.Columns["NgaySinh"] != null)
+                    {
+                        dgvTacGia.Columns["NgaySinh"].HeaderText = "NGÀY SINH";
+                        dgvTacGia.Columns["NgaySinh"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    }
+                    if (dgvTacGia.Columns["MaThe"] != null) dgvTacGia.Columns["MaThe"].HeaderText = "CCCD/CMND";
+                    if (dgvTacGia.Columns["SoTaiKhoan"] != null) dgvTacGia.Columns["SoTaiKhoan"].HeaderText = "SỐ TÀI KHOẢN";
+                    if (dgvTacGia.Columns["PhanLoai"] != null) dgvTacGia.Columns["PhanLoai"].HeaderText = "PHÂN LOẠI";
                 }
 
                 // ÉP TRỰC TIẾP MÀU CHỌN CHO CÁC CỘT RUNTIME: Giữ màu xanh nhạt pastel dịu mắt khi click chọn dòng
@@ -274,6 +283,10 @@ namespace HETHONGTINHNHUANBUT
             dtpNgaySinh.Value = DateTime.Now; picAvatar.Image = null;
             currentImagePath = ""; currentPdfPath = "";
             lblFilePDF.Text = "Chưa có file..."; lblFilePDF.ForeColor = Color.Gray; btnXemPDF.Enabled = false;
+
+            // Đồng bộ đặt lại phân loại về lựa chọn đầu tiên khi làm mới
+            if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
+
             txtMaHT.Focus();
         }
 
@@ -285,12 +298,22 @@ namespace HETHONGTINHNHUANBUT
                 txtMaHT.Text = row.Cells["MaHT"].Value?.ToString();
                 txtMaThe.Text = row.Cells["MaThe"].Value?.ToString();
                 txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
-                cboPhanLoai.Text = row.Cells["PhanLoai"].Value?.ToString();
                 txtEmail.Text = row.Cells["Email"].Value?.ToString();
                 txtDienThoai.Text = row.Cells["DienThoai"].Value?.ToString();
                 txtPhongBan.Text = row.Cells["PhongBan"].Value?.ToString();
                 txtSoTaiKhoan.Text = row.Cells["SoTaiKhoan"].Value?.ToString();
                 txtNganHang.Text = row.Cells["NganHang"].Value?.ToString();
+
+                // Nạp dữ liệu Phân loại hồ sơ một cách an toàn
+                string phanLoai = row.Cells["PhanLoai"].Value?.ToString();
+                if (!string.IsNullOrEmpty(phanLoai))
+                {
+                    if (!cboPhanLoai.Items.Contains(phanLoai))
+                    {
+                        cboPhanLoai.Items.Add(phanLoai);
+                    }
+                    cboPhanLoai.Text = phanLoai;
+                }
 
                 if (DateTime.TryParse(row.Cells["NgaySinh"].Value?.ToString(), out DateTime dt)) dtpNgaySinh.Value = dt;
 
