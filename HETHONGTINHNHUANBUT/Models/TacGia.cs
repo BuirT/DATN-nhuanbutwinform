@@ -25,7 +25,5 @@ namespace HETHONGTINHNHUANBUT.Models
         public string DienThoai { get; set; }
         public string AvatarPath { get; set; }
         public string PdfPath { get; set; }
-
-        // TÔI ĐÃ XÓA SẠCH MẤY CÁI [BsonIgnore] VỚ VẨN RỒI NHÉ!
     }
 }

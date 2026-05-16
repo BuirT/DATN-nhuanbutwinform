@@ -14,7 +14,7 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmNhapNhuanBut : Form
     {
         // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
-        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         private string _selectedMaso = null; // Lưu Maso của bài viết đang chọn (SQL dùng Maso thay vì Id)
         public string NguoiDangNhap { get; set; }

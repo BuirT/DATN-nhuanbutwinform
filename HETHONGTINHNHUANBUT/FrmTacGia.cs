@@ -1,14 +1,7 @@
-using DocumentFormat.OpenXml.Office2010.Drawing;
-using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,7 +16,7 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmTacGia : Form
     {
         // --- CHUỖI KẾT NỐI: Tự động nhận diện SQLEXPRESS trên máy sếp ---
-        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         private string currentImagePath = "";
         private string currentPdfPath = "";
@@ -51,7 +44,6 @@ namespace HETHONGTINHNHUANBUT
         private void txtDienThoai_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) e.Handled = true;
-            _tacGiaColl = MongoProvider.Instance.GetCollection<TacGia>("TacGia");
         }
 
         private async void FrmTacGia_Load(object sender, EventArgs e)
@@ -117,10 +109,6 @@ namespace HETHONGTINHNHUANBUT
                 }
             }
             catch (Exception ex) { Console.WriteLine("Lỗi Fix DB: " + ex.Message); }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi lấy dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void PhanQuyenThaoTac()
@@ -184,21 +172,6 @@ namespace HETHONGTINHNHUANBUT
         {
             if (string.IsNullOrWhiteSpace(txtMaHT.Text) || string.IsNullOrWhiteSpace(txtHoTen.Text)) { MessageBox.Show("Vui lòng điền đủ Mã HT và Họ tên!"); return; }
             if (!IsValidPhone(txtDienThoai.Text.Trim())) { MessageBox.Show("Số điện thoại phải đủ 10 số!"); return; }
-        private void btnXemPDF_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(currentPdfPath) && File.Exists(currentPdfPath))
-                Process.Start(new ProcessStartInfo(currentPdfPath) { UseShellExecute = true });
-            else
-                MessageBox.Show("Không tìm thấy file PDF!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        private async void btnThem_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtMaHT.Text) || string.IsNullOrWhiteSpace(txtHoTen.Text))
-            {
-                MessageBox.Show("Mã hệ thống và Họ tên không được trống!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
 
             try
             {
@@ -226,29 +199,9 @@ namespace HETHONGTINHNHUANBUT
                 }
                 MessageBox.Show("Thêm hồ sơ thành công vào SQL Server!");
                 await LoadDataSQLAsync();
-
-                var tg = new TacGia
-                {
-                    Maso = maHT,
-                    MsTG = maThe,
-                    Hoten = txtHoTen.Text.Trim(),
-                    Ngaysinh = dtpNgaySinh.Value,
-                    LoaiTacgia = cboPhanLoai.Text,
-                    Email = email,
-                    DienThoai = sdt,
-                    SoTaiKhoan = txtSoTaiKhoan.Text.Trim(),
-                    PhongBan = txtPhongBan.Text.Trim(),
-                    NganHang = txtNganHang.Text.Trim(),
-                    AvatarPath = currentImagePath,
-                    PdfPath = currentPdfPath
-                };
-
-                await _tacGiaColl.InsertOneAsync(tg);
-                MessageBox.Show("Thêm hồ sơ thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await LoadDataAsync();
                 btnLamMoi_Click(null, null);
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private async void btnSua_Click(object sender, EventArgs e)
@@ -259,27 +212,6 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-
-            try
-            {
-                string id = dgvTacGia.CurrentRow.Cells["Id"].Value.ToString();
-                string maHT = txtMaHT.Text.Trim();
-                string maThe = txtMaThe.Text.Trim();
-                string sdt = txtDienThoai.Text.Trim();
-                string email = txtEmail.Text.Trim();
-
-                var builder = Builders<TacGia>.Filter;
-                var filterCheck = builder.Eq(t => t.Maso, maHT);
-
-                if (!string.IsNullOrEmpty(maThe)) filterCheck |= builder.Eq(t => t.MsTG, maThe);
-                if (!string.IsNullOrEmpty(sdt)) filterCheck |= builder.Eq(t => t.DienThoai, sdt);
-                if (!string.IsNullOrEmpty(email)) filterCheck |= builder.Eq(t => t.Email, email);
-
-                var finalFilter = builder.And(builder.Ne(t => t.Id, id), filterCheck);
-
-                var exist = await _tacGiaColl.Find(finalFilter).FirstOrDefaultAsync();
-
-                if (exist != null)
                 {
                     await conn.OpenAsync();
                     string sql = @"UPDATE TacGia SET MsTG=@the, Hoten=@ten, Ngaysinh=@ns, LoaiTacgia=@loai, 
@@ -306,34 +238,12 @@ namespace HETHONGTINHNHUANBUT
                 await LoadDataSQLAsync();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi sửa: " + ex.Message); }
-
-                var update = Builders<TacGia>.Update
-                    .Set(t => t.Maso, maHT)
-                    .Set(t => t.MsTG, maThe)
-                    .Set(t => t.Hoten, txtHoTen.Text.Trim())
-                    .Set(t => t.Ngaysinh, dtpNgaySinh.Value)
-                    .Set(t => t.LoaiTacgia, cboPhanLoai.Text)
-                    .Set(t => t.Email, email)
-                    .Set(t => t.DienThoai, sdt)
-                    .Set(t => t.SoTaiKhoan, txtSoTaiKhoan.Text.Trim())
-                    .Set(t => t.PhongBan, txtPhongBan.Text.Trim())
-                    .Set(t => t.NganHang, txtNganHang.Text.Trim())
-                    .Set(t => t.AvatarPath, currentImagePath)
-                    .Set(t => t.PdfPath, currentPdfPath);
-
-                await _tacGiaColl.UpdateOneAsync(t => t.Id == id, update);
-                MessageBox.Show("Cập nhật thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await LoadDataAsync();
-            }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvTacGia.CurrentRow == null) return;
             if (MessageBox.Show("Xác nhận xóa hồ sơ này khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
-
-            if (MessageBox.Show("Chắc chắn muốn xóa?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {

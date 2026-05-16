@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Reflection; // ĐÃ THÊM: Để kích hoạt đệm kép chống lag
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,7 +19,7 @@ namespace HETHONGTINHNHUANBUT
         private Timer timerClock;
         private readonly IMongoCollection<PhieuChi> _phieuChiColl;
         private readonly IMongoCollection<Bao> _baoColl;
-        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         public FrmTongQuan()
         {
@@ -29,6 +30,13 @@ namespace HETHONGTINHNHUANBUT
             timerClock = new Timer();
             timerClock.Interval = 1000;
             timerClock.Tick += TimerClock_Tick;
+
+            // ĐÃ THÊM: Kích hoạt siêu đệm kép phần cứng cho Grid tại đây để chống lag 100% khi cuộn dữ liệu
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(dgvHoatDong, true, null);
+
+            // ĐÃ THÊM: Chốt chặn cuối cùng - Ép hủy trạng thái highlight xanh Windows mỗi khi thay đổi lựa chọn
+            dgvHoatDong.SelectionChanged += DgvHoatDong_SelectionChanged;
         }
 
         private async void FrmTongQuan_Load(object sender, EventArgs e)
@@ -36,7 +44,7 @@ namespace HETHONGTINHNHUANBUT
             timerClock.Start();
             label5.Text = "BIẾN ĐỘNG CHI TRẢ NHUẬN BÚT TOÀN THỜI GIAN";
 
-            // 1. Chỉnh sửa chi tiết màu sắc bảng
+            // 1. Chỉnh sửa chi tiết màu sắc bảng tĩnh
             FixMauSacBangHoatDong();
 
             // 2. Load dữ liệu
@@ -53,25 +61,50 @@ namespace HETHONGTINHNHUANBUT
             lblUpdate.Text = "Thời gian thực: " + DateTime.Now.ToString("dd/MM/yyyy | HH:mm:ss");
         }
 
+        private void DgvHoatDong_SelectionChanged(object sender, EventArgs e)
+        {
+            // BẤT TỬ KHÓA MÀU: Ép bảng tự động xóa bỏ vệt chọn ngay lập tức, giữ bảng im phăng phắc không nhảy màu
+            dgvHoatDong.ClearSelection();
+        }
+
         private void FixMauSacBangHoatDong()
         {
-            // Thiết lập màu nền và font chữ cho Header
-            dgvHoatDong.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh đậm chuyên nghiệp
-            dgvHoatDong.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            // Cấu hình thanh tiêu đề cột (Header) nhã nhặn chuẩn Flowty Light Theme
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
+            dgvHoatDong.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
             dgvHoatDong.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvHoatDong.ColumnHeadersHeight = 45;
+            dgvHoatDong.ColumnHeadersHeight = 40;
 
-            // Màu dòng chẵn và dòng lẻ
+            // Cấu hình màu sắc dòng cơ bản (Trắng và Xám xanh nhạt xen kẽ)
             dgvHoatDong.DefaultCellStyle.BackColor = Color.White;
-            dgvHoatDong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 245, 250); // Xám nhạt
+            dgvHoatDong.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvHoatDong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvHoatDong.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
 
-            // Màu khi người dùng click chọn dòng
-            dgvHoatDong.DefaultCellStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            dgvHoatDong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
+            // SỬA SAI CHÍ MẠNG: Khóa cứng màu Lựa chọn trùng khít màu nền gốc, cấm nhảy sang màu khác khi click
+            dgvHoatDong.DefaultCellStyle.SelectionBackColor = Color.White;
+            dgvHoatDong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvHoatDong.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+            dgvHoatDong.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
 
-            // Bỏ các đường kẻ dọc để bảng trông thoáng hơn
+            // Bỏ các đường kẻ dọc để bảng thoáng, giữ đường kẻ ngang mỏng nhẹ
             dgvHoatDong.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvHoatDong.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+            dgvHoatDong.GridColor = Color.FromArgb(241, 245, 249);
+
+            // Ép đồng bộ trực tiếp vào bộ nhớ Style của Guna UI2
+            dgvHoatDong.ThemeStyle.RowsStyle.BackColor = Color.White;
+            dgvHoatDong.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvHoatDong.ThemeStyle.RowsStyle.SelectionBackColor = Color.White;
+            dgvHoatDong.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+
+            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+
+            dgvHoatDong.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
+            dgvHoatDong.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(71, 85, 105);
+
             dgvHoatDong.EnableHeadersVisualStyles = false;
         }
 
@@ -119,7 +152,6 @@ namespace HETHONGTINHNHUANBUT
                 pnlChartMain.Controls.Clear();
                 GunaChart chartLine = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
 
-                // Cấu hình trục tọa độ để hiển thị dải thời gian dài (từ 2004)
                 chartLine.XAxes.GridLines.Display = false;
                 chartLine.YAxes.GridLines.Display = true;
 
@@ -127,11 +159,10 @@ namespace HETHONGTINHNHUANBUT
                 dataset.BorderColor = Color.FromArgb(46, 109, 228);
                 dataset.FillColor = Color.FromArgb(50, 46, 109, 228);
                 dataset.BorderWidth = 2;
-                dataset.PointRadius = 0; // Tắt điểm để biểu đồ mượt hơn khi có quá nhiều dữ liệu
+                dataset.PointRadius = 0;
 
                 var dataPoints = new Dictionary<int, double>();
 
-                // 1. Lấy toàn bộ từ SQL
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
@@ -147,7 +178,6 @@ namespace HETHONGTINHNHUANBUT
                     }
                 }
 
-                // 2. Lấy từ Mongo và cộng dồn
                 var listPhieuMongo = await _phieuChiColl.Find(p => p.TrangThaiDuyet == 1).ToListAsync();
                 foreach (var p in listPhieuMongo)
                 {
@@ -156,7 +186,6 @@ namespace HETHONGTINHNHUANBUT
                     else dataPoints[key] = (double)p.TongTien;
                 }
 
-                // 3. Sắp xếp và đưa lên biểu đồ
                 var sortedData = dataPoints.OrderBy(x => x.Key).ToList();
                 foreach (var item in sortedData)
                 {
@@ -203,7 +232,9 @@ namespace HETHONGTINHNHUANBUT
                     combinedList.Add(new { SoPhieu = p.SoPhieu, Ngay = p.NgayLap, Nhan = p.NguoiNhan, Tien = p.TongTien.ToString("N0"), TT = p.TrangThaiDuyet == 1 ? "Đã duyệt" : "Đang chờ" });
                 }
 
+                // Gán dữ liệu vào bảng (Cột tự động giãn rộng full màn hình)
                 dgvHoatDong.DataSource = combinedList.OrderByDescending(x => x.Ngay).Take(10).ToList();
+
                 if (dgvHoatDong.Columns["Ngay"] != null)
                 {
                     dgvHoatDong.Columns["SoPhieu"].HeaderText = "SỐ PHIẾU";
@@ -213,6 +244,14 @@ namespace HETHONGTINHNHUANBUT
                     dgvHoatDong.Columns["TT"].HeaderText = "TRẠNG THÁI";
                     dgvHoatDong.Columns["Ngay"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
                 }
+
+                // ĐÃ THÊM: Khóa chết màu Selection cho toàn bộ các cột dữ liệu vừa được tự động sinh ra khi chạy Runtime
+                foreach (DataGridViewColumn col in dgvHoatDong.Columns)
+                {
+                    col.DefaultCellStyle.SelectionBackColor = col.Index % 2 == 0 ? Color.White : Color.FromArgb(248, 250, 252);
+                    col.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+                }
+
                 dgvHoatDong.ClearSelection();
             }
             catch { }

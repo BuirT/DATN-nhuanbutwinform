@@ -152,5 +152,10 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
+
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmSoBao : Form
     {
         // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
-        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         private string _tenNguoiDung;
         private string _selectedMaso = ""; // Lưu mã số đang chọn thay vì ID Mongo

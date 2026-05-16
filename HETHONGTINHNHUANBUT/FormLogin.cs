@@ -1,21 +1,30 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FormLogin : Form
     {
-        private readonly IMongoCollection<User> _UserColl;
+        private IMongoCollection<User> _UserColl;
 
         public FormLogin()
         {
             InitializeComponent();
-            _UserColl = MongoProvider.Instance.GetCollection<User>("User");
+
+            // Bọc try-catch để tránh văng ứng dụng nếu chưa kết nối được DB ngay từ đầu
+            try
+            {
+                _UserColl = MongoProvider.Instance.GetCollection<User>("User");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Chưa kết nối được Cơ sở dữ liệu: " + ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void FormLogin_Load(object sender, EventArgs e)
@@ -24,6 +33,16 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void btnexit_Click(object sender, EventArgs e) => Application.Exit();
+
+        // Sự kiện ấn Enter ở ô mật khẩu để đăng nhập nhanh
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Tắt âm thanh "bíp" của Windows
+                btnlogin_Click(sender, e);
+            }
+        }
 
         private async void btnlogin_Click(object sender, EventArgs e)
         {
@@ -36,10 +55,16 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
+            if (_UserColl == null)
+            {
+                MessageBox.Show("Kết nối cơ sở dữ liệu bị gián đoạn. Vui lòng kiểm tra lại cấu hình!", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             try
             {
-                // Tìm User trong DB
-                var user = _UserColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefault();
+                // Dùng FirstOrDefaultAsync thay vì FirstOrDefault để form không bị đơ khi chờ mạng
+                var user = await _UserColl.Find(u => u.TenDangNhap == tenDangNhap).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
@@ -80,20 +105,19 @@ namespace HETHONGTINHNHUANBUT
                     {
                         string newSalt = HashHelper.GenerateSalt();
                         string newHashedPassword = HashHelper.ComputeSha256(matKhau, newSalt);
-                        var update = Builders<User>.Update.Set(u => u.Salt, newSalt).Set(u => u.MatKhau, newHashedPassword);
+                        var update = Builders<User>.Update
+                            .Set(u => u.Salt, newSalt)
+                            .Set(u => u.MatKhau, newHashedPassword);
                         await _UserColl.UpdateOneAsync(u => u.Id == user.Id, update);
                     }
 
-                    // --- ĐÂY LÀ ĐOẠN FIX LỖI "KHÔNG TÌM THẤY MÃ ĐỊNH DANH" ---
+                    // --- CHUYỂN HƯỚNG VÀ TRUYỀN DỮ LIỆU SANG FORM CHÍNH ---
                     this.Hide();
                     FrmTrangChinh frm = new FrmTrangChinh();
 
-                    // Truyền thông tin sang Form Chính
                     frm.currentUserName = !string.IsNullOrEmpty(user.HoTen) ? user.HoTen : user.TenDangNhap;
                     frm.currentPrivilege = user.Quyen;
-
-                    // CỰC KỲ QUAN TRỌNG: Truyền cái mã này sang thì Form Tra Cứu mới chạy được!
-                    frm.currentMaTacGia = user.MaTacGiaGoc;
+                    frm.currentMaTacGia = user.MaTacGiaGoc; // Quan trọng cho việc tra cứu
 
                     MongoProvider.Instance.GhiNhatKy(tenDangNhap, needUpgrade ? "Nâng cấp bảo mật & Đăng nhập thành công" : "Đăng nhập thành công");
 
