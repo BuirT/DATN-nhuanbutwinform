@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient; // SỬ DỤNG THƯ VIỆN SQL SERVER
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,12 +13,17 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmNhapNhuanBut : Form
     {
-        // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
-        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        // --- CHUỖI KẾT NỐI SQL SERVER ---
+        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
-        private string _selectedMaso = null; // Lưu Maso của bài viết đang chọn (SQL dùng Maso thay vì Id)
+        private string _selectedMaso = null;
         public string NguoiDangNhap { get; set; }
         public string QuyenHienTai { get; set; }
+
+        // --- CÁC BIẾN LƯU TRỮ KẾT QUẢ AI TẠM THỜI CHỜ LƯU ---
+        private double _diemAI = 0;
+        private string _tyLeDaoVan = "";
+        private string _nhanXetAI = "";
 
         public FrmNhapNhuanBut()
         {
@@ -27,7 +32,6 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmNhapNhuanBut_Load(object sender, EventArgs e)
         {
-            // Định dạng giao diện bảng chuyên nghiệp
             FormatGiaoDienDashboard();
 
             cboSoBao.SelectedIndexChanged -= cboSoBao_SelectedIndexChanged;
@@ -60,11 +64,12 @@ namespace HETHONGTINHNHUANBUT
             btnThem.Enabled = btnXoa.Enabled = btnLamMoi.Enabled = coQuyen;
             txtTenBai.ReadOnly = txtTrang.ReadOnly = txtMuc.ReadOnly = txtTienNhuanBut.ReadOnly = !coQuyen;
             cboButDanh.Enabled = cboVung.Enabled = cboVungChuyenDen.Enabled = coQuyen;
+
+            // Mở khóa nút AI nếu có quyền thêm/sửa
+            if (this.Controls.Find("btnQuetBaiAI", true).FirstOrDefault() is Control btnAI)
+                btnAI.Enabled = coQuyen;
         }
 
-        // =======================================================
-        // 1. LOAD DANH MỤC TỪ SQL (KỲ BÁO & BÚT DANH)
-        // =======================================================
         private async Task LoadComboboxDataSQLAsync()
         {
             try
@@ -105,9 +110,6 @@ namespace HETHONGTINHNHUANBUT
                 await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString());
         }
 
-        // =======================================================
-        // 2. HIỂN THỊ DANH SÁCH BÀI VIẾT THEO KỲ BÁO (SQL)
-        // =======================================================
         private async Task LoadDataGridSQLAsync(string maSoBao)
         {
             try
@@ -116,7 +118,9 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    string query = @"SELECT Maso, STT, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, TienNhuanbut 
+                    // Đã thêm các trường LuotXem, LuotThich, DiemAI vào câu truy vấn
+                    string query = @"SELECT Maso, STT, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
+                                            TienNhuanbut, LuotXem, LuotThich, DiemAI, TyLeDaoVan, NhanXetAI 
                                      FROM Nhuanbut WHERE MsBao = @maBao ORDER BY STT ASC";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -132,16 +136,22 @@ namespace HETHONGTINHNHUANBUT
                     dgvNhuanBut.Columns["Maso"].Visible = false;
                     dgvNhuanBut.Columns["Vung"].Visible = false;
                     dgvNhuanBut.Columns["VungChuyenDen"].Visible = false;
+                    dgvNhuanBut.Columns["TyLeDaoVan"].Visible = false;
+                    dgvNhuanBut.Columns["NhanXetAI"].Visible = false;
 
                     dgvNhuanBut.Columns["STT"].HeaderText = "STT";
                     dgvNhuanBut.Columns["Tenbai"].HeaderText = "TÊN BÀI VIẾT";
                     dgvNhuanBut.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvNhuanBut.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                    dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "SỐ TIỀN (VNĐ)";
+
+                    dgvNhuanBut.Columns["LuotXem"].HeaderText = "VIEWS";
+                    dgvNhuanBut.Columns["LuotThich"].HeaderText = "LIKES";
+                    dgvNhuanBut.Columns["DiemAI"].HeaderText = "ĐIỂM AI";
+
+                    dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "TỔNG TIỀN (VNĐ)";
                     dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0";
                 }
 
-                // Tính tổng tiền
                 decimal tong = 0;
                 foreach (DataRow r in dt.Rows) tong += Convert.ToDecimal(r["TienNhuanbut"]);
                 lblTongTien.Text = "TỔNG TIỀN ĐÃ CHẤM: " + tong.ToString("N0") + " VNĐ";
@@ -151,70 +161,89 @@ namespace HETHONGTINHNHUANBUT
         }
 
         // =======================================================
-        // 3. THÊM / CẬP NHẬT NHUẬN BÚT (SQL)
+        // TÍNH NĂNG MỚI: MỞ TRẠM KIỂM ĐỊNH AI CHẤM ĐIỂM BÀI VIẾT
         // =======================================================
+        private void btnQuetBaiAI_Click(object sender, EventArgs e)
+        {
+            using (FrmKiemDinhAI frmAI = new FrmKiemDinhAI())
+            {
+                if (frmAI.ShowDialog() == DialogResult.OK)
+                {
+                    AIResult ketQua = frmAI.KetQuaAI;
+                    if (ketQua != null)
+                    {
+                        // 1. Lưu tạm vào biến để chờ nút LƯU
+                        _diemAI = ketQua.DiemChatLuong;
+                        _tyLeDaoVan = ketQua.TyLeDaoVan;
+                        _nhanXetAI = ketQua.NhanXet;
+
+                        // 2. CẬP NHẬT GIAO DIỆN NGAY LẬP TỨC (Đây là chỗ anh cần để thấy dữ liệu)
+                        // Giả sử anh có các label này trên form, nếu chưa có thì thêm vào:
+                        // lblStatusAI.Text = "Đã quét: " + _diemAI + " điểm";
+
+                        // Hoặc đơn giản là báo cho người dùng biết dữ liệu đã sẵn sàng để lưu
+                        MessageBox.Show($"Dữ liệu đã sẵn sàng! \nĐiểm AI: {_diemAI}\nĐạo văn: {_tyLeDaoVan}\nNhấn 'LƯU DỮ LIỆU' để hoàn tất.",
+                                        "Thông tin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+        }
+
         private async void btnThem_Click(object sender, EventArgs e)
         {
-            if (cboSoBao.SelectedValue == null || string.IsNullOrWhiteSpace(txtTenBai.Text))
-            {
-                MessageBox.Show("Vui lòng chọn kỳ báo và nhập tên bài!"); return;
-            }
+            // Kiểm tra dữ liệu đầu vào
+            if (cboSoBao.SelectedValue == null) { MessageBox.Show("Vui lòng chọn số báo!"); return; }
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    decimal tien = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
 
-                    if (string.IsNullOrEmpty(_selectedMaso)) // THÊM MỚI
-                    {
-                        string insertSql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT) 
-                                             VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt)";
+                    // Tính toán KPI
+                    int luotXem = int.TryParse(txtLuotXem.Text, out int v) ? v : 0;
+                    int luotThich = int.TryParse(txtLuotThich.Text, out int l) ? l : 0;
+                    decimal tienCung = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
+                    decimal tongTien = tienCung + (luotXem * 50) + (luotThich * 100) + ((_diemAI >= 8.0) ? 200000 : 0);
 
-                        using (SqlCommand cmd = new SqlCommand(insertSql, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@ma", "NB" + DateTime.Now.ToString("HHmmss"));
-                            cmd.Parameters.AddWithValue("@ten", txtTenBai.Text.Trim());
-                            cmd.Parameters.AddWithValue("@trang", txtTrang.Text.Trim());
-                            cmd.Parameters.AddWithValue("@muc", txtMuc.Text.Trim());
-                            cmd.Parameters.AddWithValue("@tien", tien);
-                            cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
-                            cmd.Parameters.AddWithValue("@msBao", cboSoBao.SelectedValue.ToString());
-                            cmd.Parameters.AddWithValue("@vung", cboVung.Text);
-                            cmd.Parameters.AddWithValue("@vungCD", cboVungChuyenDen.Text);
-                            cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "Admin");
-                            cmd.Parameters.AddWithValue("@stt", dgvNhuanBut.Rows.Count + 1);
-                            await cmd.ExecuteNonQueryAsync();
-                        }
-                    }
-                    else // CẬP NHẬT
+                    string sql = string.IsNullOrEmpty(_selectedMaso)
+                        ? @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT, LuotXem, LuotThich, DiemAI, TyLeDaoVan, NhanXetAI) 
+                    VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt, @luotXem, @luotThich, @diemAI, @daoVan, @nhanXet)"
+                        : @"UPDATE Nhuanbut SET Tenbai=@ten, Trang=@trang, Muc=@muc, TienNhuanbut=@tien, Butdanh=@bd, Vung=@vung, VungChuyenDen=@vungCD, 
+                    LuotXem=@luotXem, LuotThich=@luotThich, DiemAI=@diemAI, TyLeDaoVan=@daoVan, NhanXetAI=@nhanXet 
+                    WHERE Maso=@ma";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        string updateSql = @"UPDATE Nhuanbut SET Tenbai=@ten, Trang=@trang, Muc=@muc, TienNhuanbut=@tien, 
-                                             Butdanh=@bd, Vung=@vung, VungChuyenDen=@vungCD, addby=@user, ngaychuyen=GETDATE() 
-                                             WHERE Maso=@ma";
-                        using (SqlCommand cmd = new SqlCommand(updateSql, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@ma", _selectedMaso);
-                            cmd.Parameters.AddWithValue("@ten", txtTenBai.Text.Trim());
-                            cmd.Parameters.AddWithValue("@trang", txtTrang.Text.Trim());
-                            cmd.Parameters.AddWithValue("@muc", txtMuc.Text.Trim());
-                            cmd.Parameters.AddWithValue("@tien", tien);
-                            cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
-                            cmd.Parameters.AddWithValue("@vung", cboVung.Text);
-                            cmd.Parameters.AddWithValue("@vungCD", cboVungChuyenDen.Text);
-                            cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "Admin");
-                            await cmd.ExecuteNonQueryAsync();
-                        }
+                        // Truyền tham số chuẩn
+                        cmd.Parameters.AddWithValue("@ma", string.IsNullOrEmpty(_selectedMaso) ? "NB" + DateTime.Now.ToString("HHmmss") : _selectedMaso);
+                        cmd.Parameters.AddWithValue("@ten", txtTenBai.Text);
+                        cmd.Parameters.AddWithValue("@trang", txtTrang.Text);
+                        cmd.Parameters.AddWithValue("@muc", txtMuc.Text);
+                        cmd.Parameters.AddWithValue("@tien", tongTien);
+                        cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
+                        cmd.Parameters.AddWithValue("@msBao", cboSoBao.SelectedValue.ToString());
+                        cmd.Parameters.AddWithValue("@vung", cboVung.Text ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@vungCD", cboVungChuyenDen.Text ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "Admin");
+                        cmd.Parameters.AddWithValue("@stt", dgvNhuanBut.Rows.Count + 1);
+
+                        // Các tham số AI và KPI
+                        cmd.Parameters.AddWithValue("@luotXem", luotXem);
+                        cmd.Parameters.AddWithValue("@luotThich", luotThich);
+                        cmd.Parameters.AddWithValue("@diemAI", _diemAI);
+                        cmd.Parameters.AddWithValue("@daoVan", _tyLeDaoVan ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@nhanXet", _nhanXetAI ?? (object)DBNull.Value);
+
+                        await cmd.ExecuteNonQueryAsync();
                     }
                 }
-                MessageBox.Show("Lưu nhuận bút vào SQL thành công!");
+                MessageBox.Show("Lưu dữ liệu thành công!");
                 await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString());
                 ClearInputs();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi lưu SQL: " + ex.Message); }
         }
-
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_selectedMaso)) return;
@@ -252,6 +281,14 @@ namespace HETHONGTINHNHUANBUT
             txtTienNhuanBut.Text = Convert.ToDecimal(row.Cells["TienNhuanbut"].Value).ToString("0");
             cboVung.Text = row.Cells["Vung"].Value?.ToString();
             cboVungChuyenDen.Text = row.Cells["VungChuyenDen"].Value?.ToString();
+
+            // Lấy lại dữ liệu AI và KPI đang có
+            _diemAI = row.Cells["DiemAI"].Value != DBNull.Value ? Convert.ToDouble(row.Cells["DiemAI"].Value) : 0;
+            _tyLeDaoVan = row.Cells["TyLeDaoVan"].Value?.ToString();
+            _nhanXetAI = row.Cells["NhanXetAI"].Value?.ToString();
+
+            if (this.Controls.Find("txtLuotXem", true).FirstOrDefault() is TextBox tbView) tbView.Text = row.Cells["LuotXem"].Value?.ToString();
+            if (this.Controls.Find("txtLuotThich", true).FirstOrDefault() is TextBox tbLike) tbLike.Text = row.Cells["LuotThich"].Value?.ToString();
         }
 
         private void btnLamMoi_Click(object sender, EventArgs e) => ClearInputs();
@@ -261,7 +298,18 @@ namespace HETHONGTINHNHUANBUT
             _selectedMaso = null;
             txtTenBai.Clear(); txtTrang.Clear(); txtMuc.Clear(); txtTienNhuanBut.Clear();
             cboVung.SelectedIndex = -1; cboVungChuyenDen.SelectedIndex = -1;
+
+            // Reset biến AI và Textbox KPI
+            _diemAI = 0; _tyLeDaoVan = ""; _nhanXetAI = "";
+            if (this.Controls.Find("txtLuotXem", true).FirstOrDefault() is TextBox tbView) tbView.Clear();
+            if (this.Controls.Find("txtLuotThich", true).FirstOrDefault() is TextBox tbLike) tbLike.Clear();
+
             txtTenBai.Focus();
+        }
+
+        private void pnlTop_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

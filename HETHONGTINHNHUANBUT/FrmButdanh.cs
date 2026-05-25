@@ -15,7 +15,7 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmButDanh : Form
     {
         // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
-        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         public string QuyenHienTai { get; set; }
 

@@ -186,6 +186,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AIHelper.cs" />
     <Compile Include="DAL\MongoHelper.cs" />
     <Compile Include="DAL\MongoProvider.cs" />
     <Compile Include="FrmDuyetPhieuChi.cs">
@@ -193,6 +194,12 @@
     </Compile>
     <Compile Include="FrmDuyetPhieuChi.Designer.cs">
       <DependentUpon>FrmDuyetPhieuChi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmKiemDinhAI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmKiemDinhAI.Designer.cs">
+      <DependentUpon>FrmKiemDinhAI.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmTaiKhoan.cs">
       <SubType>Form</SubType>
@@ -318,6 +325,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmButdanh.resx">
       <DependentUpon>FrmButdanh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmKiemDinhAI.resx">
+      <DependentUpon>FrmKiemDinhAI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmNhapNhuanBut.resx">
       <DependentUpon>FrmNhapNhuanBut.cs</DependentUpon>
