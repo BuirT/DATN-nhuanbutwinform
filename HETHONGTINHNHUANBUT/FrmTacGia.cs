@@ -16,7 +16,7 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTacGia : Form
     {
-        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         private string currentImagePath = "";
         private string currentPdfPath = "";

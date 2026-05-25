@@ -19,7 +19,7 @@ namespace HETHONGTINHNHUANBUT
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // PROMPT MỚI: Ép AI phải chấm điểm dựa trên nội dung, không được copy ví dụ
+                    // Prompt ép AI phải chấm điểm thực tế dựa trên nội dung, không lấy mặc định
                     string prompt = $@"Bạn là một tổng biên tập khó tính. Hãy đọc và phân tích bài viết dưới đây dựa trên tiêu chí: nội dung, văn phong và tính hấp dẫn.
             1. Tự đánh giá tỷ lệ đạo văn.
             2. Viết 1 câu nhận xét sắc bén.
@@ -59,7 +59,6 @@ namespace HETHONGTINHNHUANBUT
                     {
                         TyLeDaoVan = finalData["TyLeDaoVan"]?.ToString() ?? "0%",
                         NhanXet = finalData["NhanXet"]?.ToString() ?? "Không có nhận xét",
-                        // Chuyển đổi an toàn
                         DiemChatLuong = finalData["DiemChatLuong"] != null ? Convert.ToDouble(finalData["DiemChatLuong"]) : 0.0
                     };
                 }
@@ -70,12 +69,13 @@ namespace HETHONGTINHNHUANBUT
                 return null;
             }
         }
+    }
 
-        public class AIResult
-        {
-            public string TyLeDaoVan { get; set; }
-            public string NhanXet { get; set; }
-            public double DiemChatLuong { get; set; }
-        }
+    // ĐÃ CHUYỂN RA NGOÀI KHỎI CLASS AIHELPER ĐỂ FIX LỖI CS0246
+    public class AIResult
+    {
+        public string TyLeDaoVan { get; set; }
+        public string NhanXet { get; set; }
+        public double DiemChatLuong { get; set; }
     }
 }

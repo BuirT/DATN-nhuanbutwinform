@@ -19,7 +19,7 @@ namespace HETHONGTINHNHUANBUT
         private Timer timerClock;
         private readonly IMongoCollection<PhieuChi> _phieuChiColl;
         private readonly IMongoCollection<Bao> _baoColl;
-        private readonly string sqlConnectionString = @"Server=LAPTOP-K8EKOOUM\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
 
         public FrmTongQuan()
         {

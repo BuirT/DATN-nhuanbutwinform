@@ -13,9 +13,9 @@ namespace HETHONGTINHNHUANBUT
         public FrmKiemDinhAI()
         {
             InitializeComponent();
-            
+
             // Mặc định khóa nút Lưu Điểm khi chưa có kết quả quét
-            btnXacNhan.Enabled = false; 
+            btnXacNhan.Enabled = false;
         }
 
         // =======================================================
@@ -24,11 +24,11 @@ namespace HETHONGTINHNHUANBUT
         private async void btnQuetAI_Click(object sender, EventArgs e)
         {
             string noiDung = rtbNoiDung.Text.Trim();
-            
+
             // Kiểm tra xem người dùng đã dán bài báo vào chưa
             if (string.IsNullOrEmpty(noiDung))
             {
-                MessageBox.Show("Đồng chí vui lòng dán (Paste) nội dung bài báo vào khung chữ trước khi quét nhé!", 
+                MessageBox.Show("Đồng chí vui lòng dán (Paste) nội dung bài báo vào khung chữ trước khi quét nhé!",
                                 "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 rtbNoiDung.Focus();
                 return;
@@ -51,10 +51,10 @@ namespace HETHONGTINHNHUANBUT
                     lblDiem.Text = $"Điểm chất lượng: {KetQuaAI.DiemChatLuong}/10";
                     lblDaoVan.Text = $"Cảnh báo đạo văn: {KetQuaAI.TyLeDaoVan}";
                     lblNhanXet.Text = $"Tổng biên tập (AI) nhận xét: {KetQuaAI.NhanXet}";
-                    
+
                     // Quét xong thì mở khóa nút LƯU ĐIỂM SỐ
-                    btnXacNhan.Enabled = true; 
-                    
+                    btnXacNhan.Enabled = true;
+
                     MessageBox.Show("Đã hoàn tất đánh giá bài viết!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -81,7 +81,7 @@ namespace HETHONGTINHNHUANBUT
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             // Trả về DialogResult.OK để Form cha biết là người dùng đã chốt điểm
-            this.DialogResult = DialogResult.OK; 
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
