@@ -6,10 +6,9 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTrangChinh : Form
     {
-        // THÊM BIẾN NÀY: Để nhận mã tác giả từ FormLogin truyền sang
         public string currentUserName { get; set; }
         public string currentPrivilege { get; set; }
-        public string currentMaTacGia { get; set; } // <--- CHÌA KHÓA TRA LƯƠNG ĐÂY!
+        public string currentMaTacGia { get; set; }
 
         private Form activeForm = null;
 
@@ -22,7 +21,6 @@ namespace HETHONGTINHNHUANBUT
         {
             ApplyPermissions();
 
-            // Nếu là tác giả thì mặc định mở ngay trang Tra cứu, không xem Tổng quan hệ thống
             string role = currentPrivilege?.Trim().ToLower() ?? "";
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
@@ -36,23 +34,26 @@ namespace HETHONGTINHNHUANBUT
 
         private void ApplyPermissions()
         {
-            // 1. Tắt mặc định các form nhạy cảm
+            // Tắt mặc định
             btnDuyetChi.Visible = false;
             btnPhieuChi.Visible = false;
             btnTaiKhoan.Visible = false;
 
-            // Nút Tra cứu cá nhân (Giả định ông đã thêm nút này vào Designer rồi nhé)
             if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuu)
                 btnTraCuu.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
-            // 2. PHÂN QUYỀN CHO TÁC GIẢ (PHÓNG VIÊN, CTV, KHÁCH MỜI)
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
                 // Giấu hết menu quản trị
                 btnTongQuan.Visible = false;
-                btnSoBao.Visible = false;
+
+                // Giấu cụm Quản lý báo mới
+                btnQuanLyBao.Visible = false;
+                btnSubSoBao.Visible = false;
+                btnSubLoaiBao.Visible = false;
+
                 btnTacGia.Visible = false;
                 btnButDanh.Visible = false;
                 btnNhapNhuanBut.Visible = false;
@@ -60,11 +61,9 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
 
-                // CHỈ MỞ NÚT TRA CỨU CỦA HỌ
                 if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
                     btnTraCuuVisible.Visible = true;
             }
-            // 3. QUYỀN NỘI BỘ (GIỮ NGUYÊN CODE CŨ CỦA ÔNG)
             else if (role == "lãnh đạo")
             {
                 btnDuyetChi.Visible = true;
@@ -87,11 +86,9 @@ namespace HETHONGTINHNHUANBUT
             if (activeForm != null) activeForm.Close();
             activeForm = childForm;
 
-            // Truyền quyền chung cho các form con
             var propQuyen = childForm.GetType().GetProperty("QuyenHienTai");
             if (propQuyen != null) propQuyen.SetValue(childForm, currentPrivilege);
 
-            // ĐẶC BIỆT: Truyền mã tác giả nếu là Form Tra Cứu
             var propMaGoc = childForm.GetType().GetProperty("MaTacGiaCuaToi");
             if (propMaGoc != null) propMaGoc.SetValue(childForm, currentMaTacGia);
 
@@ -104,15 +101,41 @@ namespace HETHONGTINHNHUANBUT
             childForm.Show();
         }
 
-        // SỰ KIỆN MỞ FORM TRA CỨU CÁ NHÂN
-        private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
+        // ==========================================================
+        // TÍNH NĂNG MỚI: ĐÓNG/MỞ MENU QUẢN LÝ BÁO (ACCORDION EFFECT)
+        // ==========================================================
+        private void btnQuanLyBao_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmTraCuuNhuanBut());
+            // Kiểm tra trạng thái hiện tại của nút con
+            bool isExpanded = btnSubSoBao.Visible;
+
+            // Đảo ngược trạng thái (Đang mở thì Đóng, Đang đóng thì Mở)
+            btnSubSoBao.Visible = !isExpanded;
+            btnSubLoaiBao.Visible = !isExpanded;
+
+            // Đổi text mũi tên cho sinh động
+            if (!isExpanded)
+                btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▲";
+            else
+                btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▼";
         }
 
-        // --- CÁC SỰ KIỆN KHÁC GIỮ NGUYÊN ---
+        // Click vào nút con "Số báo" -> Mở FrmSoBao
+        private void btnSubSoBao_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmSoBao());
+        }
+
+        // Click vào nút con "Loại báo" -> Mở FrmLoaiBao (Nếu chưa tạo Form này thì tạm thời khoan bấm nhé)
+        private void btnSubLoaiBao_Click(object sender, EventArgs e)
+        {
+            // Nếu đồng chí Tí chưa thiết kế FrmLoaiBao thì gọi dòng này sẽ báo lỗi
+            // Hãy chắc chắn đã tạo form FrmLoaiBao như tôi hướng dẫn ở tin nhắn trước nhé!
+            OpenChildForm(new FrmLoaiBao());
+        }
+
+        private void btnTraCuuCaNhan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTraCuuNhuanBut());
         private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan());
-        private void btnSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao());
         private void btnTacGia_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia());
         private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh());
         private void btnTaiKhoan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTaiKhoan());
@@ -152,10 +175,6 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
-
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void lblTitle_Click(object sender, EventArgs e) { }
     }
 }

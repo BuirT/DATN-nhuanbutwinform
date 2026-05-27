@@ -1,7 +1,4 @@
-﻿using System.Windows.Forms;
-using System.Drawing;
-
-namespace HETHONGTINHNHUANBUT
+﻿namespace HETHONGTINHNHUANBUT
 {
     partial class FrmSoBao
     {
@@ -53,7 +50,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // pnlTop
             // 
-            this.pnlTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.pnlTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlTop.BackColor = System.Drawing.Color.Transparent;
             this.pnlTop.BorderRadius = 16;
@@ -225,7 +222,6 @@ namespace HETHONGTINHNHUANBUT
             this.cboLoaiBao.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cboLoaiBao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.cboLoaiBao.ItemHeight = 30;
-            this.cboLoaiBao.Items.AddRange(new object[] { "BIn", "BDT", "TC" });
             this.cboLoaiBao.Location = new System.Drawing.Point(845, 87);
             this.cboLoaiBao.Name = "cboLoaiBao";
             this.cboLoaiBao.Size = new System.Drawing.Size(150, 36);
@@ -336,8 +332,8 @@ namespace HETHONGTINHNHUANBUT
             // 
             // pnlBottom
             // 
-            this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlBottom.BackColor = System.Drawing.Color.Transparent;
             this.pnlBottom.BorderRadius = 16;
@@ -392,8 +388,8 @@ namespace HETHONGTINHNHUANBUT
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.dgvSoBao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvSoBao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.dgvSoBao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
@@ -464,7 +460,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoBao)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion

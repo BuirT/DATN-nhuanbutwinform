@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -23,9 +22,47 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmSoBao_Load(object sender, EventArgs e)
         {
+            // 1. Tải danh sách loại báo từ bảng Bao (không phụ thuộc bảng LoaiBao)
+            await LoadLoaiBaoAsync();
+
+            // 2. Chọn mục đầu tiên làm mặc định nếu có dữ liệu
             if (cboLoaiBao.Items.Count > 0) cboLoaiBao.SelectedIndex = 0;
+
+            // 3. Tải dữ liệu bảng Bao
             await LoadDataSQLAsync();
+
+            // 4. Phân quyền
             PhanQuyenThaoTac();
+        }
+
+        // Hàm tải danh sách Loại Báo từ bảng Bao (Dùng DISTINCT để lấy các giá trị duy nhất)
+        private async Task LoadLoaiBaoAsync()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    string query = "SELECT DISTINCT Loaibao FROM Bao WHERE Loaibao IS NOT NULL AND Loaibao != '' ORDER BY Loaibao";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        cboLoaiBao.Items.Clear();
+                        while (await reader.ReadAsync())
+                        {
+                            string loai = reader["Loaibao"].ToString();
+                            if (!string.IsNullOrWhiteSpace(loai))
+                            {
+                                cboLoaiBao.Items.Add(loai);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh sách loại báo: " + ex.Message);
+            }
         }
 
         private void PhanQuyenThaoTac()
@@ -108,7 +145,7 @@ namespace HETHONGTINHNHUANBUT
                         if (result != DBNull.Value && result != null)
                             return Convert.ToInt32(result);
                         else
-                            return null; // Cột không phải dạng chuỗi có độ dài giới hạn
+                            return null;
                     }
                 }
             }
@@ -162,6 +199,7 @@ namespace HETHONGTINHNHUANBUT
                     string soBo = await TrimToColumnLengthAsync(txtSoBo.Text.Trim(), "Sobo");
                     string loaiBao = cboLoaiBao.Text;
 
+                    // Chỉ lưu vào bảng Bao, không lưu vào bảng LoaiBao (tránh lỗi)
                     string sql = @"INSERT INTO Bao (Maso, Tenbao, Ngayra, Sobao, Sobo, Loaibao, DaDuyet) 
                                    VALUES (@ma, @ten, @ngay, @so, @bo, @loai, 'N')";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -176,13 +214,16 @@ namespace HETHONGTINHNHUANBUT
                     }
                 }
                 MessageBox.Show("Thêm kỳ báo thành công!");
+
+                // Load lại dữ liệu cho ComboBox và DataGridView để đồng bộ
+                await LoadLoaiBaoAsync();
                 await LoadDataSQLAsync();
                 btnLamMoi_Click(null, null);
             }
             catch (SqlException ex)
             {
                 if (ex.Message.Contains("String or binary data would be truncated"))
-                    MessageBox.Show("Lỗi: Dữ liệu nhập vào vẫn quá dài. Hãy kiểm tra lại cột 'Sobao' và 'Sobo' trong CSDL (có thể chúng đang là kiểu INT không cho phép chuỗi rỗng).\nChi tiết: " + ex.Message);
+                    MessageBox.Show("Lỗi: Dữ liệu nhập vào vẫn quá dài. Hãy kiểm tra lại cột 'Sobao' và 'Sobo' trong CSDL.");
                 else
                     MessageBox.Show("Lỗi SQL: " + ex.Message);
             }
@@ -224,6 +265,7 @@ namespace HETHONGTINHNHUANBUT
                     }
                 }
                 MessageBox.Show("Cập nhật thành công!");
+                await LoadLoaiBaoAsync(); // Cập nhật ComboBox
                 await LoadDataSQLAsync();
             }
             catch (SqlException ex)
@@ -333,7 +375,9 @@ namespace HETHONGTINHNHUANBUT
                 txtTenBao.Text = row.Cells["Tenbao"].Value?.ToString();
                 txtSoBao.Text = row.Cells["Sobao"].Value?.ToString();
                 txtSoBo.Text = row.Cells["Sobo"].Value?.ToString();
-                cboLoaiBao.Text = row.Cells["Loaibao"].Value?.ToString();
+
+                // Gán trực tiếp giá trị từ database để ComboBox hiển thị đúng
+                cboLoaiBao.Text = row.Cells["Loaibao"].Value?.ToString() ?? "";
 
                 if (DateTime.TryParse(row.Cells["Ngayra"].Value?.ToString(), out DateTime dt))
                     dtpNgayRa.Value = dt;
