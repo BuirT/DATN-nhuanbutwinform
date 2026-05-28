@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using System.Reflection; // ĐÃ THÊM: Để kích hoạt đệm kép phần cứng chống lag
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HETHONGTINHNHUANBUT.DAL;
@@ -14,8 +14,7 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmButDanh : Form
     {
-        // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
-        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public string QuyenHienTai { get; set; }
 
@@ -23,39 +22,31 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
 
-            // ĐÃ THÊM: Ép xung bộ đệm kép đồ họa cho bảng lưới để scroll chuột mượt mà 100%, không bị giật lag khi data lớn
+            // Ép xung bộ đệm kép đồ họa cho bảng lưới để scroll chuột mượt mà 100%
             typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(dgvButDanh, true, null);
         }
 
         private async void FrmButDanh_Load(object sender, EventArgs e)
         {
-            // Làm đẹp giao diện bảng tĩnh
             FormatGiaoDienBang();
-
-            // Load dữ liệu
             await LoadComboBoxTacGiaSQL();
             await LoadDataSQLAsync();
-
-            // Phân quyền tác vụ
             PhanQuyenThaoTac();
         }
 
         private void FormatGiaoDienBang()
         {
-            // Định dạng thanh tiêu đề cột nhã nhặn, chuẩn light-theme phẳng của Flowty
             dgvButDanh.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
             dgvButDanh.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
             dgvButDanh.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dgvButDanh.EnableHeadersVisualStyles = false;
 
-            // Định dạng màu nền tĩnh chẵn lẻ cho các dòng bảng dữ liệu
             dgvButDanh.DefaultCellStyle.BackColor = Color.White;
             dgvButDanh.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
             dgvButDanh.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvButDanh.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
 
-            // CẤU HÌNH MÀU CHỌN DÒNG PASTEL CAO CẤP: Phản hồi xanh dương nhạt dịu mắt, chữ tối đen Slate rõ nét
             Color selectedBg = Color.FromArgb(232, 240, 254);
             Color selectedFg = Color.FromArgb(15, 23, 42);
 
@@ -64,7 +55,6 @@ namespace HETHONGTINHNHUANBUT
             dgvButDanh.AlternatingRowsDefaultCellStyle.SelectionBackColor = selectedBg;
             dgvButDanh.AlternatingRowsDefaultCellStyle.SelectionForeColor = selectedFg;
 
-            // Đồng bộ trực tiếp vào bộ nhớ render Style nội bộ của Guna UI2 tránh lỗi ghi đè màu runtime
             dgvButDanh.ThemeStyle.RowsStyle.BackColor = Color.White;
             dgvButDanh.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
             dgvButDanh.ThemeStyle.RowsStyle.SelectionBackColor = selectedBg;
@@ -81,9 +71,6 @@ namespace HETHONGTINHNHUANBUT
             dgvButDanh.RowTemplate.Height = 38;
         }
 
-        // =======================================================
-        // 1. LOAD DANH SÁCH TÁC GIẢ VÀO COMBOBOX (SQL)
-        // =======================================================
         private async Task LoadComboBoxTacGiaSQL()
         {
             try
@@ -105,10 +92,8 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách tác giả SQL: " + ex.Message); }
         }
 
-        // =======================================================
-        // 2. LOAD DANH SÁCH BÚT DANH (SQL)
-        // =======================================================
-        private async Task LoadDataSQLAsync()
+        // ĐÃ THÊM: Tính năng load dữ liệu có kèm từ khóa tìm kiếm
+        private async Task LoadDataSQLAsync(string keyword = "")
         {
             try
             {
@@ -118,10 +103,21 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = @"SELECT b.Maso, b.Butdanh, b.MsTacgia, t.Hoten 
                                      FROM Butdanh b 
-                                     LEFT JOIN TacGia t ON b.MsTacgia = t.Maso 
-                                     ORDER BY b.Maso DESC";
+                                     LEFT JOIN TacGia t ON b.MsTacgia = t.Maso ";
+
+                    // Mở rộng câu query nếu có từ khóa tìm kiếm
+                    if (!string.IsNullOrWhiteSpace(keyword))
+                    {
+                        query += " WHERE b.Maso LIKE @kw OR b.Butdanh LIKE @kw OR t.Hoten LIKE @kw ";
+                    }
+
+                    query += " ORDER BY b.Maso DESC";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
+                        if (!string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
+
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) { dt.Load(reader); }
                     }
                 }
@@ -135,8 +131,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvButDanh.Columns["Hoten"].HeaderText = "TÊN TÁC GIẢ CHỦ QUẢN";
                 }
 
-                // CHỐT CHẶN BẤT TỬ: Quét qua toàn bộ đống cột vừa được tự động sinh ra khi gán dữ liệu động để khóa màu chọn pastel
-                // Triệt tiêu hoàn toàn 100% lỗi nhảy màu xanh Windows thô kệch khi click chuột
                 foreach (DataGridViewColumn col in dgvButDanh.Columns)
                 {
                     col.DefaultCellStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
@@ -148,9 +142,12 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu Bút danh SQL: " + ex.Message); }
         }
 
-        // =======================================================
-        // 3. THÊM MỚI BÚT DANH (SQL)
-        // =======================================================
+        // ĐÃ THÊM: Bắt sự kiện người dùng gõ vào ô tìm kiếm
+        private async void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            await LoadDataSQLAsync(txtTimKiem.Text);
+        }
+
         private async void btnThem_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtMaso.Text) || string.IsNullOrWhiteSpace(txtButDanh.Text))
@@ -191,9 +188,6 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi thêm: " + ex.Message); }
         }
 
-        // =======================================================
-        // 4. CẬP NHẬT BÚT DANH (SQL)
-        // =======================================================
         private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvButDanh.CurrentRow == null) { MessageBox.Show("Vui lòng chọn một bút danh dưới bảng lưới!"); return; }
@@ -219,9 +213,6 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi sửa: " + ex.Message); }
         }
 
-        // =======================================================
-        // 5. XÓA BÚT DANH (SQL)
-        // =======================================================
         private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvButDanh.CurrentRow == null) { MessageBox.Show("Vui lòng chọn bút danh cần xóa!"); return; }
@@ -250,6 +241,7 @@ namespace HETHONGTINHNHUANBUT
         {
             txtMaso.Clear();
             txtButDanh.Clear();
+            txtTimKiem.Clear(); // Xóa luôn khung tìm kiếm
             if (cboTacGia.Items.Count > 0) cboTacGia.SelectedIndex = 0;
             txtMaso.Focus();
         }

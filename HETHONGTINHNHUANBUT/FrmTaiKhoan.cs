@@ -21,6 +21,8 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             _taiKhoanColl = MongoProvider.Instance.GetCollection<User>("User");
+            typeof(Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?.SetValue(dgvTaiKhoan, true, null);
         }
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)

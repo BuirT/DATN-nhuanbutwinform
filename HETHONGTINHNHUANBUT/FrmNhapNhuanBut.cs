@@ -4,12 +4,13 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmNhapNhuanBut : Form
     {
-        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         private string _selectedMaso = null;
         private string _searchKeyword = "";
         private double _diemAI = 0;
@@ -22,18 +23,29 @@ namespace HETHONGTINHNHUANBUT
         public FrmNhapNhuanBut()
         {
             InitializeComponent();
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(dgvNhuanBut, true, null);
         }
 
         private async void FrmNhapNhuanBut_Load(object sender, EventArgs e)
         {
-            await AutoFixDatabaseColumns();
+            // 1. Dừng vẽ để setup màu sắc lưới cho nhanh
+            this.SuspendLayout();
             FormatDataGridView();
+            PhanQuyenThaoTac();
+            this.ResumeLayout();
+
+            // 2. Cho giao diện "thở" một nhịp rồi mới chui vào Database hút dữ liệu
+            await Task.Delay(50);
+
+            await AutoFixDatabaseColumns();
             await LoadComboboxDataSQLAsync();
+
             cboSoBao.SelectedIndexChanged += cboSoBao_SelectedIndexChanged;
             txtTimKiem.TextChanged += txtTimKiem_TextChanged;
+
             if (cboSoBao.SelectedValue != null)
                 await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), "");
-            PhanQuyenThaoTac();
         }
 
         private async Task AutoFixDatabaseColumns()

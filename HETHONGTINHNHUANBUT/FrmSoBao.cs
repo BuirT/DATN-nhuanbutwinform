@@ -9,7 +9,7 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmSoBao : Form
     {
-        private readonly string sqlConnectionString = @"Server=LAPTOP-5O9OTMIJ\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         private string _tenNguoiDung;
         private string _selectedMaso = "";
         public string QuyenHienTai { get; set; }

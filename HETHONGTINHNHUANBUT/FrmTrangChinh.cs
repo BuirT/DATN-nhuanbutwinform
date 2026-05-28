@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -11,6 +12,7 @@ namespace HETHONGTINHNHUANBUT
         public string currentMaTacGia { get; set; }
 
         private Form activeForm = null;
+        private Guna2Button currentActiveButton = null;
 
         public FrmTrangChinh()
         {
@@ -25,35 +27,56 @@ namespace HETHONGTINHNHUANBUT
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
                 btnTraCuuCaNhan_Click(null, null);
+                var btnTraCuu = this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() as Guna2Button;
+                if (btnTraCuu != null) SetActiveButton(btnTraCuu);
             }
             else
             {
                 btnTongQuan_Click(null, null);
+                SetActiveButton(btnTongQuan);
+            }
+        }
+
+        // Màu active: xanh nhạt
+        private void SetActiveButton(Guna2Button activeButton)
+        {
+            if (currentActiveButton == activeButton) return;
+
+            // Reset tất cả nút chính (Dock = Top)
+            foreach (Control ctrl in pnlMenu.Controls)
+            {
+                if (ctrl is Guna2Button btn && btn.Dock == DockStyle.Top)
+                {
+                    btn.FillColor = System.Drawing.Color.Transparent;
+                    btn.ForeColor = System.Drawing.Color.FromArgb(71, 85, 105);
+                }
+            }
+
+            if (activeButton != null)
+            {
+                activeButton.FillColor = System.Drawing.Color.FromArgb(232, 240, 254); // xanh nhạt
+                activeButton.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
+                currentActiveButton = activeButton;
             }
         }
 
         private void ApplyPermissions()
         {
-            // Tắt mặc định
             btnDuyetChi.Visible = false;
             btnPhieuChi.Visible = false;
             btnTaiKhoan.Visible = false;
 
-            if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuu)
-                btnTraCuu.Visible = false;
+            var btnTraCuu = this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault();
+            if (btnTraCuu != null) btnTraCuu.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-                // Giấu hết menu quản trị
                 btnTongQuan.Visible = false;
-
-                // Giấu cụm Quản lý báo mới
                 btnQuanLyBao.Visible = false;
                 btnSubSoBao.Visible = false;
                 btnSubLoaiBao.Visible = false;
-
                 btnTacGia.Visible = false;
                 btnButDanh.Visible = false;
                 btnNhapNhuanBut.Visible = false;
@@ -61,8 +84,7 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
 
-                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
-                    btnTraCuuVisible.Visible = true;
+                if (btnTraCuu != null) btnTraCuu.Visible = true;
             }
             else if (role == "lãnh đạo")
             {
@@ -81,7 +103,7 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void OpenChildForm(Form childForm)
+        private void OpenChildForm(Form childForm, Guna2Button senderButton = null)
         {
             if (activeForm != null) activeForm.Close();
             activeForm = childForm;
@@ -95,75 +117,96 @@ namespace HETHONGTINHNHUANBUT
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
+
+            pnlMain.SuspendLayout();
+            pnlMain.Controls.Clear();
             pnlMain.Controls.Add(childForm);
             pnlMain.Tag = childForm;
             childForm.BringToFront();
             childForm.Show();
+            pnlMain.ResumeLayout();
+
+            if (senderButton != null) SetActiveButton(senderButton);
         }
 
-        // ==========================================================
-        // TÍNH NĂNG MỚI: ĐÓNG/MỞ MENU QUẢN LÝ BÁO (ACCORDION EFFECT)
-        // ==========================================================
         private void btnQuanLyBao_Click(object sender, EventArgs e)
         {
-            // Kiểm tra trạng thái hiện tại của nút con
             bool isExpanded = btnSubSoBao.Visible;
-
-            // Đảo ngược trạng thái (Đang mở thì Đóng, Đang đóng thì Mở)
             btnSubSoBao.Visible = !isExpanded;
             btnSubLoaiBao.Visible = !isExpanded;
-
-            // Đổi text mũi tên cho sinh động
-            if (!isExpanded)
-                btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▲";
-            else
-                btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▼";
+            btnQuanLyBao.Text = !isExpanded ? "QUẢN LÝ BÁO  ▲" : "QUẢN LÝ BÁO  ▼";
         }
 
-        // Click vào nút con "Số báo" -> Mở FrmSoBao
         private void btnSubSoBao_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmSoBao());
+            OpenChildForm(new FrmSoBao(), sender as Guna2Button);
         }
 
-        // Click vào nút con "Loại báo" -> Mở FrmLoaiBao (Nếu chưa tạo Form này thì tạm thời khoan bấm nhé)
         private void btnSubLoaiBao_Click(object sender, EventArgs e)
         {
-            // Nếu đồng chí Tí chưa thiết kế FrmLoaiBao thì gọi dòng này sẽ báo lỗi
-            // Hãy chắc chắn đã tạo form FrmLoaiBao như tôi hướng dẫn ở tin nhắn trước nhé!
-            OpenChildForm(new FrmLoaiBao());
+            OpenChildForm(new FrmLoaiBao(), sender as Guna2Button);
         }
 
-        private void btnTraCuuCaNhan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTraCuuNhuanBut());
-        private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan());
-        private void btnTacGia_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia());
-        private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh());
-        private void btnTaiKhoan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTaiKhoan());
+        private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTraCuuNhuanBut(), sender as Guna2Button);
+        }
+
+        private void btnTongQuan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
+        }
+
+        private void btnTacGia_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTacGia(), sender as Guna2Button);
+        }
+
+        private void btnButDanh_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmButDanh(), sender as Guna2Button);
+        }
+
+        private void btnTaiKhoan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button);
+        }
 
         private void btnNhapNhuanBut_Click(object sender, EventArgs e)
         {
             FrmNhapNhuanBut frmNhap = new FrmNhapNhuanBut();
             frmNhap.NguoiDangNhap = this.currentUserName;
-            OpenChildForm(frmNhap);
+            OpenChildForm(frmNhap, sender as Guna2Button);
         }
 
         private void btnPhieuChi_Click(object sender, EventArgs e)
         {
             FrmPhieuChi frmChi = new FrmPhieuChi();
             frmChi.NguoiLapPhieu = this.currentUserName;
-            OpenChildForm(frmChi);
+            OpenChildForm(frmChi, sender as Guna2Button);
         }
 
         private void btnDuyetChi_Click(object sender, EventArgs e)
         {
             FrmDuyetPhieuChi frmDuyet = new FrmDuyetPhieuChi();
             frmDuyet.NguoiDuyet = string.IsNullOrEmpty(this.currentUserName) ? "Ban Giám Đốc" : this.currentUserName;
-            OpenChildForm(frmDuyet);
+            OpenChildForm(frmDuyet, sender as Guna2Button);
         }
 
-        private void btnBaoCao_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop());
-        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoChiTiet());
-        private void btnBaoCaoCongNo_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo());
+        private void btnBaoCao_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
+        }
+
+        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoChiTiet(), sender as Guna2Button);
+        }
+
+        private void btnBaoCaoCongNo_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
+        }
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {

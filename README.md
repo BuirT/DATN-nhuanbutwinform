@@ -1,51 +1,60 @@
-# Royalty Management System (Hệ Thống Quản Lý Nhuận Bút)
+# 📰 HỆ THỐNG QUẢN LÝ VÀ TÍNH NHUẬN BÚT TÒA SOẠN (NEWSPAY)
 
-![.NET Framework](https://img.shields.io/badge/.NET-Framework_4.7.2+-512BD4?logo=.net)
-![C#](https://img.shields.io/badge/C%23-Language-239120?logo=c-sharp)
-![MongoDB](https://img.shields.io/badge/MongoDB-NoSQL-47A248?logo=mongodb)
-![GunaUI](https://img.shields.io/badge/UI-Guna.UI2-orange)
+![C#](https://img.shields.io/badge/C%23-%23239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Gemini AI](https://img.shields.io/badge/Gemini_AI-8E75B2?style=for-the-badge&logo=google-bard&logoColor=white)
 
-## 📝 Executive Summary
-**Royalty Management System** là một ứng dụng Desktop (Windows Forms) được thiết kế chuyên biệt để tự động hóa và tối ưu hóa vòng đời quản lý, chi trả thù lao cho tác giả, phóng viên tại các tòa soạn báo và nhà xuất bản. 
+**NewsPay** là giải pháp phần mềm quản trị toàn diện dành cho các tòa soạn báo, được phát triển trên nền tảng Windows Forms. Hệ thống giúp số hóa và tự động hóa quy trình quản lý tác giả, kỳ xuất bản, và đặc biệt là quy trình thẩm định, chấm điểm, tính toán chi trả nhuận bút với sự hỗ trợ của Trí tuệ Nhân tạo (AI).
 
-Hệ thống giải quyết bài toán phân mảnh dữ liệu khi quản lý bằng công cụ thủ công (Excel), cung cấp một luồng nghiệp vụ khép kín từ khâu lên danh sách bài đăng, chấm điểm nhuận bút, tính toán thuế TNCN, cho đến việc xuất phiếu chi và theo dõi công nợ tác giả.
+---
 
-## 🏗 System Architecture & Tech Stack
-Hệ thống được xây dựng dựa trên kiến trúc phân lớp (N-Tier Architecture), đảm bảo tính module hóa cao và dễ dàng mở rộng:
+## ✨ TÍNH NĂNG NỔI BẬT
 
-* **Presentation Layer (UI):** C# Windows Forms kết hợp với thư viện đồ họa **Guna.UI2** để mang lại trải nghiệm người dùng (UX) hiện đại, Flat Design và Fully Responsive.
-* **Data Access Layer (DAL):** Giao tiếp với cơ sở dữ liệu thông qua thư viện `MongoDB.Driver`. Mọi thao tác I/O đều được triển khai theo cơ chế bất đồng bộ (Asynchronous).
-* **Database:** **MongoDB** (NoSQL). Lựa chọn mô hình Document-based giúp lưu trữ linh hoạt các siêu dữ liệu của bài báo, thông tin tác giả và lịch sử giao dịch mà không bị gò bó bởi schema cứng nhắc của RDBMS truyền thống.
+### 🤖 1. Tích Hợp Trợ Lý Trí Tuệ Nhân Tạo (AI)
 
-## 🚀 Core Business Modules
+- **Kiểm định bài viết tự động:** Tích hợp API của mô hình **Google Gemini 2.5 Flash**.
+- **Chấm điểm thông minh:** AI tự động đọc hiểu bài viết, phân tích ngữ nghĩa để đưa ra _Tỷ lệ đạo văn_, _Nhận xét chuyên môn_, và _Chấm điểm chất lượng (Thang 10)_.
+- **Tự động hóa KPI:** Điểm số từ AI được tự động liên kết với hệ thống để cộng thưởng/phạt tiền nhuận bút.
 
-### 1. Publication Management (Quản lý Kỳ báo/Số báo)
-* Quản lý danh sách các ấn phẩm, số báo theo từng đợt xuất bản.
-* Theo dõi trạng thái duyệt của từng số báo để kiểm soát luồng khóa/mở dữ liệu nhuận bút.
+### ⚡ 2. Tối Ưu Hiệu Năng & Trải Nghiệm Người Dùng (UI/UX)
 
-### 2. Author & Pen Name Management (Quản lý Tác giả)
-* Quản lý thông tin định danh tác giả (Họ tên, CCCD, MST, STK Ngân hàng).
-* Hỗ trợ cơ chế định tuyến linh hoạt: Một tác giả thực thể (Physical Author) có thể sở hữu nhiều Bút danh (Pen Names) khác nhau trên các bài viết.
+- **Giao diện Modern UI:** Sử dụng thư viện **Guna UI2** mang lại thiết kế phẳng, bo góc mềm mại, hiệu ứng đổ bóng (Shadow) và chuyển cảnh (Animation) mượt mà như ứng dụng Web.
+- **Triệt tiêu giật lag (Anti-Lag):** Áp dụng kỹ thuật ép xung **Double Buffering** (Bộ đệm kép) thông qua Reflection cho toàn bộ các DataGridView, giúp cuộn hàng ngàn dòng dữ liệu không bị khựng hay nháy màn hình.
+- **Tìm kiếm Real-time:** Bộ lọc dữ liệu tức thời (Live Search) hỗ trợ tìm kiếm linh hoạt theo Mã số, Tên hiển thị, Tên tác giả...
 
-### 3. Royalty Processing (Nghiệp vụ Chấm Nhuận bút)
-* Tự động tải danh sách bài viết theo Kỳ xuất bản (Issue-based filtering).
-* Giao diện nhập liệu tối ưu (Fast-entry UI): Click-to-bind dữ liệu, tính toán Real-time tổng quỹ nhuận bút đã duyệt của một số báo nhằm chống vượt ngân sách.
-* Hỗ trợ cơ chế Insert/Update thông minh trên cùng một ngữ cảnh UI.
+### 🗄️ 3. Kiến Trúc Dữ Liệu Nâng Cao
 
-### 4. Payment & Voucher Generation (Lập Phiếu chi)
-* Liệt kê các khoản nhuận bút chưa thanh toán (Pending Royalties).
-* Batch Processing: Cho phép chọn nhiều bài viết để gộp vào một phiếu chi duy nhất.
-* Tự động áp dụng công thức tính Thuế thu nhập cá nhân (TNCN) và xuất ra số tiền Thực lĩnh cuối cùng.
-* Hỗ trợ đa dạng phương thức thanh toán (Cash/Bank Transfer).
+- **Chuẩn hóa Database:** Phân tách dữ liệu chuẩn hóa cấp cao (VD: Tách riêng bảng `Loaibao` làm từ điển danh mục và `Bao` làm dữ liệu giao dịch).
+- **Auto-Fix Schema:** Tích hợp cơ chế tự động kiểm tra và khởi tạo các cột còn thiếu trong SQL Server ngay khi khởi động Form, triệt tiêu hoàn toàn lỗi _Invalid column name_.
+- **Kiến trúc 3 Lớp (3-Tier) & Đa CSDL:** Xây dựng sẵn thư mục `Models` và `DAL` áp dụng Data Annotations (BsonElement) sẵn sàng cho cơ chế **Ghi kép (Dual-Write)** đồng bộ dữ liệu song song giữa **SQL Server** (Bảo mật nghiệp vụ kế toán) và **MongoDB** (Phục vụ truy xuất API cho Nền tảng Web sau này).
 
-### 5. Reporting & Analytics (Thống kê - Báo cáo)
-* **Dashboard:** Cung cấp cái nhìn toàn cảnh về tình hình tài chính, top tác giả, tiến độ thanh toán qua biểu đồ và thẻ số liệu.
-* Báo cáo tổng hợp & Chi tiết theo từng tác giả, từng kỳ báo.
-* Theo dõi công nợ (Liabilities).
+---
 
-## 💡 Technical Highlights
-* **Asynchronous Processing:** Sử dụng triệt để `async/await` trong các thao tác truy vấn MongoDB (như `ToListAsync()`, `InsertOneAsync()`, `UpdateOneAsync()`), triệt tiêu hoàn toàn tình trạng UI blocking (treo giao diện) khi xử lý tập dữ liệu lớn.
-* **Responsive UI/UX:** Áp dụng thuật toán Anchor & Docking linh hoạt. Giao diện có khả năng tự động Scale (Maximized) thích ứng với mọi độ phân giải màn hình mà không phá vỡ Layout.
-* **State Management:** Quản lý trạng thái UI thông minh qua các sự kiện `CheckedState` của RadioButton mode, giúp điều hướng trực quan.
-* **Anonymous Types & Data Binding:** Tối ưu hóa việc hiển thị dữ liệu phức hợp (như gộp Số báo + Tên báo + Ngày ra) trực tiếp qua LINQ Select, giảm thiểu việc phải tạo thêm các DTO Models dư thừa.
-* **Audit Logging:** Tích hợp cơ chế ghi vết (Log) mọi thao tác thay đổi dữ liệu (Insert/Update/Delete) gắn liền với Session người dùng hiện tại, đảm bảo tính Non-repudiation (Không thể chối bỏ) trong hệ thống tài chính.
+## 🛠️ CÔNG NGHỆ SỬ DỤNG
+
+- **Ngôn ngữ lập trình:** C#
+- **Framework:** .NET Framework (Windows Forms)
+- **Giao diện:** Guna.UI2.WinForms
+- **Cơ sở dữ liệu:** Microsoft SQL Server (Chính) & MongoDB (Sẵn sàng mở rộng)
+- **Thư viện bên thứ 3:** \* `Newtonsoft.Json` (Xử lý dữ liệu API)
+  - `MongoDB.Driver` (Kết nối CSDL NoSQL)
+
+---
+
+## 🚀 HƯỚNG DẪN CÀI ĐẶT & CẤU HÌNH
+
+### 1. Chuẩn bị Cơ sở dữ liệu
+
+- Hệ thống yêu cầu có SQL Server đang chạy máy chủ cục bộ (Localhost).
+- Đảm bảo Database mang tên `TN` đã được Restore trên SQL Server Management Studio (SSMS).
+- Các cột cấu trúc mới (KPI, AI) sẽ được phần mềm tự động tạo khi chạy lần đầu tiên.
+
+### 2. Cấu hình Chuỗi kết nối (Connection String)
+
+Để ứng dụng chạy đúng trên máy tính của bạn, cần sửa lại chuỗi kết nối trong các file mã nguồn (VD: `FrmNhapNhuanBut.cs`, `FrmButDanh.cs`...):
+
+```csharp
+private readonly string sqlConnectionString = @"Server=TÊN_MÁY_CỦA_BẠN\SQLEXPRESS;Database=TN;Trusted_Connection=True;";
+```
