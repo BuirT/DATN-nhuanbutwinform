@@ -71,6 +71,7 @@
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
             this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.Size = new System.Drawing.Size(1160, 190);
             this.pnlTop.Size = new System.Drawing.Size(1145, 190);
             this.pnlTop.TabIndex = 0;
 
@@ -84,6 +85,7 @@
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(200, 28);
             this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "QUẢN LÝ TÀI KHOẢN";
             this.lblTitle.Text = "HỒ SƠ TÀI KHOẢN";
 
             // 
@@ -174,6 +176,7 @@
             this.lblQ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.lblQ.Location = new System.Drawing.Point(665, 62);
             this.lblQ.Name = "lblQ";
+            this.lblQ.Size = new System.Drawing.Size(103, 17);
             this.lblQ.Size = new System.Drawing.Size(102, 17);
             this.lblQ.TabIndex = 7;
             this.lblQ.Text = "Vai trò (Quyền)";
@@ -208,6 +211,7 @@
             this.chkHoatDong.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.chkHoatDong.Location = new System.Drawing.Point(865, 88);
             this.chkHoatDong.Name = "chkHoatDong";
+            this.chkHoatDong.Size = new System.Drawing.Size(136, 23);
             this.chkHoatDong.Size = new System.Drawing.Size(137, 23);
             this.chkHoatDong.TabIndex = 9;
             this.chkHoatDong.Text = "Đang hoạt động";
@@ -270,6 +274,7 @@
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnLamMoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.btnLamMoi.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.btnLamMoi.Location = new System.Drawing.Point(480, 135);
             this.btnLamMoi.Location = new System.Drawing.Point(470, 135);
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.Size = new System.Drawing.Size(130, 40);
@@ -294,6 +299,7 @@
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
             this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.Size = new System.Drawing.Size(1160, 500);
             this.pnlBottom.Size = new System.Drawing.Size(1145, 480);
             this.pnlBottom.TabIndex = 1;
 
@@ -319,6 +325,7 @@
             this.txtTimKiem.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtTimKiem.ForeColor = System.Drawing.Color.Black;
+            this.txtTimKiem.Location = new System.Drawing.Point(840, 14);
             this.txtTimKiem.Location = new System.Drawing.Point(820, 14);
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.PlaceholderText = "🔍 Tìm kiếm tài khoản...";
@@ -375,6 +382,7 @@
             this.dgvTaiKhoan.ReadOnly = true;
             this.dgvTaiKhoan.RowHeadersVisible = false;
             this.dgvTaiKhoan.RowTemplate.Height = 38;
+            this.dgvTaiKhoan.Size = new System.Drawing.Size(1110, 415);
             this.dgvTaiKhoan.Size = new System.Drawing.Size(1095, 395);
             this.dgvTaiKhoan.TabIndex = 4;
 
@@ -402,6 +410,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
+            this.ClientSize = new System.Drawing.Size(1200, 750);
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
             this.ClientSize = new System.Drawing.Size(1185, 725);
             this.Controls.Add(this.pnlBottom);
