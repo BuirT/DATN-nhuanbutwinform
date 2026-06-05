@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Reflection;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
 using MongoDB.Driver;
@@ -17,15 +19,17 @@ namespace HETHONGTINHNHUANBUT
         private string _selectedId = "";
 
         public string NguoiDuyet { get; set; } = "Ban Giám Đốc";
-
-        // =======================================================
-        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (CHỐT CHẶN CUỐI CÙNG)
         public string QuyenHienTai { get; set; }
-        // =======================================================
 
         public FrmDuyetPhieuChi()
         {
             InitializeComponent();
+
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(dgvPhieuChi, true, null);
+            dgvPhieuChi.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+            dgvPhieuChi.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+
             _phieuChiColl = MongoProvider.Instance.GetCollection<PhieuChi>("PhieuChi");
             _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
         }
@@ -34,34 +38,25 @@ namespace HETHONGTINHNHUANBUT
         {
             cboTrangThai.SelectedIndex = 0;
             await LoadDataAsync();
-
-            // GỌI HÀM KHÓA NÚT NGAY TẠI ĐÂY!
             PhanQuyenThaoTac();
         }
 
-        // =======================================================
-        // HÀM PHÂN QUYỀN: LÃNH ĐẠO LÀM, KẾ TOÁN CHỈ ĐƯỢC NHÌN!
-        // =======================================================
         private void PhanQuyenThaoTac()
         {
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
 
-            // Kế toán nhảy vào đây chỉ để xem tình trạng phiếu, CẤM ĐỤNG VÀO NÚT!
             if (role == "kế toán" || role == "thư ký")
             {
                 btnDuyet.Enabled = false;
                 btnTuChoi.Enabled = false;
                 btnXoa.Enabled = false;
-
-                // Khóa luôn cái ô nhập lý do từ chối, không cho gõ bậy
                 txtLyDoTuChoi.ReadOnly = true;
             }
-            else // Lãnh đạo, Admin, Quản trị viên thì full quyền sinh sát
+            else
             {
                 btnDuyet.Enabled = true;
                 btnTuChoi.Enabled = true;
                 btnXoa.Enabled = true;
-
                 txtLyDoTuChoi.ReadOnly = false;
             }
         }
@@ -98,7 +93,17 @@ namespace HETHONGTINHNHUANBUT
                     ThucLinh = p.ThucLinh.ToString("N0")
                 }).OrderByDescending(x => x.NgayLap).ToList();
 
-                if (dgvPhieuChi.Columns["Id"] != null) dgvPhieuChi.Columns["Id"].Visible = false;
+                if (dgvPhieuChi.Columns.Count > 0)
+                {
+                    if (dgvPhieuChi.Columns["Id"] != null) dgvPhieuChi.Columns["Id"].Visible = false;
+                    if (dgvPhieuChi.Columns["SoPhieu"] != null) dgvPhieuChi.Columns["SoPhieu"].HeaderText = "Số phiếu";
+                    if (dgvPhieuChi.Columns["NgayLap"] != null) dgvPhieuChi.Columns["NgayLap"].HeaderText = "Ngày lập";
+                    if (dgvPhieuChi.Columns["TenTacGia"] != null) dgvPhieuChi.Columns["TenTacGia"].HeaderText = "Tên tác giả";
+                    if (dgvPhieuChi.Columns["NguoiNhan"] != null) dgvPhieuChi.Columns["NguoiNhan"].HeaderText = "Người nhận";
+                    if (dgvPhieuChi.Columns["LyDo"] != null) dgvPhieuChi.Columns["LyDo"].HeaderText = "Lý do";
+                    if (dgvPhieuChi.Columns["TongTien"] != null) dgvPhieuChi.Columns["TongTien"].HeaderText = "Tổng tiền";
+                    if (dgvPhieuChi.Columns["ThucLinh"] != null) dgvPhieuChi.Columns["ThucLinh"].HeaderText = "Thực lĩnh";
+                }
 
                 ClearDetails();
             }
@@ -111,8 +116,6 @@ namespace HETHONGTINHNHUANBUT
 
             bool isChoDuyet = cboTrangThai.SelectedIndex == 0;
 
-            // LƯU Ý: Không được đụng vào logic Enabled của PhanQuyenThaoTac
-            // Hàm này chỉ quản lý trạng thái Ẩn/Hiện (Visible) theo ComboBox
             btnDuyet.Visible = isChoDuyet;
             btnTuChoi.Visible = isChoDuyet;
 

@@ -32,8 +32,7 @@ namespace HETHONGTINHNHUANBUT
             txtUsername.Focus();
         }
 
-        private void btnexit_Click(object sender, EventArgs e) => Application.Exit();
-
+        private void btnexit_Click(object sender, EventArgs e) => this.Close();
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
