@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Reflection;
 using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
 
@@ -13,7 +15,6 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmPhieuChi : Form
     {
-        // --- CHUỖI KẾT NỐI SQL SERVER CHUẨN MÁY ĐỒNG CHÍ ---
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public string QuyenHienTai { get; set; }
@@ -23,7 +24,45 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
 
-            // Chặn nhập ký tự không phải số
+            dgvChuaThanhToan.AutoGenerateColumns = false;
+            dgvChuaThanhToan.Columns.Clear();
+
+            DataGridViewCheckBoxColumn chkCol = new DataGridViewCheckBoxColumn();
+            chkCol.Name = "colCheck";
+            chkCol.HeaderText = "Chọn";
+            chkCol.Width = 60;
+            dgvChuaThanhToan.Columns.Add(chkCol);
+
+            DataGridViewTextBoxColumn idCol = new DataGridViewTextBoxColumn();
+            idCol.Name = "Id";
+            idCol.Visible = false;
+            dgvChuaThanhToan.Columns.Add(idCol);// C# - change this block in InitializeComponent
+            this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.cboTacGia.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboTacGia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTacGia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTacGia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
+
+            DataGridViewTextBoxColumn tenBaiCol = new DataGridViewTextBoxColumn();
+            tenBaiCol.Name = "TenBai";
+            tenBaiCol.HeaderText = "Tên bài viết";
+            tenBaiCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvChuaThanhToan.Columns.Add(tenBaiCol);
+
+            DataGridViewTextBoxColumn tienCol = new DataGridViewTextBoxColumn();
+            tienCol.Name = "TienNhuanBut";
+            tienCol.HeaderText = "Tiền nhuận bút";
+            tienCol.DefaultCellStyle.Format = "N0";
+            tienCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            tienCol.Width = 140;
+            dgvChuaThanhToan.Columns.Add(tienCol);
+
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(dgvChuaThanhToan, true, null);
+
+            dgvChuaThanhToan.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+            dgvChuaThanhToan.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+
             txtDienThoai.KeyPress += OnlyNumber_KeyPress;
             txtCMND.KeyPress += OnlyNumber_KeyPress;
             txtMST.KeyPress += OnlyNumber_KeyPress;
@@ -87,16 +126,40 @@ namespace HETHONGTINHNHUANBUT
                     da.Fill(dt);
 
                     List<string> authors = dt.AsEnumerable().Select(r => r.Field<string>("Butdanh")).ToList();
-                    cboTacGia.DataSource = authors;
+
+                    cboTacGia.Items.Clear();
+                    cboTacGia.Items.AddRange(authors.ToArray());
+                    cboTacGia.Tag = authors;
                 }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách tác giả: " + ex.Message); }
         }
 
+        private void cboTacGia_TextUpdate(object sender, EventArgs e)
+        {
+            string text = cboTacGia.Text;
+            var fullList = cboTacGia.Tag as List<string>;
+            if (fullList == null) return;
+
+            cboTacGia.Items.Clear();
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                cboTacGia.Items.AddRange(fullList.ToArray());
+                cboTacGia.DroppedDown = false;
+                return;
+            }
+
+            var filtered = fullList.Where(item => item.ToLower().Contains(text.ToLower())).ToList();
+            cboTacGia.Items.AddRange(filtered.ToArray());
+            cboTacGia.DroppedDown = true;
+            cboTacGia.SelectionStart = text.Length;
+            cboTacGia.SelectionLength = 0;
+        }
+
         private async void cboTacGia_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboTacGia.SelectedItem == null) return;
-            string penName = cboTacGia.SelectedItem.ToString();
+            string penName = cboTacGia.Text.Trim();
+            if (string.IsNullOrEmpty(penName)) return;
 
             try
             {
@@ -132,19 +195,21 @@ namespace HETHONGTINHNHUANBUT
                                            FROM Nhuanbut 
                                            WHERE Butdanh = @butdanh 
                                            AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)";
-
                     SqlDataAdapter da = new SqlDataAdapter(sqlArticles, conn);
                     da.SelectCommand.Parameters.AddWithValue("@butdanh", penName);
-                    DataTable dtArticles = new DataTable();
-                    da.Fill(dtArticles);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-                    dgvChuaThanhToan.DataSource = dtArticles.AsEnumerable().Select(n => new {
-                        Id = n["Maso"],
-                        TenBai = n["Tenbai"],
-                        TienNhuanBut = n["TienNhuanbut"]
-                    }).ToList();
+                    dgvChuaThanhToan.Rows.Clear();
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        int rowIndex = dgvChuaThanhToan.Rows.Add();
+                        dgvChuaThanhToan.Rows[rowIndex].Cells["Id"].Value = row["Maso"];
+                        dgvChuaThanhToan.Rows[rowIndex].Cells["TenBai"].Value = row["Tenbai"];
+                        dgvChuaThanhToan.Rows[rowIndex].Cells["TienNhuanBut"].Value = row["TienNhuanbut"];
+                        dgvChuaThanhToan.Rows[rowIndex].Cells["colCheck"].Value = false;
+                    }
 
-                    if (dgvChuaThanhToan.Columns["Id"] != null) dgvChuaThanhToan.Columns["Id"].Visible = false;
                     TinhToanTien();
                 }
             }
@@ -161,8 +226,11 @@ namespace HETHONGTINHNHUANBUT
             decimal tong = 0;
             foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
             {
-                if (Convert.ToBoolean(row.Cells["colCheck"].Value))
-                    tong += Convert.ToDecimal(row.Cells["TienNhuanBut"].Value);
+                if (row.Cells["colCheck"] != null && Convert.ToBoolean(row.Cells["colCheck"].Value))
+                {
+                    if (row.Cells["TienNhuanBut"].Value != null)
+                        tong += Convert.ToDecimal(row.Cells["TienNhuanBut"].Value);
+                }
             }
 
             txtTongTien.Text = tong.ToString("N0");
@@ -178,9 +246,12 @@ namespace HETHONGTINHNHUANBUT
         {
             if (!IsValidData()) return;
 
-            var selectedItems = dgvChuaThanhToan.Rows.Cast<DataGridViewRow>()
-                                .Where(r => Convert.ToBoolean(r.Cells["colCheck"].Value))
-                                .ToList();
+            var selectedItems = new List<DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvChuaThanhToan.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colCheck"].Value))
+                    selectedItems.Add(row);
+            }
 
             if (selectedItems.Count == 0)
             {
@@ -223,7 +294,7 @@ namespace HETHONGTINHNHUANBUT
                         msTG = cmdGetMs.ExecuteScalar()?.ToString() ?? "";
                     }
 
-                    foreach (var row in selectedItems)
+                    foreach (DataGridViewRow row in selectedItems)
                     {
                         string sqlCT = @"INSERT INTO NhuanbutCT (MsTacgia, MsNhuanbut, Sotien, SoPC, SauThanhToan) 
                                          VALUES (@ms, @nb, @tien, @pc, 'Y')";
@@ -239,7 +310,7 @@ namespace HETHONGTINHNHUANBUT
 
                     trans.Commit();
                     MessageBox.Show("Lập phiếu chi thành công!");
-                    await btnHuy_Click_Logic(); // Gọi hàm xử lý làm mới
+                    await btnHuy_Click_Logic();
                 }
                 catch (Exception ex)
                 {
@@ -249,13 +320,11 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // Đã sửa thành async để giải quyết cảnh báo "not awaited"
         private async void btnHuy_Click(object sender, EventArgs e)
         {
             await btnHuy_Click_Logic();
         }
 
-        // Tách logic hủy ra để dùng chung và đảm bảo có await
         private async Task btnHuy_Click_Logic()
         {
             txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
@@ -267,17 +336,18 @@ namespace HETHONGTINHNHUANBUT
 
         private void dgvChuaThanhToan_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 0) TinhToanTien();
+            if (e.ColumnIndex == dgvChuaThanhToan.Columns["colCheck"].Index)
+                TinhToanTien();
         }
 
         private void dgvChuaThanhToan_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            if (dgvChuaThanhToan.IsCurrentCellDirty) dgvChuaThanhToan.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            if (dgvChuaThanhToan.IsCurrentCellDirty)
+                dgvChuaThanhToan.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
         private void txtThueSuat_TextChanged(object sender, EventArgs e) => TinhToanTien();
 
-        // --- ĐÃ BỔ SUNG 2 HÀM NÀY ĐỂ TRỊ DỨT ĐIỂM LỖI COMPILER TRONG DESIGNER ---
         private void txtCMND_TextChanged(object sender, EventArgs e) { }
         private void txtDienThoai_TextChanged(object sender, EventArgs e) { }
     }
