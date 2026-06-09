@@ -1,152 +1,87 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Windows.Forms;
-using HETHONGTINHNHUANBUT.DAL;
-using HETHONGTINHNHUANBUT.Models;
-using MongoDB.Driver;
 using ClosedXML.Excel;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmBaoCaoCongNo : Form
     {
-        private readonly IMongoCollection<NhuanBut> _nhuanButColl;
+        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public FrmBaoCaoCongNo()
         {
             InitializeComponent();
-            _nhuanButColl = MongoProvider.Instance.GetCollection<NhuanBut>("NhuanBut");
         }
 
         private void FrmBaoCaoCongNo_Load(object sender, EventArgs e)
         {
-            dgvCongNo.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
             dtpDenThang.Value = DateTime.Now;
         }
 
-        private async void btnXemBaoCao_Click(object sender, EventArgs e)
+        private void btnTimKiem_Click(object sender, EventArgs e)
         {
             try
             {
-                // Lấy ngày cuối cùng của tháng được chọn
-                DateTime selectedDate = dtpDenThang.Value;
-                DateTime endOfMonth = new DateTime(selectedDate.Year, selectedDate.Month, 1).AddMonths(1).AddTicks(-1);
-
-                // Lọc TẤT CẢ các bài viết CHƯA THANH TOÁN tính đến thời điểm endOfMonth
-                var builder = Builders<NhuanBut>.Filter;
-                var filter = builder.Eq(n => n.DaThanhToan, false) & builder.Lte(n => n.NgayNhap, endOfMonth);
-
-                var danhSachNo = await _nhuanButColl.Find(filter).ToListAsync();
-
-                if (danhSachNo.Count == 0)
+                DataTable dtTong = new DataTable();
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    dgvCongNo.DataSource = null;
-                    lblTongNo.Text = "TỔNG NỢ: 0 VNĐ";
-                    MessageBox.Show("Tuyệt vời! Tòa soạn không còn nợ nhuận bút tính đến tháng này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    conn.Open();
+                    string query = "SELECT * FROM tmpCongNoTong ORDER BY Conlai DESC";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    da.Fill(dtTong);
                 }
 
-                // Gom nhóm theo Bút danh để xem nợ ai bao nhiêu
-                var congNoData = danhSachNo
-                    .GroupBy(n => n.ButDanh)
-                    .Select(g => new
-                    {
-                        ButDanh = g.Key,
-                        SoBaiChuaTra = g.Count(),
-                        TongTienNo = g.Sum(x => x.TienNhuanBut)
-                    })
-                    .OrderByDescending(x => x.TongTienNo) // Ai bị nợ nhiều nhất lên đầu
-                    .ToList();
-
-                // Hiển thị tổng nợ toàn tòa soạn
-                decimal tongNoToanCuc = congNoData.Sum(x => x.TongTienNo);
-                lblTongNo.Text = $"TỔNG NỢ: {tongNoToanCuc.ToString("N0")} VNĐ";
-
-                // Format lại để đẩy lên Grid
-                var displayList = congNoData.Select(c => new
-                {
-                    c.ButDanh,
-                    c.SoBaiChuaTra,
-                    TongTienNo = c.TongTienNo.ToString("N0") + " VNĐ"
-                }).ToList();
-
-                dgvCongNo.DataSource = displayList;
-
+                dgvCongNo.DataSource = dtTong;
                 if (dgvCongNo.Columns.Count > 0)
                 {
-                    dgvCongNo.Columns["ButDanh"].HeaderText = "Tác Giả / Bút Danh";
-                    dgvCongNo.Columns["SoBaiChuaTra"].HeaderText = "Số Bài Đang Nợ";
-                    dgvCongNo.Columns["TongTienNo"].HeaderText = "Tổng Tiền Nợ";
+                    dgvCongNo.Columns["Maso"].HeaderText = "Mã số";
+                    dgvCongNo.Columns["Hoten"].HeaderText = "Tác giả";
+                    dgvCongNo.Columns["Sotien"].HeaderText = "Tổng nợ (VNĐ)";
+                    dgvCongNo.Columns["DaTT"].HeaderText = "Đã thanh toán";
+                    dgvCongNo.Columns["Conlai"].HeaderText = "Còn nợ";
                 }
+
+                // Tính tổng nợ (Đã xử lý DBNull)
+                decimal tongNo = 0;
+                decimal daTra = 0;
+                foreach (DataRow row in dtTong.Rows)
+                {
+                    if (row["Sotien"] != DBNull.Value) tongNo += Convert.ToDecimal(row["Sotien"]);
+                    if (row["DaTT"] != DBNull.Value) daTra += Convert.ToDecimal(row["DaTT"]);
+                }
+                lblTongNo.Text = $"TỔNG NỢ: {tongNo:N0} VNĐ";
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tra cứu công nợ: " + ex.Message, "Lỗi Hệ Thống");
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
         private void btnXuatExcel_Click(object sender, EventArgs e)
         {
-            if (dgvCongNo.Rows.Count == 0 || dgvCongNo.DataSource == null)
+            if (dgvCongNo.Rows.Count == 0) { MessageBox.Show("Không có dữ liệu để xuất!"); return; }
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel|*.xlsx", FileName = "BaoCaoCongNo_" + DateTime.Now.ToString("MM_yyyy") + ".xlsx" };
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Không có dữ liệu để xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                SaveFileDialog sfd = new SaveFileDialog()
+                using (var workbook = new XLWorkbook())
                 {
-                    Filter = "Excel Workbook (*.xlsx)|*.xlsx",
-                    FileName = "CongNoNhuanBut_DenThang_" + dtpDenThang.Value.ToString("MM_yyyy") + ".xlsx"
-                };
-
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    using (var workbook = new XLWorkbook())
+                    var ws = workbook.Worksheets.Add("CongNo");
+                    for (int i = 0; i < dgvCongNo.Columns.Count; i++)
                     {
-                        var worksheet = workbook.Worksheets.Add("CongNo");
-
-                        for (int i = 0; i < dgvCongNo.Columns.Count; i++)
-                        {
-                            worksheet.Cell(1, i + 1).Value = dgvCongNo.Columns[i].HeaderText;
-                            worksheet.Cell(1, i + 1).Style.Font.Bold = true;
-                            worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.Firebrick;
-                            worksheet.Cell(1, i + 1).Style.Font.FontColor = XLColor.White;
-                        }
-
-                        for (int i = 0; i < dgvCongNo.Rows.Count; i++)
-                        {
-                            for (int j = 0; j < dgvCongNo.Columns.Count; j++)
-                            {
-                                worksheet.Cell(i + 2, j + 1).Value = dgvCongNo.Rows[i].Cells[j].Value?.ToString();
-                            }
-                        }
-
-                        // Thêm dòng tổng cộng ở cuối Excel
-                        int lastRow = dgvCongNo.Rows.Count + 2;
-                        worksheet.Cell(lastRow, 1).Value = "TỔNG CỘNG";
-                        worksheet.Cell(lastRow, 1).Style.Font.Bold = true;
-                        worksheet.Cell(lastRow, 3).Value = lblTongNo.Text.Replace("TỔNG NỢ: ", "");
-                        worksheet.Cell(lastRow, 3).Style.Font.Bold = true;
-                        worksheet.Cell(lastRow, 3).Style.Font.FontColor = XLColor.Red;
-
-                        worksheet.Columns().AdjustToContents();
-                        workbook.SaveAs(sfd.FileName);
-                        MessageBox.Show("Đã xuất báo cáo công nợ ra Excel thành công!", "Tuyệt vời", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ws.Cell(1, i + 1).Value = dgvCongNo.Columns[i].HeaderText;
+                        ws.Cell(1, i + 1).Style.Font.Bold = true;
                     }
+                    for (int i = 0; i < dgvCongNo.Rows.Count; i++)
+                    {
+                        for (int j = 0; j < dgvCongNo.Columns.Count; j++)
+                        {
+                            ws.Cell(i + 2, j + 1).Value = dgvCongNo.Rows[i].Cells[j].Value?.ToString();
+                        }
+                    }
+                    ws.Columns().AdjustToContents();
+                    workbook.SaveAs(sfd.FileName);
+                    MessageBox.Show("Xuất Excel thành công!");
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi xuất Excel: " + ex.Message, "Lỗi");
-            }
-        }
-
-        private void dtpDenThang_ValueChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
