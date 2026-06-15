@@ -37,27 +37,19 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // Màu active: xanh nhạt
-        private void SetActiveButton(Guna2Button activeButton)
+        private void SetActiveButton(Guna2Button clickedButton)
         {
-            if (currentActiveButton == activeButton) return;
+            if (clickedButton == null) return;
 
-            // Reset tất cả nút chính (Dock = Top)
-            foreach (Control ctrl in pnlMenu.Controls)
+            if (currentActiveButton != null)
             {
-                if (ctrl is Guna2Button btn && btn.Dock == DockStyle.Top)
-                {
-                    btn.FillColor = System.Drawing.Color.Transparent;
-                    btn.ForeColor = System.Drawing.Color.FromArgb(71, 85, 105);
-                }
+                currentActiveButton.FillColor = System.Drawing.Color.Transparent;
+                currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
             }
 
-            if (activeButton != null)
-            {
-                activeButton.FillColor = System.Drawing.Color.FromArgb(232, 240, 254); // xanh nhạt
-                activeButton.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-                currentActiveButton = activeButton;
-            }
+            currentActiveButton = clickedButton;
+            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(238, 242, 255);
+            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(79, 70, 229);
         }
 
         private void ApplyPermissions()
@@ -66,8 +58,8 @@ namespace HETHONGTINHNHUANBUT
             btnPhieuChi.Visible = false;
             btnTaiKhoan.Visible = false;
 
-            var btnTraCuu = this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault();
-            if (btnTraCuu != null) btnTraCuu.Visible = false;
+            if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuu)
+                btnTraCuu.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
@@ -83,8 +75,10 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCao.Visible = false;
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
+                btnTroLyAI.Visible = false; // Phóng viên không cần AI kế toán
 
-                if (btnTraCuu != null) btnTraCuu.Visible = true;
+                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
+                    btnTraCuuVisible.Visible = true;
             }
             else if (role == "lãnh đạo")
             {
@@ -103,8 +97,10 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void OpenChildForm(Form childForm, Guna2Button senderButton = null)
+        private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
         {
+            if (clickedButton != null) SetActiveButton(clickedButton);
+
             if (activeForm != null) activeForm.Close();
             activeForm = childForm;
 
@@ -117,16 +113,18 @@ namespace HETHONGTINHNHUANBUT
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
-
-            pnlMain.SuspendLayout();
-            pnlMain.Controls.Clear();
             pnlMain.Controls.Add(childForm);
             pnlMain.Tag = childForm;
             childForm.BringToFront();
             childForm.Show();
-            pnlMain.ResumeLayout();
+        }
 
-            if (senderButton != null) SetActiveButton(senderButton);
+        // ==========================================================
+        // MỞ FORM TRỢ LÝ AI
+        // ==========================================================
+        private void btnTroLyAI_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
         }
 
         private void btnQuanLyBao_Click(object sender, EventArgs e)
@@ -134,43 +132,20 @@ namespace HETHONGTINHNHUANBUT
             bool isExpanded = btnSubSoBao.Visible;
             btnSubSoBao.Visible = !isExpanded;
             btnSubLoaiBao.Visible = !isExpanded;
-            btnQuanLyBao.Text = !isExpanded ? "QUẢN LÝ BÁO  ▲" : "QUẢN LÝ BÁO  ▼";
+
+            if (!isExpanded)
+                btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▲";
+            else
+                btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▼";
         }
 
-        private void btnSubSoBao_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmSoBao(), sender as Guna2Button);
-        }
-
-        private void btnSubLoaiBao_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmLoaiBao(), sender as Guna2Button);
-        }
-
-        private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmTraCuuNhuanBut(), sender as Guna2Button);
-        }
-
-        private void btnTongQuan_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
-        }
-
-        private void btnTacGia_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmTacGia(), sender as Guna2Button);
-        }
-
-        private void btnButDanh_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmButDanh(), sender as Guna2Button);
-        }
-
-        private void btnTaiKhoan_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button);
-        }
+        private void btnSubSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao());
+        private void btnSubLoaiBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmLoaiBao());
+        private void btnTraCuuCaNhan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTraCuuNhuanBut(), sender as Guna2Button);
+        private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
+        private void btnTacGia_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia(), sender as Guna2Button);
+        private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh(), sender as Guna2Button);
+        private void btnTaiKhoan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button);
 
         private void btnNhapNhuanBut_Click(object sender, EventArgs e)
         {
@@ -193,20 +168,9 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(frmDuyet, sender as Guna2Button);
         }
 
-        private void btnBaoCao_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
-        }
-
-        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmBaoCaoChiTiet(), sender as Guna2Button);
-        }
-
-        private void btnBaoCaoCongNo_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
-        }
+        private void btnBaoCao_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
+        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoChiTiet(), sender as Guna2Button);
+        private void btnBaoCaoCongNo_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
@@ -217,7 +181,10 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
-        private void lblTitle_Click(object sender, EventArgs e) { }
+        private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Dùng cái này thay vì Application.Exit() để ép tắt mọi luồng ngầm (kể cả luồng AI đang vướng)
+            Environment.Exit(0);
+        }
     }
 }
