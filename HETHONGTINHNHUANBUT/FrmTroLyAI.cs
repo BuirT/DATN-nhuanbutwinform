@@ -1,38 +1,39 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Drawing;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
+using System.Data.SqlClient; // 🔥 ĐÃ THÊM THƯ VIỆN NÀY ĐỂ ĐỌC DATABASE
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTroLyAI : Form
     {
-        // Chìa khóa API xịn của đồng chí Tí:
-        private readonly string apiKey = "AIzaSyDZvMYzl9d6xjqmtAdmlpA1DSKkvgOGVGg";
-        // Đã nâng cấp lên bộ não 2.5-flash siêu tốc:
-        private readonly string apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        // Đường dẫn kết nối Ollama và SQL
+        private static readonly string endpoint = "http://localhost:11434/api/generate";
+        private static readonly string aiModel = "qwen2.5";
+
+        // Chuỗi kết nối Database (Đồng bộ với FrmNhapNhuanBut)
+        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public FrmTroLyAI()
         {
             InitializeComponent();
-
-            // Gắn sự kiện bấm phím Enter để gửi tin nhắn cho nhanh
+            btnGui.Click += new EventHandler(btnGui_Click);
             txtInput.KeyDown += TxtInput_KeyDown;
 
-            // Lời chào mở đầu của AI (Vẽ bong bóng tự động bên trái)
-            ThemBongBongChat("🤖 AI Kế Toán: Chào đồng chí Tí! Tôi là trợ lý ảo của hệ thống tính nhuận bút. Đồng chí cần tôi hỗ trợ gì về luật thuế hay nghiệp vụ tòa soạn không?", false);
+            ThemBongBongChat("🤖 AI Kế Toán: Chào đồng chí Tí! Tôi là Trợ lý AI nội bộ của hệ thống NewsPay. Không chỉ nắm vững luật Thuế, tôi còn được cấp quyền truy cập dữ liệu trực tiếp. Đồng chí có thể hỏi tôi về số liệu tổng quan ngay bây giờ!", false);
         }
 
         private void TxtInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true; // Chống tiếng "bíp" khi ấn Enter
-                btnGui_Click(sender, e);
+                e.SuppressKeyPress = true;
+                btnGui_Click(null, null);
             }
         }
 
@@ -41,132 +42,133 @@ namespace HETHONGTINHNHUANBUT
             string cauHoi = txtInput.Text.Trim();
             if (string.IsNullOrEmpty(cauHoi)) return;
 
-            // Vẽ bong bóng câu hỏi của người dùng
             ThemBongBongChat(cauHoi, true);
             txtInput.Clear();
 
-            // 🛠️ FIX LỖI SPAM: Khóa nút Gửi VÀ Khóa luôn khung gõ chữ
             btnGui.Enabled = false;
             txtInput.ReadOnly = true;
+            btnGui.Text = "ĐANG NGHĨ...";
 
-            // Gọi API hỏi AI
-            string traLoi = await GoiGeminiAPI(cauHoi);
+            string phanHoi = await GuiTinNhanChatAI(cauHoi);
+            ThemBongBongChat(phanHoi, false);
 
-            // Vẽ bong bóng câu trả lời của AI
-            ThemBongBongChat(traLoi, false);
-
-            // 🛠️ MỞ KHÓA LẠI SAU KHI AI TRẢ LỜI XONG
             btnGui.Enabled = true;
             txtInput.ReadOnly = false;
+            btnGui.Text = "GỬI";
             txtInput.Focus();
         }
 
-        // =======================================================
-        // HÀM VẼ BONG BÓNG CHAT (UI/UX CHUẨN XỊN CỦA EM THANH)
-        // =======================================================
-        private void ThemBongBongChat(string noiDung, bool laNguoiDung)
-        {
-            // 1. Tạo một cái nhãn (Label) để chứa chữ
-            Label lblTinNhan = new Label();
-            lblTinNhan.Text = noiDung;
-            lblTinNhan.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
-            lblTinNhan.AutoSize = true;
-            lblTinNhan.MaximumSize = new Size(flpChat.Width - 150, 0); // Ép xuống dòng nếu chữ quá dài
-            lblTinNhan.Padding = new Padding(12, 10, 12, 10);
-
-            // 2. Tạo một cái Bong bóng (Guna2Panel) để bọc cái chữ lại
-            Guna.UI2.WinForms.Guna2Panel pnlBongBong = new Guna.UI2.WinForms.Guna2Panel();
-            pnlBongBong.BorderRadius = 15;
-            pnlBongBong.AutoSize = true;
-            pnlBongBong.MaximumSize = new Size(flpChat.Width - 100, 0);
-            pnlBongBong.Controls.Add(lblTinNhan);
-
-            // 3. Phân biệt màu sắc và vị trí (Người dùng vs AI)
-            if (laNguoiDung)
-            {
-                // Bong bóng của Đồng chí Tí (Màu tím, chữ trắng, lệch phải)
-                pnlBongBong.FillColor = Color.FromArgb(162, 110, 255);
-                lblTinNhan.ForeColor = Color.White;
-                lblTinNhan.BackColor = Color.Transparent;
-                pnlBongBong.Margin = new Padding(flpChat.Width - pnlBongBong.Width - 40, 10, 20, 10); // Đẩy sang phải
-            }
-            else
-            {
-                // Bong bóng của AI (Màu xám nhạt, chữ đen, lệch trái)
-                pnlBongBong.FillColor = Color.FromArgb(240, 240, 245);
-                lblTinNhan.ForeColor = Color.Black;
-                lblTinNhan.BackColor = Color.Transparent;
-                pnlBongBong.Margin = new Padding(20, 10, 50, 10); // Đẩy sang trái
-            }
-
-            // 4. Nhét bong bóng vào khung chat và tự động cuộn xuống đáy
-            flpChat.Controls.Add(pnlBongBong);
-            flpChat.ScrollControlIntoView(pnlBongBong);
-        }
-
-        // =======================================================
-        // HÀM GỌI API GEMINI 2.5 FLASH SIÊU TỐC
-        // =======================================================
-        private async Task<string> GoiGeminiAPI(string prompt)
+        // =========================================================================
+        // HÀM LẤY SỐ LIỆU TỪ SQL (CẤP "ĐÔI MẮT" CHO AI)
+        // =========================================================================
+        private async Task<string> LayThongTinHeThongAsync()
         {
             try
             {
-                // 1. Ép C# bỏ qua lỗi chứng chỉ SSL của phần mềm diệt virus
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-                // 2. Ép WinForms sử dụng chuẩn bảo mật mạng TLS 1.2
-                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-
-                // 3. Khai báo bộ xử lý mạng để ép C# đi thẳng ra Internet, phớt lờ Proxy
-                HttpClientHandler handler = new HttpClientHandler();
-                handler.UseProxy = false;
-
-                using (HttpClient client = new HttpClient(handler))
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    // Lệnh bài: Ép AI đóng vai Kế toán tòa soạn
-                    string systemInstruction = "Bạn là trợ lý ảo xuất sắc của phần mềm Quản lý Nhuận bút tòa soạn báo. Hãy trả lời ngắn gọn, lịch sự, chuyên nghiệp, tập trung vào nghiệp vụ báo chí, tính nhuận bút và thuế thu nhập cá nhân tại Việt Nam. Câu hỏi của người dùng là: ";
-                    string fullPrompt = systemInstruction + prompt;
+                    await conn.OpenAsync();
+                    // Lấy tổng số bài và tổng tiền nhuận bút trong Database
+                    string query = "SELECT COUNT(*) as TongSoBai, ISNULL(SUM(TienNhuanbut), 0) as TongTien FROM Nhuanbut";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (reader.Read())
+                        {
+                            int tongSoBai = Convert.ToInt32(reader["TongSoBai"]);
+                            decimal tongTien = Convert.ToDecimal(reader["TongTien"]);
+                            // Đóng gói thành chuỗi thông tin để gửi cho AI
+                            return $"[THÔNG TIN DỮ LIỆU HIỆN TẠI (Real-time): Tổng số bài báo đã duyệt: {tongSoBai} bài. Tổng quỹ nhuận bút đã chi: {tongTien:N0} VNĐ.]";
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return "[THÔNG TIN DỮ LIỆU: Hiện đang mất kết nối với cơ sở dữ liệu, chưa lấy được số liệu mới nhất.]";
+            }
+            return "";
+        }
 
-                    // Gói dữ liệu gửi đi theo chuẩn JSON của Google
+        private async Task<string> GuiTinNhanChatAI(string userMessage)
+        {
+            try
+            {
+                // 1. Lấy thông tin thống kê mới nhất từ SQL
+                string thongTinThucTe = await LayThongTinHeThongAsync();
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromMinutes(2);
+
+                    // 2. Nhồi "Luật Kế Toán" VÀ "Dữ liệu thực tế" vào đầu AI
+                    string systemPrompt = $@"Bạn là Trợ lý Kế toán trưởng chuyên nghiệp của tòa soạn báo NewsPay tại Việt Nam. 
+Bạn phải tuân thủ tuyệt đối các quy định sau:
+1. Luật Thuế TNCN: Nếu mức chi trả TỪ 2.000.000 VNĐ TRỞ LÊN cho 1 lần trả, thì BẮT BUỘC KHẤU TRỪ 10% thuế TNCN. DƯỚI 2.000.000 VNĐ thì KHÔNG trừ thuế.
+2. Luôn xưng hô là 'Tôi' và gọi người dùng là 'Đồng chí'. 
+
+{thongTinThucTe}
+Nếu người dùng hỏi về báo cáo, thống kê, tổng tiền, tổng bài viết... hãy sử dụng chính xác con số trong phần [THÔNG TIN DỮ LIỆU HIỆN TẠI] ở trên để trả lời thật tự nhiên. Tuyệt đối không tự bịa ra số liệu.
+
+Câu hỏi của đồng chí: ";
+
                     var requestBody = new
                     {
-                        contents = new[] { new { parts = new[] { new { text = fullPrompt } } } }
+                        model = aiModel,
+                        prompt = systemPrompt + userMessage,
+                        stream = false,
+                        options = new { temperature = 0.1 } // Ép nhiệt độ cực thấp để báo cáo số liệu chuẩn 100%
                     };
 
                     string jsonString = JsonConvert.SerializeObject(requestBody);
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                    // Bắn dữ liệu lên máy chủ Google và chờ kết quả
-                    HttpResponseMessage response = await client.PostAsync($"{apiUrl}?key={apiKey}", content);
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string responseJson = await response.Content.ReadAsStringAsync();
-
-                        // Dịch chuỗi JSON trả về để lấy đúng câu trả lời 
-                        dynamic result = JsonConvert.DeserializeObject(responseJson);
-                        string answer = result.candidates[0].content.parts[0].text;
-
-                        // Xóa các dấu sao (*) định dạng markdown của AI để WinForms hiện cho đẹp
-                        answer = answer.Replace("**", "");
-                        return answer;
+                        JObject result = JObject.Parse(responseJson);
+                        string answer = result["response"]?.ToString();
+                        return answer.Replace("**", "");
                     }
                     else
                     {
-                        string errorJson = await response.Content.ReadAsStringAsync();
-                        return $"Google từ chối (Lỗi {response.StatusCode}):\nChi tiết: {errorJson}";
+                        return $"Ollama báo lỗi hệ thống: {response.StatusCode}";
                     }
                 }
             }
             catch (Exception ex)
             {
-                return "Lỗi rớt mạng hoặc đường truyền: " + ex.Message;
+                return "Chưa khởi động Ollama! Đồng chí mở CMD gõ 'ollama run qwen2.5' trước nhé. Chi tiết: " + ex.Message;
             }
         }
 
-        private void lblTitle_Click(object sender, EventArgs e)
+        private void ThemBongBongChat(string tinNhan, bool isUser)
         {
+            Label lbl = new Label();
+            lbl.Text = tinNhan;
+            lbl.AutoSize = true;
+            lbl.MaximumSize = new Size(flpChat.Width - 60, 0);
+            lbl.Padding = new Padding(14);
+            lbl.Margin = new Padding(10, 8, 10, 8);
+            lbl.Font = new Font("Segoe UI", 10.5F);
 
+            if (isUser)
+            {
+                lbl.BackColor = Color.FromArgb(79, 70, 229);
+                lbl.ForeColor = Color.White;
+            }
+            else
+            {
+                lbl.BackColor = Color.FromArgb(241, 245, 249);
+                lbl.ForeColor = Color.FromArgb(15, 23, 42);
+            }
+
+            flpChat.Controls.Add(lbl);
+            flpChat.ScrollControlIntoView(lbl);
         }
+
+        private void lblTitle_Click(object sender, EventArgs e) { }
     }
 }

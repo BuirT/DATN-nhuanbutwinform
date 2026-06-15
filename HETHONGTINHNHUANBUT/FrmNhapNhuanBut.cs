@@ -29,13 +29,11 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmNhapNhuanBut_Load(object sender, EventArgs e)
         {
-            // 1. Dừng vẽ để setup màu sắc lưới cho nhanh
             this.SuspendLayout();
             FormatDataGridView();
             PhanQuyenThaoTac();
             this.ResumeLayout();
 
-            // 2. Cho giao diện "thở" một nhịp rồi mới chui vào Database hút dữ liệu
             await Task.Delay(50);
 
             await AutoFixDatabaseColumns();
@@ -55,6 +53,7 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
+                    // Nới rộng cột TyLeDaoVan lên 255 ký tự để tránh lỗi tràn dữ liệu khi AI nói nhiều
                     string fixSql = @"
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LuotXem' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD LuotXem INT DEFAULT 0;
@@ -63,7 +62,10 @@ namespace HETHONGTINHNHUANBUT
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'DiemAI' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD DiemAI FLOAT DEFAULT 0;
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TyLeDaoVan' AND Object_ID = Object_ID(N'Nhuanbut'))
-                            ALTER TABLE Nhuanbut ADD TyLeDaoVan NVARCHAR(50);
+                            ALTER TABLE Nhuanbut ADD TyLeDaoVan NVARCHAR(255);
+                        ELSE
+                            ALTER TABLE Nhuanbut ALTER COLUMN TyLeDaoVan NVARCHAR(255);
+                            
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NhanXetAI' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD NhanXetAI NVARCHAR(MAX);
                     ";
@@ -190,21 +192,143 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
         }
 
-        private void btnQuetBaiAI_Click(object sender, EventArgs e)
+        // =========================================================================
+        // TÍNH NĂNG NÂNG CẤP: QUÉT ĐƠN LẺ VÀ QUÉT HÀNG LOẠT CÓ CHỐNG TRÀN DỮ LIỆU
+        // =========================================================================
+        private async void btnQuetBaiAI_Click(object sender, EventArgs e)
         {
-            using (FrmKiemDinhAI frmAI = new FrmKiemDinhAI())
+            // Trường hợp 1: Quét đơn lẻ
+            if (!string.IsNullOrEmpty(_selectedMaso))
             {
-                if (frmAI.ShowDialog() == DialogResult.OK)
+                using (FrmKiemDinhAI frmAI = new FrmKiemDinhAI())
                 {
-                    var ketQua = frmAI.KetQuaAI;
-                    if (ketQua != null)
+                    if (frmAI.ShowDialog() == DialogResult.OK)
                     {
-                        _diemAI = ketQua.DiemChatLuong;
-                        _tyLeDaoVan = ketQua.TyLeDaoVan;
-                        _nhanXetAI = ketQua.NhanXet;
-                        MessageBox.Show($"Dữ liệu AI sẵn sàng!\nĐiểm: {_diemAI}\nĐạo văn: {_tyLeDaoVan}\nNhấn 'LƯU DỮ LIỆU' để hoàn tất.",
-                                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        var ketQua = frmAI.KetQuaAI;
+                        if (ketQua != null)
+                        {
+                            _diemAI = ketQua.DiemChatLuong;
+                            _tyLeDaoVan = ketQua.TyLeDaoVan;
+                            _nhanXetAI = ketQua.NhanXet;
+
+                            // Kéo cắt cỏ: Gọt chuỗi cho an toàn
+                            string safeDaoVan = string.IsNullOrEmpty(_tyLeDaoVan) ? null : (_tyLeDaoVan.Length > 200 ? _tyLeDaoVan.Substring(0, 197) + "..." : _tyLeDaoVan);
+
+                            try
+                            {
+                                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                                {
+                                    await conn.OpenAsync();
+                                    string updateQuery = @"UPDATE Nhuanbut SET 
+                                            DiemAI = @diemAI, 
+                                            TyLeDaoVan = @daoVan, 
+                                            NhanXetAI = @nhanXet 
+                                            WHERE Maso = @ma";
+
+                                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                                    {
+                                        cmd.Parameters.AddWithValue("@diemAI", _diemAI);
+                                        cmd.Parameters.AddWithValue("@daoVan", (object)safeDaoVan ?? DBNull.Value);
+                                        cmd.Parameters.AddWithValue("@nhanXet", string.IsNullOrEmpty(_nhanXetAI) ? (object)DBNull.Value : _nhanXetAI);
+                                        cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                                        await cmd.ExecuteNonQueryAsync();
+                                    }
+                                }
+
+                                MessageBox.Show($"Đã phân tích và TỰ ĐỘNG LƯU điểm AI thành công!\n- Điểm chất lượng: {_diemAI}/10", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                if (cboSoBao.SelectedValue != null)
+                                    await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), txtTimKiem.Text);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Lỗi lưu điểm AI: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
                     }
+                }
+                return;
+            }
+
+            // Trường hợp 2: QUÉT HÀNG LOẠT
+            if (dgvNhuanBut.Rows.Count == 0)
+            {
+                MessageBox.Show("Không có bài báo nào trong danh sách để quét hàng loạt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var confirmResult = MessageBox.Show("Đồng chí không chọn bài viết cụ thể nào. Hệ thống sẽ kích hoạt chế độ 'QUÉT TỰ ĐỘNG HÀNG LOẠT' cho tất cả các bài báo chưa có điểm AI dưới lưới.\nĐồng chí có muốn tiến hành không?",
+                "Kích hoạt Batch Processing", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                int soBaiDaQuet = 0;
+                btnQuetBaiAI.Enabled = false;
+                btnQuetBaiAI.Text = "🔄 AI ĐANG QUÉT HÀNG LOẠT...";
+
+                try
+                {
+                    foreach (DataGridViewRow row in dgvNhuanBut.Rows)
+                    {
+                        if (row.IsNewRow) continue;
+
+                        string maBai = row.Cells["Maso"].Value?.ToString();
+                        string tenBai = row.Cells["Tenbai"].Value?.ToString();
+                        double diemHienTai = row.Cells["DiemAI"].Value != DBNull.Value ? Convert.ToDouble(row.Cells["DiemAI"].Value) : 0;
+
+                        if (diemHienTai == 0 && !string.IsNullOrEmpty(maBai) && !string.IsNullOrEmpty(tenBai))
+                        {
+                            var ketQuaAI = await AIHelper.KiemDinhBaiBaoAsync(tenBai);
+
+                            if (ketQuaAI != null)
+                            {
+                                // Kéo cắt cỏ chống sập DataBase khi quét ngầm
+                                string safeBatchDaoVan = ketQuaAI.TyLeDaoVan;
+                                if (!string.IsNullOrEmpty(safeBatchDaoVan) && safeBatchDaoVan.Length > 200)
+                                {
+                                    safeBatchDaoVan = safeBatchDaoVan.Substring(0, 197) + "...";
+                                }
+
+                                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                                {
+                                    await conn.OpenAsync();
+                                    string sqlUpdate = @"UPDATE Nhuanbut SET 
+                                            DiemAI = @diem, 
+                                            TyLeDaoVan = @daoVan, 
+                                            NhanXetAI = @nhanXet 
+                                            WHERE Maso = @ma";
+
+                                    using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn))
+                                    {
+                                        cmd.Parameters.AddWithValue("@diem", ketQuaAI.DiemChatLuong);
+                                        cmd.Parameters.AddWithValue("@daoVan", (object)safeBatchDaoVan ?? DBNull.Value);
+                                        cmd.Parameters.AddWithValue("@nhanXet", ketQuaAI.NhanXet);
+                                        cmd.Parameters.AddWithValue("@ma", maBai);
+                                        await cmd.ExecuteNonQueryAsync();
+                                    }
+                                }
+                                soBaiDaQuet++;
+
+                                row.Cells["DiemAI"].Value = ketQuaAI.DiemChatLuong;
+                                row.Cells["TyLeDaoVan"].Value = safeBatchDaoVan;
+                                row.Cells["NhanXetAI"].Value = ketQuaAI.NhanXet;
+                            }
+                        }
+                    }
+
+                    MessageBox.Show($"Chiến dịch quét hàng loạt hoàn tất!\nĐã tự động thẩm định và cập nhật thành công cho {soBaiDaQuet} bài báo.",
+                        "Thành công rực rỡ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Có lỗi xảy ra trong quá trình quét tự động: " + ex.Message, "Lỗi Batch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    btnQuetBaiAI.Enabled = true;
+                    btnQuetBaiAI.Text = "🚀 QUÉT BÀI AI";
+                    if (cboSoBao.SelectedValue != null)
+                        await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), txtTimKiem.Text);
                 }
             }
         }
