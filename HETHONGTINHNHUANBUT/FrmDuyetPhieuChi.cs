@@ -30,6 +30,9 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmDuyetPhieuChi_Load(object sender, EventArgs e)
         {
             await AutoFixDatabaseColumns(); // Tự động vá Database
+            cboTrangThai.DropDownHeight = 200;
+            cboTrangThai.IntegralHeight = true;
+            cboTrangThai.MaxDropDownItems = 15;
             cboTrangThai.SelectedIndex = 0;
             await LoadDataAsync();
             PhanQuyenThaoTac();
@@ -106,7 +109,7 @@ namespace HETHONGTINHNHUANBUT
                     query += " ORDER BY Ngaylap DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@tt", trangThai);
                         if (!string.IsNullOrEmpty(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
@@ -175,7 +178,8 @@ namespace HETHONGTINHNHUANBUT
 
                 lblChiTietSoPhieu.Text = "Số phiếu: " + row.Cells["Sophieu"].Value?.ToString();
                 lblChiTietTacGia.Text = "Thanh toán cho: " + row.Cells["TenTacGia"].Value?.ToString();
-                lblChiTietTien.Text = Convert.ToDecimal(row.Cells["ThucLinh"].Value).ToString("N0") + " VNĐ";
+                var thucLinh = row.Cells["ThucLinh"].Value;
+                lblChiTietTien.Text = (thucLinh != null && thucLinh != DBNull.Value ? Convert.ToDecimal(thucLinh) : 0).ToString("N0") + " VNĐ";
 
                 if (cboTrangThai.SelectedIndex == 2)
                     txtLyDoTuChoi.Text = row.Cells["LyDoTuChoi"].Value?.ToString();

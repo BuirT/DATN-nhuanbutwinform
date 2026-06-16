@@ -196,5 +196,11 @@ namespace HETHONGTINHNHUANBUT
             // Ép tắt mọi luồng ngầm khi đóng form
             Environment.Exit(0);
         }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
+

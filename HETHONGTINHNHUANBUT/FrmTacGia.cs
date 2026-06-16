@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -51,6 +51,9 @@ namespace HETHONGTINHNHUANBUT
             {
                 cboPhanLoai.Items.AddRange(new object[] { "Phóng viên", "Cộng tác viên" });
             }
+            cboPhanLoai.DropDownHeight = 200;
+            cboPhanLoai.IntegralHeight = true;
+            cboPhanLoai.MaxDropDownItems = 15;
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
 
             await TuDongFixDatabaseSQL();
@@ -115,7 +118,8 @@ namespace HETHONGTINHNHUANBUT
                         UPDATE TacGia SET NganHang = Diachi WHERE (NganHang IS NULL OR NganHang = '') AND Diachi IS NOT NULL;
                         UPDATE TacGia SET SoTaiKhoan = Ddong WHERE (SoTaiKhoan IS NULL OR SoTaiKhoan = '') AND Ddong IS NOT NULL;
                     ";
-                    using (SqlCommand cmd = new SqlCommand(sqlUpgrade, conn)) { await cmd.ExecuteNonQueryAsync(); }
+                    using (SqlCommand cmd = new SqlCommand(sqlUpgrade, conn))
+                        { await cmd.ExecuteNonQueryAsync(); }
                 }
             }
             catch (Exception ex) { Console.WriteLine("Lỗi Fix DB: " + ex.Message); }
@@ -147,7 +151,7 @@ namespace HETHONGTINHNHUANBUT
                     query += " ORDER BY Maso DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         if (!string.IsNullOrWhiteSpace(keyword)) cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) { dt.Load(reader); }
                     }
@@ -198,7 +202,7 @@ namespace HETHONGTINHNHUANBUT
                     string sql = @"INSERT INTO TacGia (Maso, MsTG, Hoten, Ngaysinh, LoaiTacgia, Email, Dienthoai, SoTaiKhoan, PhongBan, NganHang, AvatarPath, PdfPath) 
                                    VALUES (@ma, @the, @ten, @ns, @loai, @mail, @sdt, @stk, @pb, @nh, @anh, @pdf)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", txtMaHT.Text.Trim());
                         cmd.Parameters.AddWithValue("@the", txtMaThe.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtHoTen.Text.Trim());
@@ -235,7 +239,7 @@ namespace HETHONGTINHNHUANBUT
                                    Email=@mail, Dienthoai=@sdt, SoTaiKhoan=@stk, PhongBan=@pb, NganHang=@nh, 
                                    AvatarPath=@anh, PdfPath=@pdf WHERE Maso=@ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", maHT);
                         cmd.Parameters.AddWithValue("@the", txtMaThe.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtHoTen.Text.Trim());
@@ -266,7 +270,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand("DELETE FROM TacGia WHERE Maso=@ma", conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", dgvTacGia.CurrentRow.Cells["MaHT"].Value.ToString());
                         await cmd.ExecuteNonQueryAsync();
                     }

@@ -24,6 +24,12 @@ namespace HETHONGTINHNHUANBUT
             cboVung.Items.AddRange(new string[] { "HCM", "HN", "DN" });
             cboLoaiTT.Items.AddRange(new string[] { "CT", "LE" });
             cboHinhThuc.Items.AddRange(new string[] { "TM", "CK" });
+            foreach (var cbo in new Guna.UI2.WinForms.Guna2ComboBox[] { cboLoaiBao, cboVung, cboLoaiTT, cboHinhThuc })
+            {
+                cbo.DropDownHeight = 200;
+                cbo.IntegralHeight = true;
+                cbo.MaxDropDownItems = 15;
+            }
 
             btnLuu.Enabled = false;
             btnDuyet.Enabled = false;
@@ -48,7 +54,7 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = "SELECT * FROM ThanhToan ORDER BY Maso DESC";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         DataTable dt = new DataTable();
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {

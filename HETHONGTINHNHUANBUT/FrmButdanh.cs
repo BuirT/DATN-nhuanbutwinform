@@ -81,13 +81,16 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = "SELECT Maso, Hoten FROM TacGia ORDER BY Hoten";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) { dt.Load(reader); }
                     }
                 }
-                cboTacGia.DataSource = dt;
                 cboTacGia.DisplayMember = "Hoten";
                 cboTacGia.ValueMember = "Maso";
+                cboTacGia.DataSource = dt;
+                cboTacGia.DropDownHeight = 200;
+                cboTacGia.IntegralHeight = true;
+                cboTacGia.MaxDropDownItems = 15;
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách tác giả SQL: " + ex.Message); }
         }
@@ -114,7 +117,7 @@ namespace HETHONGTINHNHUANBUT
                     query += " ORDER BY b.Maso DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
 
@@ -163,7 +166,7 @@ namespace HETHONGTINHNHUANBUT
 
                     string checkQuery = "SELECT COUNT(*) FROM Butdanh WHERE Maso = @ma OR Butdanh = @ten";
                     using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
-                    {
+                        {
                         checkCmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
                         checkCmd.Parameters.AddWithValue("@ten", txtButDanh.Text.Trim());
                         if ((int)await checkCmd.ExecuteScalarAsync() > 0)
@@ -174,7 +177,7 @@ namespace HETHONGTINHNHUANBUT
 
                     string insertQuery = "INSERT INTO Butdanh (Maso, Butdanh, MsTacgia) VALUES (@ma, @ten, @msTG)";
                     using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtButDanh.Text.Trim());
                         cmd.Parameters.AddWithValue("@msTG", cboTacGia.SelectedValue.ToString());
@@ -200,7 +203,7 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string updateQuery = "UPDATE Butdanh SET Butdanh = @ten, MsTacgia = @msTG WHERE Maso = @ma";
                     using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", maCu);
                         cmd.Parameters.AddWithValue("@ten", txtButDanh.Text.Trim());
                         cmd.Parameters.AddWithValue("@msTG", cboTacGia.SelectedValue.ToString());

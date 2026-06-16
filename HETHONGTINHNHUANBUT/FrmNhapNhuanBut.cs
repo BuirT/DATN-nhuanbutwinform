@@ -38,6 +38,12 @@ namespace HETHONGTINHNHUANBUT
 
             await AutoFixDatabaseColumns();
             await LoadComboboxDataSQLAsync();
+            cboVung.DropDownHeight = 200;
+            cboVung.IntegralHeight = true;
+            cboVung.MaxDropDownItems = 15;
+            cboVungChuyenDen.DropDownHeight = 200;
+            cboVungChuyenDen.IntegralHeight = true;
+            cboVungChuyenDen.MaxDropDownItems = 15;
 
             cboSoBao.SelectedIndexChanged += cboSoBao_SelectedIndexChanged;
             txtTimKiem.TextChanged += txtTimKiem_TextChanged;
@@ -113,18 +119,29 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmd = new SqlCommand(sqlBao, conn))
                     using (SqlDataReader r = await cmd.ExecuteReaderAsync())
                         dtBao.Load(r);
-                    cboSoBao.DataSource = dtBao;
                     cboSoBao.DisplayMember = "HienThi";
                     cboSoBao.ValueMember = "Maso";
+                    cboSoBao.DataSource = dtBao;
+                    cboSoBao.DropDownHeight = 200;
+                    cboSoBao.IntegralHeight = true;
+                    cboSoBao.MaxDropDownItems = 15;
 
-                    DataTable dtBD = new DataTable();
                     string sqlBD = "SELECT DISTINCT Butdanh FROM Butdanh ORDER BY Butdanh";
                     using (SqlCommand cmd = new SqlCommand(sqlBD, conn))
                     using (SqlDataReader r = await cmd.ExecuteReaderAsync())
-                        dtBD.Load(r);
-                    cboButDanh.DataSource = dtBD;
-                    cboButDanh.DisplayMember = "Butdanh";
-                    cboButDanh.ValueMember = "Butdanh";
+                    {
+                        cboButDanh.Items.Clear();
+                        while (await r.ReadAsync())
+                            cboButDanh.Items.Add(r["Butdanh"].ToString());
+                    }
+                    cboButDanh.DropDownHeight = 200;
+                    cboButDanh.IntegralHeight = true;
+                    cboButDanh.MaxDropDownItems = 15;
+                    cboButDanh.DropDown += (s, e) =>
+                    {
+                        cboButDanh.DroppedDown = false;
+                        cboButDanh.BeginInvoke(new Action(() => cboButDanh.DroppedDown = true));
+                    };
                 }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh mục: " + ex.Message); }
@@ -158,7 +175,7 @@ namespace HETHONGTINHNHUANBUT
                         query += " AND (Tenbai LIKE @kw OR Butdanh LIKE @kw)";
                     query += " ORDER BY STT ASC";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@maBao", maSoBao);
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
@@ -226,7 +243,7 @@ namespace HETHONGTINHNHUANBUT
                                             WHERE Maso = @ma";
 
                                     using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                                    {
+                        {
                                         cmd.Parameters.AddWithValue("@diemAI", _diemAI);
                                         cmd.Parameters.AddWithValue("@daoVan", (object)safeDaoVan ?? DBNull.Value);
                                         cmd.Parameters.AddWithValue("@nhanXet", string.IsNullOrEmpty(_nhanXetAI) ? (object)DBNull.Value : _nhanXetAI);
@@ -299,7 +316,7 @@ namespace HETHONGTINHNHUANBUT
                                             WHERE Maso = @ma";
 
                                     using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn))
-                                    {
+                        {
                                         cmd.Parameters.AddWithValue("@diem", ketQuaAI.DiemChatLuong);
                                         cmd.Parameters.AddWithValue("@daoVan", (object)safeBatchDaoVan ?? DBNull.Value);
                                         cmd.Parameters.AddWithValue("@nhanXet", ketQuaAI.NhanXet);
@@ -351,7 +368,7 @@ namespace HETHONGTINHNHUANBUT
                     string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT, LuotXem, LuotThich, DiemAI, TyLeDaoVan, NhanXetAI) 
                                     VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt, @luotXem, @luotThich, @diemAI, @daoVan, @nhanXet)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", newMa);
                         cmd.Parameters.AddWithValue("@ten", txtTenBai.Text);
                         cmd.Parameters.AddWithValue("@trang", txtTrang.Text);
@@ -407,7 +424,7 @@ namespace HETHONGTINHNHUANBUT
                                     LuotXem=@luotXem, LuotThich=@luotThich, DiemAI=@diemAI, TyLeDaoVan=@daoVan, NhanXetAI=@nhanXet 
                                     WHERE Maso=@ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", _selectedMaso);
                         cmd.Parameters.AddWithValue("@ten", txtTenBai.Text);
                         cmd.Parameters.AddWithValue("@trang", txtTrang.Text);

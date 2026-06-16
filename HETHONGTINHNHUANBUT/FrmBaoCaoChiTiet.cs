@@ -33,9 +33,12 @@ namespace HETHONGTINHNHUANBUT
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
-                    cboTacGia.DataSource = dt;
                     cboTacGia.DisplayMember = "Butdanh";
                     cboTacGia.ValueMember = "Butdanh";
+                    cboTacGia.DataSource = dt;
+                    cboTacGia.DropDownHeight = 200;
+                    cboTacGia.IntegralHeight = true;
+                    cboTacGia.MaxDropDownItems = 15;
                     cboTacGia.SelectedIndex = 0; // Chọn "Tất cả" mặc định
                 }
             }

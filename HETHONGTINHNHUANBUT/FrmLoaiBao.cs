@@ -64,7 +64,7 @@ namespace HETHONGTINHNHUANBUT
                     // Kiểm tra trùng mã
                     string checkSql = "SELECT COUNT(*) FROM LoaiBao WHERE Maso = @ma";
                     using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
-                    {
+                        {
                         checkCmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
                         if ((int)checkCmd.ExecuteScalar() > 0)
                         {
@@ -76,7 +76,7 @@ namespace HETHONGTINHNHUANBUT
                     // Thêm mới
                     string sql = "INSERT INTO LoaiBao (Maso, Tenloai) VALUES (@ma, @ten)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtTenLoai.Text.Trim());
                         cmd.ExecuteNonQuery();
@@ -134,7 +134,7 @@ namespace HETHONGTINHNHUANBUT
 
                     string sql = "UPDATE LoaiBao SET Maso = @maMoi, Tenloai = @ten WHERE Maso = @maCu";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@maMoi", txtMaso.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtTenLoai.Text.Trim());
                         cmd.Parameters.AddWithValue("@maCu", maSoCu);

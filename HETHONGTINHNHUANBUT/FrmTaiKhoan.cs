@@ -43,6 +43,9 @@ namespace HETHONGTINHNHUANBUT
                 cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán" });
             }
 
+            cboQuyen.DropDownHeight = 200;
+            cboQuyen.IntegralHeight = true;
+            cboQuyen.MaxDropDownItems = 15;
             if (cboQuyen.Items.Count > 0) cboQuyen.SelectedIndex = 0;
 
             await LoadDataAsync();

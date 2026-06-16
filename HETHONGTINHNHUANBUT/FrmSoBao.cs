@@ -58,6 +58,9 @@ namespace HETHONGTINHNHUANBUT
                         }
                     }
                 }
+                cboLoaiBao.DropDownHeight = 200;
+                cboLoaiBao.IntegralHeight = true;
+                cboLoaiBao.MaxDropDownItems = 15;
             }
             catch (Exception ex)
             {
@@ -90,7 +93,7 @@ namespace HETHONGTINHNHUANBUT
                     query += " ORDER BY Ngayra DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
 
@@ -139,7 +142,7 @@ namespace HETHONGTINHNHUANBUT
                         FROM INFORMATION_SCHEMA.COLUMNS 
                         WHERE TABLE_NAME = 'Bao' AND COLUMN_NAME = @col";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@col", columnName);
                         object result = await cmd.ExecuteScalarAsync();
                         if (result != DBNull.Value && result != null)
@@ -183,7 +186,7 @@ namespace HETHONGTINHNHUANBUT
                     // Kiểm tra trùng mã
                     string checkSql = "SELECT COUNT(*) FROM Bao WHERE Maso = @ma";
                     using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
-                    {
+                        {
                         checkCmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
                         if ((int)await checkCmd.ExecuteScalarAsync() > 0)
                         {
@@ -203,7 +206,7 @@ namespace HETHONGTINHNHUANBUT
                     string sql = @"INSERT INTO Bao (Maso, Tenbao, Ngayra, Sobao, Sobo, Loaibao, DaDuyet) 
                                    VALUES (@ma, @ten, @ngay, @so, @bo, @loai, 'N')";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", maSo);
                         cmd.Parameters.AddWithValue("@ten", tenBao);
                         cmd.Parameters.AddWithValue("@ngay", dtpNgayRa.Value);
@@ -254,7 +257,7 @@ namespace HETHONGTINHNHUANBUT
                     string sql = @"UPDATE Bao SET Tenbao=@ten, Ngayra=@ngay, Sobao=@so, Sobo=@bo, Loaibao=@loai 
                                    WHERE Maso=@ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@ma", _selectedMaso);
                         cmd.Parameters.AddWithValue("@ten", tenBao);
                         cmd.Parameters.AddWithValue("@ngay", dtpNgayRa.Value);
@@ -327,7 +330,7 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string currentStatus = "N";
                     using (SqlCommand cmdGet = new SqlCommand("SELECT DaDuyet FROM Bao WHERE Maso=@ma", conn))
-                    {
+                        {
                         cmdGet.Parameters.AddWithValue("@ma", _selectedMaso);
                         currentStatus = cmdGet.ExecuteScalar()?.ToString() ?? "N";
                     }
@@ -336,7 +339,7 @@ namespace HETHONGTINHNHUANBUT
                     string msg = nextStatus == "Y" ? "KHÓA SỔ" : "MỞ KHÓA SỔ";
 
                     using (SqlCommand cmdUpdate = new SqlCommand("UPDATE Bao SET DaDuyet=@st WHERE Maso=@ma", conn))
-                    {
+                        {
                         cmdUpdate.Parameters.AddWithValue("@st", nextStatus);
                         cmdUpdate.Parameters.AddWithValue("@ma", _selectedMaso);
                         await cmdUpdate.ExecuteNonQueryAsync();

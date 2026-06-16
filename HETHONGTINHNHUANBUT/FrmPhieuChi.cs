@@ -74,6 +74,13 @@ namespace HETHONGTINHNHUANBUT
             await LoadAuthorsAsync();
             cboTacGia.SelectedIndexChanged += cboTacGia_SelectedIndexChanged;
 
+            cboTacGia.DropDownHeight = 200;
+            cboTacGia.IntegralHeight = true;
+            cboTacGia.MaxDropDownItems = 15;
+            cboHinhThuc.DropDownHeight = 200;
+            cboHinhThuc.IntegralHeight = true;
+            cboHinhThuc.MaxDropDownItems = 15;
+
             if (cboHinhThuc.Items.Count > 0) cboHinhThuc.SelectedIndex = 0;
             txtSoPhieu.Text = "PC-" + DateTime.Now.ToString("yyyyMMdd-HHmm");
 
@@ -173,7 +180,7 @@ namespace HETHONGTINHNHUANBUT
                                        WHERE b.Butdanh = @butdanh";
 
                     using (SqlCommand cmd = new SqlCommand(sqlInfo, conn))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@butdanh", penName);
                         using (SqlDataReader r = await cmd.ExecuteReaderAsync())
                         {
@@ -282,7 +289,7 @@ namespace HETHONGTINHNHUANBUT
                                         VALUES (@so, @ngay, @tong, @thue, @cl, @lydo, @nhan, @tg, @lap, @loai, @mst, @cccd, @sdt, @ts, 'N')";
 
                     using (SqlCommand cmd = new SqlCommand(sqlPhieu, conn, trans))
-                    {
+                        {
                         cmd.Parameters.AddWithValue("@so", txtSoPhieu.Text);
                         cmd.Parameters.AddWithValue("@ngay", DateTime.Now);
                         cmd.Parameters.AddWithValue("@tong", decimal.Parse(txtTongTien.Text.Replace(",", "")));
@@ -302,7 +309,7 @@ namespace HETHONGTINHNHUANBUT
 
                     string msTG = "";
                     using (SqlCommand cmdGetMs = new SqlCommand("SELECT MsTacgia FROM Butdanh WHERE Butdanh = @bd", conn, trans))
-                    {
+                        {
                         cmdGetMs.Parameters.AddWithValue("@bd", cboTacGia.Text);
                         msTG = cmdGetMs.ExecuteScalar()?.ToString() ?? "";
                     }

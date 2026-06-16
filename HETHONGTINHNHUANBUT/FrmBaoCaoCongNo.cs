@@ -30,6 +30,7 @@ namespace HETHONGTINHNHUANBUT
                     conn.Open();
                     string query = "SELECT * FROM tmpCongNoTong ORDER BY Conlai DESC";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    da.SelectCommand.CommandTimeout = 120;
                     da.Fill(dtTong);
                 }
 
@@ -41,6 +42,13 @@ namespace HETHONGTINHNHUANBUT
                     dgvCongNo.Columns["Sotien"].HeaderText = "Tổng nợ (VNĐ)";
                     dgvCongNo.Columns["DaTT"].HeaderText = "Đã thanh toán";
                     dgvCongNo.Columns["Conlai"].HeaderText = "Còn nợ";
+
+                    dgvCongNo.Columns["Sotien"].DefaultCellStyle.Format = "N0";
+                    dgvCongNo.Columns["DaTT"].DefaultCellStyle.Format = "N0";
+                    dgvCongNo.Columns["Conlai"].DefaultCellStyle.Format = "N0";
+                    dgvCongNo.Columns["Sotien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    dgvCongNo.Columns["DaTT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    dgvCongNo.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 }
 
                 // Tính tổng nợ (Đã xử lý DBNull)
@@ -85,3 +93,4 @@ namespace HETHONGTINHNHUANBUT
         }
     }
 }
+
