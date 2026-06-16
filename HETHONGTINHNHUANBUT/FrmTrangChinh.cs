@@ -77,6 +77,10 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCaoCongNo.Visible = false;
                 btnTroLyAI.Visible = false; // Phóng viên không cần AI kế toán
 
+                // Ẩn nút Quản lý đợt chi trả đối với phóng viên
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
+                    btnDot.Visible = false;
+
                 if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
                     btnTraCuuVisible.Visible = true;
             }
@@ -120,11 +124,17 @@ namespace HETHONGTINHNHUANBUT
         }
 
         // ==========================================================
-        // MỞ FORM TRỢ LÝ AI
+        // CÁC SỰ KIỆN MỞ FORM CON
         // ==========================================================
         private void btnTroLyAI_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
+        }
+
+        // 🌟 ĐÂY LÀ HÀM MỚI ĐỂ MỞ FORM QUẢN LÝ ĐỢT THANH TOÁN
+        private void btnDotThanhToan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmThanhToan(), sender as Guna2Button);
         }
 
         private void btnQuanLyBao_Click(object sender, EventArgs e)
@@ -183,7 +193,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // Dùng cái này thay vì Application.Exit() để ép tắt mọi luồng ngầm (kể cả luồng AI đang vướng)
+            // Ép tắt mọi luồng ngầm khi đóng form
             Environment.Exit(0);
         }
     }
