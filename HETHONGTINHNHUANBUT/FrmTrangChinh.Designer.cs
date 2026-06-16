@@ -19,8 +19,6 @@ namespace HETHONGTINHNHUANBUT
         private void InitializeComponent()
         {
             this.pnlMenu = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
-            this.btnTaiKhoan = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCaoCongNo = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCaoChiTiet = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
@@ -36,9 +34,14 @@ namespace HETHONGTINHNHUANBUT
             this.btnTongQuan = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.btnTaiKhoan = new Guna.UI2.WinForms.Guna2Button();
+            this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
             this.pnlMain = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.btnDotThanhToan = new Guna.UI2.WinForms.Guna2Button();
             this.pnlMenu.SuspendLayout();
             this.pnlLogo.SuspendLayout();
+            this.pnlMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlMenu
@@ -46,6 +49,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.BackColor = System.Drawing.Color.White;
             this.pnlMenu.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.pnlMenu.BorderThickness = 1;
+            this.pnlMenu.Controls.Add(this.btnDotThanhToan);
             this.pnlMenu.Controls.Add(this.btnBaoCaoCongNo);
             this.pnlMenu.Controls.Add(this.btnBaoCaoChiTiet);
             this.pnlMenu.Controls.Add(this.btnBaoCao);
@@ -72,41 +76,13 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Size = new System.Drawing.Size(280, 750);
             this.pnlMenu.TabIndex = 0;
             // 
-            // btnDangXuat
-            // 
-            this.btnDangXuat.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnDangXuat.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.btnDangXuat.Location = new System.Drawing.Point(14, 680);
-            this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Size = new System.Drawing.Size(252, 50);
-            this.btnDangXuat.TabIndex = 10;
-            this.btnDangXuat.Text = "ĐĂNG XUẤT";
-            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
-            // 
-            // btnTaiKhoan
-            // 
-            this.btnTaiKhoan.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnTaiKhoan.FillColor = System.Drawing.Color.Transparent;
-            this.btnTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnTaiKhoan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnTaiKhoan.Location = new System.Drawing.Point(14, 630);
-            this.btnTaiKhoan.Name = "btnTaiKhoan";
-            this.btnTaiKhoan.Size = new System.Drawing.Size(252, 50);
-            this.btnTaiKhoan.TabIndex = 9;
-            this.btnTaiKhoan.Text = "QUẢN LÝ TÀI KHOẢN";
-            this.btnTaiKhoan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnTaiKhoan.TextOffset = new System.Drawing.Point(20, 0);
-            this.btnTaiKhoan.Click += new System.EventHandler(this.btnTaiKhoan_Click);
-            // 
             // btnBaoCaoCongNo
             // 
             this.btnBaoCaoCongNo.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCaoCongNo.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoCongNo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnBaoCaoCongNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnBaoCaoCongNo.Location = new System.Drawing.Point(14, 640);
+            this.btnBaoCaoCongNo.Location = new System.Drawing.Point(14, 634);
             this.btnBaoCaoCongNo.Name = "btnBaoCaoCongNo";
             this.btnBaoCaoCongNo.Size = new System.Drawing.Size(252, 50);
             this.btnBaoCaoCongNo.TabIndex = 8;
@@ -121,7 +97,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCaoChiTiet.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoChiTiet.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnBaoCaoChiTiet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnBaoCaoChiTiet.Location = new System.Drawing.Point(14, 590);
+            this.btnBaoCaoChiTiet.Location = new System.Drawing.Point(14, 584);
             this.btnBaoCaoChiTiet.Name = "btnBaoCaoChiTiet";
             this.btnBaoCaoChiTiet.Size = new System.Drawing.Size(252, 50);
             this.btnBaoCaoChiTiet.TabIndex = 7;
@@ -136,7 +112,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCao.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnBaoCao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnBaoCao.Location = new System.Drawing.Point(14, 540);
+            this.btnBaoCao.Location = new System.Drawing.Point(14, 534);
             this.btnBaoCao.Name = "btnBaoCao";
             this.btnBaoCao.Size = new System.Drawing.Size(252, 50);
             this.btnBaoCao.TabIndex = 6;
@@ -153,7 +129,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnDuyetChi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnDuyetChi.Location = new System.Drawing.Point(14, 490);
             this.btnDuyetChi.Name = "btnDuyetChi";
-            this.btnDuyetChi.Size = new System.Drawing.Size(252, 50);
+            this.btnDuyetChi.Size = new System.Drawing.Size(252, 44);
             this.btnDuyetChi.TabIndex = 5;
             this.btnDuyetChi.Text = "LÃNH ĐẠO DUYỆT CHI";
             this.btnDuyetChi.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -319,9 +295,38 @@ namespace HETHONGTINHNHUANBUT
             this.lblTitle.Text = "NEWSPAY";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // btnTaiKhoan
+            // 
+            this.btnTaiKhoan.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnTaiKhoan.FillColor = System.Drawing.Color.Transparent;
+            this.btnTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnTaiKhoan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnTaiKhoan.Location = new System.Drawing.Point(14, 630);
+            this.btnTaiKhoan.Name = "btnTaiKhoan";
+            this.btnTaiKhoan.Size = new System.Drawing.Size(252, 50);
+            this.btnTaiKhoan.TabIndex = 9;
+            this.btnTaiKhoan.Text = "QUẢN LÝ TÀI KHOẢN";
+            this.btnTaiKhoan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnTaiKhoan.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnTaiKhoan.Click += new System.EventHandler(this.btnTaiKhoan_Click);
+            // 
+            // btnDangXuat
+            // 
+            this.btnDangXuat.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnDangXuat.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnDangXuat.Location = new System.Drawing.Point(14, 680);
+            this.btnDangXuat.Name = "btnDangXuat";
+            this.btnDangXuat.Size = new System.Drawing.Size(252, 50);
+            this.btnDangXuat.TabIndex = 10;
+            this.btnDangXuat.Text = "ĐĂNG XUẤT";
+            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
+            // 
             // pnlMain
             // 
             this.pnlMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
+            this.pnlMain.Controls.Add(this.guna2Button1);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(280, 0);
             this.pnlMain.Name = "pnlMain";
@@ -330,6 +335,35 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMain.ShadowDecoration.Enabled = true;
             this.pnlMain.Size = new System.Drawing.Size(920, 750);
             this.pnlMain.TabIndex = 1;
+            // 
+            // guna2Button1
+            // 
+            this.guna2Button1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.guna2Button1.FillColor = System.Drawing.Color.Transparent;
+            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.guna2Button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.guna2Button1.Location = new System.Drawing.Point(0, 0);
+            this.guna2Button1.Name = "guna2Button1";
+            this.guna2Button1.Size = new System.Drawing.Size(920, 50);
+            this.guna2Button1.TabIndex = 5;
+            this.guna2Button1.Text = "LẬP PHIẾU CHI";
+            this.guna2Button1.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.guna2Button1.TextOffset = new System.Drawing.Point(20, 0);
+            // 
+            // btnDotThanhToan
+            // 
+            this.btnDotThanhToan.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDotThanhToan.FillColor = System.Drawing.Color.Transparent;
+            this.btnDotThanhToan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnDotThanhToan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnDotThanhToan.Location = new System.Drawing.Point(14, 684);
+            this.btnDotThanhToan.Name = "btnDotThanhToan";
+            this.btnDotThanhToan.Size = new System.Drawing.Size(252, 50);
+            this.btnDotThanhToan.TabIndex = 15;
+            this.btnDotThanhToan.Text = "QUẢN LÝ ĐỢT CHI";
+            this.btnDotThanhToan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnDotThanhToan.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnDotThanhToan.Click += new System.EventHandler(this.btnDotThanhToan_Click);
             // 
             // FrmTrangChinh
             // 
@@ -348,7 +382,9 @@ namespace HETHONGTINHNHUANBUT
             this.Load += new System.EventHandler(this.FrmTrangChinh_Load);
             this.pnlMenu.ResumeLayout(false);
             this.pnlLogo.ResumeLayout(false);
+            this.pnlMain.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
         private Guna.UI2.WinForms.Guna2Panel pnlMenu;
@@ -370,5 +406,7 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnDangXuat;
         private Guna.UI2.WinForms.Guna2Panel pnlMain;
         private System.Windows.Forms.Label lblTitle;
+        private Guna.UI2.WinForms.Guna2Button btnDotThanhToan;
+        private Guna.UI2.WinForms.Guna2Button guna2Button1;
     }
 }

@@ -94,5 +94,15 @@ namespace HETHONGTINHNHUANBUT
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+
+        private void panelOverlay_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void FrmKiemDinhAI_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
