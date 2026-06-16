@@ -139,14 +139,7 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void btnregister_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            FormRegister frmReg = new FormRegister();
-            frmReg.FormClosed += (s, args) => this.Show();
-            frmReg.Show();
-        }
-
+        
         private void txtPassword_TextChanged(object sender, EventArgs e) { }
     }
 }
