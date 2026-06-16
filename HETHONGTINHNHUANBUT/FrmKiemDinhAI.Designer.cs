@@ -152,7 +152,7 @@
             this.lblDaoVan.Name = "lblDaoVan";
             this.lblDaoVan.Size = new System.Drawing.Size(345, 35);
             this.lblDaoVan.TabIndex = 4;
-            this.lblDaoVan.Text = "⚠️ Cảnh báo đạo văn: Chưa quét";
+            this.lblDaoVan.Text = "⚠️ Cảnh báo văn phong: Chưa quét";
             this.lblDaoVan.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lblDiem
