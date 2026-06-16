@@ -234,12 +234,25 @@ namespace HETHONGTINHNHUANBUT
             }
 
             txtTongTien.Text = tong.ToString("N0");
-            if (decimal.TryParse(txtThueSuat.Text, out decimal thuePT))
+
+            // 🔥 ÁP DỤNG ĐÚNG LUẬT: TỪ 2 TRIỆU TRỞ LÊN MỚI TÍNH THUẾ
+            decimal thueVnd = 0;
+            if (tong >= 2000000)
             {
-                decimal thueVnd = tong * (thuePT / 100);
-                txtTienThue.Text = thueVnd.ToString("N0");
-                txtThucLinh.Text = (tong - thueVnd).ToString("N0");
+                if (decimal.TryParse(txtThueSuat.Text, out decimal thuePT))
+                {
+                    thueVnd = tong * (thuePT / 100);
+                }
             }
+            else
+            {
+                // Dưới 2 triệu thì ép hiển thị % thuế bằng 0 cho Kế toán biết
+                txtThueSuat.Text = "0";
+            }
+
+            txtTienThue.Text = thueVnd.ToString("N0");
+            txtThucLinh.Text = (tong - thueVnd).ToString("N0");
+        
         }
 
         private async void btnLapPhieu_Click(object sender, EventArgs e)
