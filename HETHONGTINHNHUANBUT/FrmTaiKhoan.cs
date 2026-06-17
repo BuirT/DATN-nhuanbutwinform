@@ -110,11 +110,14 @@ namespace HETHONGTINHNHUANBUT
                         }
                     }
 
-                    string insertQuery = "INSERT INTO Users (TenDangNhap, MatKhau, HoTen, Quyen, HoatDong) VALUES (@tdn, @mk, @ht, @q, @hd)";
+                    string newSalt = HashHelper.GenerateSalt();
+                    string hashedPw = HashHelper.ComputeSha256(txtMatKhau.Text.Trim(), newSalt);
+                    string insertQuery = "INSERT INTO Users (TenDangNhap, MatKhau, Salt, HoTen, Quyen, HoatDong) VALUES (@tdn, @mk, @salt, @ht, @q, @hd)";
                     using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@tdn", txtTenDangNhap.Text.Trim());
-                        cmd.Parameters.AddWithValue("@mk", txtMatKhau.Text.Trim());
+                        cmd.Parameters.AddWithValue("@mk", hashedPw);
+                        cmd.Parameters.AddWithValue("@salt", newSalt);
                         cmd.Parameters.AddWithValue("@ht", txtHoTen.Text.Trim());
                         cmd.Parameters.AddWithValue("@q", cboQuyen.Text);
                         cmd.Parameters.AddWithValue("@hd", chkHoatDong.Checked ? 1 : 0);
@@ -151,7 +154,7 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string updateQuery = "UPDATE Users SET HoTen = @ht, Quyen = @q, HoatDong = @hd";
                     if (!string.IsNullOrWhiteSpace(txtMatKhau.Text))
-                        updateQuery += ", MatKhau = @mk";
+                        updateQuery += ", MatKhau = @mk, Salt = @salt";
                     updateQuery += " WHERE Id = @id";
 
                     using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
@@ -161,7 +164,11 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@hd", chkHoatDong.Checked ? 1 : 0);
                         cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id));
                         if (!string.IsNullOrWhiteSpace(txtMatKhau.Text))
-                            cmd.Parameters.AddWithValue("@mk", txtMatKhau.Text.Trim());
+                        {
+                            string newSalt = HashHelper.GenerateSalt();
+                            cmd.Parameters.AddWithValue("@mk", HashHelper.ComputeSha256(txtMatKhau.Text.Trim(), newSalt));
+                            cmd.Parameters.AddWithValue("@salt", newSalt);
+                        }
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }

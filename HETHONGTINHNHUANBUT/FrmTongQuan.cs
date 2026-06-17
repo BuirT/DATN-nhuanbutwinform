@@ -129,11 +129,11 @@ namespace HETHONGTINHNHUANBUT
                 chartLine.XAxes.GridLines.Display = false;
                 chartLine.YAxes.GridLines.Display = true;
 
-                GunaLineDataset dataset = new GunaLineDataset { Label = "Nhuận bút (VNĐ)" };
+                GunaSplineDataset dataset = new GunaSplineDataset { Label = "Nhuận bút (VNĐ)" };
                 dataset.BorderColor = Color.FromArgb(46, 109, 228);
                 dataset.FillColor = Color.FromArgb(50, 46, 109, 228);
                 dataset.BorderWidth = 2;
-                dataset.PointRadius = 0;
+                dataset.PointRadius = 3;
 
                 var dataPoints = new Dictionary<int, double>();
 
@@ -227,8 +227,22 @@ namespace HETHONGTINHNHUANBUT
                 pnlChartPie.Controls.Clear();
                 GunaChart chartPie = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
                 GunaDoughnutDataset dataset = new GunaDoughnutDataset();
-                dataset.FillColors.Add(Color.FromArgb(59, 130, 246));
-                dataset.FillColors.Add(Color.FromArgb(16, 185, 129));
+                Color[] palette = new Color[] {
+                    Color.FromArgb(59, 130, 246),   // xanh lam
+                    Color.FromArgb(16, 185, 129),   // xanh la
+                    Color.FromArgb(239, 68, 68),    // do
+                    Color.FromArgb(245, 158, 11),   // cam
+                    Color.FromArgb(139, 92, 246),   // tim
+                    Color.FromArgb(236, 72, 153),   // hong
+                    Color.FromArgb(14, 165, 233),   // xanh duong
+                    Color.FromArgb(168, 85, 247),   // tim nhat
+                    Color.FromArgb(249, 115, 22),   // cam dam
+                    Color.FromArgb(34, 197, 94),    // xanh la dam
+                    Color.FromArgb(100, 116, 139),  // xam
+                    Color.FromArgb(244, 63, 94)     // do hong
+                };
+                foreach (var c in palette)
+                    dataset.FillColors.Add(c);
 
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {

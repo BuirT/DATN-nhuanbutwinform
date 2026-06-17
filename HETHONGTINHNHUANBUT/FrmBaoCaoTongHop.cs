@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using ClosedXML.Excel;
@@ -31,38 +32,91 @@ namespace HETHONGTINHNHUANBUT
 
                     // 1. Lấy dữ liệu xu hướng theo tháng để vẽ biểu đồ
                     DataTable dtThang = new DataTable();
-                    string queryThang = "SELECT * FROM tmpCongNoThang ORDER BY Thang DESC";
-                    SqlDataAdapter daThang = new SqlDataAdapter(queryThang, conn);
+                    SqlDataAdapter daThang = new SqlDataAdapter(@"
+                        WITH ThongKeThang AS (
+                            SELECT FORMAT(Ngayra, 'MM/yyyy') AS Thang, YEAR(Ngayra) AS Y, MONTH(Ngayra) AS M,
+                                   ISNULL(SUM(nb.TienNhuanbut), 0) AS TongNhuanbut
+                            FROM Bao b LEFT JOIN Nhuanbut nb ON b.Maso = nb.MsBao
+                            GROUP BY YEAR(Ngayra), MONTH(Ngayra), FORMAT(Ngayra, 'MM/yyyy')
+                        ),
+                        ChiTraThang AS (
+                            SELECT FORMAT(Ngaylap, 'MM/yyyy') AS Thang, YEAR(Ngaylap) AS Y, MONTH(Ngaylap) AS M,
+                                   ISNULL(SUM(Sotien), 0) AS DaChi
+                            FROM Phieuchi WHERE TrangThaiDuyet = 1
+                            GROUP BY YEAR(Ngaylap), MONTH(Ngaylap), FORMAT(Ngaylap, 'MM/yyyy')
+                        )
+                        SELECT ROW_NUMBER() OVER (ORDER BY t.Y, t.M) AS STT, t.Thang, t.TongNhuanbut,
+                               ISNULL(c.DaChi, 0) AS DaChiTra,
+                               t.TongNhuanbut - ISNULL(c.DaChi, 0) AS ConNo, 0 AS ChiBoSung
+                        FROM ThongKeThang t LEFT JOIN ChiTraThang c ON t.Thang = c.Thang
+                        ORDER BY t.Y, t.M", conn);
                     daThang.Fill(dtThang);
 
                     // 2. Lấy dữ liệu tổng hợp theo tác giả
                     DataTable dtTong = new DataTable();
-                    string queryTong = "SELECT * FROM tmpCongNoTong ORDER BY Conlai DESC";
-                    SqlDataAdapter daTong = new SqlDataAdapter(queryTong, conn);
+                    SqlDataAdapter daTong = new SqlDataAdapter(@"
+                        SELECT tg.Maso, tg.Hoten,
+                               ISNULL(SUM(ct.Sotien), 0) AS Sotien,
+                               ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS DaTT,
+                               ISNULL(SUM(ct.Sotien), 0) - ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS Conlai
+                        FROM TacGia tg
+                        LEFT JOIN NhuanbutCT ct ON tg.Maso = ct.MsTacgia
+                        LEFT JOIN Phieuchi pc ON ct.SoPC = pc.Sophieu
+                        GROUP BY tg.Maso, tg.Hoten
+                        HAVING ISNULL(SUM(ct.Sotien), 0) > 0
+                        ORDER BY Conlai DESC", conn);
                     daTong.Fill(dtTong);
 
-                    // 3. Vẽ biểu đồ (đã xử lý DBNull)
+                    // 4. Vẽ biểu đồ (đã xử lý DBNull)
                     chartMain.Series.Clear();
+                    chartMain.Titles.Clear();
+                    chartMain.ChartAreas.Clear();
+
+                    ChartArea chartArea = new ChartArea();
+                    chartMain.ChartAreas.Add(chartArea);
+                    chartArea.BackColor = Color.White;
+                    chartArea.AxisX.LineColor = Color.FromArgb(226, 232, 240);
+                    chartArea.AxisX.MajorGrid.Enabled = false;
+                    chartArea.AxisX.LabelStyle.Font = new Font("Segoe UI", 9F);
+                    chartArea.AxisX.LabelStyle.ForeColor = Color.FromArgb(100, 116, 139);
+                    chartArea.AxisY.LineColor = Color.FromArgb(226, 232, 240);
+                    chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(241, 245, 249);
+                    chartArea.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+                    chartArea.AxisY.LabelStyle.Font = new Font("Segoe UI", 9F);
+                    chartArea.AxisY.LabelStyle.ForeColor = Color.FromArgb(100, 116, 139);
+                    chartArea.AxisY.LabelStyle.Format = "N0";
+
+                    chartArea.AxisX.Interval = 1;
+
                     if (dtThang.Rows.Count > 0)
                     {
-                        Series series = new Series("Xu hướng nợ");
-                        series.ChartType = SeriesChartType.Line;
+                        Series series = new Series("Công nợ (VNĐ)");
+                        series.ChartType = SeriesChartType.Spline;
+                        series.BorderWidth = 3;
+                        series.BorderColor = Color.FromArgb(59, 130, 246);
+                        series.MarkerStyle = MarkerStyle.Circle;
+                        series.MarkerSize = 8;
+                        series.MarkerColor = Color.FromArgb(59, 130, 246);
+                        series.MarkerBorderColor = Color.White;
+                        series.MarkerBorderWidth = 2;
                         chartMain.Series.Add(series);
 
                         foreach (DataRow row in dtThang.Rows)
                         {
-                            // Xử lý DBNull cho cột ConNo
                             object conNoObj = row["ConNo"];
                             decimal conNoValue = (conNoObj != DBNull.Value) ? Convert.ToDecimal(conNoObj) : 0;
-
-                            series.Points.AddXY(row["Thang"], conNoValue);
+                            int idx = series.Points.AddXY(row["Thang"], conNoValue);
+                            series.Points[idx].Label = conNoValue.ToString("N0");
+                            series.Points[idx].Font = new Font("Segoe UI", 8F);
                         }
                     }
                     else
                     {
-                        // Nếu không có dữ liệu, thêm thông báo vào biểu đồ
-                        chartMain.Titles.Clear();
-                        chartMain.Titles.Add("Không có dữ liệu cho tháng này");
+                        Title noData = new Title();
+                        noData.Text = "Không có dữ liệu cho tháng này";
+                        noData.Font = new Font("Segoe UI", 12F, FontStyle.Regular);
+                        noData.ForeColor = Color.FromArgb(148, 163, 184);
+                        chartMain.Titles.Add(noData);
                     }
 
                     // 4. Hiển thị bảng tổng hợp theo tác giả
@@ -70,10 +124,18 @@ namespace HETHONGTINHNHUANBUT
                     if (dgvTongHop.Columns.Count > 0)
                     {
                         dgvTongHop.Columns["Maso"].HeaderText = "Mã số";
+                        dgvTongHop.Columns["Maso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                         dgvTongHop.Columns["Hoten"].HeaderText = "Tác giả";
+                        dgvTongHop.Columns["Hoten"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                         dgvTongHop.Columns["Sotien"].HeaderText = "Tổng nợ (VNĐ)";
-                        dgvTongHop.Columns["DaTT"].HeaderText = "Đã thanh toán";
-                        dgvTongHop.Columns["Conlai"].HeaderText = "Còn nợ";
+                        dgvTongHop.Columns["Sotien"].DefaultCellStyle.Format = "N0";
+                        dgvTongHop.Columns["Sotien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                        dgvTongHop.Columns["DaTT"].HeaderText = "Đã thanh toán (VNĐ)";
+                        dgvTongHop.Columns["DaTT"].DefaultCellStyle.Format = "N0";
+                        dgvTongHop.Columns["DaTT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                        dgvTongHop.Columns["Conlai"].HeaderText = "Còn nợ (VNĐ)";
+                        dgvTongHop.Columns["Conlai"].DefaultCellStyle.Format = "N0";
+                        dgvTongHop.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     }
                 }
             }

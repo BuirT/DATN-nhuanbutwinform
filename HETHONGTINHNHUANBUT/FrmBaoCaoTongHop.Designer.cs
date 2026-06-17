@@ -156,9 +156,11 @@
             this.chartMain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right));
+            this.chartMain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chartMain.Location = new System.Drawing.Point(25, 60);
             this.chartMain.Name = "chartMain";
-            this.chartMain.Size = new System.Drawing.Size(1110, 200);
+            this.chartMain.Size = new System.Drawing.Size(1110, 160);
             this.chartMain.TabIndex = 2;
             this.chartMain.Text = "chartMain";
             // 
@@ -168,7 +170,8 @@
             this.dgvTongHop.AllowUserToDeleteRows = false;
             this.dgvTongHop.AllowUserToResizeColumns = false;
             this.dgvTongHop.AllowUserToResizeRows = false;
-            this.dgvTongHop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.dgvTongHop.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTongHop.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTongHop.BackgroundColor = System.Drawing.Color.White;
@@ -183,7 +186,7 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.dgvTongHop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvTongHop.ColumnHeadersHeight = 42;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F);
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
@@ -191,12 +194,12 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.dgvTongHop.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvTongHop.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            this.dgvTongHop.Location = new System.Drawing.Point(25, 280);
+            this.dgvTongHop.Location = new System.Drawing.Point(25, 230);
             this.dgvTongHop.Name = "dgvTongHop";
             this.dgvTongHop.ReadOnly = true;
             this.dgvTongHop.RowHeadersVisible = false;
             this.dgvTongHop.RowTemplate.Height = 38;
-            this.dgvTongHop.Size = new System.Drawing.Size(1110, 150);
+            this.dgvTongHop.Size = new System.Drawing.Size(1110, 200);
             this.dgvTongHop.TabIndex = 3;
             // 
             // FrmBaoCaoTongHop

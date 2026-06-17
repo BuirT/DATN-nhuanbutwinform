@@ -30,6 +30,7 @@ namespace HETHONGTINHNHUANBUT
             chkCol.Name = "colCheck";
             chkCol.HeaderText = "Chọn";
             chkCol.Width = 60;
+            chkCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dgvChuaThanhToan.Columns.Add(chkCol);
 
             DataGridViewTextBoxColumn idCol = new DataGridViewTextBoxColumn();
@@ -52,7 +53,8 @@ namespace HETHONGTINHNHUANBUT
             tienCol.Name = "TienNhuanBut";
             tienCol.HeaderText = "Tiền nhuận bút";
             tienCol.DefaultCellStyle.Format = "N0";
-            tienCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            tienCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tienCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tienCol.Width = 140;
             dgvChuaThanhToan.Columns.Add(tienCol);
 
