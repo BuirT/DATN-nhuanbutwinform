@@ -1,9 +1,14 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace HETHONGTINHNHUANBUT.Models
 {
+    [BsonIgnoreExtraElements] // Bùa hộ mệnh chống crash khi DB có cột lạ
     public class ThanhToan
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         // GIỮ NGUYÊN TÊN BIẾN ĐỂ FORM CỦA CẬU KHÔNG BỊ LỖI

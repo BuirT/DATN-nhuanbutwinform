@@ -1,10 +1,16 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace HETHONGTINHNHUANBUT.Models
 {
+    [BsonIgnoreExtraElements]
     public class PhieuChi
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+
         public string Id { get; set; }
 
         // --- 1. THÔNG TIN PHIẾU ---
@@ -36,8 +42,9 @@ namespace HETHONGTINHNHUANBUT.Models
         public string ThuQuy { get; set; } // Tương ứng SQL: Thuquy
         public string AddBy { get; set; } // Tương ứng SQL: addby (Tài khoản hệ thống tạo phiếu)
 
-        // --- 7. DANH SÁCH CHI TIẾT ---
+        // --- 7. DANH SÁCH CHI TIẾT (Điểm ăn tiền của MongoDB) ---
         // Mảng chứa ID các bài viết (Nhuận bút) được thanh toán trong phiếu này.
+        // Dùng cái này thì không cần phải tạo bảng PhieuChiCT (Chi tiết) như SQL nữa!
         public List<string> DanhSachBaiViet { get; set; } = new List<string>();
 
         // ==========================================

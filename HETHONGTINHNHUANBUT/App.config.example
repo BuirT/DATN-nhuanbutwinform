@@ -4,10 +4,15 @@
 	</configSections>
 
 	<connectionStrings>
+		<add name="MongoDbConn" connectionString="mongodb://Tên đăng nhập:Mật khẩu@ac-h0blw2o-shard-00-00.m2hpw3d.mongodb.net:27017,ac-h0blw2o-shard-00-01.m2hpw3d.mongodb.net:27017,ac-h0blw2o-shard-00-02.m2hpw3d.mongodb.net:27017/?ssl=true&amp;replicaSet=atlas-4wmdv5-shard-0&amp;authSource=admin&amp;appName=Cluster0" />
 		<add name="TNConnection"
              connectionString="Server=Tên thiết bị kết nối SQL\SQLEXPRESS;Database=Tên database SQL;Trusted_Connection=True;"
              providerName="System.Data.SqlClient" />
 	</connectionStrings>
+
+	<appSettings>
+		<add key="DatabaseName" value="Tên database MongoDB" />
+	</appSettings>
 
 	<startup>
 		<supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />

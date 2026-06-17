@@ -1,33 +1,47 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HETHONGTINHNHUANBUT.DAL;
+using HETHONGTINHNHUANBUT.Models;
+using MongoDB.Driver;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTaiKhoan : Form
     {
-        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
+        private readonly IMongoCollection<User> _taiKhoanColl;
+
+        // =======================================================
+        // BIẾN LƯU QUYỀN ĐƯỢC FrmTrangChinh TRUYỀN SANG (BẮT BUỘC PHẢI CÓ)
         public string QuyenHienTai { get; set; }
+        // =======================================================
 
         public FrmTaiKhoan()
         {
             InitializeComponent();
+            _taiKhoanColl = MongoProvider.Instance.GetCollection<User>("User");
             typeof(Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 ?.SetValue(dgvTaiKhoan, true, null);
         }
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)
         {
+            // 1. KIỂM SOÁT COMBOBOX DỰA THEO QUYỀN
             cboQuyen.Items.Clear();
+
             string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
 
             if (currentRole == "admin" || currentRole == "quản trị viên")
+            {
+                // Admin thì hiển thị full option
                 cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán", "Quản trị viên" });
+            }
             else
+            {
+                // Lãnh đạo (hoặc người khác) thì tuyệt đối KHÔNG ĐƯỢC THẤY chữ Quản trị viên
                 cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán" });
+            }
 
             cboQuyen.DropDownHeight = 200;
             cboQuyen.IntegralHeight = true;
@@ -41,37 +55,28 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                var list = await _taiKhoanColl.Find(_ => true).ToListAsync();
+
+                if (!string.IsNullOrWhiteSpace(keyword))
                 {
-                    await conn.OpenAsync();
-                    string query = "SELECT * FROM Users";
-                    if (!string.IsNullOrWhiteSpace(keyword))
-                        query += " WHERE TenDangNhap LIKE @kw OR HoTen LIKE @kw";
-                    query += " ORDER BY TenDangNhap";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        if (!string.IsNullOrWhiteSpace(keyword))
-                            cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
-
-                        DataTable dt = new DataTable();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            dt.Load(reader);
-                        }
-
-                        dgvTaiKhoan.DataSource = dt.AsEnumerable().Select(row => new {
-                            Id = row["Id"],
-                            TenDangNhap = row["TenDangNhap"].ToString(),
-                            MatKhau = "********",
-                            HoTen = row["HoTen"]?.ToString(),
-                            Quyen = row["Quyen"]?.ToString(),
-                            TrangThai = Convert.ToBoolean(row["HoatDong"]) ? "Đang hoạt động" : "Bị khóa"
-                        }).ToList();
-                    }
+                    keyword = keyword.ToLower().Trim();
+                    list = list.Where(t =>
+                        (t.TenDangNhap != null && t.TenDangNhap.ToLower().Contains(keyword)) ||
+                        (t.HoTen != null && t.HoTen.ToLower().Contains(keyword))
+                    ).ToList();
                 }
 
+                dgvTaiKhoan.DataSource = list.Select(tk => new {
+                    tk.Id,
+                    TenDangNhap = tk.TenDangNhap,
+                    MatKhau = "********",
+                    tk.HoTen,
+                    Quyen = tk.Quyen, // Bỏ cái tk.Quyen cùi bắp đi, viết rõ ra thế này
+                    TrangThai = tk.HoatDong ? "Đang hoạt động" : "Bị khóa"
+                }).ToList();
+
                 if (dgvTaiKhoan.Columns["Id"] != null) dgvTaiKhoan.Columns["Id"].Visible = false;
+
                 if (dgvTaiKhoan.Columns.Count > 0)
                 {
                     dgvTaiKhoan.Columns["TenDangNhap"].HeaderText = "Tên đăng nhập";
@@ -94,34 +99,23 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                var exist = await _taiKhoanColl.Find(t => t.TenDangNhap == txtTenDangNhap.Text.Trim()).FirstOrDefaultAsync();
+                if (exist != null)
                 {
-                    await conn.OpenAsync();
-
-                    string checkQuery = "SELECT COUNT(*) FROM Users WHERE TenDangNhap = @tdn";
-                    using (SqlCommand cmd = new SqlCommand(checkQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@tdn", txtTenDangNhap.Text.Trim());
-                        int exists = (int)await cmd.ExecuteScalarAsync();
-                        if (exists > 0)
-                        {
-                            MessageBox.Show("Tên đăng nhập đã tồn tại!", "Cảnh báo");
-                            return;
-                        }
-                    }
-
-                    string insertQuery = "INSERT INTO Users (TenDangNhap, MatKhau, HoTen, Quyen, HoatDong) VALUES (@tdn, @mk, @ht, @q, @hd)";
-                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@tdn", txtTenDangNhap.Text.Trim());
-                        cmd.Parameters.AddWithValue("@mk", txtMatKhau.Text.Trim());
-                        cmd.Parameters.AddWithValue("@ht", txtHoTen.Text.Trim());
-                        cmd.Parameters.AddWithValue("@q", cboQuyen.Text);
-                        cmd.Parameters.AddWithValue("@hd", chkHoatDong.Checked ? 1 : 0);
-                        await cmd.ExecuteNonQueryAsync();
-                    }
+                    MessageBox.Show("Tên đăng nhập đã tồn tại!", "Cảnh báo");
+                    return;
                 }
 
+                var tk = new User
+                {
+                    TenDangNhap = txtTenDangNhap.Text.Trim(),
+                    MatKhau = txtMatKhau.Text.Trim(),
+                    HoTen = txtHoTen.Text.Trim(),
+                    Quyen = cboQuyen.Text, // Lấy giá trị từ ComboBox đã được lọc
+                    HoatDong = chkHoatDong.Checked
+                };
+
+                await _taiKhoanColl.InsertOneAsync(tk);
                 MessageBox.Show("Thêm tài khoản thành công!");
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
@@ -133,6 +127,7 @@ namespace HETHONGTINHNHUANBUT
         {
             if (dgvTaiKhoan.CurrentRow == null) return;
 
+            // BẢO MẬT: Chặn không cho người khác sửa tài khoản Admin
             string vaiTroCuaAccDangChon = dgvTaiKhoan.CurrentRow.Cells["Quyen"].Value?.ToString() ?? "";
             string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
 
@@ -146,25 +141,15 @@ namespace HETHONGTINHNHUANBUT
             try
             {
                 string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    await conn.OpenAsync();
-                    string updateQuery = "UPDATE Users SET HoTen = @ht, Quyen = @q, HoatDong = @hd";
-                    if (!string.IsNullOrWhiteSpace(txtMatKhau.Text))
-                        updateQuery += ", MatKhau = @mk";
-                    updateQuery += " WHERE Id = @id";
+                var update = Builders<User>.Update
+                    .Set(t => t.HoTen, txtHoTen.Text.Trim())
+                    .Set(t => t.Quyen, cboQuyen.Text)
+                    .Set(t => t.HoatDong, chkHoatDong.Checked);
 
-                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@ht", txtHoTen.Text.Trim());
-                        cmd.Parameters.AddWithValue("@q", cboQuyen.Text);
-                        cmd.Parameters.AddWithValue("@hd", chkHoatDong.Checked ? 1 : 0);
-                        cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id));
-                        if (!string.IsNullOrWhiteSpace(txtMatKhau.Text))
-                            cmd.Parameters.AddWithValue("@mk", txtMatKhau.Text.Trim());
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-                }
+                if (!string.IsNullOrWhiteSpace(txtMatKhau.Text))
+                    update = update.Set(t => t.MatKhau, txtMatKhau.Text.Trim());
+
+                await _taiKhoanColl.UpdateOneAsync(t => t.Id == id, update);
                 MessageBox.Show("Cập nhật thành công!");
                 await LoadDataAsync();
             }
@@ -178,6 +163,7 @@ namespace HETHONGTINHNHUANBUT
             string vaiTroCuaAccDangChon = dgvTaiKhoan.CurrentRow.Cells["Quyen"].Value?.ToString() ?? "";
             string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
 
+            // BẢO MẬT: Chặn không cho người khác xóa tài khoản Admin
             if ((vaiTroCuaAccDangChon.ToLower() == "admin" || vaiTroCuaAccDangChon.ToLower() == "quản trị viên") &&
                 (currentRole != "admin" && currentRole != "quản trị viên"))
             {
@@ -190,16 +176,7 @@ namespace HETHONGTINHNHUANBUT
             if (MessageBox.Show($"Xác nhận xóa tài khoản {user}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 string id = dgvTaiKhoan.CurrentRow.Cells["Id"].Value.ToString();
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    await conn.OpenAsync();
-                    string deleteQuery = "DELETE FROM Users WHERE Id = @id";
-                    using (SqlCommand cmd = new SqlCommand(deleteQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id));
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-                }
+                await _taiKhoanColl.DeleteOneAsync(t => t.Id == id);
                 await LoadDataAsync();
                 btnLamMoi_Click(null, null);
             }
@@ -222,10 +199,15 @@ namespace HETHONGTINHNHUANBUT
                 txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
 
                 string vaiTro = row.Cells["Quyen"].Value?.ToString();
+                // Bắt lỗi nhẹ: Nếu Lãnh đạo click vào nick Admin thì combobox của lãnh đạo ko có chữ Admin để hiển thị đâu!
                 if (cboQuyen.Items.Contains(vaiTro))
+                {
                     cboQuyen.Text = vaiTro;
+                }
                 else
-                    cboQuyen.SelectedIndex = -1;
+                {
+                    cboQuyen.SelectedIndex = -1; // Để trống nếu không được phép xem/chọn quyền này
+                }
 
                 chkHoatDong.Checked = row.Cells["TrangThai"].Value?.ToString() == "Đang hoạt động";
             }
