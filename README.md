@@ -1,125 +1,82 @@
-# Hệ Thống Quản Lý & Tính Nhuận Bút Tòa Soạn (NewsPay)
+# Hệ Thống Quản Lý & Tính Chi Trả Nhuận Bút Tòa Soạn (NewsPay)
 
-[![C#](https://img.shields.io/badge/C%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/csharp/)
-[![.NET Framework](https://img.shields.io/badge/.NET_Framework-5C2D91?style=for-the-badge&logo=.net&logoColor=white)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
-[![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)](https://www.microsoft.com/en-us/sql-server)
-[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Gemini AI](https://img.shields.io/badge/Gemini_AI-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
+![C#](https://img.shields.io/badge/C%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)
+![.NET Framework](https://img.shields.io/badge/.NET_Framework-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)
 
-**NewsPay** là giải pháp phần mềm quản trị toàn diện dành cho các tòa soạn báo, được xây dựng trên nền tảng **Windows Forms (.NET Framework 4.7.2)**. Hệ thống số hóa và tự động hóa quy trình quản lý tác giả, kỳ báo, bài viết, cùng với khả năng thẩm định, chấm điểm và tính toán chi trả nhuận bút thông minh với sự hỗ trợ của **Trí tuệ Nhân tạo (Google Gemini)**.
-
----
-
-## Mục Lục
-
-- [Tổng Quan Hệ Thống](#tổng-quan-hệ-thống)
-- [Công Nghệ Sử Dụng](#công-nghệ-sử-dụng)
-- [Tính Năng Chính](#tính-năng-chính)
-  - [1. Trí Tuệ Nhân Tạo (AI)](#1-trí-tuệ-nhân-tạo-ai)
-  - [2. Quản Lý Danh Mục](#2-quản-lý-danh-mục)
-  - [3. Quản Lý Nghiệp Vụ](#3-quản-lý-nghiệp-vụ)
-  - [4. Báo Cáo & Thống Kê](#4-báo-cáo--thống-kê)
-  - [5. Bảo Mật & Phân Quyền](#5-bảo-mật--phân-quyền)
-- [Kiến Trúc Hệ Thống](#kiến-trúc-hệ-thống)
-- [Cài Đặt & Cấu Hình](#cài-đặt--cấu-hình)
-- [Hướng Dẫn Sử Dụng](#hướng-dẫn-sử-dụng)
-- [Đóng Góp](#đóng-góp)
-- [Giấy Phép](#giấy-phép)
+**NewsPay** là phần mềm quản lý toàn diện dành cho các tòa soạn báo, được xây dựng trên nền tảng Windows Forms (.NET Framework). Hệ thống giúp số hóa và tự động hóa quy trình quản lý tác giả, bài viết, tính toán và chi trả nhuận bút cho phóng viên một cách chính xác, minh bạch và hiệu quả. Điểm đặc biệt là hệ thống tích hợp **AI nội bộ thông qua Ollama** - chạy hoàn toàn offline, bảo mật, không cần internet.
 
 ---
 
-## Tổng Quan Hệ Thống
+## Giới Thiệu
 
-**NewsPay** được phát triển nhằm giải quyết bài toán quản lý nhuận bút tại các tòa soạn báo chí. Hệ thống cung cấp một quy trình khép kín từ khâu nhập bài, kiểm định chất lượng (AI), chấm điểm, tính toán nhuận bút cho đến thanh toán và báo cáo.
+Phần mềm được phát triển nhằm giải quyết bài toán quản lý nhuận bút tại các tòa soạn báo chí, cung cấp quy trình khép kín từ khâu nhập bài, quản lý danh mục tác giả - bút danh - loại báo, tính toán nhuận bút theo công thức linh hoạt, lập phiếu chi, duyệt thanh toán và xuất báo cáo thống kê.
 
-### Đối tượng sử dụng
+### Tính năng AI nổi bật
 
-| Vai trò | Mô tả |
-|---------|-------|
-| **Quản trị viên** | Quản lý tài khoản, thiết lập tham số hệ thống, duyệt phiếu chi |
-| **Biên tập viên** | Nhập bài, kiểm định bài viết qua AI, tra cứu nhuận bút |
-| **Kế toán** | Lập phiếu chi, theo dõi công nợ, xuất báo cáo tài chính |
-| **Cộng tác viên** | Tra cứu bài viết và nhuận bút của bản thân |
+- **Kiểm định bài viết tự động:** Hệ thống sử dụng **Ollama** với mô hình **Qwen2.5** để tự động đọc hiểu nội dung bài viết, đánh giá tỷ lệ đạo văn và chấm điểm chất lượng theo thang 10.
+- **Trợ lý AI Kế toán:** Chat với AI được tích hợp sẵn, AI có khả năng truy vấn trực tiếp vào cơ sở dữ liệu SQL Server để trả lời các câu hỏi về số liệu tổng quan, báo cáo thống kê theo thời gian thực. AI am hiểu luật Thuế TNCN, hỗ trợ tư vấn nghiệp vụ kế toán tòa soạn.
+- **Chạy hoàn toàn offline:** Tất cả xử lý AI đều diễn ra trên máy local, không cần kết nối internet, không lo lộ dữ liệu nội bộ.
 
 ---
 
 ## Công Nghệ Sử Dụng
 
-### Ngôn ngữ & Framework
-- **Ngôn ngữ:** C#
-- **Framework:** .NET Framework 4.7.2 (Windows Forms)
-- **Mô hình:** 3-Tier Architecture (Presentation - Business - Data)
-
-### Giao diện
-- **Guna.UI2.WinForms 2.0.4.7** — Modern UI Controls
-- **Guna.Charts.WinForms 1.1.0** — Biểu đồ trực quan
-- Double Buffering (Reflection) — Chống giật lag DataGridView
-
-### Cơ sở dữ liệu
-- **SQL Server** — Cơ sở dữ liệu chính, lưu trữ giao dịch & bảo mật
-- **MongoDB** — Cơ sở dữ liệu phụ, sẵn sàng đồng bộ dữ liệu phục vụ Web API
-
-### Thư viện hỗ trợ
-| Thư viện | Mục đích |
-|----------|----------|
-| `ClosedXML 0.95.4` | Xuất báo cáo Excel |
-| `MongoDB.Driver 3.8.1` | Kết nối MongoDB |
-| `Newtonsoft.Json 13.0.4` | Xử lý JSON |
-| `DocumentFormat.OpenXml 3.5.1` | Xử lý file Office Open XML |
-| `System.ValueTuple 4.6.2` | Hỗ trợ Tuple trong .NET 4.7.2 |
-
-### AI
-- **Google Gemini 2.5 Flash API** — Kiểm định & chấm điểm bài viết
+| Công nghệ | Mục đích |
+|-----------|----------|
+| **C# - .NET Framework 4.7.2** | Ngôn ngữ & Framework chính |
+| **Windows Forms** | Nền tảng giao diện |
+| **SQL Server** | Cơ sở dữ liệu quan hệ |
+| **Guna.UI2.WinForms** | Giao diện Modern UI |
+| **Guna.Charts.WinForms** | Biểu đồ trực quan |
+| **ClosedXML** | Xuất báo cáo Excel |
+| **Ollama - Qwen2.5** | AI nội bộ (offline) |
+| **Newtonsoft.Json** | Xử lý dữ liệu API |
 
 ---
 
 ## Tính Năng Chính
 
-### 1. Trí Tuệ Nhân Tạo (AI)
+### Quản Lý Danh Mục
 
-- **Kiểm định bài viết tự động:** Gửi bài viết đến Google Gemini, AI phân tích ngữ nghĩa, phát hiện tỷ lệ đạo văn.
-- **Chấm điểm chất lượng:** AI chấm điểm thang 10 kèm nhận xét chuyên môn chi tiết.
-- **Tự động hóa KPI:** Điểm AI ảnh hưởng trực tiếp đến công thức tính thưởng/phạt nhuận bút.
-- **Trợ lý AI:** Chat với AI ngay trong ứng dụng để tra cứu thông tin nhanh.
+- **Tác giả:** Quản lý thông tin phóng viên, cộng tác viên (họ tên, bút danh, tài khoản ngân hàng)
+- **Bút danh:** Quản lý bút danh của tác giả trên từng loại báo
+- **Loại báo:** Danh sách loại báo kèm hệ số nhuận bút
+- **Số báo:** Quản lý các kỳ xuất bản theo số báo
+- **Tài khoản:** Quản lý người dùng và phân quyền
 
-> ![AI Verification Form](screenshots/ai-verification.png)
-> *Giao diện kiểm định bài viết bằng AI*
+### AI & Kiểm Định Bài Viết
 
-### 2. Quản Lý Danh Mục
+- **Kiểm định AI:** Dán nội dung bài viết, AI tự động phân tích và đưa ra:
+  - Tỷ lệ đạo văn
+  - Nhận xét chuyên môn
+  - Điểm chất lượng (thang 10)
+- **Trợ lý AI Chat:** Hỗ trợ tư vấn nghiệp vụ kế toán, tra cứu số liệu thời gian thực từ database
+- **Yêu cầu:** Cài đặt Ollama và tải mô hình qwen2.5
 
-| Chức năng | Mô tả | Form |
-|-----------|-------|------|
-| **Tác giả** | Quản lý thông tin tác giả (họ tên, bút danh, địa chỉ, tài khoản ngân hàng) | `FrmTacGia` |
-| **Bút danh** | Quản lý bút danh của tác giả trên từng loại báo | `FrmButdanh` |
-| **Loại báo** | Danh sách loại báo (hệ số nhuận bút, quy định riêng) | `FrmLoaiBao` |
-| **Số báo** | Quản lý các kỳ xuất bản theo số báo | `FrmSoBao` |
-| **Tài khoản** | Quản lý người dùng và phân quyền | `FrmTaiKhoan` |
+### Quản Lý Nghiệp Vụ
 
-### 3. Quản Lý Nghiệp Vụ
+- **Nhập nhuận bút:** Nhập bài viết và tự động tính nhuận bút theo công thức cấu hình
+- **Tra cứu nhuận bút:** Tìm kiếm nhanh theo mã số, tác giả, bút danh với bộ lọc thời gian thực
+- **Phiếu chi:** Lập và quản lý phiếu chi trả nhuận bút
+- **Duyệt phiếu chi:** Quy trình duyệt/từ chối phiếu chi bởi quản trị viên
+- **Thanh toán:** Theo dõi trạng thái thanh toán
 
-- **Nhập nhuận bút** (`FrmNhapNhuanBut`): Nhập bài viết và tính nhuận bút tự động theo công thức cấu hình.
-- **Tra cứu nhuận bút** (`FrmTraCuuNhuanBut`): Tra cứu nhanh theo mã số, tên tác giả, bút danh với bộ lọc real-time.
-- **Phiếu chi** (`FrmPhieuChi`): Lập và quản lý phiếu chi trả nhuận bút.
-- **Duyệt phiếu chi** (`FrmDuyetPhieuChi`): Duyệt/từ chối phiếu chi bởi quản trị viên.
-- **Thanh toán** (`FrmThanhToan`): Theo dõi trạng thái thanh toán cho tác giả.
+### Báo Cáo & Thống Kê
 
-### 4. Báo Cáo & Thống Kê
+- **Tổng quan:** Dashboard với biểu đồ trực quan
+- **Báo cáo tổng hợp:** Thống kê nhuận bút theo kỳ/tháng/năm
+- **Báo cáo chi tiết:** Chi tiết từng bài viết và khoản nhuận bút
+- **Báo cáo công nợ:** Công nợ phải trả theo tác giả
+- **Tổng hợp tháng:** Tổng hợp nhuận bút hàng tháng
+- **Xuất Excel:** Tất cả báo cáo có thể xuất ra file Excel
 
-- **Tổng quan** (`FrmTongQuan`): Dashboard hiển thị số liệu tổng hợp với biểu đồ trực quan (Guna Charts).
-- **Báo cáo tổng hợp** (`FrmBaoCaoTongHop`): Thống kê nhuận bút theo kỳ/tháng/năm.
-- **Báo cáo chi tiết** (`FrmBaoCaoChiTiet`): Chi tiết từng bài viết và khoản nhuận bút.
-- **Báo cáo công nợ** (`FrmBaoCaoCongNo`): Công nợ phải trả theo tác giả.
-- **Tổng hợp tháng** (`FrmTongHopThang`): Tổng hợp nhuận bút hàng tháng.
+### Bảo Mật & Phân Quyền
 
-> ![Reports Dashboard](screenshots/reports.png)
-> *Dashboard báo cáo trực quan với biểu đồ*
-
-### 5. Bảo Mật & Phân Quyền
-
-- **Xác thực:** Đăng nhập/Đăng ký với mã hóa mật khẩu (HashHelper).
-- **Phân quyền:** Phân biệt quyền Admin, Biên tập viên, Kế toán, Cộng tác viên.
-- **Bảo vệ CSDL:** Tự động kiểm tra & sửa schema SQL Server khi chạy.
-- **Chống lỗi:** Pre-build event tự động kill tiến trình cũ tránh xung đột file.
+- Đăng nhập/Đăng ký với mã hóa mật khẩu
+- Phân quyền chi tiết (Admin, Biên tập, Kế toán, Phóng viên)
+- Tự động kiểm tra và đồng bộ cấu trúc database khi khởi động
 
 ---
 
@@ -127,12 +84,9 @@
 
 ```
 DATN-nhuanbutwinform/
-├── HETHONGTINHNHUANBUT/           # Project chính
+├── HETHONGTINHNHUANBUT/
 │   ├── DAL/                        # Data Access Layer
-│   │   ├── MongoHelper.cs          # Helper kết nối MongoDB
-│   │   └── MongoProvider.cs        # Provider MongoDB
 │   ├── Models/                     # Business Models
-│   │   ├── AppManager.cs           # Quản lý ứng dụng (singleton)
 │   │   ├── Bao.cs                  # Bài báo
 │   │   ├── ButDanh.cs              # Bút danh
 │   │   ├── NhuanBut.cs             # Nhuận bút
@@ -140,13 +94,13 @@ DATN-nhuanbutwinform/
 │   │   ├── TacGia.cs               # Tác giả
 │   │   ├── ThanhToan.cs            # Thanh toán
 │   │   └── User.cs                 # Người dùng
-│   ├── AIHelper.cs                 # Google Gemini API integration
+│   ├── AIHelper.cs                 # Ollama AI Integration
 │   ├── HashHelper.cs               # Mã hóa mật khẩu
-│   ├── UIHelper.cs                 # Helper giao diện (Double Buffering, ...)
+│   ├── UIHelper.cs                 # Helper giao diện
 │   ├── Program.cs                  # Entry point
 │   ├── FormLogin.cs                # Đăng nhập
 │   ├── FormRegister.cs             # Đăng ký
-│   ├── FrmTrangChinh.cs            # Trang chính (MDI Parent)
+│   ├── FrmTrangChinh.cs            # Trang chính
 │   ├── FrmNhapNhuanBut.cs          # Nhập nhuận bút
 │   ├── FrmTraCuuNhuanBut.cs        # Tra cứu nhuận bút
 │   ├── FrmKiemDinhAI.cs            # Kiểm định AI
@@ -159,156 +113,108 @@ DATN-nhuanbutwinform/
 │   ├── FrmLoaiBao.cs               # Quản lý loại báo
 │   ├── FrmSoBao.cs                 # Quản lý số báo
 │   ├── FrmTaiKhoan.cs              # Quản lý tài khoản
-│   ├── FrmTongQuan.cs              # Dashboard tổng quan
+│   ├── FrmTongQuan.cs              # Dashboard
 │   ├── FrmBaoCaoTongHop.cs         # Báo cáo tổng hợp
 │   ├── FrmBaoCaoChiTiet.cs         # Báo cáo chi tiết
 │   ├── FrmBaoCaoCongNo.cs          # Báo cáo công nợ
 │   ├── FrmTongHopThang.cs          # Tổng hợp tháng
-│   ├── App.config                  # Cấu hình ứng dụng
-│   ├── App.config.example          # Mẫu cấu hình
-│   ├── packages.config             # NuGet dependencies
-│   └── resources/                  # Tài nguyên (hình ảnh, ...)
-├── packages/                       # NuGet packages (local)
+│   ├── App.config                  # Cấu hình
+│   └── resources/                  # Tài nguyên
+├── packages/                       # NuGet packages
 ├── scripts/                        # Scripts hỗ trợ
-│   └── kill_hung_process.ps1       # Kill tiến trình treo
 ├── .gitignore
-├── HETHONGTINHNHUANBUT.sln         # Solution file
+├── HETHONGTINHNHUANBUT.sln
 └── README.md
 ```
 
-### Mô hình 3-Tier
-
-```
-┌─────────────────────────────────────────┐
-│           Presentation Layer            │
-│   (WinForms - Guna.UI2, Charts, etc.)  │
-├─────────────────────────────────────────┤
-│         Business Logic Layer            │
-│      (Models, AIHelper, HashHelper)     │
-├─────────────────────────────────────────┤
-│           Data Access Layer             │
-│     (SQL Server + MongoDB Driver)       │
-└─────────────────────────────────────────┘
-```
-
-### Dual-Write (Ghi kép)
-
-Hệ thống hỗ trợ kiến trúc **Dual-Write**:
-- **SQL Server:** Lưu trữ chính, bảo mật nghiệp vụ kế toán.
-- **MongoDB:** Nhân bản dữ liệu phục vụ truy xuất API cho nền tảng Web sau này.
-
 ---
 
-## Cài Đặt & Cấu Hình
+## Hướng Dẫn Cài Đặt
 
 ### Yêu cầu hệ thống
 
-| Thành phần | Yêu cầu |
-|------------|---------|
-| **HĐH** | Windows 7/10/11 |
-| **.NET Framework** | 4.7.2 trở lên |
-| **SQL Server** | 2016+ (LocalDB / Express / Developer / Standard) |
-| **MongoDB** | (Tùy chọn) Phiên bản 6.0+ |
-| **Visual Studio** | 2019/2022 (để biên dịch) |
+- Windows 7/10/11
+- .NET Framework 4.7.2+
+- SQL Server 2016+ (LocalDB / Express / Developer)
+- Visual Studio 2019/2022
+- **Ollama** (cho tính năng AI) - [https://ollama.com](https://ollama.com)
 
-### Bước 1: Sao chép kho lưu trữ
+### Các bước cài đặt
+
+#### 1. Cài đặt Ollama & tải mô hình AI
+
+```bash
+# Tải và cài Ollama từ https://ollama.com
+# Sau đó chạy lệnh sau để tải mô hình:
+ollama run qwen2.5
+```
+
+> Để nguyên cửa sổ CMD này mở trong suốt quá trình sử dụng phần mềm.
+
+#### 2. Clone repository
 
 ```bash
 git clone https://github.com/BuirT/DATN-nhuanbutwinform.git
 cd DATN-nhuanbutwinform
 ```
 
-### Bước 2: Chuẩn bị cơ sở dữ liệu
+#### 3. Tạo database
 
-1. Khởi động **SQL Server Management Studio (SSMS)**.
-2. Tạo database tên `TN` (hoặc tên tùy chỉnh).
-3. Chạy script tạo bảng (nếu có) hoặc để ứng dụng tự động tạo schema lần đầu chạy.
-4. Nếu sử dụng MongoDB, đảm bảo MongoDB service đang chạy.
+- Mở SQL Server Management Studio
+- Tạo database tên `TN`
+- Ứng dụng sẽ tự động tạo bảng khi chạy lần đầu
 
-### Bước 3: Cấu hình kết nối
+#### 4. Cấu hình kết nối
 
-Sao chép `App.config.example` thành `App.config` và sửa chuỗi kết nối:
+Mở file `App.config`, sửa chuỗi kết nối:
 
 ```xml
 <connectionStrings>
-  <add name="SqlConnection"
-       connectionString="Server=YOUR_SERVER\SQLEXPRESS;Database=TN;Trusted_Connection=True;"
-       providerName="System.Data.SqlClient" />
-  <add name="MongoConnection"
-       connectionString="mongodb://localhost:27017"
-       providerName="MongoDB.Driver" />
+  <add name="TNConnection"
+       connectionString="Server=YOUR_SERVER\SQLEXPRESS;Database=TN;Trusted_Connection=True;" />
 </connectionStrings>
 ```
 
-> **Lưu ý:** Nếu bạn có file `App.config`, hãy sửa trực tiếp chuỗi kết nối trong file đó thay vì tạo mới.
+#### 5. Build & Run
 
-### Bước 4: Khôi phục gói NuGet
-
-Mở **Visual Studio**, vào menu:
-`Tools` → `NuGet Package Manager` → `Package Manager Console`
-
-```powershell
-Update-Package -Reinstall
-```
-
-Hoặc build solution — Visual Studio sẽ tự động khôi phục packages từ thư mục `packages/`.
-
-### Bước 5: Biên dịch & chạy
-
-- Chọn **Build** → **Build Solution** (Ctrl+Shift+B).
-- Nhấn **F5** để chạy.
+- Mở solution bằng Visual Studio
+- Build Solution (Ctrl+Shift+B)
+- Chạy (F5)
 
 ---
 
 ## Hướng Dẫn Sử Dụng
 
-### Đăng nhập
-
-1. Mở ứng dụng, giao diện **FormLogin** xuất hiện.
-2. Nhập tên đăng nhập và mật khẩu.
-3. Nếu chưa có tài khoản, chọn **Đăng ký** để tạo tài khoản mới.
-
-### Quy trình nghiệp vụ
+### Quy trình nghiệp vụ cơ bản
 
 ```
-[1] Tạo/Bút danh/Tác giả → [2] Nhập bài viết → [3] Kiểm định AI
-    → [4] Duyệt & tính nhuận bút → [5] Lập phiếu chi → [6] Thanh toán
+Tạo tác giả / bút danh ➝ Nhập bài viết ➝ Kiểm định AI (tính điểm)
+➝ Lập phiếu chi ➝ Duyệt phiếu chi ➝ Thanh toán
 ```
 
-### Một số thao tác nhanh
+### Kiểm định bài viết bằng AI
 
-| Thao tác | Cách thực hiện |
-|----------|---------------|
-| Tìm kiếm bài viết | Nhập từ khóa vào ô tìm kiếm ở form Tra cứu (real-time filter) |
-| Kiểm định AI | Chọn bài viết → Click "Kiểm định AI" → Xem kết quả điểm & nhận xét |
-| Xuất Excel | Mở báo cáo → Click "Xuất Excel" (sử dụng ClosedXML) |
-| Xem Dashboard | Vào menu "Tổng quan" để xem biểu đồ thống kê |
+1. Vào menu chức năng **Kiểm định AI**
+2. Dán nội dung bài viết vào khung text
+3. Nhấn **"TIẾN HÀNH QUÉT & ĐÁNH GIÁ"**
+4. AI phân tích và trả về: điểm chất lượng, tỷ lệ đạo văn, nhận xét
+5. Nhấn **"Lưu điểm số"** để ghi nhận kết quả
 
----
+### Trợ lý AI Chat
 
-## Đóng Góp
+1. Vào menu **Trợ lý AI**
+2. Đặt câu hỏi về nghiệp vụ kế toán, thuế TNCN, số liệu thống kê
+3. AI sẽ truy vấn database và trả lời dựa trên dữ liệu thực tế
 
-Mọi đóng góp đều được hoan nghênh! Vui lòng:
+### Thao tác nhanh
 
-1. Fork repository.
-2. Tạo branch feature mới: `git checkout -b feature/amazing-feature`
-3. Commit thay đổi: `git commit -m 'Add some amazing feature'`
-4. Push lên branch: `git push origin feature/amazing-feature`
-5. Tạo Pull Request.
-
----
-
-## Giấy Phép
-
-Dự án này thuộc sở hữu của **BuirT** và được phân phối dưới giấy phép MIT.
+- **Tìm kiếm:** Nhập từ khóa, kết quả lọc real-time
+- **Xuất Excel:** Mở báo cáo, chọn "Xuất Excel"
+- **Xem Dashboard:** Vào "Tổng quan" để xem biểu đồ thống kê
 
 ---
 
 ## Liên Hệ
 
-**Tác giả:** BuirT  
+**Tác giả:** BuirT
 **GitHub:** [https://github.com/BuirT/DATN-nhuanbutwinform](https://github.com/BuirT/DATN-nhuanbutwinform)
-
----
-
-*© 2025-2026 BuirT. All rights reserved.*
