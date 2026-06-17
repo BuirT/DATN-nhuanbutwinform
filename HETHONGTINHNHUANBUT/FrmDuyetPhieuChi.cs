@@ -10,7 +10,6 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmDuyetPhieuChi : Form
     {
-        // 🌟 Chuyển từ MongoDB sang SQL Server cho đồng bộ toàn hệ thống
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         private string _selectedId = "";
 

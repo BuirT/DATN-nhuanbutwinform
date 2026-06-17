@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using HETHONGTINHNHUANBUT.DAL;
 using HETHONGTINHNHUANBUT.Models;
 
 namespace HETHONGTINHNHUANBUT
