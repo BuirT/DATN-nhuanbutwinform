@@ -169,8 +169,6 @@ namespace HETHONGTINHNHUANBUT
                 btnSubBaoCaoTH.Visible = false;
                 btnSubBaoCaoCT.Visible = false;
                 btnSubBaoCaoCN.Visible = false;
-                btnBaoCaoChiTiet.Visible = false;
-                btnBaoCaoCongNo.Visible = false;
 
                 btnTraCuuCaNhan.Visible = true;
                 btnTroLyAI.Visible = false;

@@ -83,30 +83,6 @@
             this.btnRefresh.TabIndex = 2;
             this.btnRefresh.Text = "🔄 LÀM MỚI";
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-
-            // 
-            // lblMaSo
-            // 
-            this.lblMaSo = new System.Windows.Forms.Label();
-            this.lblMaSo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblMaSo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblMaSo.Location = new System.Drawing.Point(16, 58);
-            this.lblMaSo.Name = "lblMaSo";
-            this.lblMaSo.Size = new System.Drawing.Size(400, 20);
-            this.lblMaSo.TabIndex = 4;
-            this.lblMaSo.Text = "";
-            // 
-            // pnlCards
-            // 
-            this.pnlCards.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.pnlCards.Controls.Add(this.pnlDaNhan);
-            this.pnlCards.Controls.Add(this.pnlChoChi);
-            this.pnlCards.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlCards.Location = new System.Drawing.Point(0, 80);
-            this.pnlCards.Name = "pnlCards";
-            this.pnlCards.Padding = new System.Windows.Forms.Padding(20, 15, 10, 10);
-            this.pnlCards.Size = new System.Drawing.Size(1200, 150);
-            this.pnlCards.TabIndex = 1;
             // 
             // pnlDaNhan
             this.pnlDaNhan.BackColor = System.Drawing.Color.Transparent;
