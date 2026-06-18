@@ -6,17 +6,15 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SqlClient; // 🔥 ĐÃ THÊM THƯ VIỆN NÀY ĐỂ ĐỌC DATABASE
+using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTroLyAI : Form
     {
-        // Đường dẫn kết nối Ollama và SQL
         private static readonly string endpoint = "http://localhost:11434/api/generate";
         private static readonly string aiModel = "qwen2.5";
-
-        // Chuỗi kết nối Database (Đồng bộ với FrmNhapNhuanBut)
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public FrmTroLyAI()
@@ -24,7 +22,14 @@ namespace HETHONGTINHNHUANBUT
             InitializeComponent();
             txtInput.KeyDown += TxtInput_KeyDown;
 
-            ThemBongBongChat("🤖 AI Kế Toán: Chào đồng chí! Tôi là Trợ lý AI nội bộ của hệ thống NewsPay. Không chỉ nắm vững luật Thuế, tôi còn được cấp quyền truy cập dữ liệu trực tiếp. Đồng chí có thể hỏi tôi về số liệu tổng quan ngay bây giờ!", false);
+            ThemBongBongChat("🤖 Chào đồng chí! Tôi là Trợ lý AI hệ thống NewsPay. " +
+                "Tôi có thể:\n" +
+                "• 📊 Hỏi thống kê tổng quan (tổng bài, tổng tiền, trạng thái duyệt...)\n" +
+                "• 👤 Tra cứu tác giả (vd: 'thông tin tác giả Nguyễn Văn A')\n" +
+                "• 📅 Báo cáo theo tháng (vd: 'thống kê tháng 6/2026')\n" +
+                "• 💰 Phiếu chi, thuế (vd: 'phiếu chi tháng này')\n" +
+                "• 🔍 Phát hiện bất thường (vd: 'kiểm tra bài bất thường')\n" +
+                "Đồng chí muốn hỏi gì?", false);
         }
 
         private void TxtInput_KeyDown(object sender, KeyEventArgs e)
@@ -38,135 +43,554 @@ namespace HETHONGTINHNHUANBUT
 
         private async void btnGui_Click(object sender, EventArgs e)
         {
-            string cauHoi = txtInput.Text.Trim();
-            if (string.IsNullOrEmpty(cauHoi)) return;
+            if (this.IsDisposed) return;
 
-            ThemBongBongChat(cauHoi, true);
-            txtInput.Clear();
+            try
+            {
+                string cauHoi = txtInput.Text.Trim();
+                if (string.IsNullOrEmpty(cauHoi)) return;
 
-            btnGui.Enabled = false;
-            txtInput.ReadOnly = true;
-            btnGui.Text = "ĐANG NGHĨ...";
+                ThemBongBongChat(cauHoi, true);
+                txtInput.Clear();
 
-            string phanHoi = await GuiTinNhanChatAI(cauHoi);
-            ThemBongBongChat(phanHoi, false);
+                btnGui.Enabled = false;
+                txtInput.ReadOnly = true;
+                btnGui.Text = "ĐANG NGHĨ...";
 
-            btnGui.Enabled = true;
-            txtInput.ReadOnly = false;
-            btnGui.Text = "GỬI";
-            txtInput.Focus();
+                string phanHoi = await XuLyCauHoiThongMinhAsync(cauHoi);
+
+                if (this.IsDisposed) return;
+                ThemBongBongChat(phanHoi, false);
+
+                btnGui.Enabled = true;
+                txtInput.ReadOnly = false;
+                btnGui.Text = "GỬI";
+                txtInput.Focus();
+            }
+            catch (ObjectDisposedException) { }
+            catch (InvalidOperationException) { }
+        }
+
+        private async void btnRefresh_Click(object sender, EventArgs e)
+        {
+            ThemBongBongChat("🔄 Đang làm mới dữ liệu hệ thống...", false);
+            string thongTin = await LayToanBoThongTinHeThongAsync();
+            ThemBongBongChat("✅ Dữ liệu đã cập nhật:\n" + thongTin, false);
         }
 
         // =========================================================================
-        // HÀM LẤY SỐ LIỆU TỪ SQL (CẤP "ĐÔI MẮT" CHO AI)
+        // XỬ LÝ CÂU HỎI THÔNG MINH - TỰ ĐỘNG PHÁT HIỆN Ý ĐỊNH
         // =========================================================================
-        private async Task<string> LayThongTinHeThongAsync()
+        private async Task<string> XuLyCauHoiThongMinhAsync(string cauHoi)
+        {
+            try
+            {
+                string lower = cauHoi.ToLower();
+                string dataContext = "";
+                string chuDe = "hệ thống";
+
+                if (lower.Contains("tác giả") || lower.Contains("phóng viên") || lower.Contains("người viết") || lower.Contains("ai viết"))
+                {
+                    dataContext = await LayThongTinTacGiaAsync(cauHoi);
+                    chuDe = "tác giả";
+                }
+                else if (lower.Contains("phiếu chi") || lower.Contains("thuế") || lower.Contains("thanh toán") || lower.Contains("đã chi"))
+                {
+                    dataContext = await LayThongTinPhieuChiAsync();
+                    chuDe = "phiếu chi";
+                }
+                else if (lower.Contains("tháng") || lower.Contains("quý") || lower.Contains("năm") || lower.Contains("202"))
+                {
+                    dataContext = await LayThongTinTheoThangAsync(cauHoi);
+                    chuDe = "thống kê tháng";
+                }
+                else if (lower.Contains("bất thường") || lower.Contains("kiểm tra") || lower.Contains("cảnh báo") || lower.Contains("rủi ro"))
+                {
+                    dataContext = await LayThongTinBatThuongAsync();
+                    chuDe = "bất thường";
+                }
+                else if (lower.Contains("định mức") || lower.Contains("tối đa") || lower.Contains("khung") || lower.Contains("thể loại"))
+                {
+                    dataContext = await LayThongTinDinhMucAsync();
+                    chuDe = "định mức";
+                }
+                else
+                {
+                    dataContext = await LayToanBoThongTinHeThongAsync();
+                    chuDe = "hệ thống";
+                    // Thêm tri thức hệ thống cho câu hỏi chung
+                    dataContext += @"
+
+【QUY TRÌNH NGHIỆP VỤ NEWSPAY】
+- Bài viết trải qua 4 bước duyệt:
+  Bước 1: Thư ký duyệt nội dung (TrangThaiDuyet: 0→1)
+  Bước 2: Kế toán nhập tiền nhuận bút (TrangThaiDuyet: 1→2)
+  Bước 3: Lãnh đạo ký duyệt (TrangThaiDuyet: 2→3)
+  Bước 4: Lập phiếu chi → Lãnh đạo duyệt chi → Thanh toán
+
+【CÁC VAI TRÒ HỆ THỐNG】
+- Phóng viên (PV): Nộp bài, tra cứu thu nhập
+- Thư ký: Kiểm duyệt nội dung bài viết
+- Kế toán: Nhập tiền nhuận bút, quản lý phiếu chi
+- Lãnh đạo: Ký duyệt bài và phiếu chi
+- Admin/Quản trị viên: Quản lý toàn bộ hệ thống
+
+【CÁC TÍNH NĂNG CHÍNH】
+- Nộp bài: Phóng viên nhập thông tin bài, AI kiểm toán metadata
+- Kiểm duyệt: Duyệt qua 4 bước với phân quyền rõ ràng
+- Tra cứu: Xem thu nhập cá nhân, trạng thái bài
+- Báo cáo: Xuất Excel, biểu đồ, báo cáo AI tự động
+- Phiếu chi: Lập phiếu, tính thuế TNCN 10% nếu >= 2.000.000đ
+- Quản lý: Tác giả, bút danh, số báo, thể loại, tài khoản
+
+【CÁCH TÍNH THUẾ】
+- Nếu tổng tiền chi CHO MỘT LẦN trả từ 2.000.000đ trở lên: KHẤU TRỪ 10% thuế TNCN
+- Dưới 2.000.000đ: KHÔNG khấu trừ thuế
+
+【ĐỊNH MỨC NHUẬN BÚT】
+- Tin vắn: tối đa 500.000đ
+- Phân tích: tối đa 3.000.000đ
+- Phỏng vấn: tối đa 2.500.000đ
+- Bài định: tối đa 4.000.000đ
+- Xã luận: tối đa 5.000.000đ
+- Phóng sự: tối đa 3.000.000đ
+- Các thể loại khác: tối đa 2.000.000đ";
+                }
+
+                if (string.IsNullOrEmpty(dataContext))
+                    dataContext = "(Không có dữ liệu phù hợp)";
+
+                return await GuiTinNhanChatAI(cauHoi, dataContext, chuDe);
+            }
+            catch (Exception ex)
+            {
+                return "⚠️ Lỗi: " + ex.Message;
+            }
+        }
+
+        // =========================================================================
+        // GỌI OLLAMA
+        // =========================================================================
+        private async Task<string> GuiTinNhanChatAI(string userMessage, string dataContext, string chuDe = "hệ thống")
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromMinutes(2);
+
+                string prompt = $@"Bạn là chuyên gia tư vấn về nhuận bút báo chí và Trợ lý AI của hệ thống NewsPay.
+
+Đồng chí đang hỏi về: {chuDe}
+
+DỮ LIỆU THỰC TẾ TỪ HỆ THỐNG (nếu có):
+{dataContext}
+
+Hướng dẫn trả lời:
+- Ưu tiên dùng dữ liệu từ hệ thống ở trên để trả lời nếu có thông tin liên quan.
+- Nếu câu hỏi vượt quá dữ liệu hệ thống, hãy dùng KIẾN THỨC CHUYÊN MÔN của bạn về nghiệp vụ nhuận bút, báo chí, thuế TNCN, quy trình tòa soạn... để tư vấn cho đồng chí.
+- Phân biệt rõ: ""Theo dữ liệu hệ thống..."" (khi có số liệu) và ""Theo quy định chung..."" (khi dùng kiến thức).
+- Trả lời bằng tiếng Việt, chuyên nghiệp, dễ hiểu.
+
+Câu hỏi: {userMessage}";
+
+                var requestBody = new
+                {
+                    model = aiModel,
+                    prompt = prompt,
+                    stream = false,
+                    options = new { temperature = 0.1 }
+                };
+
+                string jsonString = JsonConvert.SerializeObject(requestBody);
+                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(endpoint, content);
+
+                if (!response.IsSuccessStatusCode)
+                    return $"Ollama lỗi: {response.StatusCode}";
+
+                string responseJson = await response.Content.ReadAsStringAsync();
+                JObject result = JObject.Parse(responseJson);
+                return result["response"]?.ToString().Replace("**", "").Trim() ?? "...";
+            }
+        }
+
+        // =========================================================================
+        // 1. TỔNG QUAN HỆ THỐNG
+        // =========================================================================
+        private async Task<string> LayToanBoThongTinHeThongAsync()
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    // Lấy tổng số bài và tổng tiền nhuận bút trong Database
-                    string query = "SELECT COUNT(*) as TongSoBai, ISNULL(SUM(TienNhuanbut), 0) as TongTien FROM Nhuanbut";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    var sb = new StringBuilder();
+
+                    // Tổng quan đã duyệt
+                    using (var cmd = new SqlCommand(@"
+                        SELECT COUNT(*) AS TongBai, ISNULL(SUM(TienNhuanbut),0) AS TongTien,
+                               AVG(TienNhuanbut) AS TrungBinh, MAX(TienNhuanbut) AS CaoNhat
+                        FROM Nhuanbut WHERE TrangThaiDuyet >= 2", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
+                        if (r.Read())
+                            sb.AppendLine($"【TỔNG QUAN ĐÃ DUYỆT】Bài: {r["TongBai"]}, Tiền: {Convert.ToDecimal(r["TongTien"]):N0}đ, TB: {Convert.ToDecimal(r["TrungBinh"]):N0}đ, Cao nhất: {Convert.ToDecimal(r["CaoNhat"]):N0}đ");
+                        r.Close();
+                    }
+
+                    // Trạng thái duyệt
+                    using (var cmd = new SqlCommand(@"
+                        SELECT TrangThaiDuyet, COUNT(*) AS SL, ISNULL(SUM(TienNhuanbut),0) AS TongTien
+                        FROM Nhuanbut GROUP BY TrangThaiDuyet ORDER BY TrangThaiDuyet", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
+                    {
+                        sb.AppendLine("【TRẠNG THÁI】");
+                        while (r.Read())
                         {
-                            int tongSoBai = Convert.ToInt32(reader["TongSoBai"]);
-                            decimal tongTien = Convert.ToDecimal(reader["TongTien"]);
-                            // Đóng gói thành chuỗi thông tin để gửi cho AI
-                            return $"[THÔNG TIN DỮ LIỆU HIỆN TẠI (Real-time): Tổng số bài báo đã duyệt: {tongSoBai} bài. Tổng quỹ nhuận bút đã chi: {tongTien:N0} VNĐ.]";
+                            int tt = Convert.ToInt32(r["TrangThaiDuyet"]);
+                            string ten = tt == 0 ? "Chờ Thư ký" : tt == 1 ? "Chờ Kế toán nhập tiền" : tt == 2 ? "Chờ Lãnh đạo ký" : "Đã ký duyệt";
+                            sb.AppendLine($"• {ten}: {r["SL"]} bài - {Convert.ToDecimal(r["TongTien"]):N0}đ");
                         }
+                        r.Close();
                     }
-                }
-            }
-            catch (Exception)
-            {
-                return "[THÔNG TIN DỮ LIỆU: Hiện đang mất kết nối với cơ sở dữ liệu, chưa lấy được số liệu mới nhất.]";
-            }
-            return "";
-        }
 
-        private async Task<string> GuiTinNhanChatAI(string userMessage)
-        {
-            try
-            {
-                // 1. Lấy thông tin thống kê mới nhất từ SQL
-                string thongTinThucTe = await LayThongTinHeThongAsync();
-
-                using (HttpClient client = new HttpClient())
-                {
-                    client.Timeout = TimeSpan.FromMinutes(2);
-
-                    // 2. Nhồi "Luật Kế Toán" VÀ "Dữ liệu thực tế" vào đầu AI
-                    string systemPrompt = $@"Bạn là Trợ lý Kế toán trưởng chuyên nghiệp của tòa soạn báo NewsPay tại Việt Nam. 
-Bạn phải tuân thủ tuyệt đối các quy định sau:
-1. Luật Thuế TNCN: Nếu mức chi trả TỪ 2.000.000 VNĐ TRỞ LÊN cho 1 lần trả, thì BẮT BUỘC KHẤU TRỪ 10% thuế TNCN. DƯỚI 2.000.000 VNĐ thì KHÔNG trừ thuế.
-2. Luôn xưng hô là 'Tôi' và gọi người dùng là 'Đồng chí'. 
-
-{thongTinThucTe}
-Nếu người dùng hỏi về báo cáo, thống kê, tổng tiền, tổng bài viết... hãy sử dụng chính xác con số trong phần [THÔNG TIN DỮ LIỆU HIỆN TẠI] ở trên để trả lời thật tự nhiên. Tuyệt đối không tự bịa ra số liệu.
-
-Câu hỏi của đồng chí: ";
-
-                    var requestBody = new
+                    // Phiếu chi chờ duyệt
+                    using (var cmd = new SqlCommand(@"
+                        SELECT COUNT(*) AS SL, ISNULL(SUM(Sotien),0) AS Tong FROM Phieuchi WHERE TrangThaiDuyet = 0", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
                     {
-                        model = aiModel,
-                        prompt = systemPrompt + userMessage,
-                        stream = false,
-                        options = new { temperature = 0.1 } // Ép nhiệt độ cực thấp để báo cáo số liệu chuẩn 100%
-                    };
-
-                    string jsonString = JsonConvert.SerializeObject(requestBody);
-                    var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseJson = await response.Content.ReadAsStringAsync();
-                        JObject result = JObject.Parse(responseJson);
-                        string answer = result["response"]?.ToString();
-                        return answer.Replace("**", "");
+                        if (r.Read())
+                            sb.AppendLine($"【PHIẾU CHỜ】{r["SL"]} phiếu - {Convert.ToDecimal(r["Tong"]):N0}đ");
+                        r.Close();
                     }
-                    else
+
+                    // Thống kê tháng này
+                    using (var cmd = new SqlCommand(@"
+                        SELECT COUNT(*) AS SL, ISNULL(SUM(TienNhuanbut),0) AS Tong
+                        FROM Nhuanbut WHERE MONTH(ngaychuyen)=MONTH(GETDATE()) AND YEAR(ngaychuyen)=YEAR(GETDATE())", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
                     {
-                        return $"Ollama báo lỗi hệ thống: {response.StatusCode}";
+                        if (r.Read())
+                            sb.AppendLine($"【THÁNG NÀY】{r["SL"]} bài - {Convert.ToDecimal(r["Tong"]):N0}đ");
+                        r.Close();
                     }
+
+                    return sb.ToString();
                 }
             }
             catch (Exception ex)
             {
-                return "Chưa khởi động Ollama! Đồng chí mở CMD gõ 'ollama run qwen2.5' trước nhé. Chi tiết: " + ex.Message;
+                return "[LỖI DB] " + ex.Message;
             }
         }
 
+        // =========================================================================
+        // 2. TRA CỨU TÁC GIẢ
+        // =========================================================================
+        private async Task<string> LayThongTinTacGiaAsync(string cauHoi)
+        {
+            try
+            {
+                // Trích xuất tên tác giả từ câu hỏi
+                string keyword = cauHoi
+                    .Replace("thông tin", "").Replace("tác giả", "").Replace("phóng viên", "")
+                    .Replace("người viết", "").Replace("tra cứu", "").Replace("tìm", "")
+                    .Trim().Trim(',');
+
+                if (string.IsNullOrEmpty(keyword)) keyword = "%";
+
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var sb = new StringBuilder();
+
+                    string sql = @"
+                        SELECT tg.Hoten, tg.MsTG, tg.PhongBan, tg.DienThoai, tg.Email, tg.LoaiTacgia,
+                               (SELECT COUNT(*) FROM Nhuanbut nb JOIN ButDanh bd ON nb.Butdanh = bd.Butdanh WHERE bd.MsTacgia = tg.Maso) AS SoBai,
+                               (SELECT ISNULL(SUM(nb.TienNhuanbut),0) FROM Nhuanbut nb JOIN ButDanh bd ON nb.Butdanh = bd.Butdanh WHERE bd.MsTacgia = tg.Maso AND nb.TrangThaiDuyet >= 2) AS TongTien
+                        FROM TacGia tg
+                        WHERE tg.Hoten LIKE N'%' + @k + '%' OR tg.MsTG LIKE '%' + @k + '%'";
+
+                    using (var cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@k", keyword);
+                        using (var r = await cmd.ExecuteReaderAsync())
+                        {
+                            int stt = 0;
+                            while (r.Read())
+                            {
+                                stt++;
+                                sb.AppendLine($"【TÁC GIẢ {stt}】{r["Hoten"]} (Mã: {r["MsTG"]})");
+                                sb.AppendLine($"   Loại: {r["LoaiTacgia"]}, Phòng: {r["PhongBan"]}");
+                                sb.AppendLine($"   Email: {r["Email"]}, ĐT: {r["DienThoai"]}");
+                                sb.AppendLine($"   Tổng bài: {r["SoBai"]}, Tổng tiền đã duyệt: {Convert.ToDecimal(r["TongTien"]):N0}đ");
+                            }
+                            if (stt == 0) sb.AppendLine("Không tìm thấy tác giả phù hợp.");
+                        }
+                    }
+
+                    return sb.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return "[LỖI TRA CỨU TÁC GIẢ] " + ex.Message;
+            }
+        }
+
+        // =========================================================================
+        // 3. THỐNG KÊ THEO THÁNG
+        // =========================================================================
+        private async Task<string> LayThongTinTheoThangAsync(string cauHoi)
+        {
+            try
+            {
+                int thang = DateTime.Now.Month, nam = DateTime.Now.Year;
+
+                // Parse tháng/năm từ câu hỏi (vd: "tháng 6/2026")
+                var match = System.Text.RegularExpressions.Regex.Match(cauHoi, @"(\d{1,2})\s*[/\-]\s*(\d{4})");
+                if (match.Success)
+                {
+                    thang = int.Parse(match.Groups[1].Value);
+                    nam = int.Parse(match.Groups[2].Value);
+                }
+
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var sb = new StringBuilder();
+                    sb.AppendLine($"【BÁO CÁO THÁNG {thang}/{nam}】");
+
+                    // Tổng quan
+                    using (var cmd = new SqlCommand(@"
+                        SELECT COUNT(*) AS SL, ISNULL(SUM(TienNhuanbut),0) AS Tong,
+                               COUNT(DISTINCT Butdanh) AS SoTG
+                        FROM Nhuanbut WHERE MONTH(ngaychuyen)=@t AND YEAR(ngaychuyen)=@n", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@t", thang);
+                        cmd.Parameters.AddWithValue("@n", nam);
+                        using (var r = await cmd.ExecuteReaderAsync())
+                        {
+                            if (r.Read())
+                                sb.AppendLine($"Tổng: {r["SL"]} bài, {Convert.ToDecimal(r["Tong"]):N0}đ, {r["SoTG"]} tác giả");
+                            r.Close();
+                        }
+                    }
+
+                    // Top 5 tác giả
+                    using (var cmd = new SqlCommand(@"
+                        SELECT TOP 5 nb.Butdanh, COUNT(*) AS SL, ISNULL(SUM(nb.TienNhuanbut),0) AS Tong
+                        FROM Nhuanbut nb WHERE MONTH(nb.ngaychuyen)=@t AND YEAR(nb.ngaychuyen)=@n
+                        GROUP BY nb.Butdanh ORDER BY Tong DESC", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@t", thang);
+                        cmd.Parameters.AddWithValue("@n", nam);
+                        sb.AppendLine("Top tác giả:");
+                        using (var r = await cmd.ExecuteReaderAsync())
+                        {
+                            int stt = 1;
+                            while (r.Read())
+                                sb.AppendLine($"  {stt++}. {r["Butdanh"]}: {r["SL"]} bài - {Convert.ToDecimal(r["Tong"]):N0}đ");
+                            r.Close();
+                        }
+                    }
+
+                    // Theo thể loại
+                    using (var cmd = new SqlCommand(@"
+                        SELECT Muc, COUNT(*) AS SL, ISNULL(SUM(TienNhuanbut),0) AS Tong
+                        FROM Nhuanbut WHERE MONTH(ngaychuyen)=@t AND YEAR(ngaychuyen)=@n
+                        GROUP BY Muc ORDER BY Tong DESC", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@t", thang);
+                        cmd.Parameters.AddWithValue("@n", nam);
+                        sb.AppendLine("Theo thể loại:");
+                        using (var r = await cmd.ExecuteReaderAsync())
+                        {
+                            while (r.Read())
+                                sb.AppendLine($"  • {r["Muc"]}: {r["SL"]} bài - {Convert.ToDecimal(r["Tong"]):N0}đ");
+                            r.Close();
+                        }
+                    }
+
+                    return sb.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return "[LỖI THỐNG KÊ] " + ex.Message;
+            }
+        }
+
+        // =========================================================================
+        // 4. PHIẾU CHI
+        // =========================================================================
+        private async Task<string> LayThongTinPhieuChiAsync()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var sb = new StringBuilder();
+
+                    using (var cmd = new SqlCommand(@"
+                        SELECT 
+                            COUNT(*) AS TongPhieu,
+                            ISNULL(SUM(Sotien),0) AS TongTien,
+                            ISNULL(SUM(Thue),0) AS TongThue,
+                            SUM(CASE WHEN TrangThaiDuyet = 1 THEN Sotien ELSE 0 END) AS DaDuyet,
+                            SUM(CASE WHEN TrangThaiDuyet = 0 THEN Sotien ELSE 0 END) AS ChoDuyet
+                        FROM Phieuchi", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
+                    {
+                        if (r.Read())
+                        {
+                            sb.AppendLine("【PHIẾU CHI】");
+                            sb.AppendLine($"Tổng: {r["TongPhieu"]} phiếu");
+                            sb.AppendLine($"Tổng tiền: {Convert.ToDecimal(r["TongTien"]):N0}đ");
+                            sb.AppendLine($"Thuế: {Convert.ToDecimal(r["TongThue"]):N0}đ");
+                            sb.AppendLine($"Đã duyệt: {Convert.ToDecimal(r["DaDuyet"]):N0}đ");
+                            sb.AppendLine($"Chờ duyệt: {Convert.ToDecimal(r["ChoDuyet"]):N0}đ");
+                        }
+                        r.Close();
+                    }
+
+                    return sb.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return "[LỖI PHIẾU CHI] " + ex.Message;
+            }
+        }
+
+        // =========================================================================
+        // 5. PHÁT HIỆN BẤT THƯỜNG
+        // =========================================================================
+        private async Task<string> LayThongTinBatThuongAsync()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var warnings = new List<string>();
+
+                    // Bài chờ quá 7 ngày
+                    using (var cmd = new SqlCommand(@"
+                        SELECT COUNT(*) AS SL FROM Nhuanbut 
+                        WHERE TrangThaiDuyet < 2 AND ngaychuyen < DATEADD(DAY, -7, GETDATE())", conn))
+                    {
+                        int sl = (int)(await cmd.ExecuteScalarAsync() ?? 0);
+                        if (sl > 0) warnings.Add($"⚠️ {sl} bài chờ duyệt quá 7 ngày");
+                    }
+
+                    // Tác giả nộp dày đặc 7 ngày
+                    using (var cmd = new SqlCommand(@"
+                        SELECT Butdanh, COUNT(*) AS SL FROM Nhuanbut
+                        WHERE ngaychuyen >= DATEADD(DAY, -7, GETDATE())
+                        GROUP BY Butdanh HAVING COUNT(*) >= 5", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
+                    {
+                        while (r.Read())
+                            warnings.Add($"⚠️ Tác giả '{r["Butdanh"]}' nộp {r["SL"]} bài/7 ngày");
+                        r.Close();
+                    }
+
+                    // Vượt định mức
+                    using (var cmd = new SqlCommand(@"
+                        SELECT nb.Muc, nb.Butdanh, nb.TienNhuanbut, dm.MucToiDa
+                        FROM Nhuanbut nb JOIN DinhMuc dm ON nb.Muc = dm.Muc
+                        WHERE nb.TienNhuanbut > dm.MucToiDa AND nb.TrangThaiDuyet < 2", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
+                    {
+                        while (r.Read())
+                            warnings.Add($"🚨 {r["Butdanh"]}: {r["TienNhuanbut"]:N0}đ > {r["MucToiDa"]:N0}đ (định mức {r["Muc"]})");
+                        r.Close();
+                    }
+
+                    // Phiếu chi chờ > 5 ngày
+                    using (var cmd = new SqlCommand(@"
+                        SELECT COUNT(*) AS SL FROM Phieuchi 
+                        WHERE TrangThaiDuyet = 0 AND Ngaylap < DATEADD(DAY, -5, GETDATE())", conn))
+                    {
+                        int slPc = (int)(await cmd.ExecuteScalarAsync() ?? 0);
+                        if (slPc > 0) warnings.Add($"⚠️ {slPc} phiếu chi chờ duyệt quá 5 ngày");
+                    }
+
+                    if (warnings.Count == 0) return "✅ Không phát hiện bất thường nào.";
+                    return "【PHÁT HIỆN BẤT THƯỜNG】\n" + string.Join("\n", warnings);
+                }
+            }
+            catch (Exception ex)
+            {
+                return "[LỖI] " + ex.Message;
+            }
+        }
+
+        // =========================================================================
+        // 6. ĐỊNH MỨC
+        // =========================================================================
+        private async Task<string> LayThongTinDinhMucAsync()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var sb = new StringBuilder();
+                    sb.AppendLine("【ĐỊNH MỨC NHUẬN BÚT】");
+
+                    using (var cmd = new SqlCommand("SELECT Muc, MucToiDa FROM DinhMuc ORDER BY MucToiDa DESC", conn))
+                    using (var r = await cmd.ExecuteReaderAsync())
+                    {
+                        while (r.Read())
+                            sb.AppendLine($"• {r["Muc"]}: tối đa {Convert.ToDecimal(r["MucToiDa"]):N0}đ");
+                        r.Close();
+                    }
+
+                    return sb.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return "[LỖI] " + ex.Message;
+            }
+        }
+
+        // =========================================================================
+        // HIỂN THỊ BONG BÓNG CHAT
+        // =========================================================================
         private void ThemBongBongChat(string tinNhan, bool isUser)
         {
-            Label lbl = new Label();
-            lbl.Text = tinNhan;
-            lbl.AutoSize = true;
-            lbl.MaximumSize = new Size(flpChat.Width - 60, 0);
-            lbl.Padding = new Padding(14);
-            lbl.Margin = new Padding(10, 8, 10, 8);
-            lbl.Font = new Font("Segoe UI", 10.5F);
+            if (this.IsDisposed || flpChat.IsDisposed) return;
 
-            if (isUser)
+            try
             {
-                lbl.BackColor = Color.FromArgb(79, 70, 229);
-                lbl.ForeColor = Color.White;
-            }
-            else
-            {
-                lbl.BackColor = Color.FromArgb(241, 245, 249);
-                lbl.ForeColor = Color.FromArgb(15, 23, 42);
-            }
+                Label lbl = new Label();
+                lbl.Text = tinNhan;
+                lbl.AutoSize = true;
+                lbl.MaximumSize = new Size(flpChat.Width - 60, 0);
+                lbl.Padding = new Padding(14);
+                lbl.Margin = new Padding(10, 8, 10, 8);
+                lbl.Font = new Font("Segoe UI", 10.5F);
 
-            flpChat.Controls.Add(lbl);
-            flpChat.ScrollControlIntoView(lbl);
+                if (isUser)
+                {
+                    lbl.BackColor = Color.FromArgb(79, 70, 229);
+                    lbl.ForeColor = Color.White;
+                    lbl.TextAlign = ContentAlignment.MiddleRight;
+                }
+                else
+                {
+                    lbl.BackColor = Color.FromArgb(241, 245, 249);
+                    lbl.ForeColor = Color.FromArgb(15, 23, 42);
+                }
+
+                flpChat.Controls.Add(lbl);
+                flpChat.ScrollControlIntoView(lbl);
+            }
+            catch (ObjectDisposedException) { }
         }
-
     }
 }

@@ -25,6 +25,7 @@ namespace HETHONGTINHNHUANBUT
         {
             await AutoFixDatabaseColumns();
             ApplyPermissions();
+            CreateAIControls();
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
@@ -112,6 +113,28 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
+        private void CreateAIControls()
+        {
+            var existing = this.Controls.Find("btnBaoCaoAI", true);
+            if (existing.Length > 0) return;
+
+            var btn = new Guna.UI2.WinForms.Guna2Button();
+            btn.Name = "btnBaoCaoAI";
+            btn.Text = "BÁO CÁO TỔNG KẾT AI";
+            btn.Dock = DockStyle.Top;
+            btn.FillColor = System.Drawing.Color.FromArgb(224, 242, 254);
+            btn.ForeColor = System.Drawing.Color.FromArgb(2, 132, 199);
+            btn.BorderColor = System.Drawing.Color.FromArgb(147, 197, 253);
+            btn.BorderThickness = 1;
+            btn.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btn.Size = new System.Drawing.Size(252, 50);
+            btn.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            btn.TextOffset = new System.Drawing.Point(20, 0);
+            btn.Click += btnBaoCaoAI_Click;
+            pnlMenu.Controls.Add(btn);
+            pnlMenu.Controls.SetChildIndex(btn, pnlMenu.Controls.GetChildIndex(btnTongQuan));
+        }
+
         private void ApplyPermissions()
         {
             btnDuyetChi.Visible = false;
@@ -193,6 +216,11 @@ namespace HETHONGTINHNHUANBUT
         // ==========================================================
         // CÁC SỰ KIỆN MỞ FORM CON
         // ==========================================================
+        private void btnBaoCaoAI_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoAI(), sender as Guna2Button);
+        }
+
         private void btnTroLyAI_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);

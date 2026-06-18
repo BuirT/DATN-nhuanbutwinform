@@ -36,6 +36,7 @@
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
+            this.pnlHeader.Controls.Add(this.lblMaSo);
             this.pnlHeader.Controls.Add(this.btnRefresh);
             this.pnlHeader.Controls.Add(this.lblTitle);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -67,6 +68,17 @@
             this.lblTitle.Size = new System.Drawing.Size(500, 45);
             this.lblTitle.TabIndex = 3;
             this.lblTitle.Text = "TRUNG TÂM THU NHẬP";
+            // 
+            // lblMaSo
+            // 
+            this.lblMaSo = new System.Windows.Forms.Label();
+            this.lblMaSo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblMaSo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblMaSo.Location = new System.Drawing.Point(16, 58);
+            this.lblMaSo.Name = "lblMaSo";
+            this.lblMaSo.Size = new System.Drawing.Size(400, 20);
+            this.lblMaSo.TabIndex = 4;
+            this.lblMaSo.Text = "";
             // 
             // pnlCards
             // 
@@ -224,7 +236,7 @@
         }
 
         private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.Label lblTitle, label1, label2, lblTongTien, lblDangCho;
+        private System.Windows.Forms.Label lblTitle, label1, label2, lblTongTien, lblDangCho, lblMaSo;
         private Guna.UI2.WinForms.Guna2Button btnRefresh;
         private System.Windows.Forms.FlowLayoutPanel pnlCards;
         private Guna.UI2.WinForms.Guna2Panel pnlDaNhan, pnlChoChi;
