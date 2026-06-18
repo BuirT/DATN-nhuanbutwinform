@@ -18,6 +18,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmBaoCaoChiTiet_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvChiTiet);
             dtpThang.Value = DateTime.Now;
             LoadAuthors();
         }

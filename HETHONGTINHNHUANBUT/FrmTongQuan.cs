@@ -173,12 +173,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvHoatDong.Columns["Ngay"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
                 }
 
-                foreach (DataGridViewColumn col in dgvHoatDong.Columns)
-                {
-                    col.DefaultCellStyle.SelectionBackColor = col.Index % 2 == 0 ? Color.White : Color.FromArgb(248, 250, 252);
-                    col.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-                }
-
                 dgvHoatDong.ClearSelection();
             }
             catch { }

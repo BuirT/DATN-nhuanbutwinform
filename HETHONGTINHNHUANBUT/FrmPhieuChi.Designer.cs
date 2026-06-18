@@ -210,7 +210,6 @@
             this.txtCMND.SelectedText = "";
             this.txtCMND.Size = new System.Drawing.Size(180, 36);
             this.txtCMND.TabIndex = 8;
-            this.txtCMND.TextChanged += new System.EventHandler(this.txtCMND_TextChanged);
             // 
             // labelSDT
             // 
@@ -238,7 +237,6 @@
             this.txtDienThoai.SelectedText = "";
             this.txtDienThoai.Size = new System.Drawing.Size(180, 36);
             this.txtDienThoai.TabIndex = 10;
-            this.txtDienThoai.TextChanged += new System.EventHandler(this.txtDienThoai_TextChanged);
             // 
             // labelMST
             // 

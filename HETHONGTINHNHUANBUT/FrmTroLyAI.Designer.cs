@@ -67,7 +67,6 @@
             this.lblTitle.Size = new System.Drawing.Size(313, 32);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "🤖  TRỢ LÝ AI - NEWSPAY";
-            this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
             // pnlChat
             // 

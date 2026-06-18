@@ -61,9 +61,6 @@ namespace HETHONGTINHNHUANBUT
             typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(dgvChuaThanhToan, true, null);
 
-            dgvChuaThanhToan.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            dgvChuaThanhToan.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-
             txtDienThoai.KeyPress += OnlyNumber_KeyPress;
             txtCMND.KeyPress += OnlyNumber_KeyPress;
             txtMST.KeyPress += OnlyNumber_KeyPress;
@@ -372,7 +369,5 @@ namespace HETHONGTINHNHUANBUT
 
         private void txtThueSuat_TextChanged(object sender, EventArgs e) => TinhToanTien();
 
-        private void txtCMND_TextChanged(object sender, EventArgs e) { }
-        private void txtDienThoai_TextChanged(object sender, EventArgs e) { }
     }
 }

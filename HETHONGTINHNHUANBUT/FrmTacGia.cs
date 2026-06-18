@@ -135,13 +135,6 @@ namespace HETHONGTINHNHUANBUT
                     if (dgvTacGia.Columns["PhanLoai"] != null) dgvTacGia.Columns["PhanLoai"].HeaderText = "PHÂN LOẠI";
                 }
 
-                // ÉP TRỰC TIẾP MÀU CHỌN CHO CÁC CỘT RUNTIME: Giữ màu xanh nhạt pastel dịu mắt khi click chọn dòng
-                foreach (DataGridViewColumn col in dgvTacGia.Columns)
-                {
-                    col.DefaultCellStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
-                    col.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-                }
-
                 dgvTacGia.ClearSelection();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi lấy dữ liệu SQL: " + ex.Message); }

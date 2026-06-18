@@ -97,12 +97,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvButDanh.Columns["Hoten"].HeaderText = "TÊN TÁC GIẢ CHỦ QUẢN";
                 }
 
-                foreach (DataGridViewColumn col in dgvButDanh.Columns)
-                {
-                    col.DefaultCellStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
-                    col.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-                }
-
                 dgvButDanh.ClearSelection();
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu Bút danh SQL: " + ex.Message); }

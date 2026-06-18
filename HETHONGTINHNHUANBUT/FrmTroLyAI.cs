@@ -168,6 +168,5 @@ Câu hỏi của đồng chí: ";
             flpChat.ScrollControlIntoView(lbl);
         }
 
-        private void lblTitle_Click(object sender, EventArgs e) { }
     }
 }

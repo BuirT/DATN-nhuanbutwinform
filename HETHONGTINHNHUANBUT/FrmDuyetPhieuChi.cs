@@ -22,8 +22,6 @@ namespace HETHONGTINHNHUANBUT
 
             typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(dgvPhieuChi, true, null);
-            dgvPhieuChi.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            dgvPhieuChi.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
         }
 
         private async void FrmDuyetPhieuChi_Load(object sender, EventArgs e)
