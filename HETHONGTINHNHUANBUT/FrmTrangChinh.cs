@@ -218,7 +218,12 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnSubSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao());
         private void btnSubLoaiBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmLoaiBao());
-        private void btnTraCuuCaNhan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTraCuuNhuanBut(), sender as Guna2Button);
+        private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
+        {
+            FrmTraCuuNhuanBut frm = new FrmTraCuuNhuanBut();
+            frm.NguoiDangNhap = this.currentUserName;
+            OpenChildForm(frm, sender as Guna2Button);
+        }
         private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
         private void btnTacGia_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia(), sender as Guna2Button);
         private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh(), sender as Guna2Button);

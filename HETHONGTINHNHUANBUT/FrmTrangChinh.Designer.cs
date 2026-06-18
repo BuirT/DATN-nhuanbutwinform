@@ -27,6 +27,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnPhieuChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnKiemDuyet = new Guna.UI2.WinForms.Guna2Button();
             this.btnNhapNhuanBut = new Guna.UI2.WinForms.Guna2Button();
+            this.btnTraCuuCaNhan = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubLoaiBao = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubSoBao = new Guna.UI2.WinForms.Guna2Button();
             this.btnQuanLyBao = new Guna.UI2.WinForms.Guna2Button();
@@ -56,6 +57,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnPhieuChi);
             this.pnlMenu.Controls.Add(this.btnKiemDuyet);
             this.pnlMenu.Controls.Add(this.btnNhapNhuanBut);
+            this.pnlMenu.Controls.Add(this.btnTraCuuCaNhan);
             this.pnlMenu.Controls.Add(this.btnSubLoaiBao);
             this.pnlMenu.Controls.Add(this.btnSubSoBao);
             this.pnlMenu.Controls.Add(this.btnQuanLyBao);
@@ -180,6 +182,22 @@ namespace HETHONGTINHNHUANBUT
             this.btnNhapNhuanBut.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnNhapNhuanBut.TextOffset = new System.Drawing.Point(20, 0);
             this.btnNhapNhuanBut.Click += new System.EventHandler(this.btnNhapNhuanBut_Click);
+            // 
+            // btnTraCuuCaNhan
+            // 
+            this.btnTraCuuCaNhan.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnTraCuuCaNhan.FillColor = System.Drawing.Color.Transparent;
+            this.btnTraCuuCaNhan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnTraCuuCaNhan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnTraCuuCaNhan.Location = new System.Drawing.Point(14, 440);
+            this.btnTraCuuCaNhan.Name = "btnTraCuuCaNhan";
+            this.btnTraCuuCaNhan.Size = new System.Drawing.Size(252, 50);
+            this.btnTraCuuCaNhan.TabIndex = 16;
+            this.btnTraCuuCaNhan.Text = "📋 TRA CỨU CÁ NHÂN";
+            this.btnTraCuuCaNhan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnTraCuuCaNhan.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnTraCuuCaNhan.Visible = false;
+            this.btnTraCuuCaNhan.Click += new System.EventHandler(this.btnTraCuuCaNhan_Click);
             // 
             // btnKiemDuyet
             // 
@@ -398,6 +416,7 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnButDanh;
         private Guna.UI2.WinForms.Guna2Button btnTaiKhoan;
         private Guna.UI2.WinForms.Guna2Button btnNhapNhuanBut;
+        private Guna.UI2.WinForms.Guna2Button btnTraCuuCaNhan;
         private Guna.UI2.WinForms.Guna2Button btnPhieuChi;
         private Guna.UI2.WinForms.Guna2Button btnDuyetChi;
         private Guna.UI2.WinForms.Guna2Button btnBaoCao;
