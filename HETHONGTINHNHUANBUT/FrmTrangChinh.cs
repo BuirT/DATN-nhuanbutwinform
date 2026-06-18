@@ -141,9 +141,13 @@ namespace HETHONGTINHNHUANBUT
             btnKiemDuyet.Visible = false;
             btnPhieuChi.Visible = false;
             btnTaiKhoan.Visible = false;
+            btnTroLyAI.Visible = false;
+            btnBaoCaoAI.Visible = false;
 
             if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuu)
                 btnTraCuu.Visible = false;
+            if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
+                btnDot.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
@@ -158,29 +162,32 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCao.Visible = false;
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
-                btnTroLyAI.Visible = false; // Phóng viên không cần AI kế toán
 
-                // Ẩn nút Quản lý đợt chi trả đối với phóng viên
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
-                    btnDot.Visible = false;
-
-                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
-                    btnTraCuuVisible.Visible = true;
+                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
+                    btn.Visible = true;
             }
             else if (role == "thư ký")
             {
                 btnKiemDuyet.Visible = true;
+            }
+            else if (role == "kế toán")
+            {
+                btnKiemDuyet.Visible = true;
+                btnPhieuChi.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
+                    btnDot2.Visible = true;
             }
             else if (role == "lãnh đạo")
             {
                 btnKiemDuyet.Visible = true;
                 btnDuyetChi.Visible = true;
                 btnTaiKhoan.Visible = true;
-            }
-            else if (role == "kế toán")
-            {
-                btnKiemDuyet.Visible = true;
-                btnPhieuChi.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
+                    btnDot2.Visible = true;
             }
             else if (role == "admin" || role == "quản trị viên")
             {
@@ -188,6 +195,10 @@ namespace HETHONGTINHNHUANBUT
                 btnDuyetChi.Visible = true;
                 btnPhieuChi.Visible = true;
                 btnTaiKhoan.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
+                    btnDot2.Visible = true;
             }
         }
 
