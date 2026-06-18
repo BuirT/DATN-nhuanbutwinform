@@ -225,12 +225,6 @@
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmBaoCaoChiTiet.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmBaoCaoChiTiet.Designer.cs">
-      <DependentUpon>FrmBaoCaoChiTiet.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmBaoCaoCongNo.cs">
       <SubType>Form</SubType>
     </Compile>

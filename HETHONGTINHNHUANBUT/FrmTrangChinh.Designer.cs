@@ -23,7 +23,6 @@ namespace HETHONGTINHNHUANBUT
             this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
             this.btnDotThanhToan = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubBaoCaoTH = new Guna.UI2.WinForms.Guna2Button();
-            this.btnSubBaoCaoCT = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubBaoCaoCN = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
             this.btnDuyetChi = new Guna.UI2.WinForms.Guna2Button();
@@ -56,7 +55,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnDangXuat);
             this.pnlMenu.Controls.Add(this.btnDotThanhToan);
             this.pnlMenu.Controls.Add(this.btnSubBaoCaoTH);
-            this.pnlMenu.Controls.Add(this.btnSubBaoCaoCT);
             this.pnlMenu.Controls.Add(this.btnSubBaoCaoCN);
             this.pnlMenu.Controls.Add(this.btnBaoCao);
             this.pnlMenu.Controls.Add(this.btnDuyetChi);
@@ -144,22 +142,6 @@ namespace HETHONGTINHNHUANBUT
             this.btnSubBaoCaoTH.TextOffset = new System.Drawing.Point(40, 0);
             this.btnSubBaoCaoTH.Visible = false;
             this.btnSubBaoCaoTH.Click += new System.EventHandler(this.btnSubBaoCaoTH_Click);
-            // 
-            // btnSubBaoCaoCT
-            // 
-            this.btnSubBaoCaoCT.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSubBaoCaoCT.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.btnSubBaoCaoCT.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSubBaoCaoCT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            this.btnSubBaoCaoCT.Location = new System.Drawing.Point(14, 795);
-            this.btnSubBaoCaoCT.Name = "btnSubBaoCaoCT";
-            this.btnSubBaoCaoCT.Size = new System.Drawing.Size(252, 45);
-            this.btnSubBaoCaoCT.TabIndex = 7;
-            this.btnSubBaoCaoCT.Text = "• Chi tiết";
-            this.btnSubBaoCaoCT.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnSubBaoCaoCT.TextOffset = new System.Drawing.Point(40, 0);
-            this.btnSubBaoCaoCT.Visible = false;
-            this.btnSubBaoCaoCT.Click += new System.EventHandler(this.btnSubBaoCaoCT_Click);
             // 
             // btnSubBaoCaoCN
             // 
@@ -484,7 +466,6 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnDuyetChi;
         private Guna.UI2.WinForms.Guna2Button btnBaoCao;
         private Guna.UI2.WinForms.Guna2Button btnSubBaoCaoCN;
-        private Guna.UI2.WinForms.Guna2Button btnSubBaoCaoCT;
         private Guna.UI2.WinForms.Guna2Button btnSubBaoCaoTH;
         private Guna.UI2.WinForms.Guna2Button btnDotThanhToan;
         private Guna.UI2.WinForms.Guna2Button btnTaiKhoan;

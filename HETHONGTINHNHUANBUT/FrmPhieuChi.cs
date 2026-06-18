@@ -64,6 +64,8 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmPhieuChi_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvChuaThanhToan);
+            dgvChuaThanhToan.ReadOnly = false;
+            dgvChuaThanhToan.ThemeStyle.ReadOnly = false;
             cboTacGia.SelectedIndexChanged -= cboTacGia_SelectedIndexChanged;
             await LoadAuthorsAsync();
             cboTacGia.SelectedIndexChanged += cboTacGia_SelectedIndexChanged;

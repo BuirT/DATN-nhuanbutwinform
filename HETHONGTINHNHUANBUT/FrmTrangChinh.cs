@@ -171,16 +171,15 @@ namespace HETHONGTINHNHUANBUT
                 btnSubButDanh.Visible = false;
                 btnBaoCao.Visible = false;
                 btnSubBaoCaoTH.Visible = false;
-                btnSubBaoCaoCT.Visible = false;
+
                 btnSubBaoCaoCN.Visible = false;
-                btnBaoCaoChiTiet.Visible = false;
-                btnBaoCaoCongNo.Visible = false;
+
 
                 if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
                     btn.Visible = true;
                 btnTroLyAI.Visible = false;
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
-                    btnDot.Visible = false;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDotPV)
+                    btnDotPV.Visible = false;
                 if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
                     btnTraCuuVisible.Visible = true;
             }
@@ -335,12 +334,10 @@ namespace HETHONGTINHNHUANBUT
         {
             bool isExpanded = btnSubBaoCaoTH.Visible;
             btnSubBaoCaoTH.Visible = !isExpanded;
-            btnSubBaoCaoCT.Visible = !isExpanded;
             btnSubBaoCaoCN.Visible = !isExpanded;
             btnBaoCao.Text = isExpanded ? "BÁO CÁO  ▼" : "BÁO CÁO  ▲";
         }
         private void btnSubBaoCaoTH_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
-        private void btnSubBaoCaoCT_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoChiTiet(), sender as Guna2Button);
         private void btnSubBaoCaoCN_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
 
         private void btnDangXuat_Click(object sender, EventArgs e)
