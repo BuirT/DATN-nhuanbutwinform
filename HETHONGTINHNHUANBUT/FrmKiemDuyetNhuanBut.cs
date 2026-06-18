@@ -1,0 +1,292 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace HETHONGTINHNHUANBUT
+{
+    public partial class FrmKiemDuyetNhuanBut : Form
+    {
+        private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
+        private string _selectedMaso = "";
+        private int _trangThaiHienTai = 0;
+
+        public string QuyenHienTai { get; set; }
+        public string NguoiDangNhap { get; set; }
+
+        public FrmKiemDuyetNhuanBut()
+        {
+            InitializeComponent();
+        }
+
+        private void FrmKiemDuyetNhuanBut_Load(object sender, EventArgs e)
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+
+            if (role == "thư ký" || role == "admin" || role == "quản trị viên")
+            {
+                _trangThaiHienTai = 0;
+                lblRoleInfo.Text = "👤 Thư ký: Duyệt nội dung bài viết";
+                lblRoleInfo.ForeColor = Color.FromArgb(245, 158, 11);
+                btnXacNhan.Text = "✅ DUYỆT NỘI DUNG";
+                btnXacNhan.FillColor = Color.FromArgb(16, 185, 129);
+                btnTuChoi.Visible = true;
+                lblTien.Visible = false;
+                txtTienNhuanBut.Visible = false;
+            }
+            else if (role == "kế toán")
+            {
+                _trangThaiHienTai = 1;
+                lblRoleInfo.Text = "👤 Kế toán: Tính tiền nhuận bút";
+                lblRoleInfo.ForeColor = Color.FromArgb(59, 130, 246);
+                btnXacNhan.Text = "✅ XÁC NHẬN TIỀN";
+                btnXacNhan.FillColor = Color.FromArgb(59, 130, 246);
+                btnTuChoi.Visible = true;
+                btnTuChoi.Text = "❌ TRẢ VỀ THƯ KÝ";
+                lblTien.Visible = true;
+                txtTienNhuanBut.Visible = true;
+            }
+            else if (role == "lãnh đạo")
+            {
+                _trangThaiHienTai = 2;
+                lblRoleInfo.Text = "👤 Lãnh đạo: Ký duyệt xuất bản";
+                lblRoleInfo.ForeColor = Color.FromArgb(79, 70, 229);
+                btnXacNhan.Text = "✅ KÝ DUYỆT XUẤT BẢN";
+                btnXacNhan.FillColor = Color.FromArgb(79, 70, 229);
+                btnTuChoi.Visible = true;
+                btnTuChoi.Text = "❌ TRẢ VỀ KẾ TOÁN";
+                lblTien.Visible = false;
+                txtTienNhuanBut.Visible = false;
+            }
+            else
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng này!", "Từ chối", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Close();
+                return;
+            }
+
+            _ = LoadDataAsync();
+        }
+
+        private async Task LoadDataAsync()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    string query = @"
+                        SELECT n.Maso, n.Tenbai, n.Trang, n.Muc, n.Butdanh, 
+                               n.TienNhuanbut, n.LuotXem, n.LuotThich,
+                               n.NguoiNhap, n.NguoiKiemTra, n.NguoiKeToan,
+                               b.Tenbao AS TenSoBao
+                        FROM Nhuanbut n
+                        LEFT JOIN Bao b ON n.MsBao = b.Maso
+                        WHERE n.TrangThaiDuyet = @tt
+                        ORDER BY n.ngaychuyen DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tt", _trangThaiHienTai);
+                        DataTable dt = new DataTable();
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            dt.Load(reader);
+                        }
+                        dgvNhuanBut.DataSource = dt;
+
+                        if (dgvNhuanBut.Columns.Count > 0)
+                        {
+                            if (dgvNhuanBut.Columns["Maso"] != null) dgvNhuanBut.Columns["Maso"].Visible = false;
+                            if (dgvNhuanBut.Columns["Tenbai"] != null) { dgvNhuanBut.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvNhuanBut.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
+                            if (dgvNhuanBut.Columns["Trang"] != null) dgvNhuanBut.Columns["Trang"].HeaderText = "TRANG";
+                            if (dgvNhuanBut.Columns["Muc"] != null) dgvNhuanBut.Columns["Muc"].HeaderText = "MỤC";
+                            if (dgvNhuanBut.Columns["Butdanh"] != null) dgvNhuanBut.Columns["Butdanh"].HeaderText = "BÚT DANH";
+                            if (dgvNhuanBut.Columns["TienNhuanbut"] != null) { dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "TIỀN NB"; dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
+                            if (dgvNhuanBut.Columns["LuotXem"] != null) dgvNhuanBut.Columns["LuotXem"].HeaderText = "VIEWS";
+                            if (dgvNhuanBut.Columns["LuotThich"] != null) dgvNhuanBut.Columns["LuotThich"].HeaderText = "LIKES";
+                            if (dgvNhuanBut.Columns["NguoiNhap"] != null) dgvNhuanBut.Columns["NguoiNhap"].HeaderText = "NGƯỜI NHẬP";
+                            if (dgvNhuanBut.Columns["NguoiKiemTra"] != null) dgvNhuanBut.Columns["NguoiKiemTra"].HeaderText = "THƯ KÝ";
+                            if (dgvNhuanBut.Columns["NguoiKeToan"] != null) dgvNhuanBut.Columns["NguoiKeToan"].HeaderText = "KẾ TOÁN";
+                            if (dgvNhuanBut.Columns["TenSoBao"] != null) dgvNhuanBut.Columns["TenSoBao"].HeaderText = "SỐ BÁO";
+                        }
+                        lblCount.Text = $"📋 Tổng số: {dt.Rows.Count} bài chờ duyệt";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+            }
+        }
+
+        private async void btnXacNhan_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_selectedMaso))
+            {
+                MessageBox.Show("Vui lòng chọn một bài viết để duyệt!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+            string action = "";
+            int trangThaiMoi = 0;
+
+            if (role == "thư ký" || role == "admin" || role == "quản trị viên")
+            {
+                action = "duyệt nội dung";
+                trangThaiMoi = 1;
+            }
+            else if (role == "kế toán")
+            {
+                action = "xác nhận tiền";
+                trangThaiMoi = 2;
+            }
+            else if (role == "lãnh đạo")
+            {
+                action = "ký duyệt";
+                trangThaiMoi = 3;
+            }
+
+            string msg = $"Xác nhận {action} cho bài viết này?";
+            if (MessageBox.Show(msg, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                    {
+                        await conn.OpenAsync();
+
+                        if (role == "thư ký" || role == "admin" || role == "quản trị viên")
+                        {
+                            string sql = @"UPDATE Nhuanbut SET 
+                                           TrangThaiDuyet = @tt, 
+                                           NguoiKiemTra = @nguoi 
+                                           WHERE Maso = @ma";
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@tt", trangThaiMoi);
+                                cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "Thư ký");
+                                cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+                        else if (role == "kế toán")
+                        {
+                            decimal tienNB = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
+                            string sql = @"UPDATE Nhuanbut SET 
+                                           TrangThaiDuyet = @tt, 
+                                           TienNhuanbut = @tien,
+                                           NguoiKeToan = @nguoi 
+                                           WHERE Maso = @ma";
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@tt", trangThaiMoi);
+                                cmd.Parameters.AddWithValue("@tien", tienNB);
+                                cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "Kế toán");
+                                cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+                        else if (role == "lãnh đạo")
+                        {
+                            string sql = @"UPDATE Nhuanbut SET 
+                                           TrangThaiDuyet = @tt, 
+                                           TongThuKy = @nguoi 
+                                           WHERE Maso = @ma";
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@tt", trangThaiMoi);
+                                cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "Lãnh đạo");
+                                cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+                    }
+
+                    MessageBox.Show($"Đã {action} thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _selectedMaso = "";
+                    txtTienNhuanBut.Text = "0";
+                    await LoadDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message);
+                }
+            }
+        }
+
+        private async void btnTuChoi_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_selectedMaso))
+            {
+                MessageBox.Show("Vui lòng chọn bài viết cần trả về!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+            string msg = "";
+            int trangThaiVe = 0;
+            string action = "";
+
+            if (role == "thư ký" || role == "admin" || role == "quản trị viên")
+            {
+                msg = "Trả bài này về cho Phóng viên sửa?";
+                trangThaiVe = 0;
+                action = "trả về Phóng viên";
+            }
+            else if (role == "kế toán")
+            {
+                msg = "Trả bài này về cho Thư ký?";
+                trangThaiVe = 0;
+                action = "trả về Thư ký";
+            }
+            else if (role == "lãnh đạo")
+            {
+                msg = "Trả bài này về cho Kế toán tính lại tiền?";
+                trangThaiVe = 1;
+                action = "trả về Kế toán";
+            }
+
+            if (MessageBox.Show(msg, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                    {
+                        await conn.OpenAsync();
+                        string sql = "UPDATE Nhuanbut SET TrangThaiDuyet = @tt WHERE Maso = @ma";
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@tt", trangThaiVe);
+                            cmd.Parameters.AddWithValue("@ma", _selectedMaso);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    MessageBox.Show($"Đã {action}!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _selectedMaso = "";
+                    await LoadDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message);
+                }
+            }
+        }
+
+        private void dgvNhuanBut_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && dgvNhuanBut.CurrentRow != null)
+            {
+                _selectedMaso = dgvNhuanBut.Rows[e.RowIndex].Cells["Maso"].Value?.ToString();
+                string role = QuyenHienTai?.Trim().ToLower() ?? "";
+                if (role == "kế toán" && dgvNhuanBut.Rows[e.RowIndex].Cells["TienNhuanbut"].Value != null)
+                {
+                    txtTienNhuanBut.Text = Convert.ToDecimal(dgvNhuanBut.Rows[e.RowIndex].Cells["TienNhuanbut"].Value).ToString("0");
+                }
+            }
+        }
+    }
+}

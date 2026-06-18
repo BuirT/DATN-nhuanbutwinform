@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -13,9 +15,6 @@ namespace HETHONGTINHNHUANBUT
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         private string _selectedMaso = null;
         private string _searchKeyword = "";
-        private double _diemAI = 0;
-        private string _tyLeDaoVan = "";
-        private string _nhanXetAI = "";
 
         public string NguoiDangNhap { get; set; }
         public string QuyenHienTai { get; set; }
@@ -45,6 +44,8 @@ namespace HETHONGTINHNHUANBUT
             cboVungChuyenDen.IntegralHeight = true;
             cboVungChuyenDen.MaxDropDownItems = 15;
 
+            txtTienNhuanBut.Leave += txtTienNhuanBut_Leave;
+
             cboSoBao.SelectedIndexChanged += cboSoBao_SelectedIndexChanged;
             txtTimKiem.TextChanged += txtTimKiem_TextChanged;
 
@@ -59,21 +60,37 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    // Nới rộng cột TyLeDaoVan lên 255 ký tự để tránh lỗi tràn dữ liệu khi AI nói nhiều
                     string fixSql = @"
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LuotXem' AND Object_ID = Object_ID(N'Nhuanbut'))
-                            ALTER TABLE Nhuanbut ADD LuotXem INT DEFAULT 0;
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LuotThich' AND Object_ID = Object_ID(N'Nhuanbut'))
-                            ALTER TABLE Nhuanbut ADD LuotThich INT DEFAULT 0;
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'DiemAI' AND Object_ID = Object_ID(N'Nhuanbut'))
-                            ALTER TABLE Nhuanbut ADD DiemAI FLOAT DEFAULT 0;
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TyLeDaoVan' AND Object_ID = Object_ID(N'Nhuanbut'))
-                            ALTER TABLE Nhuanbut ADD TyLeDaoVan NVARCHAR(255);
-                        ELSE
-                            ALTER TABLE Nhuanbut ALTER COLUMN TyLeDaoVan NVARCHAR(255);
-                            
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NhanXetAI' AND Object_ID = Object_ID(N'Nhuanbut'))
-                            ALTER TABLE Nhuanbut ADD NhanXetAI NVARCHAR(MAX);
+                        -- Thêm cột Người kế toán xử lý tiền
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiKeToan' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiKeToan NVARCHAR(100);
+                        -- Chuyển TrangThaiDuyet từ 2 (cũ) lên 3 (mới: đã ký duyệt)
+                        UPDATE Nhuanbut SET TrangThaiDuyet = 3 WHERE TrangThaiDuyet = 2;
+
+                        -- Tạo bảng định mức (nếu chưa có)
+                        IF NOT EXISTS(SELECT * FROM sys.tables WHERE Name = N'DinhMuc')
+                        BEGIN
+                            CREATE TABLE DinhMuc (
+                                MaDinhMuc INT IDENTITY(1,1) PRIMARY KEY,
+                                Muc NVARCHAR(100) NOT NULL,
+                                MucToiDa DECIMAL(18,0) NOT NULL DEFAULT 2000000,
+                                NgayTao DATETIME DEFAULT GETDATE()
+                            );
+
+                            INSERT INTO DinhMuc (Muc, MucToiDa) VALUES
+                                (N'Tin vắn', 500000),
+                                (N'Phân tích', 3000000),
+                                (N'Phỏng vấn', 2500000),
+                                (N'Bài đinh', 4000000),
+                                (N'Xã luận', 5000000),
+                                (N'Phóng sự', 3000000),
+                                (N'Góc nhìn', 2000000),
+                                (N'Văn hóa', 2000000),
+                                (N'Công nghệ', 2000000),
+                                (N'Thể thao', 2000000),
+                                (N'Kinh tế', 2500000),
+                                (N'Chính trị', 3000000);
+                        END
                     ";
                     using (SqlCommand cmd = new SqlCommand(fixSql, conn))
                         await cmd.ExecuteNonQueryAsync();
@@ -100,11 +117,18 @@ namespace HETHONGTINHNHUANBUT
         private void PhanQuyenThaoTac()
         {
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
-            bool coQuyen = !(role == "kế toán" || role == "lãnh đạo");
-            btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = btnLamMoi.Enabled = btnQuetBaiAI.Enabled = coQuyen;
-            txtTenBai.ReadOnly = txtTrang.ReadOnly = txtMuc.ReadOnly = txtTienNhuanBut.ReadOnly = !coQuyen;
-            txtLuotXem.ReadOnly = txtLuotThich.ReadOnly = !coQuyen;
-            cboButDanh.Enabled = cboVung.Enabled = cboVungChuyenDen.Enabled = coQuyen;
+            bool laAdmin = (role == "admin" || role == "quản trị viên");
+            bool laPhoiVien = (role == "phóng viên");
+            bool biKhoa = (role == "kế toán" || role == "lãnh đạo");
+
+            btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = btnLamMoi.Enabled = btnKiemToanAI.Enabled = !biKhoa;
+            txtTenBai.ReadOnly = txtTrang.ReadOnly = txtMuc.ReadOnly = biKhoa;
+            cboButDanh.Enabled = cboVung.Enabled = cboVungChuyenDen.Enabled = !biKhoa;
+
+            // Phóng viên chỉ nhập tên bài, mục, bút danh - KHÔNG nhập tiền, views, likes
+            txtTienNhuanBut.ReadOnly = laPhoiVien || biKhoa;
+            txtLuotXem.ReadOnly = laPhoiVien || biKhoa;
+            txtLuotThich.ReadOnly = laPhoiVien || biKhoa;
         }
 
         private async Task LoadComboboxDataSQLAsync()
@@ -169,7 +193,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string query = @"SELECT Maso, STT, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
-                                            TienNhuanbut, LuotXem, LuotThich, DiemAI, TyLeDaoVan, NhanXetAI 
+                                            TienNhuanbut, LuotXem, LuotThich
                                      FROM Nhuanbut WHERE MsBao = @maBao";
                     if (!string.IsNullOrWhiteSpace(keyword))
                         query += " AND (Tenbai LIKE @kw OR Butdanh LIKE @kw)";
@@ -189,15 +213,12 @@ namespace HETHONGTINHNHUANBUT
                     dgvNhuanBut.Columns["Maso"].Visible = false;
                     dgvNhuanBut.Columns["Vung"].Visible = false;
                     dgvNhuanBut.Columns["VungChuyenDen"].Visible = false;
-                    dgvNhuanBut.Columns["TyLeDaoVan"].Visible = false;
-                    dgvNhuanBut.Columns["NhanXetAI"].Visible = false;
                     dgvNhuanBut.Columns["STT"].HeaderText = "STT";
                     dgvNhuanBut.Columns["Tenbai"].HeaderText = "TÊN BÀI VIẾT";
                     dgvNhuanBut.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvNhuanBut.Columns["Butdanh"].HeaderText = "BÚT DANH";
                     dgvNhuanBut.Columns["LuotXem"].HeaderText = "VIEWS";
                     dgvNhuanBut.Columns["LuotThich"].HeaderText = "LIKES";
-                    dgvNhuanBut.Columns["DiemAI"].HeaderText = "ĐIỂM AI";
                     dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "TỔNG TIỀN (VNĐ)";
                     dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0";
                 }
@@ -210,145 +231,7 @@ namespace HETHONGTINHNHUANBUT
         }
 
         // =========================================================================
-        // TÍNH NĂNG NÂNG CẤP: QUÉT ĐƠN LẺ VÀ QUÉT HÀNG LOẠT CÓ CHỐNG TRÀN DỮ LIỆU
-        // =========================================================================
-        private async void btnQuetBaiAI_Click(object sender, EventArgs e)
-        {
-            // Trường hợp 1: Quét đơn lẻ
-            if (!string.IsNullOrEmpty(_selectedMaso))
-            {
-                using (FrmKiemDinhAI frmAI = new FrmKiemDinhAI())
-                {
-                    if (frmAI.ShowDialog() == DialogResult.OK)
-                    {
-                        var ketQua = frmAI.KetQuaAI;
-                        if (ketQua != null)
-                        {
-                            _diemAI = ketQua.DiemChatLuong;
-                            _tyLeDaoVan = ketQua.TyLeDaoVan;
-                            _nhanXetAI = ketQua.NhanXet;
-
-                            // Kéo cắt cỏ: Gọt chuỗi cho an toàn
-                            string safeDaoVan = string.IsNullOrEmpty(_tyLeDaoVan) ? null : (_tyLeDaoVan.Length > 200 ? _tyLeDaoVan.Substring(0, 197) + "..." : _tyLeDaoVan);
-
-                            try
-                            {
-                                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                                {
-                                    await conn.OpenAsync();
-                                    string updateQuery = @"UPDATE Nhuanbut SET 
-                                            DiemAI = @diemAI, 
-                                            TyLeDaoVan = @daoVan, 
-                                            NhanXetAI = @nhanXet 
-                                            WHERE Maso = @ma";
-
-                                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                        {
-                                        cmd.Parameters.AddWithValue("@diemAI", _diemAI);
-                                        cmd.Parameters.AddWithValue("@daoVan", (object)safeDaoVan ?? DBNull.Value);
-                                        cmd.Parameters.AddWithValue("@nhanXet", string.IsNullOrEmpty(_nhanXetAI) ? (object)DBNull.Value : _nhanXetAI);
-                                        cmd.Parameters.AddWithValue("@ma", _selectedMaso);
-                                        await cmd.ExecuteNonQueryAsync();
-                                    }
-                                }
-
-                                MessageBox.Show($"Đã phân tích và TỰ ĐỘNG LƯU điểm AI thành công!\n- Điểm chất lượng: {_diemAI}/10", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                if (cboSoBao.SelectedValue != null)
-                                    await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), txtTimKiem.Text);
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Lỗi lưu điểm AI: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-
-            // Trường hợp 2: QUÉT HÀNG LOẠT
-            if (dgvNhuanBut.Rows.Count == 0)
-            {
-                MessageBox.Show("Không có bài báo nào trong danh sách để quét hàng loạt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var confirmResult = MessageBox.Show("Đồng chí không chọn bài viết cụ thể nào. Hệ thống sẽ kích hoạt chế độ 'QUÉT TỰ ĐỘNG HÀNG LOẠT' cho tất cả các bài báo chưa có điểm AI dưới lưới.\nĐồng chí có muốn tiến hành không?",
-                "Kích hoạt Batch Processing", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (confirmResult == DialogResult.Yes)
-            {
-                int soBaiDaQuet = 0;
-                btnQuetBaiAI.Enabled = false;
-                btnQuetBaiAI.Text = "🔄 AI ĐANG QUÉT HÀNG LOẠT...";
-
-                try
-                {
-                    foreach (DataGridViewRow row in dgvNhuanBut.Rows)
-                    {
-                        if (row.IsNewRow) continue;
-
-                        string maBai = row.Cells["Maso"].Value?.ToString();
-                        string tenBai = row.Cells["Tenbai"].Value?.ToString();
-                        double diemHienTai = row.Cells["DiemAI"].Value != DBNull.Value ? Convert.ToDouble(row.Cells["DiemAI"].Value) : 0;
-
-                        if (diemHienTai == 0 && !string.IsNullOrEmpty(maBai) && !string.IsNullOrEmpty(tenBai))
-                        {
-                            var ketQuaAI = await AIHelper.KiemDinhBaiBaoAsync(tenBai);
-
-                            if (ketQuaAI != null)
-                            {
-                                // Kéo cắt cỏ chống sập DataBase khi quét ngầm
-                                string safeBatchDaoVan = ketQuaAI.TyLeDaoVan;
-                                if (!string.IsNullOrEmpty(safeBatchDaoVan) && safeBatchDaoVan.Length > 200)
-                                {
-                                    safeBatchDaoVan = safeBatchDaoVan.Substring(0, 197) + "...";
-                                }
-
-                                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                                {
-                                    await conn.OpenAsync();
-                                    string sqlUpdate = @"UPDATE Nhuanbut SET 
-                                            DiemAI = @diem, 
-                                            TyLeDaoVan = @daoVan, 
-                                            NhanXetAI = @nhanXet 
-                                            WHERE Maso = @ma";
-
-                                    using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn))
-                        {
-                                        cmd.Parameters.AddWithValue("@diem", ketQuaAI.DiemChatLuong);
-                                        cmd.Parameters.AddWithValue("@daoVan", (object)safeBatchDaoVan ?? DBNull.Value);
-                                        cmd.Parameters.AddWithValue("@nhanXet", ketQuaAI.NhanXet);
-                                        cmd.Parameters.AddWithValue("@ma", maBai);
-                                        await cmd.ExecuteNonQueryAsync();
-                                    }
-                                }
-                                soBaiDaQuet++;
-
-                                row.Cells["DiemAI"].Value = ketQuaAI.DiemChatLuong;
-                                row.Cells["TyLeDaoVan"].Value = safeBatchDaoVan;
-                                row.Cells["NhanXetAI"].Value = ketQuaAI.NhanXet;
-                            }
-                        }
-                    }
-
-                    MessageBox.Show($"Chiến dịch quét hàng loạt hoàn tất!\nĐã tự động thẩm định và cập nhật thành công cho {soBaiDaQuet} bài báo.",
-                        "Thành công rực rỡ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Có lỗi xảy ra trong quá trình quét tự động: " + ex.Message, "Lỗi Batch", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                finally
-                {
-                    btnQuetBaiAI.Enabled = true;
-                    btnQuetBaiAI.Text = "🚀 QUÉT BÀI AI";
-                    if (cboSoBao.SelectedValue != null)
-                        await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), txtTimKiem.Text);
-                }
-            }
-        }
+        // Đã xóa btnQuetBaiAI_Click (QUÉT BÀI AI) — không cần thiết vì không có nội dung bài
 
         private async void btnThem_Click(object sender, EventArgs e)
         {
@@ -363,10 +246,16 @@ namespace HETHONGTINHNHUANBUT
                     int luotXem = int.TryParse(txtLuotXem.Text, out int v) ? v : 0;
                     int luotThich = int.TryParse(txtLuotThich.Text, out int l) ? l : 0;
                     decimal tienGoc = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
-                    decimal tongTien = tienGoc + (luotXem * 50) + (luotThich * 100) + (_diemAI >= 8.0 ? 200000 : 0);
-                    string newMa = "NB" + DateTime.Now.ToString("HHmmss");
-                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT, LuotXem, LuotThich, DiemAI, TyLeDaoVan, NhanXetAI) 
-                                    VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt, @luotXem, @luotThich, @diemAI, @daoVan, @nhanXet)";
+                    decimal tongTien = tienGoc + (luotXem * 50) + (luotThich * 100);
+                    int newMa = 1;
+                    string sqlMax = "SELECT ISNULL(MAX(Maso), 0) + 1 FROM Nhuanbut";
+                    using (SqlCommand cmdMax = new SqlCommand(sqlMax, conn))
+                    {
+                        object result = await cmdMax.ExecuteScalarAsync();
+                        newMa = Convert.ToInt32(result);
+                    }
+                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT, LuotXem, LuotThich, NguoiNhap, TrangThaiDuyet) 
+                                    VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt, @luotXem, @luotThich, @nguoiNhap, 0)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
                         cmd.Parameters.AddWithValue("@ma", newMa);
@@ -379,12 +268,10 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@vung", cboVung.Text ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@vungCD", cboVungChuyenDen.Text ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "Admin");
+                        cmd.Parameters.AddWithValue("@nguoiNhap", NguoiDangNhap ?? "Admin");
                         cmd.Parameters.AddWithValue("@stt", dgvNhuanBut.Rows.Count + 1);
                         cmd.Parameters.AddWithValue("@luotXem", luotXem);
                         cmd.Parameters.AddWithValue("@luotThich", luotThich);
-                        cmd.Parameters.AddWithValue("@diemAI", _diemAI);
-                        cmd.Parameters.AddWithValue("@daoVan", string.IsNullOrEmpty(_tyLeDaoVan) ? (object)DBNull.Value : _tyLeDaoVan);
-                        cmd.Parameters.AddWithValue("@nhanXet", string.IsNullOrEmpty(_nhanXetAI) ? (object)DBNull.Value : _nhanXetAI);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -418,10 +305,10 @@ namespace HETHONGTINHNHUANBUT
                     int luotXem = int.TryParse(txtLuotXem.Text, out int v) ? v : 0;
                     int luotThich = int.TryParse(txtLuotThich.Text, out int l) ? l : 0;
                     decimal tienGoc = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
-                    decimal tongTien = tienGoc + (luotXem * 50) + (luotThich * 100) + (_diemAI >= 8.0 ? 200000 : 0);
+                    decimal tongTien = tienGoc + (luotXem * 50) + (luotThich * 100);
 
                     string sql = @"UPDATE Nhuanbut SET Tenbai=@ten, Trang=@trang, Muc=@muc, TienNhuanbut=@tien, Butdanh=@bd, Vung=@vung, VungChuyenDen=@vungCD, 
-                                    LuotXem=@luotXem, LuotThich=@luotThich, DiemAI=@diemAI, TyLeDaoVan=@daoVan, NhanXetAI=@nhanXet 
+                                    LuotXem=@luotXem, LuotThich=@luotThich
                                     WHERE Maso=@ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
@@ -435,9 +322,6 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@vungCD", cboVungChuyenDen.Text ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@luotXem", luotXem);
                         cmd.Parameters.AddWithValue("@luotThich", luotThich);
-                        cmd.Parameters.AddWithValue("@diemAI", _diemAI);
-                        cmd.Parameters.AddWithValue("@daoVan", string.IsNullOrEmpty(_tyLeDaoVan) ? (object)DBNull.Value : _tyLeDaoVan);
-                        cmd.Parameters.AddWithValue("@nhanXet", string.IsNullOrEmpty(_nhanXetAI) ? (object)DBNull.Value : _nhanXetAI);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -493,10 +377,212 @@ namespace HETHONGTINHNHUANBUT
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
             cboButDanh.SelectedIndex = -1;
-            _diemAI = 0;
-            _tyLeDaoVan = "";
-            _nhanXetAI = "";
+            lblWarning.Visible = false;
             txtTenBai.Focus();
+        }
+
+        // =====================================================================
+        // KIỂM TRA ĐỊNH MỨC (Code C# thuần - KHÔNG dùng AI)
+        // =====================================================================
+        private async void txtTienNhuanBut_Leave(object sender, EventArgs e)
+        {
+            await KiemTraDinhMucAsync();
+        }
+
+        private async Task KiemTraDinhMucAsync()
+        {
+            lblWarning.Visible = false;
+
+            string muc = txtMuc.Text?.Trim() ?? "";
+            if (string.IsNullOrEmpty(muc)) return;
+
+            decimal tienNhap = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
+            if (tienNhap <= 0) return;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    string sql = "SELECT MucToiDa FROM DinhMuc WHERE Muc = @muc";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@muc", muc);
+                        object result = await cmd.ExecuteScalarAsync();
+
+                        if (result != null)
+                        {
+                            decimal mucToiDa = Convert.ToDecimal(result);
+                            if (tienNhap > mucToiDa)
+                            {
+                                lblWarning.Text = $"🚨 VƯỢT ĐỊNH MỨC! Mục '{muc}' tối đa {mucToiDa:N0} VNĐ. Đồng chí đã nhập {tienNhap:N0} VNĐ.";
+                                lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
+                                lblWarning.Visible = true;
+                            }
+                        }
+                        else
+                        {
+                            // Mục chưa có định mức, cho qua nhưng nhắc nhẹ
+                            lblWarning.Text = $"ℹ️ Mục '{muc}' chưa được thiết lập định mức. Vui lòng kiểm tra lại.";
+                            lblWarning.ForeColor = System.Drawing.Color.FromArgb(245, 158, 11);
+                            lblWarning.Visible = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi check định mức: " + ex.Message);
+            }
+        }
+
+        // =====================================================================
+        // AI KIỂM TOÁN (Rà soát logic metadata)
+        // =====================================================================
+        private async void btnKiemToanAI_Click(object sender, EventArgs e)
+        {
+            string tenBai = txtTenBai.Text?.Trim() ?? "";
+            string muc = txtMuc.Text?.Trim() ?? "";
+            string butDanh = cboButDanh.Text?.Trim() ?? "";
+
+            if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ: Tên bài, Mục (Thể loại) và Bút danh trước khi dùng AI Kiểm Toán.",
+                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            btnKiemToanAI.Enabled = false;
+            btnKiemToanAI.Text = "🔄 AI ĐANG KIỂM TOÁN...";
+
+            try
+            {
+                // Bước 1: Kiểm tra bút danh lạ sân (SQL - không cần AI)
+                string canhBaoLaSan = await KiemTraButDanhLaSanAsync(butDanh, muc);
+
+                // Bước 2: Lấy danh sách bài hôm nay của cùng tác giả (để AI check trùng)
+                string[] baiHomNay = await LayDanhSachBaiHomNayAsync(butDanh);
+
+                // Bước 3: Gọi AI kiểm tra metadata
+                AIKiemToanResult ketQua = await AIHelper.KiemTraMetadataNhapLieuAsync(
+                    tenBai, muc, butDanh, baiHomNay);
+
+                // Bước 4: Tổng hợp kết quả
+                string warning = "";
+                bool coCanhBao = false;
+
+                if (!string.IsNullOrEmpty(canhBaoLaSan))
+                {
+                    warning += $"⚠️ {canhBaoLaSan}\n";
+                    coCanhBao = true;
+                }
+
+                if (!string.IsNullOrEmpty(ketQua.CanhBaoTheLoai))
+                {
+                    warning += $"🚨 {ketQua.CanhBaoTheLoai}\n";
+                    coCanhBao = true;
+                }
+
+                if (!string.IsNullOrEmpty(ketQua.CanhBaoTrungBai))
+                {
+                    warning += $"⚠️ {ketQua.CanhBaoTrungBai}\n";
+                    coCanhBao = true;
+                }
+
+                if (coCanhBao)
+                {
+                    lblWarning.Text = warning.TrimEnd('\n');
+                    lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
+                    lblWarning.Visible = true;
+                    MessageBox.Show($"AI Kiểm Toán phát hiện vấn đề:\n\n{warning}\n\nĐồng chí vui lòng kiểm tra lại!",
+                        "AI Kiểm Toán - Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    lblWarning.Text = $"✅ {ketQua.TomTat}";
+                    lblWarning.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
+                    lblWarning.Visible = true;
+                    MessageBox.Show($"✅ AI Kiểm Toán: {ketQua.TomTat}",
+                        "AI Kiểm Toán", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                lblWarning.Text = $"❌ Lỗi AI: {ex.Message}";
+                lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
+                lblWarning.Visible = true;
+                MessageBox.Show("Lỗi kết nối AI Kiểm Toán: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnKiemToanAI.Enabled = true;
+                btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
+            }
+        }
+
+        // Kiểm tra bút danh có lạ sân không (SQL, không cần AI)
+        private async Task<string> KiemTraButDanhLaSanAsync(string butDanh, string mucHienTai)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+
+                    // Lấy top 5 mục tác giả này thường viết
+                    string sql = @"SELECT TOP 5 Muc, COUNT(*) as SoLan
+                                   FROM Nhuanbut
+                                   WHERE Butdanh = @bd AND Muc IS NOT NULL AND Muc <> ''
+                                   GROUP BY Muc
+                                   ORDER BY COUNT(*) DESC";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@bd", butDanh);
+                        List<string> cacMucThuongViet = new List<string>();
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                                cacMucThuongViet.Add(reader["Muc"].ToString());
+                        }
+
+                        if (cacMucThuongViet.Count > 0 && !cacMucThuongViet.Contains(mucHienTai, StringComparer.OrdinalIgnoreCase))
+                        {
+                            string mucThuongViet = string.Join(", ", cacMucThuongViet.Take(3));
+                            return $"Bút danh '{butDanh}' thường viết mục: {mucThuongViet}. Bài này thuộc mục '{mucHienTai}' - đồng chí có chắc không?";
+                        }
+                    }
+                }
+            }
+            catch { /* im lặng nếu lỗi */ }
+            return "";
+        }
+
+        // Lấy danh sách bài hôm nay của cùng tác giả (cho AI check trùng)
+        private async Task<string[]> LayDanhSachBaiHomNayAsync(string butDanh)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    string sql = @"SELECT Tenbai FROM Nhuanbut
+                                   WHERE Butdanh = @bd
+                                   AND CAST(ngaychuyen AS DATE) = CAST(GETDATE() AS DATE)
+                                   ORDER BY ngaychuyen DESC";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@bd", butDanh);
+                        List<string> ds = new List<string>();
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                                ds.Add(reader["Tenbai"].ToString());
+                        }
+                        return ds.ToArray();
+                    }
+                }
+            }
+            catch { return Array.Empty<string>(); }
         }
 
         private void dgvNhuanBut_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -513,9 +599,6 @@ namespace HETHONGTINHNHUANBUT
             cboVungChuyenDen.Text = row.Cells["VungChuyenDen"].Value?.ToString();
             txtLuotXem.Text = row.Cells["LuotXem"].Value?.ToString();
             txtLuotThich.Text = row.Cells["LuotThich"].Value?.ToString();
-            _diemAI = row.Cells["DiemAI"].Value != DBNull.Value ? Convert.ToDouble(row.Cells["DiemAI"].Value) : 0;
-            _tyLeDaoVan = row.Cells["TyLeDaoVan"].Value?.ToString();
-            _nhanXetAI = row.Cells["NhanXetAI"].Value?.ToString();
         }
 
         private void pnlTop_Paint(object sender, PaintEventArgs e) { }

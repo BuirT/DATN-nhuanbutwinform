@@ -25,9 +25,9 @@ namespace HETHONGTINHNHUANBUT
             string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
 
             if (currentRole == "admin" || currentRole == "quản trị viên")
-                cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán", "Quản trị viên" });
+                cboQuyen.Items.AddRange(new object[] { "Phóng viên", "Lãnh đạo", "Thư ký", "Kế toán", "Quản trị viên" });
             else
-                cboQuyen.Items.AddRange(new object[] { "Lãnh đạo", "Thư ký", "Kế toán" });
+                cboQuyen.Items.AddRange(new object[] { "Phóng viên", "Lãnh đạo", "Thư ký", "Kế toán" });
 
             cboQuyen.DropDownHeight = 200;
             cboQuyen.IntegralHeight = true;

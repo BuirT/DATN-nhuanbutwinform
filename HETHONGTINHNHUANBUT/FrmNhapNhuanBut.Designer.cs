@@ -47,7 +47,8 @@
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoi = new Guna.UI2.WinForms.Guna2Button();
-            this.btnQuetBaiAI = new Guna.UI2.WinForms.Guna2Button();
+            this.btnKiemToanAI = new Guna.UI2.WinForms.Guna2Button();
+            this.lblWarning = new System.Windows.Forms.Label();
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDataTitle = new System.Windows.Forms.Label();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
@@ -88,7 +89,6 @@
             this.pnlTop.Controls.Add(this.btnSua);
             this.pnlTop.Controls.Add(this.btnXoa);
             this.pnlTop.Controls.Add(this.btnLamMoi);
-            this.pnlTop.Controls.Add(this.btnQuetBaiAI);
             this.pnlTop.FillColor = System.Drawing.Color.White;
             this.pnlTop.Location = new System.Drawing.Point(20, 15);
             this.pnlTop.Name = "pnlTop";
@@ -401,18 +401,31 @@
             this.btnLamMoi.Text = "LÀM MỚI";
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
 
-            // btnQuetBaiAI (QUÉT BÀI AI)
-            this.btnQuetBaiAI.Animated = true;
-            this.btnQuetBaiAI.BorderRadius = 8;
-            this.btnQuetBaiAI.FillColor = System.Drawing.Color.FromArgb(16, 185, 129);
-            this.btnQuetBaiAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnQuetBaiAI.ForeColor = System.Drawing.Color.White;
-            this.btnQuetBaiAI.Location = new System.Drawing.Point(625, 292);
-            this.btnQuetBaiAI.Name = "btnQuetBaiAI";
-            this.btnQuetBaiAI.Size = new System.Drawing.Size(160, 40);
-            this.btnQuetBaiAI.TabIndex = 27;
-            this.btnQuetBaiAI.Text = "✨ QUÉT BÀI AI";
-            this.btnQuetBaiAI.Click += new System.EventHandler(this.btnQuetBaiAI_Click);
+            // btnKiemToanAI (AI KIỂM TOÁN)
+            this.btnKiemToanAI.Animated = true;
+            this.btnKiemToanAI.BorderRadius = 8;
+            this.btnKiemToanAI.FillColor = System.Drawing.Color.FromArgb(139, 92, 246);
+            this.btnKiemToanAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnKiemToanAI.ForeColor = System.Drawing.Color.White;
+            this.btnKiemToanAI.Location = new System.Drawing.Point(795, 292);
+            this.btnKiemToanAI.Name = "btnKiemToanAI";
+            this.btnKiemToanAI.Size = new System.Drawing.Size(160, 40);
+            this.btnKiemToanAI.TabIndex = 28;
+            this.btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
+            this.btnKiemToanAI.Click += new System.EventHandler(this.btnKiemToanAI_Click);
+
+            // lblWarning (Khu vực hiển thị cảnh báo)
+            this.lblWarning.AutoSize = false;
+            this.lblWarning.BackColor = System.Drawing.Color.Transparent;
+            this.lblWarning.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lblWarning.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
+            this.lblWarning.Location = new System.Drawing.Point(25, 345);
+            this.lblWarning.Name = "lblWarning";
+            this.lblWarning.Size = new System.Drawing.Size(930, 30);
+            this.lblWarning.TabIndex = 29;
+            this.lblWarning.Text = "";
+            this.lblWarning.Visible = false;
 
             // ==================== pnlBottom ====================
             this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -565,11 +578,12 @@
         private Guna.UI2.WinForms.Guna2TextBox txtLuotXem;
         private System.Windows.Forms.Label lblLuotThich;
         private Guna.UI2.WinForms.Guna2TextBox txtLuotThich;
-        private Guna.UI2.WinForms.Guna2Button btnQuetBaiAI;
+        private Guna.UI2.WinForms.Guna2Button btnKiemToanAI;
         private Guna.UI2.WinForms.Guna2Button btnThem;
         private Guna.UI2.WinForms.Guna2Button btnSua;
         private Guna.UI2.WinForms.Guna2Button btnXoa;
         private Guna.UI2.WinForms.Guna2Button btnLamMoi;
+        private System.Windows.Forms.Label lblWarning;
         private System.Windows.Forms.Label lblDataTitle;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiem;
         private Guna.UI2.WinForms.Guna2DataGridView dgvNhuanBut;
