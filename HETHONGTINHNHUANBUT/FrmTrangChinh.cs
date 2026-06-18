@@ -144,10 +144,8 @@ namespace HETHONGTINHNHUANBUT
             btnTroLyAI.Visible = false;
             btnBaoCaoAI.Visible = false;
 
-            if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuu)
-                btnTraCuu.Visible = false;
-            if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
-                btnDot.Visible = false;
+            btnTraCuuCaNhan.Visible = false;
+            btnDotThanhToan.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
@@ -157,10 +155,8 @@ namespace HETHONGTINHNHUANBUT
                 btnDuyetChi.Visible = true;
                 btnPhieuChi.Visible = true;
                 btnTaiKhoan.Visible = true;
-                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
-                    btn.Visible = true;
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control d)
-                    d.Visible = true;
+                btnTraCuuCaNhan.Visible = true;
+                btnDotThanhToan.Visible = true;
                 return;
             }
 
@@ -176,13 +172,9 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
 
-                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
-                    btn.Visible = true;
+                btnTraCuuCaNhan.Visible = true;
                 btnTroLyAI.Visible = false;
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
-                    btnDot.Visible = false;
-                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
-                    btnTraCuuVisible.Visible = true;
+                btnDotThanhToan.Visible = false;
             }
             else if (role == "thư ký")
             {
@@ -194,8 +186,7 @@ namespace HETHONGTINHNHUANBUT
                 btnPhieuChi.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
-                    btnDot2.Visible = true;
+                btnDotThanhToan.Visible = true;
             }
             else if (role == "lãnh đạo")
             {
@@ -204,8 +195,7 @@ namespace HETHONGTINHNHUANBUT
                 btnTaiKhoan.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
-                    btnDot2.Visible = true;
+                btnDotThanhToan.Visible = true;
             }
             else if (role == "admin" || role == "quản trị viên")
             {
@@ -215,8 +205,7 @@ namespace HETHONGTINHNHUANBUT
                 btnTaiKhoan.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
-                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
-                    btnDot2.Visible = true;
+                btnDotThanhToan.Visible = true;
             }
         }
 
