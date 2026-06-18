@@ -34,7 +34,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnTroLyAI = new Guna.UI2.WinForms.Guna2Button();
             this.btnTongQuan = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTitle = new System.Windows.Forms.Label();
+            this.picLogo = new System.Windows.Forms.PictureBox();
             this.btnTaiKhoan = new Guna.UI2.WinForms.Guna2Button();
             this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
             this.pnlMain = new Guna.UI2.WinForms.Guna2Panel();
@@ -289,24 +289,24 @@ namespace HETHONGTINHNHUANBUT
             // pnlLogo
             // 
             this.pnlLogo.BackColor = System.Drawing.Color.Transparent;
-            this.pnlLogo.Controls.Add(this.lblTitle);
+            this.pnlLogo.Controls.Add(this.picLogo);
             this.pnlLogo.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLogo.Location = new System.Drawing.Point(14, 0);
             this.pnlLogo.Name = "pnlLogo";
-            this.pnlLogo.Size = new System.Drawing.Size(252, 50);
+            this.pnlLogo.Padding = new System.Windows.Forms.Padding(10, 8, 10, 5);
+            this.pnlLogo.Size = new System.Drawing.Size(252, 70);
             this.pnlLogo.TabIndex = 0;
             // 
-            // lblTitle
+            // picLogo
             // 
-            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblTitle.Location = new System.Drawing.Point(0, 0);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(252, 50);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "NEWSPAY";
-            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.picLogo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picLogo.Image = global::HETHONGTINHNHUANBUT.Properties.Resources.logonewspay;
+            this.picLogo.Location = new System.Drawing.Point(10, 8);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(232, 57);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 0;
+            this.picLogo.TabStop = false;
             // 
             // btnTaiKhoan
             // 
@@ -365,6 +365,7 @@ namespace HETHONGTINHNHUANBUT
             this.Load += new System.EventHandler(this.FrmTrangChinh_Load);
             this.pnlMenu.ResumeLayout(false);
             this.pnlLogo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -387,7 +388,7 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnBaoCaoCongNo;
         private Guna.UI2.WinForms.Guna2Button btnDangXuat;
         private Guna.UI2.WinForms.Guna2Panel pnlMain;
-        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.PictureBox picLogo;
         private Guna.UI2.WinForms.Guna2Button btnDotThanhToan;
     }
 }

@@ -380,6 +380,7 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="resources\bao-2-185727174524549.jpg" />
+    <Content Include="resources\logonewspay.jpg" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -69,5 +69,12 @@ namespace HETHONGTINHNHUANBUT.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap logonewspay {
+            get {
+                object obj = ResourceManager.GetObject("logonewspay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
