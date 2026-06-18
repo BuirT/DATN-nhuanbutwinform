@@ -10,23 +10,59 @@ namespace HETHONGTINHNHUANBUT
         {
             if (dgv == null) return;
 
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 116, 139);
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgv.ColumnHeadersHeight = 45;
-
-            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
-            dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(100, 116, 139);
-
-            dgv.DefaultCellStyle.BackColor = Color.White;
-            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-
-            dgv.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
-            dgv.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-
-            dgv.RowTemplate.Height = 40;
+            dgv.BackgroundColor = Color.White;
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv.GridColor = Color.FromArgb(241, 245, 249);
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.RowHeadersVisible = false;
+            dgv.RowTemplate.Height = 38;
             dgv.EnableHeadersVisualStyles = false;
+
+            // Column headers
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
+            dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 85, 105);
+            dgv.ColumnHeadersHeight = 42;
+
+            // Default rows
+            dgv.DefaultCellStyle.BackColor = Color.White;
+            dgv.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
+            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
+            dgv.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
+            // Alternating rows
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgv.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgv.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+            dgv.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+
+            // Guna ThemeStyle (required for Guna2DataGridView)
+            dgv.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgv.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgv.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+            dgv.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgv.ThemeStyle.BackColor = Color.White;
+            dgv.ThemeStyle.GridColor = Color.FromArgb(241, 245, 249);
+            dgv.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
+            dgv.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgv.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(71, 85, 105);
+            dgv.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ThemeStyle.HeaderStyle.Height = 42;
+            dgv.ThemeStyle.ReadOnly = true;
+            dgv.ThemeStyle.RowsStyle.BackColor = Color.White;
+            dgv.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 10F);
+            dgv.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            dgv.ThemeStyle.RowsStyle.Height = 38;
+            dgv.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
+            dgv.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
         }
     }
 }

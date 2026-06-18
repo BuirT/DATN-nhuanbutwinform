@@ -151,6 +151,19 @@ namespace HETHONGTINHNHUANBUT
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
+            if (role == "admin" || role == "quản trị viên")
+            {
+                btnKiemDuyet.Visible = true;
+                btnDuyetChi.Visible = true;
+                btnPhieuChi.Visible = true;
+                btnTaiKhoan.Visible = true;
+                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
+                    btn.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control d)
+                    d.Visible = true;
+                return;
+            }
+
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
                 btnTongQuan.Visible = false;
@@ -165,6 +178,11 @@ namespace HETHONGTINHNHUANBUT
 
                 if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
                     btn.Visible = true;
+                btnTroLyAI.Visible = false;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
+                    btnDot.Visible = false;
+                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
+                    btnTraCuuVisible.Visible = true;
             }
             else if (role == "thư ký")
             {

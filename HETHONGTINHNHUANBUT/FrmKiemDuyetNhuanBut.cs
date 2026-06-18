@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,12 +20,13 @@ namespace HETHONGTINHNHUANBUT
         public FrmKiemDuyetNhuanBut()
         {
             InitializeComponent();
+
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(dgvNhuanBut, true, null);
         }
 
         private async void FrmKiemDuyetNhuanBut_Load(object sender, EventArgs e)
         {
-            UIHelper.FormatGiaoDienBang(dgvNhuanBut);
-
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
 
             if (role == "thư ký" || role == "admin" || role == "quản trị viên")
@@ -69,7 +71,11 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
-            _ = LoadDataAsync("");
+            // Đặt lại anchor cho các nút
+            btnXacNhan.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnTuChoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            await LoadDataAsync("");
         }
 
         private async Task LoadDataAsync(string keyword = "")
@@ -109,17 +115,17 @@ namespace HETHONGTINHNHUANBUT
                         if (dgvNhuanBut.Columns.Count > 0)
                         {
                             if (dgvNhuanBut.Columns["Maso"] != null) dgvNhuanBut.Columns["Maso"].Visible = false;
-                            if (dgvNhuanBut.Columns["Tenbai"] != null) { dgvNhuanBut.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvNhuanBut.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
-                            if (dgvNhuanBut.Columns["Trang"] != null) dgvNhuanBut.Columns["Trang"].HeaderText = "TRANG";
-                            if (dgvNhuanBut.Columns["Muc"] != null) dgvNhuanBut.Columns["Muc"].HeaderText = "MỤC";
-                            if (dgvNhuanBut.Columns["Butdanh"] != null) dgvNhuanBut.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                            if (dgvNhuanBut.Columns["TienNhuanbut"] != null) { dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "TIỀN NB"; dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
-                            if (dgvNhuanBut.Columns["LuotXem"] != null) dgvNhuanBut.Columns["LuotXem"].HeaderText = "VIEWS";
-                            if (dgvNhuanBut.Columns["LuotThich"] != null) dgvNhuanBut.Columns["LuotThich"].HeaderText = "LIKES";
-                            if (dgvNhuanBut.Columns["NguoiNhap"] != null) dgvNhuanBut.Columns["NguoiNhap"].HeaderText = "NGƯỜI NHẬP";
-                            if (dgvNhuanBut.Columns["NguoiKiemTra"] != null) dgvNhuanBut.Columns["NguoiKiemTra"].HeaderText = "THƯ KÝ";
-                            if (dgvNhuanBut.Columns["NguoiKeToan"] != null) dgvNhuanBut.Columns["NguoiKeToan"].HeaderText = "KẾ TOÁN";
-                            if (dgvNhuanBut.Columns["TenSoBao"] != null) dgvNhuanBut.Columns["TenSoBao"].HeaderText = "SỐ BÁO";
+                            if (dgvNhuanBut.Columns["Tenbai"] != null) { dgvNhuanBut.Columns["Tenbai"].HeaderText = "Tên Bài"; dgvNhuanBut.Columns["Tenbai"].FillWeight = 3; dgvNhuanBut.Columns["Tenbai"].MinimumWidth = 200; }
+                            if (dgvNhuanBut.Columns["Trang"] != null) { dgvNhuanBut.Columns["Trang"].HeaderText = "Trang"; dgvNhuanBut.Columns["Trang"].FillWeight = 1; dgvNhuanBut.Columns["Trang"].MinimumWidth = 60; }
+                            if (dgvNhuanBut.Columns["Muc"] != null) { dgvNhuanBut.Columns["Muc"].HeaderText = "Mục"; dgvNhuanBut.Columns["Muc"].FillWeight = 1; dgvNhuanBut.Columns["Muc"].MinimumWidth = 60; }
+                            if (dgvNhuanBut.Columns["Butdanh"] != null) { dgvNhuanBut.Columns["Butdanh"].HeaderText = "Bút Danh"; dgvNhuanBut.Columns["Butdanh"].FillWeight = 1; dgvNhuanBut.Columns["Butdanh"].MinimumWidth = 80; }
+                            if (dgvNhuanBut.Columns["TienNhuanbut"] != null) { dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "Tiền NB"; dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; dgvNhuanBut.Columns["TienNhuanbut"].FillWeight = 1; dgvNhuanBut.Columns["TienNhuanbut"].MinimumWidth = 80; }
+                            if (dgvNhuanBut.Columns["LuotXem"] != null) { dgvNhuanBut.Columns["LuotXem"].HeaderText = "Lượt Xem"; dgvNhuanBut.Columns["LuotXem"].FillWeight = 1; dgvNhuanBut.Columns["LuotXem"].MinimumWidth = 60; }
+                            if (dgvNhuanBut.Columns["LuotThich"] != null) { dgvNhuanBut.Columns["LuotThich"].HeaderText = "Lượt Thích"; dgvNhuanBut.Columns["LuotThich"].FillWeight = 1; dgvNhuanBut.Columns["LuotThich"].MinimumWidth = 60; }
+                            if (dgvNhuanBut.Columns["NguoiNhap"] != null) { dgvNhuanBut.Columns["NguoiNhap"].HeaderText = "Người Nhập"; dgvNhuanBut.Columns["NguoiNhap"].FillWeight = 1; dgvNhuanBut.Columns["NguoiNhap"].MinimumWidth = 80; }
+                            if (dgvNhuanBut.Columns["NguoiKiemTra"] != null) { dgvNhuanBut.Columns["NguoiKiemTra"].HeaderText = "Thư Ký"; dgvNhuanBut.Columns["NguoiKiemTra"].FillWeight = 1; dgvNhuanBut.Columns["NguoiKiemTra"].MinimumWidth = 80; }
+                            if (dgvNhuanBut.Columns["NguoiKeToan"] != null) { dgvNhuanBut.Columns["NguoiKeToan"].HeaderText = "Kế Toán"; dgvNhuanBut.Columns["NguoiKeToan"].FillWeight = 1; dgvNhuanBut.Columns["NguoiKeToan"].MinimumWidth = 80; }
+                            if (dgvNhuanBut.Columns["TenSoBao"] != null) { dgvNhuanBut.Columns["TenSoBao"].HeaderText = "Số Báo"; dgvNhuanBut.Columns["TenSoBao"].FillWeight = 2; dgvNhuanBut.Columns["TenSoBao"].MinimumWidth = 120; }
                         }
                         lblCount.Text = $"📋 Tổng số: {dt.Rows.Count} bài chờ duyệt";
                     }
@@ -335,6 +341,11 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void txtTienNhuanBut_TextChanged(object sender, EventArgs e)
+        {
+            // Không cần xử lý
+        }
+
+        private void pnlTop_Paint(object sender, PaintEventArgs e)
         {
 
         }

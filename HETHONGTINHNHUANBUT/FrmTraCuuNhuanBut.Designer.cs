@@ -18,6 +18,7 @@
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.lblMaSo = new System.Windows.Forms.Label();
             this.pnlCards = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlDaNhan = new Guna.UI2.WinForms.Guna2Panel();
             this.lblTongTien = new System.Windows.Forms.Label();
@@ -68,6 +69,15 @@
             this.lblTitle.Size = new System.Drawing.Size(500, 45);
             this.lblTitle.TabIndex = 3;
             this.lblTitle.Text = "TRUNG TÂM THU NHẬP";
+            // lblMaSo
+            // 
+            this.lblMaSo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblMaSo.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            this.lblMaSo.Location = new System.Drawing.Point(16, 50);
+            this.lblMaSo.Name = "lblMaSo";
+            this.lblMaSo.Size = new System.Drawing.Size(400, 20);
+            this.lblMaSo.TabIndex = 4;
+            this.lblMaSo.Text = "";
             // 
             // lblMaSo
             // 
