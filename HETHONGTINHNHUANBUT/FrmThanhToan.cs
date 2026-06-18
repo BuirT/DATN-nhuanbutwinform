@@ -10,7 +10,6 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmThanhToan : Form
     {
         bool isAddNew = false;
-        // 🌟 Chuyển kết nối sang SQL Server
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public FrmThanhToan()
@@ -34,14 +33,6 @@ namespace HETHONGTINHNHUANBUT
             btnLuu.Enabled = false;
             btnDuyet.Enabled = false;
 
-            // Chỉnh Font VNI cho DataGridView theo thiết kế cũ của đồng chí
-            Font vniFont = new Font("VNI-Times", 10.2F);
-            dgvThanhToan.DefaultCellStyle.Font = vniFont;
-            dgvThanhToan.RowsDefaultCellStyle.Font = vniFont;
-            dgvThanhToan.AlternatingRowsDefaultCellStyle.Font = vniFont;
-            dgvThanhToan.ThemeStyle.RowsStyle.Font = vniFont;
-            dgvThanhToan.ThemeStyle.AlternatingRowsStyle.Font = vniFont;
-
             await LoadDataAsync();
         }
 
@@ -54,7 +45,7 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = "SELECT * FROM ThanhToan ORDER BY Maso DESC";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
+                    {
                         DataTable dt = new DataTable();
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
@@ -64,17 +55,23 @@ namespace HETHONGTINHNHUANBUT
                     }
                 }
 
-                // Chỉnh lại Tiêu đề cột cho đẹp mắt
                 if (dgvThanhToan.Columns.Count > 0)
                 {
                     dgvThanhToan.Columns["Maso"].HeaderText = "Mã đợt";
+                    dgvThanhToan.Columns["Maso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvThanhToan.Columns["Tengoi"].HeaderText = "Tên đợt thanh toán";
+                    dgvThanhToan.Columns["Tengoi"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvThanhToan.Columns["Ngay"].HeaderText = "Ngày lập";
+                    dgvThanhToan.Columns["Ngay"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvThanhToan.Columns["Tungay"].HeaderText = "Từ ngày";
+                    dgvThanhToan.Columns["Tungay"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvThanhToan.Columns["Denngay"].HeaderText = "Đến ngày";
-                    dgvThanhToan.Columns["Sotien"].HeaderText = "Tổng tiền";
+                    dgvThanhToan.Columns["Denngay"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                    dgvThanhToan.Columns["Sotien"].HeaderText = "Tổng tiền (VNĐ)";
                     dgvThanhToan.Columns["Sotien"].DefaultCellStyle.Format = "N0";
+                    dgvThanhToan.Columns["Sotien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvThanhToan.Columns["Khoaso"].HeaderText = "Đã duyệt";
+                    dgvThanhToan.Columns["Khoaso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
@@ -127,7 +124,6 @@ namespace HETHONGTINHNHUANBUT
 
                     if (isAddNew)
                     {
-                        // Sinh mã tự động: Lấy mã lớn nhất + 1, nếu rỗng thì bắt đầu từ 1001
                         int newMaso = 1001;
                         string sqlGetMax = "SELECT ISNULL(MAX(Maso), 1000) + 1 FROM ThanhToan";
                         using (SqlCommand cmdMax = new SqlCommand(sqlGetMax, conn))
@@ -240,7 +236,6 @@ namespace HETHONGTINHNHUANBUT
 
             btnLuu.Enabled = false;
 
-            // Khóa/Mở các nút dựa theo trạng thái đã duyệt (Khoaso)
             string trangThaiKhoa = row.Cells["Khoaso"].Value?.ToString() ?? "N";
             if (trangThaiKhoa.Trim().ToUpper() == "Y")
             {
