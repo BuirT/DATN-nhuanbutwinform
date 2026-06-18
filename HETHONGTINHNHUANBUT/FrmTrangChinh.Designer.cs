@@ -67,8 +67,8 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnSubLoaiBao);
             this.pnlMenu.Controls.Add(this.btnSubSoBao);
             this.pnlMenu.Controls.Add(this.btnQuanLyBao);
-            this.pnlMenu.Controls.Add(this.btnSubTacGiaHoSo);
             this.pnlMenu.Controls.Add(this.btnSubButDanh);
+            this.pnlMenu.Controls.Add(this.btnSubTacGiaHoSo);
             this.pnlMenu.Controls.Add(this.btnTacGia);
             this.pnlMenu.Controls.Add(this.btnTroLyAI);
             this.pnlMenu.Controls.Add(this.btnTongQuan);

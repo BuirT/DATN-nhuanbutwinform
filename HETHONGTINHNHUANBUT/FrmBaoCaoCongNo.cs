@@ -36,7 +36,11 @@ namespace HETHONGTINHNHUANBUT
                                ISNULL(SUM(ct.Sotien), 0) - ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS Conlai
                         FROM TacGia tg
                         LEFT JOIN NhuanbutCT ct ON tg.Maso = ct.MsTacgia
-                        LEFT JOIN Phieuchi pc ON ct.SoPC = pc.Sophieu
+                        LEFT JOIN (
+                            SELECT Sophieu, MAX(TrangThaiDuyet) AS TrangThaiDuyet
+                            FROM Phieuchi
+                            GROUP BY Sophieu
+                        ) pc ON ct.SoPC = pc.Sophieu
                         GROUP BY tg.Maso, tg.Hoten
                         HAVING ISNULL(SUM(ct.Sotien), 0) > 0
                         ORDER BY Conlai DESC";
