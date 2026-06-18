@@ -25,6 +25,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
             this.btnDuyetChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnPhieuChi = new Guna.UI2.WinForms.Guna2Button();
+            this.btnKiemDuyet = new Guna.UI2.WinForms.Guna2Button();
             this.btnNhapNhuanBut = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubLoaiBao = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubSoBao = new Guna.UI2.WinForms.Guna2Button();
@@ -53,6 +54,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnBaoCao);
             this.pnlMenu.Controls.Add(this.btnDuyetChi);
             this.pnlMenu.Controls.Add(this.btnPhieuChi);
+            this.pnlMenu.Controls.Add(this.btnKiemDuyet);
             this.pnlMenu.Controls.Add(this.btnNhapNhuanBut);
             this.pnlMenu.Controls.Add(this.btnSubLoaiBao);
             this.pnlMenu.Controls.Add(this.btnSubSoBao);
@@ -155,7 +157,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnPhieuChi.FillColor = System.Drawing.Color.Transparent;
             this.btnPhieuChi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnPhieuChi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnPhieuChi.Location = new System.Drawing.Point(14, 440);
+            this.btnPhieuChi.Location = new System.Drawing.Point(14, 490);
             this.btnPhieuChi.Name = "btnPhieuChi";
             this.btnPhieuChi.Size = new System.Drawing.Size(252, 50);
             this.btnPhieuChi.TabIndex = 4;
@@ -178,6 +180,21 @@ namespace HETHONGTINHNHUANBUT
             this.btnNhapNhuanBut.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnNhapNhuanBut.TextOffset = new System.Drawing.Point(20, 0);
             this.btnNhapNhuanBut.Click += new System.EventHandler(this.btnNhapNhuanBut_Click);
+            // 
+            // btnKiemDuyet
+            // 
+            this.btnKiemDuyet.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnKiemDuyet.FillColor = System.Drawing.Color.Transparent;
+            this.btnKiemDuyet.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnKiemDuyet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnKiemDuyet.Location = new System.Drawing.Point(14, 440);
+            this.btnKiemDuyet.Name = "btnKiemDuyet";
+            this.btnKiemDuyet.Size = new System.Drawing.Size(252, 50);
+            this.btnKiemDuyet.TabIndex = 5;
+            this.btnKiemDuyet.Text = "KIỂM DUYỆT NHUẬN BÚT";
+            this.btnKiemDuyet.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnKiemDuyet.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnKiemDuyet.Click += new System.EventHandler(this.btnKiemDuyet_Click);
             // 
             // btnSubLoaiBao
             // 
@@ -390,5 +407,6 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Panel pnlMain;
         private System.Windows.Forms.PictureBox picLogo;
         private Guna.UI2.WinForms.Guna2Button btnDotThanhToan;
+        private Guna.UI2.WinForms.Guna2Button btnKiemDuyet;
     }
 }

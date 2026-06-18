@@ -11,6 +11,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <Deterministic>true</Deterministic>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <NuGetPackageImportStamp>
@@ -120,6 +121,7 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Resources.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Resources.Extensions.6.0.0\lib\net462\System.Resources.Extensions.dll</HintPath>
       <HintPath>..\packages\System.Resources.Extensions.6.0.0\lib\net461\System.Resources.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -191,11 +193,11 @@
     <Compile Include="FrmDuyetPhieuChi.Designer.cs">
       <DependentUpon>FrmDuyetPhieuChi.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmKiemDinhAI.cs">
+    <Compile Include="FrmKiemDuyetNhuanBut.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmKiemDinhAI.Designer.cs">
-      <DependentUpon>FrmKiemDinhAI.cs</DependentUpon>
+    <Compile Include="FrmKiemDuyetNhuanBut.Designer.cs">
+      <DependentUpon>FrmKiemDuyetNhuanBut.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmLoaiBao.cs">
       <SubType>Form</SubType>
@@ -252,6 +254,12 @@
     </Compile>
     <Compile Include="FrmNhapNhuanBut.Designer.cs">
       <DependentUpon>FrmNhapNhuanBut.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmNhapBaiPhongVien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmNhapBaiPhongVien.Designer.cs">
+      <DependentUpon>FrmNhapBaiPhongVien.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmPhieuChi.cs">
       <SubType>Form</SubType>
@@ -322,9 +330,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmDuyetPhieuChi.resx">
       <DependentUpon>FrmDuyetPhieuChi.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmKiemDinhAI.resx">
-      <DependentUpon>FrmKiemDinhAI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLoaiBao.resx">
       <DependentUpon>FrmLoaiBao.cs</DependentUpon>

@@ -127,6 +127,7 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = @"SELECT DISTINCT Butdanh FROM Nhuanbut 
                                      WHERE Butdanh IS NOT NULL AND Butdanh <> ''
+                                     AND TrangThaiDuyet = 2
                                      AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)
                                      ORDER BY Butdanh";
 
@@ -203,6 +204,7 @@ namespace HETHONGTINHNHUANBUT
                     string sqlArticles = @"SELECT Maso, Tenbai, TienNhuanbut 
                                            FROM Nhuanbut 
                                            WHERE Butdanh = @butdanh 
+                                           AND TrangThaiDuyet = 3
                                            AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)";
                     SqlDataAdapter da = new SqlDataAdapter(sqlArticles, conn);
                     da.SelectCommand.Parameters.AddWithValue("@butdanh", penName);

@@ -26,9 +26,8 @@ namespace HETHONGTINHNHUANBUT
             string role = currentPrivilege?.Trim().ToLower() ?? "";
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-                btnTraCuuCaNhan_Click(null, null);
-                var btnTraCuu = this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() as Guna2Button;
-                if (btnTraCuu != null) SetActiveButton(btnTraCuu);
+                btnNhapNhuanBut_Click(null, null);
+                SetActiveButton(this.btnNhapNhuanBut);
             }
             else
             {
@@ -55,6 +54,7 @@ namespace HETHONGTINHNHUANBUT
         private void ApplyPermissions()
         {
             btnDuyetChi.Visible = false;
+            btnKiemDuyet.Visible = false;
             btnPhieuChi.Visible = false;
             btnTaiKhoan.Visible = false;
 
@@ -71,7 +71,6 @@ namespace HETHONGTINHNHUANBUT
                 btnSubLoaiBao.Visible = false;
                 btnTacGia.Visible = false;
                 btnButDanh.Visible = false;
-                btnNhapNhuanBut.Visible = false;
                 btnBaoCao.Visible = false;
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
@@ -84,17 +83,24 @@ namespace HETHONGTINHNHUANBUT
                 if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuuVisible)
                     btnTraCuuVisible.Visible = true;
             }
+            else if (role == "thư ký")
+            {
+                btnKiemDuyet.Visible = true;
+            }
             else if (role == "lãnh đạo")
             {
+                btnKiemDuyet.Visible = true;
                 btnDuyetChi.Visible = true;
                 btnTaiKhoan.Visible = true;
             }
             else if (role == "kế toán")
             {
+                btnKiemDuyet.Visible = true;
                 btnPhieuChi.Visible = true;
             }
             else if (role == "admin" || role == "quản trị viên")
             {
+                btnKiemDuyet.Visible = true;
                 btnDuyetChi.Visible = true;
                 btnPhieuChi.Visible = true;
                 btnTaiKhoan.Visible = true;
@@ -159,9 +165,26 @@ namespace HETHONGTINHNHUANBUT
 
         private void btnNhapNhuanBut_Click(object sender, EventArgs e)
         {
-            FrmNhapNhuanBut frmNhap = new FrmNhapNhuanBut();
-            frmNhap.NguoiDangNhap = this.currentUserName;
-            OpenChildForm(frmNhap, sender as Guna2Button);
+            string role = currentPrivilege?.Trim().ToLower() ?? "";
+            if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
+            {
+                FrmNhapBaiPhongVien frmNhap = new FrmNhapBaiPhongVien();
+                frmNhap.NguoiDangNhap = this.currentUserName;
+                OpenChildForm(frmNhap, sender as Guna2Button);
+            }
+            else
+            {
+                FrmNhapNhuanBut frmNhap = new FrmNhapNhuanBut();
+                frmNhap.NguoiDangNhap = this.currentUserName;
+                OpenChildForm(frmNhap, sender as Guna2Button);
+            }
+        }
+
+        private void btnKiemDuyet_Click(object sender, EventArgs e)
+        {
+            FrmKiemDuyetNhuanBut frm = new FrmKiemDuyetNhuanBut();
+            frm.NguoiDangNhap = this.currentUserName;
+            OpenChildForm(frm, sender as Guna2Button);
         }
 
         private void btnPhieuChi_Click(object sender, EventArgs e)
