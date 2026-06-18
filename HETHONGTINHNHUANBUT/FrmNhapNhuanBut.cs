@@ -29,7 +29,7 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmNhapNhuanBut_Load(object sender, EventArgs e)
         {
             this.SuspendLayout();
-            FormatDataGridView();
+            UIHelper.FormatGiaoDienBang(dgvNhuanBut);
             PhanQuyenThaoTac();
             this.ResumeLayout();
 
@@ -100,18 +100,6 @@ namespace HETHONGTINHNHUANBUT
             {
                 System.Diagnostics.Debug.WriteLine("Lỗi DB: " + ex.Message);
             }
-        }
-
-        private void FormatDataGridView()
-        {
-            dgvNhuanBut.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvNhuanBut.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            dgvNhuanBut.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvNhuanBut.EnableHeadersVisualStyles = false;
-            dgvNhuanBut.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvNhuanBut.DefaultCellStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            dgvNhuanBut.DefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            dgvNhuanBut.RowTemplate.Height = 38;
         }
 
         private void PhanQuyenThaoTac()
@@ -600,8 +588,5 @@ namespace HETHONGTINHNHUANBUT
             txtLuotXem.Text = row.Cells["LuotXem"].Value?.ToString();
             txtLuotThich.Text = row.Cells["LuotThich"].Value?.ToString();
         }
-
-        private void pnlTop_Paint(object sender, PaintEventArgs e) { }
-        private void pnlTop_Paint_1(object sender, PaintEventArgs e) { }
     }
 }

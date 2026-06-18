@@ -22,7 +22,6 @@ namespace HETHONGTINHNHUANBUT
         public FrmTroLyAI()
         {
             InitializeComponent();
-            btnGui.Click += new EventHandler(btnGui_Click);
             txtInput.KeyDown += TxtInput_KeyDown;
 
             ThemBongBongChat("🤖 AI Kế Toán: Chào đồng chí! Tôi là Trợ lý AI nội bộ của hệ thống NewsPay. Không chỉ nắm vững luật Thuế, tôi còn được cấp quyền truy cập dữ liệu trực tiếp. Đồng chí có thể hỏi tôi về số liệu tổng quan ngay bây giờ!", false);

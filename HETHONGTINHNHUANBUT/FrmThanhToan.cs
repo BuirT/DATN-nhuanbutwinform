@@ -19,6 +19,7 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmThanhToan_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvThanhToan);
             cboLoaiBao.Items.AddRange(new string[] { "NG", "KH" });
             cboVung.Items.AddRange(new string[] { "HCM", "HN", "DN" });
             cboLoaiTT.Items.AddRange(new string[] { "CT", "LE" });

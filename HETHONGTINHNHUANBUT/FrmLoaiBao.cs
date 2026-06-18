@@ -16,6 +16,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmLoaiBao_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvLoaiBao);
             LoadData();
         }
 

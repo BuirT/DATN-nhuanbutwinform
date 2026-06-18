@@ -28,46 +28,10 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmButDanh_Load(object sender, EventArgs e)
         {
-            FormatGiaoDienBang();
+            UIHelper.FormatGiaoDienBang(dgvButDanh);
             await LoadComboBoxTacGiaSQL();
             await LoadDataSQLAsync();
             PhanQuyenThaoTac();
-        }
-
-        private void FormatGiaoDienBang()
-        {
-            dgvButDanh.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvButDanh.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            dgvButDanh.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvButDanh.EnableHeadersVisualStyles = false;
-
-            dgvButDanh.DefaultCellStyle.BackColor = Color.White;
-            dgvButDanh.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvButDanh.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvButDanh.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-
-            Color selectedBg = Color.FromArgb(232, 240, 254);
-            Color selectedFg = Color.FromArgb(15, 23, 42);
-
-            dgvButDanh.DefaultCellStyle.SelectionBackColor = selectedBg;
-            dgvButDanh.DefaultCellStyle.SelectionForeColor = selectedFg;
-            dgvButDanh.AlternatingRowsDefaultCellStyle.SelectionBackColor = selectedBg;
-            dgvButDanh.AlternatingRowsDefaultCellStyle.SelectionForeColor = selectedFg;
-
-            dgvButDanh.ThemeStyle.RowsStyle.BackColor = Color.White;
-            dgvButDanh.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvButDanh.ThemeStyle.RowsStyle.SelectionBackColor = selectedBg;
-            dgvButDanh.ThemeStyle.RowsStyle.SelectionForeColor = selectedFg;
-
-            dgvButDanh.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvButDanh.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvButDanh.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = selectedBg;
-            dgvButDanh.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = selectedFg;
-
-            dgvButDanh.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvButDanh.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(71, 85, 105);
-
-            dgvButDanh.RowTemplate.Height = 38;
         }
 
         private async Task LoadComboBoxTacGiaSQL()

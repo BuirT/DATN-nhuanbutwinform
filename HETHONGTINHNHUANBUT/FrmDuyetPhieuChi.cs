@@ -28,6 +28,7 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmDuyetPhieuChi_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvPhieuChi);
             await AutoFixDatabaseColumns(); // Tự động vá Database
             cboTrangThai.DropDownHeight = 200;
             cboTrangThai.IntegralHeight = true;

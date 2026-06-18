@@ -20,6 +20,7 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTraCuuNhuanBut_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvTraCuu);
             var frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
             if (frmMain != null)
             {
