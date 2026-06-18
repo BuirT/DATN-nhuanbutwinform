@@ -56,6 +56,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnDuyetChi);
             this.pnlMenu.Controls.Add(this.btnPhieuChi);
             this.pnlMenu.Controls.Add(this.btnKiemDuyet);
+            this.pnlMenu.Controls.Add(this.btnBaoCaoAI);
             this.pnlMenu.Controls.Add(this.btnNhapNhuanBut);
             this.pnlMenu.Controls.Add(this.btnTraCuuCaNhan);
             this.pnlMenu.Controls.Add(this.btnSubLoaiBao);
@@ -76,6 +77,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.ShadowDecoration.Depth = 12;
             this.pnlMenu.ShadowDecoration.Enabled = true;
             this.pnlMenu.Size = new System.Drawing.Size(280, 750);
+            this.pnlMenu.AutoScroll = true;
             this.pnlMenu.TabIndex = 0;
             // 
             // btnDotThanhToan
@@ -306,6 +308,23 @@ namespace HETHONGTINHNHUANBUT
             this.btnTroLyAI.TextOffset = new System.Drawing.Point(20, 0);
             this.btnTroLyAI.Click += new System.EventHandler(this.btnTroLyAI_Click);
             // 
+            // btnBaoCaoAI
+            // 
+            this.btnBaoCaoAI = new Guna.UI2.WinForms.Guna2Button();
+            this.btnBaoCaoAI.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnBaoCaoAI.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(242)))), ((int)(((byte)(254)))));
+            this.btnBaoCaoAI.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnBaoCaoAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
+            this.btnBaoCaoAI.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(197)))), ((int)(((byte)(253)))));
+            this.btnBaoCaoAI.BorderThickness = 1;
+            this.btnBaoCaoAI.Name = "btnBaoCaoAI";
+            this.btnBaoCaoAI.Size = new System.Drawing.Size(252, 50);
+            this.btnBaoCaoAI.TabIndex = 15;
+            this.btnBaoCaoAI.Text = "   BÁO CÁO TỔNG KẾT AI";
+            this.btnBaoCaoAI.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnBaoCaoAI.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnBaoCaoAI.Click += new System.EventHandler(this.btnBaoCaoAI_Click);
+            // 
             // btnTongQuan
             // 
             this.btnTongQuan.Dock = System.Windows.Forms.DockStyle.Top;
@@ -408,6 +427,7 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Panel pnlMenu;
         private Guna.UI2.WinForms.Guna2Panel pnlLogo;
         private Guna.UI2.WinForms.Guna2Button btnTongQuan;
+        private Guna.UI2.WinForms.Guna2Button btnBaoCaoAI;
         private Guna.UI2.WinForms.Guna2Button btnTroLyAI;
         private Guna.UI2.WinForms.Guna2Button btnQuanLyBao;
         private Guna.UI2.WinForms.Guna2Button btnSubSoBao;

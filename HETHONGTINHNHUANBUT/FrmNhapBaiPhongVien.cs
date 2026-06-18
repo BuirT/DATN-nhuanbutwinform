@@ -195,6 +195,27 @@ namespace HETHONGTINHNHUANBUT
                     MessageBox.Show($"✅ AI Kiểm Toán: {ketQua.TomTat}",
                         "AI Kiểm Toán", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
+                // Phát hiện bất thường
+                var batThuong = await AnomalyDetector.KiemTraAsync(
+                    tenBai, butDanh, muc, 0,
+                    "", NguoiDangNhap ?? "");
+
+                if (batThuong.CoBatThuong)
+                {
+                    string noiDung = string.Join("\n", batThuong.CanhBao);
+                    string tieuDe = batThuong.MucDo == AnomalyDetector.MucDo.NghiemTrong
+                        ? "🚨 CẢNH BÁO NGHIÊM TRỌNG"
+                        : "⚠️ PHÁT HIỆN BẤT THƯỜNG";
+                    warning += "\n" + noiDung;
+                    lblWarning.Text = warning.TrimEnd('\n');
+                    lblWarning.ForeColor = Color.FromArgb(220, 38, 38);
+                    lblWarning.Visible = true;
+                    MessageBox.Show(noiDung, tieuDe,
+                        MessageBoxButtons.OK,
+                        batThuong.MucDo == AnomalyDetector.MucDo.NghiemTrong
+                            ? MessageBoxIcon.Error : MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {

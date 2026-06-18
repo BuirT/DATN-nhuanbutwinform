@@ -22,13 +22,6 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmTraCuuNhuanBut_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvTraCuu);
-            var frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
-            if (frmMain != null)
-            {
-                var sidebar = frmMain.Controls.Find("pnlMenu", true).FirstOrDefault()
-                           ?? frmMain.Controls.Find("pnlSidebar", true).FirstOrDefault();
-                if (sidebar != null) sidebar.Visible = false;
-            }
 
             if (string.IsNullOrEmpty(MaTacGiaCuaToi))
             {

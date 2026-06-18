@@ -49,6 +49,7 @@
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
+            this.pnlHeader.Controls.Add(this.btnRefresh);
             this.pnlHeader.Controls.Add(this.lblTitle);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.FillColor = System.Drawing.Color.Transparent;
@@ -67,6 +68,22 @@
             this.lblTitle.Size = new System.Drawing.Size(313, 32);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "🤖  TRỢ LÝ AI - NEWSPAY";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
+            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefresh.Animated = true;
+            this.btnRefresh.BorderRadius = 10;
+            this.btnRefresh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnRefresh.ForeColor = System.Drawing.Color.White;
+            this.btnRefresh.Location = new System.Drawing.Point(1155, 15);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(140, 42);
+            this.btnRefresh.TabIndex = 6;
+            this.btnRefresh.Text = "🔄 LÀM MỚI";
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // pnlChat
             // 
@@ -179,5 +196,6 @@
         private Guna.UI2.WinForms.Guna2Panel pnlInput;
         private Guna.UI2.WinForms.Guna2TextBox txtInput;
         private Guna.UI2.WinForms.Guna2Button btnGui;
+        private Guna.UI2.WinForms.Guna2Button btnRefresh;
     }
 }

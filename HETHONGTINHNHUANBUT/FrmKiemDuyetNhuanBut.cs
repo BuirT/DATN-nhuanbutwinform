@@ -171,6 +171,37 @@ namespace HETHONGTINHNHUANBUT
             }
 
             string msg = $"Xác nhận {action} cho bài viết này?";
+
+            // AI phát hiện bất thường trước khi duyệt
+            if (dgvNhuanBut.CurrentRow != null)
+            {
+                string tenBai = dgvNhuanBut.CurrentRow.Cells["Tenbai"].Value?.ToString() ?? "";
+                string butDanh = dgvNhuanBut.CurrentRow.Cells["Butdanh"].Value?.ToString() ?? "";
+                string muc = dgvNhuanBut.CurrentRow.Cells["Muc"].Value?.ToString() ?? "";
+                decimal tien = 0;
+                if (dgvNhuanBut.CurrentRow.Cells["TienNhuanbut"].Value != null)
+                    decimal.TryParse(dgvNhuanBut.CurrentRow.Cells["TienNhuanbut"].Value.ToString(), out tien);
+
+                var batThuong = await AnomalyDetector.KiemTraAsync(tenBai, butDanh, muc, tien, "", "");
+
+                if (batThuong.CoBatThuong)
+                {
+                    string canhBaoText = string.Join("\n", batThuong.CanhBao);
+                    if (batThuong.MucDo == AnomalyDetector.MucDo.NghiemTrong)
+                    {
+                        var xacNhan = MessageBox.Show(
+                            "🚨 PHÁT HIỆN BẤT THƯỜNG NGHIÊM TRỌNG:\n" + canhBaoText +
+                            "\n\nVẫn tiếp tục duyệt?", "Cảnh báo",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        if (xacNhan == DialogResult.No) return;
+                    }
+                    else
+                    {
+                        msg += "\n\n⚠️ Cảnh báo:\n" + canhBaoText;
+                    }
+                }
+            }
+
             if (MessageBox.Show(msg, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
@@ -315,6 +346,11 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void pnlTop_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblTien_Click(object sender, EventArgs e)
         {
 
         }

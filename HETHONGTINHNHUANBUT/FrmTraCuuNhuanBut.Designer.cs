@@ -79,6 +79,17 @@
             this.lblMaSo.TabIndex = 4;
             this.lblMaSo.Text = "";
             // 
+            // lblMaSo
+            // 
+            this.lblMaSo = new System.Windows.Forms.Label();
+            this.lblMaSo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblMaSo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblMaSo.Location = new System.Drawing.Point(16, 58);
+            this.lblMaSo.Name = "lblMaSo";
+            this.lblMaSo.Size = new System.Drawing.Size(400, 20);
+            this.lblMaSo.TabIndex = 4;
+            this.lblMaSo.Text = "";
+            // 
             // pnlCards
             // 
             this.pnlCards.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
