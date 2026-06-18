@@ -12,6 +12,7 @@ namespace HETHONGTINHNHUANBUT
     {
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         public string MaTacGiaCuaToi { get; set; }
+        public string NguoiDangNhap { get; set; }
 
         public FrmTraCuuNhuanBut()
         {
@@ -20,6 +21,7 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTraCuuNhuanBut_Load(object sender, EventArgs e)
         {
+<<<<<<< Updated upstream
             UIHelper.FormatGiaoDienBang(dgvTraCuu);
             var frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
             if (frmMain != null)
@@ -38,6 +40,10 @@ namespace HETHONGTINHNHUANBUT
 
             lblMaSo.Text = "Mã hồ sơ: " + MaTacGiaCuaToi;
             await LoadDataTraCuuAsync();
+=======
+         
+           
+>>>>>>> Stashed changes
         }
 
         private async Task LoadDataTraCuuAsync()
@@ -50,16 +56,20 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
 
                     string query = @"
-                        SELECT nb.Butdanh, nb.Tenbai, nb.TienNhuanbut, nb.DaThanhToan, nb.TenSoBao
+                        SELECT nb.Butdanh, nb.Tenbai, nb.TienNhuanbut, nb.TrangThaiDuyet,
+                               b.Tenbao AS TenSoBao
                         FROM Nhuanbut nb
-                        WHERE nb.Butdanh IN (
+                        LEFT JOIN Bao b ON nb.MsBao = b.Maso
+                        WHERE (@ms <> '' AND nb.Butdanh IN (
                             SELECT Butdanh FROM ButDanh WHERE MsTacgia = @ms
-                        )
-                        ORDER BY nb.TenSoBao DESC";
+                        ))
+                        OR (@ms = '' AND nb.NguoiNhap = @nguoi)
+                        ORDER BY nb.ngaychuyen DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@ms", MaTacGiaCuaToi);
+                        cmd.Parameters.AddWithValue("@ms", MaTacGiaCuaToi ?? "");
+                        cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "");
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
                             dt.Load(reader);
@@ -70,43 +80,53 @@ namespace HETHONGTINHNHUANBUT
                 if (dt.Rows.Count == 0) return;
 
                 dgvTraCuu.DataSource = dt.AsEnumerable().Select(n => new {
-                    Kỳ_Báo = n.Field<string>("TenSoBao"),
+                    Số_Báo = n.Field<string>("TenSoBao") ?? "",
                     Tên_Bài = n.Field<string>("Tenbai"),
                     Bút_Danh = n.Field<string>("Butdanh"),
-                    Số_Tiền = n.Field<decimal>("TienNhuanbut"),
-                    Trạng_Thái = Convert.ToBoolean(n["DaThanhToan"]) ? "✅ Đã nhận" : "⏳ Chờ chi"
-                }).OrderByDescending(x => x.Kỳ_Báo).ToList();
+                    Tiền_NB = n.Field<decimal?>("TienNhuanbut") ?? 0,
+                    Trạng_Thái = GetStatusText(n.Field<int?>("TrangThaiDuyet") ?? 0, n.Field<decimal?>("TienNhuanbut") ?? 0)
+                }).OrderByDescending(x => x.Số_Báo).ToList();
 
-                if (dgvTraCuu.Columns["Số_Tiền"] != null)
-                    dgvTraCuu.Columns["Số_Tiền"].DefaultCellStyle.Format = "N0";
+                if (dgvTraCuu.Columns["Tiền_NB"] != null)
+                    dgvTraCuu.Columns["Tiền_NB"].DefaultCellStyle.Format = "N0";
 
-                decimal daNhan = dt.AsEnumerable().Where(n => Convert.ToBoolean(n["DaThanhToan"])).Sum(n => Convert.ToDecimal(n["TienNhuanbut"]));
-                lblTongTien.Text = daNhan.ToString("N0") + " VNĐ";
+                decimal daDuyet = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) >= 2).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
+                lblTongTien.Text = daDuyet.ToString("N0") + " VNĐ";
 
-                decimal dangCho = dt.AsEnumerable().Where(n => !Convert.ToBoolean(n["DaThanhToan"])).Sum(n => Convert.ToDecimal(n["TienNhuanbut"]));
+                decimal dangCho = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) < 2).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
                 lblDangCho.Text = dangCho.ToString("N0") + " VNĐ";
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
+        private string GetStatusText(int trangThai, decimal tien)
+        {
+            if (trangThai == 0) return "⏳ Chờ Thư ký";
+            if (trangThai == 1) return tien > 0 ? "💰 Chờ Lãnh đạo ký" : "💰 Chờ Kế toán nhập tiền";
+            if (trangThai == 2) return "✅ Đã duyệt";
+            if (trangThai == 3) return "✅ Đã nhận";
+            return "⏳ Chờ xử lý";
+        }
+
         private void btnBack_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show("Có chắc muốn đăng xuất không?",
-                                               "Xác nhận thoát",
-                                               MessageBoxButtons.YesNo,
-                                               MessageBoxIcon.Question);
-
-            if (dr == DialogResult.Yes)
+            FrmTrangChinh frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
+            if (frmMain != null)
             {
-                var frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
-                if (frmMain != null)
-                {
-                    frmMain.Hide();
-                    FormLogin login = new FormLogin();
-                    login.Show();
-                }
-                this.Close();
+                frmMain.Show();
+                frmMain.BringToFront();
             }
+            this.Close();
+        }
+
+        private async void btnRefresh_Click(object sender, EventArgs e)
+        {
+            await LoadDataTraCuuAsync();
+        }
+
+        private void pnlChoChi_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

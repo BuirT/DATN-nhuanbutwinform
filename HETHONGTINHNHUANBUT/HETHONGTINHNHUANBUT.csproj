@@ -331,6 +331,9 @@
     <EmbeddedResource Include="FrmDuyetPhieuChi.resx">
       <DependentUpon>FrmDuyetPhieuChi.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmKiemDuyetNhuanBut.resx">
+      <DependentUpon>FrmKiemDuyetNhuanBut.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmLoaiBao.resx">
       <DependentUpon>FrmLoaiBao.cs</DependentUpon>
     </EmbeddedResource>
@@ -357,6 +360,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTongQuan.resx">
       <DependentUpon>FrmTongQuan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmTraCuuNhuanBut.resx">
+      <DependentUpon>FrmTraCuuNhuanBut.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTrangChinh.resx">
       <DependentUpon>FrmTrangChinh.cs</DependentUpon>

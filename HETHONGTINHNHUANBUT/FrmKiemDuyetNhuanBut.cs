@@ -302,5 +302,10 @@ namespace HETHONGTINHNHUANBUT
                 }
             }
         }
+
+        private void txtTienNhuanBut_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
