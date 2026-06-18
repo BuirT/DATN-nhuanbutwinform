@@ -28,7 +28,17 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     conn.Open();
-                    string query = "SELECT * FROM tmpCongNoTong ORDER BY Conlai DESC";
+                    string query = @"
+                        SELECT tg.Maso, tg.Hoten,
+                               ISNULL(SUM(ct.Sotien), 0) AS Sotien,
+                               ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS DaTT,
+                               ISNULL(SUM(ct.Sotien), 0) - ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS Conlai
+                        FROM TacGia tg
+                        LEFT JOIN NhuanbutCT ct ON tg.Maso = ct.MsTacgia
+                        LEFT JOIN Phieuchi pc ON ct.SoPC = pc.Sophieu
+                        GROUP BY tg.Maso, tg.Hoten
+                        HAVING ISNULL(SUM(ct.Sotien), 0) > 0
+                        ORDER BY Conlai DESC";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     da.SelectCommand.CommandTimeout = 120;
                     da.Fill(dtTong);
@@ -38,17 +48,18 @@ namespace HETHONGTINHNHUANBUT
                 if (dgvCongNo.Columns.Count > 0)
                 {
                     dgvCongNo.Columns["Maso"].HeaderText = "Mã số";
+                    dgvCongNo.Columns["Maso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvCongNo.Columns["Hoten"].HeaderText = "Tác giả";
+                    dgvCongNo.Columns["Hoten"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     dgvCongNo.Columns["Sotien"].HeaderText = "Tổng nợ (VNĐ)";
-                    dgvCongNo.Columns["DaTT"].HeaderText = "Đã thanh toán";
-                    dgvCongNo.Columns["Conlai"].HeaderText = "Còn nợ";
-
                     dgvCongNo.Columns["Sotien"].DefaultCellStyle.Format = "N0";
+                    dgvCongNo.Columns["Sotien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                    dgvCongNo.Columns["DaTT"].HeaderText = "Đã thanh toán (VNĐ)";
                     dgvCongNo.Columns["DaTT"].DefaultCellStyle.Format = "N0";
+                    dgvCongNo.Columns["DaTT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                    dgvCongNo.Columns["Conlai"].HeaderText = "Còn nợ (VNĐ)";
                     dgvCongNo.Columns["Conlai"].DefaultCellStyle.Format = "N0";
-                    dgvCongNo.Columns["Sotien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                    dgvCongNo.Columns["DaTT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                    dgvCongNo.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    dgvCongNo.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
 
                 // Tính tổng nợ (Đã xử lý DBNull)
