@@ -303,6 +303,13 @@
     <Compile Include="FrmTrangChinh.Designer.cs">
       <DependentUpon>FrmTrangChinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="AnomalyDetector.cs" />
+    <Compile Include="FrmBaoCaoAI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBaoCaoAI.Designer.cs">
+      <DependentUpon>FrmBaoCaoAI.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmTroLyAI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -366,6 +373,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTrangChinh.resx">
       <DependentUpon>FrmTrangChinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmBaoCaoAI.resx">
+      <DependentUpon>FrmBaoCaoAI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTroLyAI.resx">
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>

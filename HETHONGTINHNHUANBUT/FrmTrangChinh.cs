@@ -25,6 +25,7 @@ namespace HETHONGTINHNHUANBUT
         {
             await AutoFixDatabaseColumns();
             ApplyPermissions();
+            CreateAIControls();
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
@@ -108,15 +109,41 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
+        private void CreateAIControls()
+        {
+            var existing = this.Controls.Find("btnBaoCaoAI", true);
+            if (existing.Length > 0) return;
+
+            var btn = new Guna.UI2.WinForms.Guna2Button();
+            btn.Name = "btnBaoCaoAI";
+            btn.Text = "BÁO CÁO TỔNG KẾT AI";
+            btn.Dock = DockStyle.Top;
+            btn.FillColor = System.Drawing.Color.FromArgb(224, 242, 254);
+            btn.ForeColor = System.Drawing.Color.FromArgb(2, 132, 199);
+            btn.BorderColor = System.Drawing.Color.FromArgb(147, 197, 253);
+            btn.BorderThickness = 1;
+            btn.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btn.Size = new System.Drawing.Size(252, 50);
+            btn.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            btn.TextOffset = new System.Drawing.Point(20, 0);
+            btn.Click += btnBaoCaoAI_Click;
+            pnlMenu.Controls.Add(btn);
+            pnlMenu.Controls.SetChildIndex(btn, pnlMenu.Controls.GetChildIndex(btnTongQuan));
+        }
+
         private void ApplyPermissions()
         {
             btnDuyetChi.Visible = false;
             btnKiemDuyet.Visible = false;
             btnPhieuChi.Visible = false;
             btnTaiKhoan.Visible = false;
+            btnTroLyAI.Visible = false;
+            btnBaoCaoAI.Visible = false;
 
             if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btnTraCuu)
                 btnTraCuu.Visible = false;
+            if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
+                btnDot.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
@@ -146,6 +173,11 @@ namespace HETHONGTINHNHUANBUT
                 btnSubBaoCaoTH.Visible = false;
                 btnSubBaoCaoCT.Visible = false;
                 btnSubBaoCaoCN.Visible = false;
+                btnBaoCaoChiTiet.Visible = false;
+                btnBaoCaoCongNo.Visible = false;
+
+                if (this.Controls.Find("btnTraCuuCaNhan", true).FirstOrDefault() is Control btn)
+                    btn.Visible = true;
                 btnTroLyAI.Visible = false;
                 if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot)
                     btnDot.Visible = false;
@@ -156,16 +188,35 @@ namespace HETHONGTINHNHUANBUT
             {
                 btnKiemDuyet.Visible = true;
             }
+            else if (role == "kế toán")
+            {
+                btnKiemDuyet.Visible = true;
+                btnPhieuChi.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
+                    btnDot2.Visible = true;
+            }
             else if (role == "lãnh đạo")
             {
                 btnKiemDuyet.Visible = true;
                 btnDuyetChi.Visible = true;
                 btnTaiKhoan.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
+                    btnDot2.Visible = true;
             }
-            else if (role == "kế toán")
+            else if (role == "admin" || role == "quản trị viên")
             {
                 btnKiemDuyet.Visible = true;
+                btnDuyetChi.Visible = true;
                 btnPhieuChi.Visible = true;
+                btnTaiKhoan.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
+                if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
+                    btnDot2.Visible = true;
             }
         }
 
@@ -195,6 +246,11 @@ namespace HETHONGTINHNHUANBUT
         // ==========================================================
         // CÁC SỰ KIỆN MỞ FORM CON
         // ==========================================================
+        private void btnBaoCaoAI_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoAI(), sender as Guna2Button);
+        }
+
         private void btnTroLyAI_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
