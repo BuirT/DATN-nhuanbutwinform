@@ -117,7 +117,7 @@
             this.cboTacGia.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.cboTacGia.BorderRadius = 8;
             this.cboTacGia.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboTacGia.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.cboTacGia.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.cboTacGia.Font = new System.Drawing.Font("Segoe UI", 10F);
@@ -128,7 +128,6 @@
             this.cboTacGia.Size = new System.Drawing.Size(200, 36);
             this.cboTacGia.TabIndex = 2;
             this.cboTacGia.SelectedIndexChanged += new System.EventHandler(this.cboTacGia_SelectedIndexChanged);
-            this.cboTacGia.TextUpdate += new System.EventHandler(this.cboTacGia_TextUpdate);
             // 
             // label2
             // 

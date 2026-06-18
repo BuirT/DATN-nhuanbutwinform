@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 
@@ -19,8 +21,9 @@ namespace HETHONGTINHNHUANBUT
             InitializeComponent();
         }
 
-        private void FrmTrangChinh_Load(object sender, EventArgs e)
+        private async void FrmTrangChinh_Load(object sender, EventArgs e)
         {
+            await AutoFixDatabaseColumns();
             ApplyPermissions();
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
@@ -49,6 +52,64 @@ namespace HETHONGTINHNHUANBUT
             currentActiveButton = clickedButton;
             currentActiveButton.FillColor = System.Drawing.Color.FromArgb(238, 242, 255);
             currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(79, 70, 229);
+        }
+
+        // Tự động thêm các cột quản lý vào database nếu chưa tồn tại
+        private async Task AutoFixDatabaseColumns()
+        {
+            string cn = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(cn))
+                {
+                    await conn.OpenAsync();
+
+                    // Cột cho bảng Nhuanbut
+                    string fixNhuanbut = @"
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD TrangThaiDuyet INT DEFAULT 0;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiNhap' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiNhap NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiKiemTra' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiKiemTra NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiKeToan' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiKeToan NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TongThuKy' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD TongThuKy NVARCHAR(100);
+                        UPDATE Nhuanbut SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
+                    using (SqlCommand cmd = new SqlCommand(fixNhuanbut, conn))
+                        await cmd.ExecuteNonQueryAsync();
+
+                    // Bảng NhuanbutCT (chi tiết phiếu chi)
+                    string fixNhuanbutCT = @"
+                        IF NOT EXISTS(SELECT * FROM sys.objects WHERE Name = N'NhuanbutCT' AND Type = N'U')
+                            CREATE TABLE NhuanbutCT (
+                                Id INT IDENTITY(1,1) PRIMARY KEY,
+                                MsTacgia NVARCHAR(50),
+                                MsNhuanbut INT,
+                                Sotien DECIMAL(18,0),
+                                SoPC NVARCHAR(50),
+                                SauThanhToan NVARCHAR(10)
+                            );";
+                    using (SqlCommand cmdCT = new SqlCommand(fixNhuanbutCT, conn))
+                        await cmdCT.ExecuteNonQueryAsync();
+
+                    // Cột cho bảng Phieuchi
+                    string fixPhieuchi = @"
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD TrangThaiDuyet INT DEFAULT 0;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD NguoiDuyet NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD NgayDuyet DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LyDoTuChoi' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD LyDoTuChoi NVARCHAR(MAX);
+                        UPDATE Phieuchi SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
+                    using (SqlCommand cmd2 = new SqlCommand(fixPhieuchi, conn))
+                        await cmd2.ExecuteNonQueryAsync();
+                }
+            }
+            catch { }
         }
 
         private void ApplyPermissions()
@@ -220,10 +281,6 @@ namespace HETHONGTINHNHUANBUT
             Environment.Exit(0);
         }
 
-        private void guna2Button1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
 

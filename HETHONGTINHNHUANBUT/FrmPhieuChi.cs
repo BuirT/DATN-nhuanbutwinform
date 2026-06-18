@@ -36,12 +36,7 @@ namespace HETHONGTINHNHUANBUT
             DataGridViewTextBoxColumn idCol = new DataGridViewTextBoxColumn();
             idCol.Name = "Id";
             idCol.Visible = false;
-            dgvChuaThanhToan.Columns.Add(idCol);// C# - change this block in InitializeComponent
-            this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
-            this.cboTacGia.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboTacGia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTacGia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;this.cboTacGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTacGia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
+            dgvChuaThanhToan.Columns.Add(idCol);
 
             DataGridViewTextBoxColumn tenBaiCol = new DataGridViewTextBoxColumn();
             tenBaiCol.Name = "TenBai";
@@ -124,7 +119,6 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = @"SELECT DISTINCT Butdanh FROM Nhuanbut 
                                      WHERE Butdanh IS NOT NULL AND Butdanh <> ''
-                                     AND TrangThaiDuyet = 2
                                      AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)
                                      ORDER BY Butdanh";
 
@@ -132,35 +126,13 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    List<string> authors = dt.AsEnumerable().Select(r => r.Field<string>("Butdanh")).ToList();
+                    var authors = dt.AsEnumerable().Select(r => r.Field<string>("Butdanh")).ToList();
 
                     cboTacGia.Items.Clear();
                     cboTacGia.Items.AddRange(authors.ToArray());
-                    cboTacGia.Tag = authors;
                 }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách tác giả: " + ex.Message); }
-        }
-
-        private void cboTacGia_TextUpdate(object sender, EventArgs e)
-        {
-            string text = cboTacGia.Text;
-            var fullList = cboTacGia.Tag as List<string>;
-            if (fullList == null) return;
-
-            cboTacGia.Items.Clear();
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                cboTacGia.Items.AddRange(fullList.ToArray());
-                cboTacGia.DroppedDown = false;
-                return;
-            }
-
-            var filtered = fullList.Where(item => item.ToLower().Contains(text.ToLower())).ToList();
-            cboTacGia.Items.AddRange(filtered.ToArray());
-            cboTacGia.DroppedDown = true;
-            cboTacGia.SelectionStart = text.Length;
-            cboTacGia.SelectionLength = 0;
         }
 
         private async void cboTacGia_SelectedIndexChanged(object sender, EventArgs e)
@@ -201,7 +173,6 @@ namespace HETHONGTINHNHUANBUT
                     string sqlArticles = @"SELECT Maso, Tenbai, TienNhuanbut 
                                            FROM Nhuanbut 
                                            WHERE Butdanh = @butdanh 
-                                           AND TrangThaiDuyet = 3
                                            AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)";
                     SqlDataAdapter da = new SqlDataAdapter(sqlArticles, conn);
                     da.SelectCommand.Parameters.AddWithValue("@butdanh", penName);

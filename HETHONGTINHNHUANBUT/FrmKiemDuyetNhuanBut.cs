@@ -21,8 +21,10 @@ namespace HETHONGTINHNHUANBUT
             InitializeComponent();
         }
 
-        private void FrmKiemDuyetNhuanBut_Load(object sender, EventArgs e)
+        private async void FrmKiemDuyetNhuanBut_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvNhuanBut);
+
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
 
             if (role == "thư ký" || role == "admin" || role == "quản trị viên")
@@ -67,10 +69,10 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
-            _ = LoadDataAsync();
+            _ = LoadDataAsync("");
         }
 
-        private async Task LoadDataAsync()
+        private async Task LoadDataAsync(string keyword = "")
         {
             try
             {
@@ -84,12 +86,19 @@ namespace HETHONGTINHNHUANBUT
                                b.Tenbao AS TenSoBao
                         FROM Nhuanbut n
                         LEFT JOIN Bao b ON n.MsBao = b.Maso
-                        WHERE n.TrangThaiDuyet = @tt
-                        ORDER BY n.ngaychuyen DESC";
+                        WHERE n.TrangThaiDuyet = @tt";
+
+                    if (!string.IsNullOrWhiteSpace(keyword))
+                        query += " AND (n.Tenbai LIKE @kw OR n.Butdanh LIKE @kw OR n.NguoiNhap LIKE @kw)";
+
+                    query += " ORDER BY n.ngaychuyen DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@tt", _trangThaiHienTai);
+                        if (!string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
+
                         DataTable dt = new DataTable();
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
@@ -120,6 +129,11 @@ namespace HETHONGTINHNHUANBUT
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
             }
+        }
+
+        private async void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            await LoadDataAsync(txtTimKiem.Text.Trim());
         }
 
         private async void btnXacNhan_Click(object sender, EventArgs e)
@@ -209,7 +223,7 @@ namespace HETHONGTINHNHUANBUT
                     MessageBox.Show($"Đã {action} thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _selectedMaso = "";
                     txtTienNhuanBut.Text = "0";
-                    await LoadDataAsync();
+                    await LoadDataAsync(txtTimKiem.Text.Trim());
                 }
                 catch (Exception ex)
                 {
@@ -267,7 +281,7 @@ namespace HETHONGTINHNHUANBUT
                     }
                     MessageBox.Show($"Đã {action}!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _selectedMaso = "";
-                    await LoadDataAsync();
+                    await LoadDataAsync(txtTimKiem.Text.Trim());
                 }
                 catch (Exception ex)
                 {
