@@ -21,7 +21,6 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTraCuuNhuanBut_Load(object sender, EventArgs e)
         {
-<<<<<<< Updated upstream
             UIHelper.FormatGiaoDienBang(dgvTraCuu);
             var frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
             if (frmMain != null)
@@ -40,10 +39,6 @@ namespace HETHONGTINHNHUANBUT
 
             lblMaSo.Text = "Mã hồ sơ: " + MaTacGiaCuaToi;
             await LoadDataTraCuuAsync();
-=======
-         
-           
->>>>>>> Stashed changes
         }
 
         private async Task LoadDataTraCuuAsync()

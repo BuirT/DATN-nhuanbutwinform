@@ -11,7 +11,6 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmNhapBaiPhongVien : Form
     {
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
-        private string _searchKeyword = "";
 
         public string NguoiDangNhap { get; set; }
         public string QuyenHienTai { get; set; }
