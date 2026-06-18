@@ -22,6 +22,7 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmSoBao_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvSoBao);
             // 1. Tải danh sách loại báo từ bảng Bao (không phụ thuộc bảng LoaiBao)
             await LoadLoaiBaoAsync();
 

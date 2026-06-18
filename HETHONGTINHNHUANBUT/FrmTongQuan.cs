@@ -34,7 +34,7 @@ namespace HETHONGTINHNHUANBUT
         {
             timerClock.Start();
             label5.Text = "BIẾN ĐỘNG CHI TRẢ NHUẬN BÚT TOÀN THỜI GIAN";
-            FixMauSacBangHoatDong();
+            UIHelper.FormatGiaoDienBang(dgvHoatDong);
 
             await Task.WhenAll(
                 LoadThongKe4TheAsync(),
@@ -52,42 +52,6 @@ namespace HETHONGTINHNHUANBUT
         private void DgvHoatDong_SelectionChanged(object sender, EventArgs e)
         {
             dgvHoatDong.ClearSelection();
-        }
-
-        private void FixMauSacBangHoatDong()
-        {
-            dgvHoatDong.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvHoatDong.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            dgvHoatDong.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvHoatDong.ColumnHeadersHeight = 40;
-
-            dgvHoatDong.DefaultCellStyle.BackColor = Color.White;
-            dgvHoatDong.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvHoatDong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvHoatDong.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-
-            dgvHoatDong.DefaultCellStyle.SelectionBackColor = Color.White;
-            dgvHoatDong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-            dgvHoatDong.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
-            dgvHoatDong.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-
-            dgvHoatDong.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvHoatDong.GridColor = Color.FromArgb(241, 245, 249);
-
-            dgvHoatDong.ThemeStyle.RowsStyle.BackColor = Color.White;
-            dgvHoatDong.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvHoatDong.ThemeStyle.RowsStyle.SelectionBackColor = Color.White;
-            dgvHoatDong.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-
-            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
-            dgvHoatDong.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-
-            dgvHoatDong.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvHoatDong.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(71, 85, 105);
-
-            dgvHoatDong.EnableHeadersVisualStyles = false;
         }
 
         async Task LoadThongKe4TheAsync()

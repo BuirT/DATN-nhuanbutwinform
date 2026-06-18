@@ -97,8 +97,6 @@
             this.pnlTop.ShadowDecoration.Enabled = true;
             this.pnlTop.Size = new System.Drawing.Size(1160, 355);
             this.pnlTop.TabIndex = 0;
-            this.pnlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlTop_Paint_1);
-
             // lblTitle
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);

@@ -56,48 +56,9 @@ namespace HETHONGTINHNHUANBUT
             if (cboPhanLoai.Items.Count > 0) cboPhanLoai.SelectedIndex = 0;
 
             await TuDongFixDatabaseSQL();
-            FormatGiaoDienBangTacGia();
+            UIHelper.FormatGiaoDienBang(dgvTacGia);
             await LoadDataSQLAsync();
             PhanQuyenThaoTac();
-        }
-
-        private void FormatGiaoDienBangTacGia()
-        {
-            // Thiết lập phong cách Header phẳng nhã nhặn như Flowty Web UI
-            dgvTacGia.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvTacGia.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            dgvTacGia.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvTacGia.EnableHeadersVisualStyles = false;
-
-            // Màu dòng mặc định tĩnh lặng
-            dgvTacGia.DefaultCellStyle.BackColor = Color.White;
-            dgvTacGia.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvTacGia.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvTacGia.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-
-            // CẤU HÌNH MÀU CHỌN DÒNG FLOWTY: Xanh dương nhạt dịu mắt, chữ tối đen Slate rõ nét, hết nhảy màu bậy bạ
-            Color selectedBg = Color.FromArgb(232, 240, 254);
-            Color selectedFg = Color.FromArgb(15, 23, 42);
-
-            dgvTacGia.DefaultCellStyle.SelectionBackColor = selectedBg;
-            dgvTacGia.DefaultCellStyle.SelectionForeColor = selectedFg;
-            dgvTacGia.AlternatingRowsDefaultCellStyle.SelectionBackColor = selectedBg;
-            dgvTacGia.AlternatingRowsDefaultCellStyle.SelectionForeColor = selectedFg;
-
-            dgvTacGia.ThemeStyle.RowsStyle.BackColor = Color.White;
-            dgvTacGia.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvTacGia.ThemeStyle.RowsStyle.SelectionBackColor = selectedBg;
-            dgvTacGia.ThemeStyle.RowsStyle.SelectionForeColor = selectedFg;
-
-            dgvTacGia.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dgvTacGia.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            dgvTacGia.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = selectedBg;
-            dgvTacGia.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = selectedFg;
-
-            dgvTacGia.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvTacGia.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(71, 85, 105);
-
-            dgvTacGia.RowTemplate.Height = 38;
         }
 
         private async Task TuDongFixDatabaseSQL()
@@ -357,7 +318,5 @@ namespace HETHONGTINHNHUANBUT
             else MessageBox.Show("Không tìm thấy file PDF!");
         }
 
-        private void lblMaHT_Click(object sender, EventArgs e) { }
-        private void txtDienThoai_TextChanged(object sender, EventArgs e) { }
     }
 }

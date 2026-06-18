@@ -17,6 +17,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmBaoCaoCongNo_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvCongNo);
             dtpDenThang.Value = DateTime.Now;
         }
 

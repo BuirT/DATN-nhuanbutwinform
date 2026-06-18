@@ -21,6 +21,7 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTaiKhoan_Load(object sender, EventArgs e)
         {
+            UIHelper.FormatGiaoDienBang(dgvTaiKhoan);
             cboQuyen.Items.Clear();
             string currentRole = QuyenHienTai?.Trim().ToLower() ?? "";
 

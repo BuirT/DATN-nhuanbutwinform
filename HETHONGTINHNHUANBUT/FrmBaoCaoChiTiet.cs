@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using ClosedXML.Excel;
+using System.Threading.Tasks;
 
 namespace HETHONGTINHNHUANBUT
 {
@@ -45,30 +46,38 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi tải tác giả: " + ex.Message); }
         }
 
-        private void btnTimKiem_Click(object sender, EventArgs e)
+        private async void btnTimKiem_Click(object sender, EventArgs e)
         {
             try
             {
                 DataTable dt = new DataTable();
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    conn.Open();
-                    string query = "SELECT * FROM tmpCongNoTacGia WHERE 1=1";
+                    await conn.OpenAsync();
 
                     DateTime startOfMonth = new DateTime(dtpThang.Value.Year, dtpThang.Value.Month, 1);
                     DateTime endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
-                    query += $" AND Ngayra >= '{startOfMonth:yyyy-MM-dd}' AND Ngayra <= '{endOfMonth:yyyy-MM-dd}'";
 
-                    // Chỉ lọc theo tác giả nếu người dùng chọn một tác giả cụ thể (không phải "Tất cả")
+                    string query = @"SELECT * FROM tmpCongNoTacGia 
+                                     WHERE Ngayra >= @tuNgay AND Ngayra <= @denNgay";
+
                     if (cboTacGia.SelectedIndex > 0)
-                    {
-                        query += $" AND Butdanh = N'{cboTacGia.Text}'";
-                    }
+                        query += " AND Butdanh = @butDanh";
 
                     query += " ORDER BY Ngayra DESC";
 
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    da.Fill(dt);
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tuNgay", startOfMonth);
+                        cmd.Parameters.AddWithValue("@denNgay", endOfMonth);
+                        if (cboTacGia.SelectedIndex > 0)
+                            cmd.Parameters.AddWithValue("@butDanh", cboTacGia.Text);
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            dt.Load(reader);
+                        }
+                    }
                 }
 
                 if (dt.Rows.Count == 0)

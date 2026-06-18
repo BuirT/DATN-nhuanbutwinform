@@ -19,8 +19,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmTongHopThang_Load(object sender, EventArgs e)
         {
-            dgvBaoCao.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dgvBaoCao.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            UIHelper.FormatGiaoDienBang(dgvBaoCao);
             dtpThang.Value = DateTime.Now;
         }
 
