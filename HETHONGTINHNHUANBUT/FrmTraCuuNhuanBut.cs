@@ -96,25 +96,9 @@ namespace HETHONGTINHNHUANBUT
             return "⏳ Chờ xử lý";
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
-        {
-            FrmTrangChinh frmMain = Application.OpenForms.OfType<FrmTrangChinh>().FirstOrDefault();
-            if (frmMain != null)
-            {
-                frmMain.Show();
-                frmMain.BringToFront();
-            }
-            this.Close();
-        }
-
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
             await LoadDataTraCuuAsync();
-        }
-
-        private void pnlChoChi_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

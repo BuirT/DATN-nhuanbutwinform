@@ -55,7 +55,6 @@ namespace HETHONGTINHNHUANBUT
             currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(79, 70, 229);
         }
 
-        // Tự động thêm các cột quản lý vào database nếu chưa tồn tại
         private async Task AutoFixDatabaseColumns()
         {
             string cn = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
@@ -65,7 +64,6 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
 
-                    // Cột cho bảng Nhuanbut
                     string fixNhuanbut = @"
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD TrangThaiDuyet INT DEFAULT 0;
@@ -81,7 +79,6 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmd = new SqlCommand(fixNhuanbut, conn))
                         await cmd.ExecuteNonQueryAsync();
 
-                    // Bảng NhuanbutCT (chi tiết phiếu chi)
                     string fixNhuanbutCT = @"
                         IF NOT EXISTS(SELECT * FROM sys.objects WHERE Name = N'NhuanbutCT' AND Type = N'U')
                             CREATE TABLE NhuanbutCT (
@@ -95,7 +92,6 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmdCT = new SqlCommand(fixNhuanbutCT, conn))
                         await cmdCT.ExecuteNonQueryAsync();
 
-                    // Cột cho bảng Phieuchi
                     string fixPhieuchi = @"
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
                             ALTER TABLE Phieuchi ADD TrangThaiDuyet INT DEFAULT 0;
@@ -171,8 +167,12 @@ namespace HETHONGTINHNHUANBUT
                 btnSubSoBao.Visible = false;
                 btnSubLoaiBao.Visible = false;
                 btnTacGia.Visible = false;
-                btnButDanh.Visible = false;
+                btnSubTacGiaHoSo.Visible = false;
+                btnSubButDanh.Visible = false;
                 btnBaoCao.Visible = false;
+                btnSubBaoCaoTH.Visible = false;
+                btnSubBaoCaoCT.Visible = false;
+                btnSubBaoCaoCN.Visible = false;
                 btnBaoCaoChiTiet.Visible = false;
                 btnBaoCaoCongNo.Visible = false;
 
@@ -236,6 +236,7 @@ namespace HETHONGTINHNHUANBUT
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
+            pnlMain.Controls.Clear();
             pnlMain.Controls.Add(childForm);
             pnlMain.Tag = childForm;
             childForm.BringToFront();
@@ -255,7 +256,6 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
         }
 
-        // 🌟 ĐÂY LÀ HÀM MỚI ĐỂ MỞ FORM QUẢN LÝ ĐỢT THANH TOÁN
         private void btnDotThanhToan_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmThanhToan(), sender as Guna2Button);
@@ -273,8 +273,8 @@ namespace HETHONGTINHNHUANBUT
                 btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▼";
         }
 
-        private void btnSubSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao());
-        private void btnSubLoaiBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmLoaiBao());
+        private void btnSubSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao(), sender as Guna2Button);
+        private void btnSubLoaiBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmLoaiBao(), sender as Guna2Button);
         private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
         {
             FrmTraCuuNhuanBut frm = new FrmTraCuuNhuanBut();
@@ -282,7 +282,14 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(frm, sender as Guna2Button);
         }
         private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
-        private void btnTacGia_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia(), sender as Guna2Button);
+        private void btnTacGia_Click(object sender, EventArgs e)
+        {
+            bool isExpanded = btnSubTacGiaHoSo.Visible;
+            btnSubTacGiaHoSo.Visible = !isExpanded;
+            btnSubButDanh.Visible = !isExpanded;
+            btnTacGia.Text = isExpanded ? "QUẢN LÝ TÁC GIẢ  ▼" : "QUẢN LÝ TÁC GIẢ  ▲";
+        }
+        private void btnSubTacGiaHoSo_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia(), sender as Guna2Button);
         private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh(), sender as Guna2Button);
         private void btnTaiKhoan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button);
 
@@ -324,9 +331,17 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(frmDuyet, sender as Guna2Button);
         }
 
-        private void btnBaoCao_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
-        private void btnBaoCaoChiTiet_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoChiTiet(), sender as Guna2Button);
-        private void btnBaoCaoCongNo_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
+        private void btnBaoCao_Click(object sender, EventArgs e)
+        {
+            bool isExpanded = btnSubBaoCaoTH.Visible;
+            btnSubBaoCaoTH.Visible = !isExpanded;
+            btnSubBaoCaoCT.Visible = !isExpanded;
+            btnSubBaoCaoCN.Visible = !isExpanded;
+            btnBaoCao.Text = isExpanded ? "BÁO CÁO  ▼" : "BÁO CÁO  ▲";
+        }
+        private void btnSubBaoCaoTH_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
+        private void btnSubBaoCaoCT_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoChiTiet(), sender as Guna2Button);
+        private void btnSubBaoCaoCN_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
@@ -339,10 +354,7 @@ namespace HETHONGTINHNHUANBUT
 
         private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // Ép tắt mọi luồng ngầm khi đóng form
             Environment.Exit(0);
         }
-
     }
 }
-
