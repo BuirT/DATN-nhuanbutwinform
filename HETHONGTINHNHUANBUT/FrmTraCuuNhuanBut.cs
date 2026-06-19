@@ -58,9 +58,9 @@ namespace HETHONGTINHNHUANBUT
                     {
                         cmd.Parameters.AddWithValue("@ms", MaTacGiaCuaToi ?? "");
                         cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "");
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            dt.Load(reader);
+                            await Task.Run(() => da.Fill(dt));
                         }
                     }
                 }

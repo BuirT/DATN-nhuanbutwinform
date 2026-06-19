@@ -50,18 +50,19 @@ namespace HETHONGTINHNHUANBUT
                         query += " WHERE TenDangNhap LIKE @kw OR HoTen LIKE @kw";
                     query += " ORDER BY TenDangNhap";
 
+                    DataTable dt = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
 
-                        DataTable dt = new DataTable();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            dt.Load(reader);
+                            await Task.Run(() => da.Fill(dt));
                         }
+                    }
 
-                        dgvTaiKhoan.DataSource = dt.AsEnumerable().Select(row => new {
+                    dgvTaiKhoan.DataSource = dt.AsEnumerable().Select(row => new {
                             Id = row["Id"],
                             TenDangNhap = row["TenDangNhap"].ToString(),
                             MatKhau = "********",
@@ -69,7 +70,6 @@ namespace HETHONGTINHNHUANBUT
                             Quyen = row["Quyen"]?.ToString(),
                             TrangThai = Convert.ToBoolean(row["HoatDong"]) ? "Đang hoạt động" : "Bị khóa"
                         }).ToList();
-                    }
                 }
 
                 if (dgvTaiKhoan.Columns["Id"] != null) dgvTaiKhoan.Columns["Id"].Visible = false;

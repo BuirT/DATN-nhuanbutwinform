@@ -122,10 +122,8 @@ namespace HETHONGTINHNHUANBUT
             txtTenBai.ReadOnly = txtTrang.ReadOnly = txtMuc.ReadOnly = biKhoa;
             cboButDanh.Enabled = cboVung.Enabled = cboVungChuyenDen.Enabled = !biKhoa;
 
-            // Phóng viên chỉ nhập tên bài, mục, bút danh - KHÔNG nhập tiền, views, likes
+            // Phóng viên chỉ nhập tên bài, mục, bút danh - KHÔNG nhập tiền
             txtTienNhuanBut.ReadOnly = laPhoiVien || biKhoa;
-            txtLuotXem.ReadOnly = laPhoiVien || biKhoa;
-            txtLuotThich.ReadOnly = laPhoiVien || biKhoa;
         }
 
         private async Task LoadComboboxDataSQLAsync()
@@ -138,8 +136,10 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dtBao = new DataTable();
                     string sqlBao = "SELECT Maso, Tenbao + ' (' + CONVERT(VARCHAR, Ngayra, 103) + ')' as HienThi FROM Bao WHERE DaDuyet = 'N' ORDER BY Ngayra DESC";
                     using (SqlCommand cmd = new SqlCommand(sqlBao, conn))
-                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
-                        dtBao.Load(r);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        await Task.Run(() => da.Fill(dtBao));
+                    }
                     cboSoBao.DisplayMember = "HienThi";
                     cboSoBao.ValueMember = "Maso";
                     cboSoBao.DataSource = dtBao;
@@ -190,18 +190,20 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string query = @"SELECT Maso, STT, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
-                                            TienNhuanbut, LuotXem, LuotThich
+                                            TienNhuanbut
                                      FROM Nhuanbut WHERE MsBao = @maBao";
                     if (!string.IsNullOrWhiteSpace(keyword))
                         query += " AND (Tenbai LIKE @kw OR Butdanh LIKE @kw)";
                     query += " ORDER BY STT ASC";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
+                    {
                         cmd.Parameters.AddWithValue("@maBao", maSoBao);
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
-                        using (SqlDataReader r = await cmd.ExecuteReaderAsync())
-                            dt.Load(r);
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(dt));
+                        }
                     }
                 }
                 dgvNhuanBut.DataSource = dt;
@@ -214,8 +216,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvNhuanBut.Columns["Tenbai"].HeaderText = "TÊN BÀI VIẾT";
                     dgvNhuanBut.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvNhuanBut.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                    dgvNhuanBut.Columns["LuotXem"].HeaderText = "VIEWS";
-                    dgvNhuanBut.Columns["LuotThich"].HeaderText = "LIKES";
                     dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "TỔNG TIỀN (VNĐ)";
                     dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0";
                 }
@@ -240,10 +240,8 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    int luotXem = int.TryParse(txtLuotXem.Text, out int v) ? v : 0;
-                    int luotThich = int.TryParse(txtLuotThich.Text, out int l) ? l : 0;
                     decimal tienGoc = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
-                    decimal tongTien = tienGoc + (luotXem * 50) + (luotThich * 100);
+                    decimal tongTien = tienGoc;
                     int newMa = 1;
                     string sqlMax = "SELECT ISNULL(MAX(Maso), 0) + 1 FROM Nhuanbut";
                     using (SqlCommand cmdMax = new SqlCommand(sqlMax, conn))
@@ -251,8 +249,8 @@ namespace HETHONGTINHNHUANBUT
                         object result = await cmdMax.ExecuteScalarAsync();
                         newMa = Convert.ToInt32(result);
                     }
-                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT, LuotXem, LuotThich, NguoiNhap, TrangThaiDuyet) 
-                                    VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt, @luotXem, @luotThich, @nguoiNhap, 0)";
+                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, STT, NguoiNhap, TrangThaiDuyet) 
+                                    VALUES (@ma, @ten, @trang, @muc, @tien, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @stt, @nguoiNhap, 0)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
                         cmd.Parameters.AddWithValue("@ma", newMa);
@@ -267,8 +265,6 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "Admin");
                         cmd.Parameters.AddWithValue("@nguoiNhap", NguoiDangNhap ?? "Admin");
                         cmd.Parameters.AddWithValue("@stt", dgvNhuanBut.Rows.Count + 1);
-                        cmd.Parameters.AddWithValue("@luotXem", luotXem);
-                        cmd.Parameters.AddWithValue("@luotThich", luotThich);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -299,13 +295,10 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    int luotXem = int.TryParse(txtLuotXem.Text, out int v) ? v : 0;
-                    int luotThich = int.TryParse(txtLuotThich.Text, out int l) ? l : 0;
                     decimal tienGoc = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
-                    decimal tongTien = tienGoc + (luotXem * 50) + (luotThich * 100);
+                    decimal tongTien = tienGoc;
 
-                    string sql = @"UPDATE Nhuanbut SET Tenbai=@ten, Trang=@trang, Muc=@muc, TienNhuanbut=@tien, Butdanh=@bd, Vung=@vung, VungChuyenDen=@vungCD, 
-                                    LuotXem=@luotXem, LuotThich=@luotThich
+                    string sql = @"UPDATE Nhuanbut SET Tenbai=@ten, Trang=@trang, Muc=@muc, TienNhuanbut=@tien, Butdanh=@bd, Vung=@vung, VungChuyenDen=@vungCD
                                     WHERE Maso=@ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
@@ -317,8 +310,6 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
                         cmd.Parameters.AddWithValue("@vung", cboVung.Text ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@vungCD", cboVungChuyenDen.Text ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@luotXem", luotXem);
-                        cmd.Parameters.AddWithValue("@luotThich", luotThich);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -353,13 +344,13 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void btnLamMoi_Click(object sender, EventArgs e)
+        private async void btnLamMoi_Click(object sender, EventArgs e)
         {
             ClearInputs();
             txtTimKiem.Text = "";
             _searchKeyword = "";
             if (cboSoBao.SelectedValue != null)
-                LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), "").ConfigureAwait(false);
+                await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), "");
         }
 
         private void ClearInputs()
@@ -369,8 +360,6 @@ namespace HETHONGTINHNHUANBUT
             txtTrang.Clear();
             txtMuc.Clear();
             txtTienNhuanBut.Clear();
-            txtLuotXem.Text = "0";
-            txtLuotThich.Text = "0";
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
             cboButDanh.SelectedIndex = -1;
@@ -594,8 +583,6 @@ namespace HETHONGTINHNHUANBUT
             txtTienNhuanBut.Text = Convert.ToDecimal(row.Cells["TienNhuanbut"].Value).ToString("0");
             cboVung.Text = row.Cells["Vung"].Value?.ToString();
             cboVungChuyenDen.Text = row.Cells["VungChuyenDen"].Value?.ToString();
-            txtLuotXem.Text = row.Cells["LuotXem"].Value?.ToString();
-            txtLuotThich.Text = row.Cells["LuotThich"].Value?.ToString();
         }
     }
 }

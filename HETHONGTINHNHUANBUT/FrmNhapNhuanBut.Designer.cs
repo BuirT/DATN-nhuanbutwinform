@@ -39,10 +39,6 @@
             this.cboVung = new Guna.UI2.WinForms.Guna2ComboBox();
             this.lblVungChuyenDen = new System.Windows.Forms.Label();
             this.cboVungChuyenDen = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.lblLuotXem = new System.Windows.Forms.Label();
-            this.txtLuotXem = new Guna.UI2.WinForms.Guna2TextBox();
-            this.lblLuotThich = new System.Windows.Forms.Label();
-            this.txtLuotThich = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnThem = new Guna.UI2.WinForms.Guna2Button();
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
@@ -81,10 +77,6 @@
             this.pnlTop.Controls.Add(this.cboVung);
             this.pnlTop.Controls.Add(this.lblVungChuyenDen);
             this.pnlTop.Controls.Add(this.cboVungChuyenDen);
-            this.pnlTop.Controls.Add(this.lblLuotXem);
-            this.pnlTop.Controls.Add(this.txtLuotXem);
-            this.pnlTop.Controls.Add(this.lblLuotThich);
-            this.pnlTop.Controls.Add(this.txtLuotThich);
             this.pnlTop.Controls.Add(this.btnThem);
             this.pnlTop.Controls.Add(this.btnSua);
             this.pnlTop.Controls.Add(this.btnXoa);
@@ -298,48 +290,6 @@
             this.cboVungChuyenDen.Name = "cboVungChuyenDen";
             this.cboVungChuyenDen.Size = new System.Drawing.Size(180, 36);
             this.cboVungChuyenDen.TabIndex = 18;
-
-            // lblLuotXem
-            this.lblLuotXem.AutoSize = true;
-            this.lblLuotXem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblLuotXem.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
-            this.lblLuotXem.Location = new System.Drawing.Point(395, 215);
-            this.lblLuotXem.Name = "lblLuotXem";
-            this.lblLuotXem.Size = new System.Drawing.Size(67, 17);
-            this.lblLuotXem.Text = "Lượt xem";
-
-            // txtLuotXem
-            this.txtLuotXem.BorderColor = System.Drawing.Color.FromArgb(226, 232, 240);
-            this.txtLuotXem.BorderRadius = 8;
-            this.txtLuotXem.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtLuotXem.DefaultText = "0";
-            this.txtLuotXem.FocusedState.BorderColor = System.Drawing.Color.FromArgb(24, 119, 242);
-            this.txtLuotXem.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtLuotXem.Location = new System.Drawing.Point(395, 237);
-            this.txtLuotXem.Name = "txtLuotXem";
-            this.txtLuotXem.Size = new System.Drawing.Size(100, 36);
-            this.txtLuotXem.TabIndex = 20;
-
-            // lblLuotThich
-            this.lblLuotThich.AutoSize = true;
-            this.lblLuotThich.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblLuotThich.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
-            this.lblLuotThich.Location = new System.Drawing.Point(515, 215);
-            this.lblLuotThich.Name = "lblLuotThich";
-            this.lblLuotThich.Size = new System.Drawing.Size(72, 17);
-            this.lblLuotThich.Text = "Lượt thích";
-
-            // txtLuotThich
-            this.txtLuotThich.BorderColor = System.Drawing.Color.FromArgb(226, 232, 240);
-            this.txtLuotThich.BorderRadius = 8;
-            this.txtLuotThich.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtLuotThich.DefaultText = "0";
-            this.txtLuotThich.FocusedState.BorderColor = System.Drawing.Color.FromArgb(24, 119, 242);
-            this.txtLuotThich.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtLuotThich.Location = new System.Drawing.Point(515, 237);
-            this.txtLuotThich.Name = "txtLuotThich";
-            this.txtLuotThich.Size = new System.Drawing.Size(100, 36);
-            this.txtLuotThich.TabIndex = 22;
 
             // ==================== CÁC NÚT ====================
             // btnThem (LƯU DỮ LIỆU)
@@ -572,10 +522,6 @@
         private Guna.UI2.WinForms.Guna2ComboBox cboVung;
         private System.Windows.Forms.Label lblVungChuyenDen;
         private Guna.UI2.WinForms.Guna2ComboBox cboVungChuyenDen;
-        private System.Windows.Forms.Label lblLuotXem;
-        private Guna.UI2.WinForms.Guna2TextBox txtLuotXem;
-        private System.Windows.Forms.Label lblLuotThich;
-        private Guna.UI2.WinForms.Guna2TextBox txtLuotThich;
         private Guna.UI2.WinForms.Guna2Button btnKiemToanAI;
         private Guna.UI2.WinForms.Guna2Button btnThem;
         private Guna.UI2.WinForms.Guna2Button btnSua;

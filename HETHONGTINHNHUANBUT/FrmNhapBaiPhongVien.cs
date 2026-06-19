@@ -36,9 +36,9 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dtBao = new DataTable();
                     string sqlBao = "SELECT Maso, Tenbao + ' (' + CONVERT(VARCHAR, Ngayra, 103) + ')' as HienThi FROM Bao WHERE DaDuyet = 'N' ORDER BY Ngayra DESC";
                     using (SqlCommand cmd = new SqlCommand(sqlBao, conn))
-                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        dtBao.Load(r);
+                        await Task.Run(() => da.Fill(dtBao));
                     }
                     cboSoBao.DisplayMember = "HienThi";
                     cboSoBao.ValueMember = "Maso";
@@ -47,9 +47,9 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dtButDanh = new DataTable();
                     string sqlButDanh = "SELECT Maso, Butdanh FROM ButDanh ORDER BY Butdanh";
                     using (SqlCommand cmd = new SqlCommand(sqlButDanh, conn))
-                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        dtButDanh.Load(r);
+                        await Task.Run(() => da.Fill(dtButDanh));
                     }
                     cboButDanh.DisplayMember = "Butdanh";
                     cboButDanh.ValueMember = "Maso";
@@ -70,7 +70,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string sql = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, 
-                                          TienNhuanbut, LuotXem, LuotThich, 
+                                          TienNhuanbut, 
                                            CASE TrangThaiDuyet 
                                                WHEN 0 THEN N'Chờ kiểm tra'
                                                WHEN 1 THEN N'Đã duyệt nội dung'
@@ -81,25 +81,23 @@ namespace HETHONGTINHNHUANBUT
                                    FROM Nhuanbut 
                                    WHERE NguoiNhap = @user
                                    ORDER BY ngaychuyen DESC";
+                    DataTable dt = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "");
-                        DataTable dt = new DataTable();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            dt.Load(reader);
+                            await Task.Run(() => da.Fill(dt));
                         }
-                        dgvBaiCuaToi.DataSource = dt;
-                        if (dgvBaiCuaToi.Columns["Maso"] != null) dgvBaiCuaToi.Columns["Maso"].Visible = false;
-                        if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
-                        if (dgvBaiCuaToi.Columns["Trang"] != null) dgvBaiCuaToi.Columns["Trang"].HeaderText = "TRANG";
-                        if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "MỤC";
-                        if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                        if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIỀN"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
-                        if (dgvBaiCuaToi.Columns["LuotXem"] != null) { dgvBaiCuaToi.Columns["LuotXem"].HeaderText = "VIEWS"; dgvBaiCuaToi.Columns["LuotXem"].Visible = false; }
-                        if (dgvBaiCuaToi.Columns["LuotThich"] != null) { dgvBaiCuaToi.Columns["LuotThich"].HeaderText = "LIKES"; dgvBaiCuaToi.Columns["LuotThich"].Visible = false; }
-                        if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRẠNG THÁI";
                     }
+                    dgvBaiCuaToi.DataSource = dt;
+                    if (dgvBaiCuaToi.Columns["Maso"] != null) dgvBaiCuaToi.Columns["Maso"].Visible = false;
+                    if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
+                    if (dgvBaiCuaToi.Columns["Trang"] != null) dgvBaiCuaToi.Columns["Trang"].HeaderText = "TRANG";
+                    if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "MỤC";
+                    if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BÚT DANH";
+                    if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIỀN"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
+                    if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRẠNG THÁI";
                 }
             }
             catch { }
@@ -123,8 +121,8 @@ namespace HETHONGTINHNHUANBUT
                         newMa = Convert.ToInt32(result);
                     }
 
-                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, LuotXem, LuotThich, NguoiNhap, TrangThaiDuyet) 
-                                   VALUES (@ma, @ten, @trang, @muc, 0, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), 0, 0, @nguoiNhap, 0)";
+                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, NguoiNhap, TrangThaiDuyet) 
+                                   VALUES (@ma, @ten, @trang, @muc, 0, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @nguoiNhap, 0)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@ma", newMa);

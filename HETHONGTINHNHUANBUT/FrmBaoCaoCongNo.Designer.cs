@@ -86,10 +86,10 @@
             // 
             this.lblTongNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongNo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTongNo.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lblTongNo.Location = new System.Drawing.Point(600, 32);
+            this.lblTongNo.ForeColor = System.Drawing.Color.Crimson;
+            this.lblTongNo.Location = new System.Drawing.Point(800, 18);
             this.lblTongNo.Name = "lblTongNo";
-            this.lblTongNo.Size = new System.Drawing.Size(176, 48);
+            this.lblTongNo.Size = new System.Drawing.Size(335, 35);
             this.lblTongNo.TabIndex = 2;
             this.lblTongNo.Text = "TỔNG NỢ\n0 VNĐ";
             this.lblTongNo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -99,9 +99,9 @@
             this.lblDaThanhToan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDaThanhToan.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblDaThanhToan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblDaThanhToan.Location = new System.Drawing.Point(784, 32);
+            this.lblDaThanhToan.Location = new System.Drawing.Point(800, 53);
             this.lblDaThanhToan.Name = "lblDaThanhToan";
-            this.lblDaThanhToan.Size = new System.Drawing.Size(176, 48);
+            this.lblDaThanhToan.Size = new System.Drawing.Size(336, 24);
             this.lblDaThanhToan.TabIndex = 3;
             this.lblDaThanhToan.Text = "ĐÃ THANH TOÁN\n0 VNĐ";
             this.lblDaThanhToan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -111,9 +111,9 @@
             this.lblConNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConNo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblConNo.ForeColor = System.Drawing.Color.Crimson;
-            this.lblConNo.Location = new System.Drawing.Point(968, 32);
+            this.lblConNo.Location = new System.Drawing.Point(800, 77);
             this.lblConNo.Name = "lblConNo";
-            this.lblConNo.Size = new System.Drawing.Size(176, 48);
+            this.lblConNo.Size = new System.Drawing.Size(336, 24);
             this.lblConNo.TabIndex = 4;
             this.lblConNo.Text = "CÒN NỢ\n0 VNĐ";
             this.lblConNo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

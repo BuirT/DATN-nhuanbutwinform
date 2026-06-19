@@ -93,13 +93,15 @@ namespace HETHONGTINHNHUANBUT
 
                     query += " ORDER BY Ngayra DESC";
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
 
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                            dt.Load(reader);
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(dt));
+                        }
                     }
                 }
 
