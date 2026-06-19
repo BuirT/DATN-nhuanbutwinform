@@ -439,3 +439,161 @@ using (SqlConnection conn = new SqlConnection(sqlConnectionString))
 12. **Anchor = Right** cho nút nằm bên phải
 13. **Build** — phải 0 warning, 0 error
 14. **Test** — chạy thử với dữ liệu thật
+
+---
+
+## 11. CHỐNG GIẬT LAG GIAO DIỆN (Performance Rules)
+
+### 11.1. Cache Guna Chart controls — KHÔNG tạo lại mỗi lần Load
+❌ **Sai**: Xoá chart cũ, tạo chart mới trong mỗi lần Load
+```csharp
+pnlChart.Controls.Clear();
+GunaChart chart = new GunaChart { ... };
+// ... setup lại từ đầu
+pnlChart.Controls.Add(chart);
+```
+
+✅ **Đúng**: Tạo chart 1 lần trong Load, chỉ Clear + thêm DataPoints
+```csharp
+// Biến field: private GunaChart chartLine; private GunaSplineDataset dsLine;
+
+private void Form_Load(...)
+{
+    chartLine = new GunaChart { Dock = DockStyle.Fill, ... };
+    dsLine = new GunaSplineDataset { ... };
+    chartLine.Datasets.Add(dsLine);
+    pnlChart.Controls.Add(chartLine);
+}
+
+private async Task UpdateChartAsync()
+{
+    dsLine.DataPoints.Clear();
+    // ... đọc DB, thêm data point
+    chartLine.Update();
+}
+```
+
+### 11.2. SuspendLayout / ResumeLayout — gom nhóm thay đổi control
+❌ **Sai**: Set Visible liên tục không gom nhóm
+✅ **Đúng**:
+```csharp
+this.SuspendLayout();
+pnlMenu.SuspendLayout();
+// ... hàng loạt thay đổi Visible, Enabled, Text...
+pnlMenu.ResumeLayout();
+this.ResumeLayout();
+```
+
+### 11.3. Double buffer form — chống giật khi paint
+```csharp
+public FormConstructor()
+{
+    InitializeComponent();
+    // Dùng reflection vì DoubleBuffered là protected
+    typeof(Control).GetProperty("DoubleBuffered",
+        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+        ?.SetValue(this, true, null);
+}
+```
+
+### 11.4. Tắt Guna Shadow + Animation khi không cần thiết
+Shadow và Animated gây repaint trên mọi mouse move / hover → giật lag.
+```csharp
+myGunaPanel.ShadowDecoration.Enabled = false;
+myGunaPanel.ShadowDecoration.Depth = 0;
+myTextBox.Animated = false;
+myButton.Animated = false;
+```
+**Đặt trong `Form_Load`** sau khi form đã render.
+
+### 11.5. DB setup chạy 1 lần — static flag
+❌ **Sai**: `TaoBangUsersNeuChuaCo()` chạy mỗi lần mở form
+✅ **Đúng**:
+```csharp
+private static bool _dbFixed = false;
+
+private async void Form_Load(...)
+{
+    if (!_dbFixed) { await Task.Run(() => TaoBang...()); _dbFixed = true; }
+}
+```
+
+### 11.6. Tránh Controls.Find — dùng field Designer có sẵn
+❌ **Sai**: `this.Controls.Find("btnXYZ", true)` — duyệt toàn bộ cây control
+✅ **Đúng**: Dùng trực tiếp field `btnXYZ` (đã có sẵn từ Designer)
+
+### 11.7. Chạy song song các tác vụ độc lập
+```csharp
+await Task.WhenAll(
+    LoadTask1Async(),
+    LoadTask2Async(),
+    LoadTask3Async()
+);
+```
+
+### 11.8. Xử lý BackgroundImage cho form nặng
+Ảnh nền với `Stretch` rescale trên mọi Paint → rất nặng.
+```csharp
+// Constructor: lưu ảnh, tạm thời bỏ
+private readonly Image _bgImage;
+
+public Form()
+{
+    InitializeComponent();
+    _bgImage = this.BackgroundImage;
+    this.BackgroundImage = null;
+}
+
+// Load: restore ảnh sau khi form đã render xong
+private void Form_Load(...)
+{
+    this.BackgroundImage = _bgImage;
+}
+```
+
+### 11.9. Cache các control thay vì tạo mới
+❌ **Sai**: Tạo mới `SqlConnection`, `SqlCommand`, `GunaChart` mỗi lần
+✅ **Đúng**: Tạo 1 lần, dùng lại, chỉ thay đổi dữ liệu
+
+---
+
+## 12. FILE "BỘ NÃO" CHO AI (AGENTS.md)
+
+Đây là file markdown đặt ở **thư mục gốc project**, dùng để:
+
+1. **Lưu kiến trúc project** — form pattern, database schema, công nghệ
+2. **Ghi workflow & quy tắc** — cách code, lỗi thường gặp, coding convention
+3. **Làm context cho AI** — khi AI mới vào project, đọc file này để hiểu codebase
+
+**Cách đặt tên phổ biến** (theo thứ tự ưu tiên):
+| File | Mục đích |
+|------|----------|
+| `AGENTS.md` | Hướng dẫn AI agent (opencode, Cursor, Windsurf, GitHub Copilot) |
+| `.cursorrules` | Rules riêng cho Cursor AI |
+| `CLINE.md` / `.clinerules` | Rules riêng cho Cline |
+| `CONTRIBUTING.md` | Hướng dẫn cho contributor là người thật |
+
+**Cấu trúc AGENTS.md chuẩn:**
+```markdown
+# AGENTS.md — Hệ thống Quản lý Nhuận bút
+
+## Công nghệ
+- C# .NET Framework 4.7.2, WinForms, Guna.UI2, SQL Server
+
+## Kiến trúc
+- Main form: FrmTrangChinh (sidebar 280px + content 920px)
+- Form con: pnlTop (search/input) + pnlBottom (DGV)
+- DB: SqlDataAdapter + Task.Run (tránh block UI)
+
+## Quy tắc code
+- Font: Segoe UI, không VNI-Times
+- Dùng UIHelper.FormatGiaoDienBang() và ConfigureColumns()
+- Cache chart controls, không tạo lại mỗi Load
+- Static flag cho DB setup chạy 1 lần
+
+## Lỗi thường gặp
+- Form design 860px, không set ClientSize/Dock/StartPosition
+- Không quên .Text và .Click event
+```
+
+**Cách dùng**: Copy file này vào project, AI sẽ tự động đọc khi được yêu cầu làm việc. Mỗi lần phát hiện lỗi mới hoặc quy tắc mới, cập nhật vào file.`

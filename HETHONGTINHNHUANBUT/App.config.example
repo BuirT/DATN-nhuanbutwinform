@@ -13,13 +13,13 @@
 		- Cài Radmin VPN, kết nối đến mạng chung
 		- Liên hệ quản trị viên để biết IP Radmin của máy chủ SQL
 		- Dùng cú pháp:
-		    Server=IP_RADMIN_SERVER\SQLEXPRESS,1433;Database=DATNnhuanbut;User Id=DATNnhuanbut;Password=totnghiep;
+		    Server=IP_RADMIN_SERVER\SQLEXPRESS,1433;Database=Tên database;User Id=Tên người dùng;Password=mật khẩu;
 
 		CÁCH 2 - Kết nối local (nếu tự chạy SQL trên máy mình):
 		- Cài SQL Server Express (SQLEXPRESS)
-		- Restore file .bak vào database DATNnhuanbut
+		- Restore file .bak vào database Tên database
 		- Dùng cú pháp:
-		    Server=localhost\SQLEXPRESS;Database=DATNnhuanbut;Trusted_Connection=True;
+		    Server=localhost\SQLEXPRESS;Database=Tên database;Trusted_Connection=True;
 
 		LƯU Ý:
 		- Không commit file App.config lên git (đã có trong .gitignore)
@@ -30,7 +30,7 @@
 		    3. Tên đăng nhập và mật khẩu SQL đúng chưa?
 		-->
 		<add name="TNConnection"
-             connectionString="Server=26.232.227.232\SQLEXPRESS,1433;Database=DATNnhuanbut;User Id=DATNnhuanbut;Password=totnghiep;"
+             connectionString="Server=IP_RADMIN_SERVER\SQLEXPRESS,1433;Database=Tên database;User Id=Tên người dùng;Password=mật khẩu;"
              providerName="System.Data.SqlClient" />
 	</connectionStrings>
 

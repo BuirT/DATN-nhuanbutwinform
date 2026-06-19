@@ -164,6 +164,17 @@
             this.btnXuatExcel.Text = "XUẤT EXCEL";
             this.btnXuatExcel.Click += new System.EventHandler(this.btnXuatExcel_Click);
             // 
+            // pnlChart
+            // 
+            this.pnlChart = new System.Windows.Forms.Panel();
+            this.pnlChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlChart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.pnlChart.Location = new System.Drawing.Point(725, 60);
+            this.pnlChart.Name = "pnlChart";
+            this.pnlChart.Size = new System.Drawing.Size(410, 370);
+            this.pnlChart.TabIndex = 2;
+            // 
             // pnlBottom
             // 
             this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -173,6 +184,7 @@
             this.pnlBottom.BorderRadius = 16;
             this.pnlBottom.Controls.Add(this.lblDataTitle);
             this.pnlBottom.Controls.Add(this.dgvCongNo);
+            this.pnlBottom.Controls.Add(this.pnlChart);
             this.pnlBottom.FillColor = System.Drawing.Color.White;
             this.pnlBottom.Location = new System.Drawing.Point(20, 185);
             this.pnlBottom.Name = "pnlBottom";
@@ -226,7 +238,7 @@
             this.dgvCongNo.ReadOnly = true;
             this.dgvCongNo.RowHeadersVisible = false;
             this.dgvCongNo.RowTemplate.Height = 38;
-            this.dgvCongNo.Size = new System.Drawing.Size(1110, 310);
+            this.dgvCongNo.Size = new System.Drawing.Size(680, 370);
             this.dgvCongNo.TabIndex = 0;
             this.dgvCongNo.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvCongNo.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -287,5 +299,6 @@
         private System.Windows.Forms.Label lblTongNo;
         private System.Windows.Forms.Label lblDaThanhToan;
         private System.Windows.Forms.Label lblConNo;
+        private System.Windows.Forms.Panel pnlChart;
     }
 }

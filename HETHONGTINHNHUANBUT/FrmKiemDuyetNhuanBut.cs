@@ -18,6 +18,7 @@ namespace HETHONGTINHNHUANBUT
         private Label lblSigNguoiNhap, lblSigNguoiCham, lblSigNhapLieu, lblSigKiemTra, lblSigTongThuKy;
         private Guna.UI2.WinForms.Guna2Panel pnlSignature;
         private Guna.UI2.WinForms.Guna2Panel pnlSignatureContainer;
+        private Guna.UI2.WinForms.Guna2Panel pnlNguoiKy;
         private Guna.UI2.WinForms.Guna2TextBox txtNguoiKy;
         private Label lblNguoiKy;
 
@@ -49,6 +50,10 @@ namespace HETHONGTINHNHUANBUT
             btnXacNhan.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnTuChoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
+            // Điều chỉnh layout
+            pnlBottom.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            LayoutBottomPanel();
+
             await LoadDataAsync("");
         }
 
@@ -62,6 +67,7 @@ namespace HETHONGTINHNHUANBUT
             btnTuChoi.Visible = true;
             if (txtNguoiKy != null) txtNguoiKy.Visible = false;
             if (lblNguoiKy != null) lblNguoiKy.Visible = false;
+            if (pnlNguoiKy != null) pnlNguoiKy.Visible = false;
 
             switch (role)
             {
@@ -103,18 +109,23 @@ namespace HETHONGTINHNHUANBUT
                     btnTuChoi.Text = "❌ TRẢ VỀ KIỂM TRA";
                     txtNguoiKy.Visible = true;
                     lblNguoiKy.Visible = true;
+                    if (pnlNguoiKy != null) pnlNguoiKy.Visible = true;
                     txtNguoiKy.Text = NguoiDangNhap ?? "";
                     break;
 
                 case "admin":
                 case "quản trị viên":
-                    _trangThaiHienTai = 0;
-                    lblRoleInfo.Text = "👤 Admin: Xem tất cả bài (chờ chấm tiền)";
+                    _trangThaiHienTai = -1;
+                    lblRoleInfo.Text = "👤 Admin: Xem tất cả bài — duyệt nhanh toàn bộ quy trình";
                     lblRoleInfo.ForeColor = Color.FromArgb(239, 68, 68);
-                    btnXacNhan.Text = "✅ DUYỆT";
+                    btnXacNhan.Text = "✅ DUYỆT (TIẾP THEO)";
                     btnXacNhan.FillColor = Color.FromArgb(239, 68, 68);
                     btnTuChoi.Visible = true;
-                    btnTuChoi.Text = "❌ TỪ CHỐI";
+                    btnTuChoi.Text = "🔄 VỀ CHỜ CHẤM TIỀN";
+                    if (pnlNguoiKy != null) pnlNguoiKy.Visible = true;
+                    txtNguoiKy.Visible = true;
+                    lblNguoiKy.Visible = true;
+                    txtNguoiKy.Text = NguoiDangNhap ?? "";
                     break;
 
                 default:
@@ -138,20 +149,25 @@ namespace HETHONGTINHNHUANBUT
                                n.LyDoBaoSai,
                                n.ngaychuyen AS NgayNhap,
                                n.NgayChamTien, n.NgayNhapLieu, n.NgayKiemTra, n.NgayKy,
-                               b.Tenbao AS TenSoBao
+                               b.Tenbao AS TenSoBao,
+                               n.TrangThaiDuyet
                         FROM Nhuanbut n
-                        LEFT JOIN Bao b ON n.MsBao = b.Maso
-                        WHERE n.TrangThaiDuyet = @tt";
+                        LEFT JOIN Bao b ON n.MsBao = b.Maso";
+
+                    bool isAdmin = _trangThaiHienTai == -1;
+                    if (!isAdmin)
+                        query += " WHERE n.TrangThaiDuyet = @tt";
 
                     if (!string.IsNullOrWhiteSpace(keyword))
-                        query += " AND (n.Tenbai LIKE @kw OR n.Butdanh LIKE @kw OR n.NguoiNhap LIKE @kw)";
+                        query += (isAdmin ? " WHERE" : " AND") + " (n.Tenbai LIKE @kw OR n.Butdanh LIKE @kw OR n.NguoiNhap LIKE @kw)";
 
                     query += " ORDER BY n.ngaychuyen DESC";
 
                     DataTable dt = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@tt", _trangThaiHienTai);
+                        if (!isAdmin)
+                            cmd.Parameters.AddWithValue("@tt", _trangThaiHienTai);
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
 
@@ -161,22 +177,30 @@ namespace HETHONGTINHNHUANBUT
                         }
                     }
                     dgvNhuanBut.DataSource = dt;
-                    dgvNhuanBut.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string trangVal = row["Trang"]?.ToString() ?? "";
+                        row["Trang"] = System.Text.RegularExpressions.Regex.Replace(trangVal, @"^\D+", "");
+                    }
 
                     if (dgvNhuanBut.Columns.Count > 0)
                     {
                         if (dgvNhuanBut.Columns["Maso"] != null) dgvNhuanBut.Columns["Maso"].Visible = false;
-                        if (dgvNhuanBut.Columns["Tenbai"] != null) { dgvNhuanBut.Columns["Tenbai"].HeaderText = "Tên Bài"; dgvNhuanBut.Columns["Tenbai"].FillWeight = 1; }
-                        if (dgvNhuanBut.Columns["Trang"] != null) { dgvNhuanBut.Columns["Trang"].HeaderText = "Trang"; dgvNhuanBut.Columns["Trang"].FillWeight = 1; }
-                        if (dgvNhuanBut.Columns["Muc"] != null) { dgvNhuanBut.Columns["Muc"].HeaderText = "Mục"; dgvNhuanBut.Columns["Muc"].FillWeight = 1; }
-                        if (dgvNhuanBut.Columns["Butdanh"] != null) { dgvNhuanBut.Columns["Butdanh"].HeaderText = "Bút Danh"; dgvNhuanBut.Columns["Butdanh"].FillWeight = 1; }
-                        if (dgvNhuanBut.Columns["TienNhuanbut"] != null) { dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "Tiền NB"; dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; dgvNhuanBut.Columns["TienNhuanbut"].FillWeight = 1; }
-                        if (dgvNhuanBut.Columns["LyDoBaoSai"] != null) { dgvNhuanBut.Columns["LyDoBaoSai"].HeaderText = "Lý do báo sai"; dgvNhuanBut.Columns["LyDoBaoSai"].FillWeight = 1; }
-
-                        foreach (string col in new[] { "NguoiNhap", "NguoiChamTien", "NguoiKeToan", "NguoiKiemTra", "TongThuKy" })
+                        if (dgvNhuanBut.Columns["TrangThaiDuyet"] != null) dgvNhuanBut.Columns["TrangThaiDuyet"].Visible = false;
+                        foreach (string col in new[] { "NguoiNhap", "NguoiChamTien", "NguoiKeToan", "NguoiKiemTra", "TongThuKy", "NgayChamTien", "NgayNhapLieu", "NgayKiemTra", "NgayKy" })
                             if (dgvNhuanBut.Columns[col] != null) dgvNhuanBut.Columns[col].Visible = false;
 
-                        if (dgvNhuanBut.Columns["TenSoBao"] != null) { dgvNhuanBut.Columns["TenSoBao"].HeaderText = "Số Báo"; dgvNhuanBut.Columns["TenSoBao"].FillWeight = 1; }
+                        UIHelper.ConfigureColumns(dgvNhuanBut,
+                            ("Tenbai", "TÊN BÀI", false, false),
+                            ("Trang", "Trang", false, false),
+                            ("Muc", "Mục", false, false),
+                            ("Butdanh", "BÚT DANH", false, false),
+                            ("TienNhuanbut", "TIỀN NB (VNĐ)", true, false),
+                            ("LyDoBaoSai", "Lý do báo sai", false, false),
+                            ("NgayNhap", "Ngày nhập", false, false),
+                            ("TenSoBao", "SỐ BÁO", false, false)
+                        );
                     }
 
                     string role = QuyenHienTai?.Trim().ToLower() ?? "";
@@ -265,9 +289,23 @@ namespace HETHONGTINHNHUANBUT
 
                 case "admin":
                 case "quản trị viên":
-                    action = "duyệt nhanh";
-                    trangThaiMoi = _trangThaiHienTai + 1;
-                    sql = @"UPDATE Nhuanbut SET TrangThaiDuyet = @tt WHERE Maso = @ma";
+                    {
+                        int currentStatus = 0;
+                        if (dgvNhuanBut.CurrentRow?.Cells["TrangThaiDuyet"].Value != null)
+                            int.TryParse(dgvNhuanBut.CurrentRow.Cells["TrangThaiDuyet"].Value.ToString(), out currentStatus);
+
+                        if (currentStatus >= 4)
+                        {
+                            MessageBox.Show("Bài này đã ký duyệt hoàn tất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        action = "duyệt nhanh";
+                        trangThaiMoi = currentStatus + 1;
+                        string[] statusNames = { "", "chấm tiền", "nhập liệu", "kiểm tra", "ký duyệt" };
+                        action = $"duyệt ({statusNames[trangThaiMoi]})";
+                        sql = @"UPDATE Nhuanbut SET TrangThaiDuyet = @tt WHERE Maso = @ma";
+                    }
                     break;
 
                 default:
@@ -437,6 +475,14 @@ namespace HETHONGTINHNHUANBUT
                     sql = "UPDATE Nhuanbut SET TrangThaiDuyet = @tt WHERE Maso = @ma";
                     break;
 
+                case "admin":
+                case "quản trị viên":
+                    msg = "Đưa bài này về trạng thái chờ chấm tiền (Thư ký)?";
+                    trangThaiVe = 0;
+                    action = "đưa về chờ chấm tiền";
+                    sql = "UPDATE Nhuanbut SET TrangThaiDuyet = @tt, TienNhuanbut = 0, NguoiChamTien = NULL, NgayChamTien = NULL, NguoiKeToan = NULL, NgayNhapLieu = NULL, NguoiKiemTra = NULL, NgayKiemTra = NULL, TongThuKy = NULL, NgayKy = NULL, LyDoBaoSai = NULL, NgayBaoSai = NULL WHERE Maso = @ma";
+                    break;
+
                 default:
                     return;
             }
@@ -504,7 +550,6 @@ namespace HETHONGTINHNHUANBUT
         private void CreateSignaturePanel()
         {
             pnlSignatureContainer = new Guna.UI2.WinForms.Guna2Panel();
-            pnlSignatureContainer.Dock = DockStyle.Bottom;
             pnlSignatureContainer.Height = 100;
             pnlSignatureContainer.BackColor = Color.Transparent;
 
@@ -536,25 +581,28 @@ namespace HETHONGTINHNHUANBUT
             for (int i = 0; i < 5; i++)
             {
                 var panel = new Guna.UI2.WinForms.Guna2Panel();
-                panel.Width = 150;
-                panel.Height = 70;
-                panel.BackColor = Color.Transparent;
-                panel.Margin = new Padding(5);
+                panel.Width = 165;
+                panel.Height = 72;
+                panel.BackColor = Color.FromArgb(249, 250, 251);
+                panel.BorderRadius = 8;
+                panel.BorderColor = Color.FromArgb(229, 231, 235);
+                panel.BorderThickness = 1;
+                panel.Margin = new Padding(4);
 
                 var lblTitle = new Label();
                 lblTitle.Text = sigLabels[i];
                 lblTitle.Font = new Font("Segoe UI", 8, FontStyle.Bold);
                 lblTitle.ForeColor = sigColors[i];
-                lblTitle.Location = new Point(2, 5);
+                lblTitle.Location = new Point(8, 6);
                 lblTitle.AutoSize = true;
 
                 var lblName = new Label();
                 lblName.Text = "—";
                 lblName.Font = new Font("Segoe UI", 10, FontStyle.Regular);
                 lblName.ForeColor = Color.FromArgb(30, 41, 59);
-                lblName.Location = new Point(2, 25);
+                lblName.Location = new Point(8, 26);
                 lblName.AutoSize = true;
-                lblName.MaximumSize = new Size(140, 40);
+                lblName.MaximumSize = new Size(150, 40);
 
                 if (i == 0) lblSigNguoiNhap = lblName;
                 else if (i == 1) lblSigNguoiCham = lblName;
@@ -568,24 +616,27 @@ namespace HETHONGTINHNHUANBUT
             }
 
             // Ô nhập tên cho Tổng thư ký
-            var pnlNguoiKy = new Guna.UI2.WinForms.Guna2Panel();
-            pnlNguoiKy.Width = 200;
-            pnlNguoiKy.Height = 70;
-            pnlNguoiKy.BackColor = Color.Transparent;
-            pnlNguoiKy.Margin = new Padding(5);
+            pnlNguoiKy = new Guna.UI2.WinForms.Guna2Panel();
+            pnlNguoiKy.Width = 210;
+            pnlNguoiKy.Height = 72;
+            pnlNguoiKy.BackColor = Color.FromArgb(249, 250, 251);
+            pnlNguoiKy.BorderRadius = 8;
+            pnlNguoiKy.BorderColor = Color.FromArgb(229, 231, 235);
+            pnlNguoiKy.BorderThickness = 1;
+            pnlNguoiKy.Margin = new Padding(4);
 
             lblNguoiKy = new Label();
             lblNguoiKy.Text = "✍ Tên người ký:";
             lblNguoiKy.Font = new Font("Segoe UI", 8, FontStyle.Bold);
             lblNguoiKy.ForeColor = Color.FromArgb(79, 70, 229);
-            lblNguoiKy.Location = new Point(2, 5);
+            lblNguoiKy.Location = new Point(8, 6);
             lblNguoiKy.AutoSize = true;
 
             txtNguoiKy = new Guna.UI2.WinForms.Guna2TextBox();
             txtNguoiKy.BorderRadius = 5;
             txtNguoiKy.Font = new Font("Segoe UI", 9);
-            txtNguoiKy.Location = new Point(2, 25);
-            txtNguoiKy.Size = new Size(190, 30);
+            txtNguoiKy.Location = new Point(8, 25);
+            txtNguoiKy.Size = new Size(195, 30);
             txtNguoiKy.PlaceholderText = "Nhập tên ký...";
             txtNguoiKy.Visible = false;
 
@@ -608,8 +659,10 @@ namespace HETHONGTINHNHUANBUT
             pnlSignatureContainer.Location = new Point(0, this.ClientSize.Height - pnlSignatureContainer.Height);
             pnlSignatureContainer.Width = this.ClientSize.Width;
 
-            // Điều chỉnh DGV không bị che
-            dgvNhuanBut.Height = this.ClientSize.Height - pnlSignatureContainer.Height - dgvNhuanBut.Top - 10;
+            // Điều chỉnh pnlBottom không đè lên signature panel
+            pnlBottom.Height = this.ClientSize.Height - pnlBottom.Top - pnlSignatureContainer.Height - 10;
+
+            dgvNhuanBut.Height = pnlBottom.Height - dgvNhuanBut.Top - 10;
         }
 
         private void LoadSignaturePanel(DataGridViewRow row)

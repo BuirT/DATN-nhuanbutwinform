@@ -10,10 +10,13 @@ namespace HETHONGTINHNHUANBUT
     {
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         private bool _isPasswordHidden = true;
+        private static bool _dbFixed = false;
 
         public FormLogin()
         {
             InitializeComponent();
+            typeof(Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?.SetValue(this, true, null);
         }
 
         private void TaoBangUsersNeuChuaCo()
@@ -44,8 +47,19 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FormLogin_Load(object sender, EventArgs e)
         {
-            await Task.Run(() => TaoBangUsersNeuChuaCo());
+            this.SuspendLayout();
+
+            panelOverlay.ShadowDecoration.Enabled = false;
+            panelOverlay.ShadowDecoration.Depth = 0;
+            txtUsername.Animated = false;
+            txtPassword.Animated = false;
+            btnLogin.Animated = false;
+            btnExit.Animated = false;
+
+            if (!_dbFixed) { await Task.Run(() => TaoBangUsersNeuChuaCo()); _dbFixed = true; }
+
             txtUsername.Focus();
+            this.ResumeLayout();
         }
 
         

@@ -15,6 +15,9 @@ namespace HETHONGTINHNHUANBUT
     {
         private Timer timerClock;
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
+        private Guna.Charts.WinForms.GunaChart chartLine, chartPie;
+        private Guna.Charts.WinForms.GunaSplineDataset dsLine;
+        private Guna.Charts.WinForms.GunaDoughnutDataset dsPie;
 
         public FrmTongQuan()
         {
@@ -36,13 +39,53 @@ namespace HETHONGTINHNHUANBUT
             label5.Text = "BIẾN ĐỘNG CHI TRẢ NHUẬN BÚT TOÀN THỜI GIAN";
             UIHelper.FormatGiaoDienBang(dgvHoatDong);
 
-            await LoadThongKe4TheAsync();
-            await LoadHoatDongGanDayAsync();
+            CreateChartControls();
 
-            this.SuspendLayout();
-            await VeBieuDoDuongAsync();
-            await VeBieuDoTronAsync();
-            this.ResumeLayout();
+            await Task.WhenAll(
+                LoadThongKe4TheAsync(),
+                LoadHoatDongGanDayAsync(),
+                VeBieuDoDuongAsync(),
+                VeBieuDoTronAsync()
+            );
+        }
+
+        private void CreateChartControls()
+        {
+            chartLine = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+            chartLine.XAxes.GridLines.Display = false;
+            chartLine.YAxes.GridLines.Display = true;
+            dsLine = new GunaSplineDataset { Label = "Nhuận bút (VNĐ)" };
+            dsLine.BorderColor = Color.FromArgb(46, 109, 228);
+            dsLine.FillColor = Color.FromArgb(50, 46, 109, 228);
+            dsLine.BorderWidth = 2;
+            dsLine.PointRadius = 3;
+            chartLine.Datasets.Add(dsLine);
+            pnlChartMain.SuspendLayout();
+            pnlChartMain.Controls.Add(chartLine);
+            pnlChartMain.ResumeLayout();
+
+            chartPie = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+            dsPie = new GunaDoughnutDataset();
+            Color[] palette = new Color[] {
+                Color.FromArgb(59, 130, 246),
+                Color.FromArgb(16, 185, 129),
+                Color.FromArgb(239, 68, 68),
+                Color.FromArgb(245, 158, 11),
+                Color.FromArgb(139, 92, 246),
+                Color.FromArgb(236, 72, 153),
+                Color.FromArgb(14, 165, 233),
+                Color.FromArgb(168, 85, 247),
+                Color.FromArgb(249, 115, 22),
+                Color.FromArgb(34, 197, 94),
+                Color.FromArgb(100, 116, 139),
+                Color.FromArgb(244, 63, 94)
+            };
+            foreach (var c in palette)
+                dsPie.FillColors.Add(c);
+            chartPie.Datasets.Add(dsPie);
+            pnlChartPie.SuspendLayout();
+            pnlChartPie.Controls.Add(chartPie);
+            pnlChartPie.ResumeLayout();
         }
 
         private void TimerClock_Tick(object sender, EventArgs e)
@@ -88,19 +131,7 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                pnlChartMain.Controls.Clear();
-                GunaChart chartLine = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
-
-                chartLine.XAxes.GridLines.Display = false;
-                chartLine.YAxes.GridLines.Display = true;
-
-                GunaSplineDataset dataset = new GunaSplineDataset { Label = "Nhuận bút (VNĐ)" };
-                dataset.BorderColor = Color.FromArgb(46, 109, 228);
-                dataset.FillColor = Color.FromArgb(50, 46, 109, 228);
-                dataset.BorderWidth = 2;
-                dataset.PointRadius = 3;
-
-                var dataPoints = new Dictionary<int, double>();
+                dsLine.DataPoints.Clear();
 
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
@@ -115,24 +146,16 @@ namespace HETHONGTINHNHUANBUT
                     {
                         while (await r.ReadAsync())
                         {
-                            int key = Convert.ToInt32(r["Y"]) * 100 + Convert.ToInt32(r["M"]);
-                            dataPoints[key] = Convert.ToDouble(r["T"]);
+                            int m = Convert.ToInt32(r["M"]);
+                            int y = Convert.ToInt32(r["Y"]);
+                            dsLine.DataPoints.Add(m + "/" + y, Convert.ToDouble(r["T"]));
                         }
                     }
                 }
 
-                var sortedData = dataPoints.OrderBy(x => x.Key).ToList();
-                foreach (var item in sortedData)
-                {
-                    string label = (item.Key % 100).ToString() + "/" + (item.Key / 100).ToString();
-                    dataset.DataPoints.Add(label, item.Value);
-                }
-
-                chartLine.Datasets.Add(dataset);
-                pnlChartMain.Controls.Add(chartLine);
                 chartLine.Update();
             }
-            catch (Exception ex) { Console.WriteLine("Lỗi biểu đồ: " + ex.Message); }
+            catch { }
         }
 
         async Task LoadHoatDongGanDayAsync()
@@ -185,25 +208,7 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                pnlChartPie.Controls.Clear();
-                GunaChart chartPie = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
-                GunaDoughnutDataset dataset = new GunaDoughnutDataset();
-                Color[] palette = new Color[] {
-                    Color.FromArgb(59, 130, 246),   // xanh lam
-                    Color.FromArgb(16, 185, 129),   // xanh la
-                    Color.FromArgb(239, 68, 68),    // do
-                    Color.FromArgb(245, 158, 11),   // cam
-                    Color.FromArgb(139, 92, 246),   // tim
-                    Color.FromArgb(236, 72, 153),   // hong
-                    Color.FromArgb(14, 165, 233),   // xanh duong
-                    Color.FromArgb(168, 85, 247),   // tim nhat
-                    Color.FromArgb(249, 115, 22),   // cam dam
-                    Color.FromArgb(34, 197, 94),    // xanh la dam
-                    Color.FromArgb(100, 116, 139),  // xam
-                    Color.FromArgb(244, 63, 94)     // do hong
-                };
-                foreach (var c in palette)
-                    dataset.FillColors.Add(c);
+                dsPie.DataPoints.Clear();
 
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
@@ -216,14 +221,11 @@ namespace HETHONGTINHNHUANBUT
                         {
                             string loai = r["Loaibao"]?.ToString();
                             if (string.IsNullOrEmpty(loai)) loai = "Khác";
-                            int count = Convert.ToInt32(r["SoLuong"]);
-                            dataset.DataPoints.Add(loai, count);
+                            dsPie.DataPoints.Add(loai, Convert.ToInt32(r["SoLuong"]));
                         }
                     }
                 }
 
-                chartPie.Datasets.Add(dataset);
-                pnlChartPie.Controls.Add(chartPie);
                 chartPie.Update();
             }
             catch { }

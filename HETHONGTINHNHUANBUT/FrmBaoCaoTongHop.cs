@@ -22,6 +22,7 @@ namespace HETHONGTINHNHUANBUT
         {
             UIHelper.FormatGiaoDienBang(dgvTongHop);
             dtpThang.Value = DateTime.Now;
+            btnTimKiem_Click(null, null);
         }
 
         private async void btnTimKiem_Click(object sender, EventArgs e)

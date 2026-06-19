@@ -14,48 +14,53 @@ namespace HETHONGTINHNHUANBUT
     {
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
+        private Guna.Charts.WinForms.GunaChart chartPie;
+        private Guna.Charts.WinForms.GunaChart chartBar;
+        private Guna.Charts.WinForms.GunaDoughnutDataset dsPie;
+        private Guna.Charts.WinForms.GunaHorizontalBarDataset dsBar;
+        private Panel pnlPie, pnlBar;
+
         public FrmBaoCaoLanhDao()
         {
             InitializeComponent();
         }
 
-        private void FrmBaoCaoLanhDao_Load(object sender, EventArgs e)
+        private async void FrmBaoCaoLanhDao_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvSummary);
             UIHelper.FormatGiaoDienBang(dgvDetail);
-            LayoutPanels();
+            CreateCharts();
+            await LoadDataAsync();
         }
 
-        private void FrmBaoCaoLanhDao_Resize(object sender, EventArgs e)
+        private void CreateCharts()
         {
-            LayoutPanels();
-        }
+            int pieW = (int)(pnlChart.Width * 0.35);
+            pnlPie = new Panel { Dock = DockStyle.Left, Width = pieW, BackColor = Color.White };
+            pnlBar = new Panel { Dock = DockStyle.Fill, BackColor = Color.White };
 
-        private void LayoutPanels()
-        {
-            if (pnlSummary == null || pnlDetail == null || pnlChart == null) return;
-            int padL = this.Padding.Left;
-            int padR = this.Padding.Right;
-            int startX = padL;
-            int startY = pnlTop.Bottom;
-            int contentW = ClientSize.Width - padL - padR;
-            int availH = ClientSize.Height - startY - this.Padding.Bottom;
-            int chartH = Math.Min(280, (int)(availH * 0.35));
-            int sumH = (int)((availH - chartH) * 0.35);
-            int detailH = availH - chartH - sumH;
-            int margin = 25;
-            pnlChart.Location = new Point(startX, startY);
-            pnlChart.Size = new Size(contentW, chartH);
-            pnlSummary.Location = new Point(startX, startY + chartH);
-            pnlSummary.Size = new Size(contentW, sumH);
-            pnlDetail.Location = new Point(startX, startY + chartH + sumH);
-            pnlDetail.Size = new Size(contentW, detailH);
-            dgvSummary.Location = new Point(margin, 50);
-            dgvSummary.Width = pnlSummary.Width - margin * 2;
-            dgvSummary.Height = pnlSummary.Height - 80;
-            dgvDetail.Location = new Point(margin, 50);
-            dgvDetail.Width = pnlDetail.Width - margin * 2;
-            dgvDetail.Height = pnlDetail.Height - 95;
+            chartPie = new Guna.Charts.WinForms.GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+            chartPie.Legend.Position = LegendPosition.Bottom;
+            dsPie = new Guna.Charts.WinForms.GunaDoughnutDataset();
+            Color[] palette = new Color[] {
+                Color.FromArgb(16, 185, 129),
+                Color.FromArgb(239, 68, 68)
+            };
+            foreach (var c in palette) dsPie.FillColors.Add(c);
+            dsPie.DataPoints.Add("Đã chi", 0);
+            dsPie.DataPoints.Add("Chưa chi", 0);
+            chartPie.Datasets.Add(dsPie);
+            pnlPie.Controls.Add(chartPie);
+
+            chartBar = new Guna.Charts.WinForms.GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+            chartBar.Legend.Position = LegendPosition.Bottom;
+            chartBar.XAxes.GridLines.Display = false;
+            dsBar = new Guna.Charts.WinForms.GunaHorizontalBarDataset();
+            chartBar.Datasets.Add(dsBar);
+            pnlBar.Controls.Add(chartBar);
+
+            pnlChart.Controls.Add(pnlBar);
+            pnlChart.Controls.Add(pnlPie);
         }
 
         private async void btnXem_Click(object sender, EventArgs e)
@@ -103,13 +108,16 @@ namespace HETHONGTINHNHUANBUT
                 {
                     dgvSummary.DataSource = null;
                     dgvDetail.DataSource = null;
-                    pnlChart.Controls.Clear();
+                    dsPie.DataPoints.Clear();
+                    dsPie.DataPoints.Add("Đã chi", 0);
+                    dsPie.DataPoints.Add("Chưa chi", 0);
+                    chartPie.Update();
+                    dsBar.DataPoints.Clear();
+                    chartBar.Update();
                     lblTongBai.Text = "Tổng số bài: 0";
                     lblTongTien.Text = "Tổng nhuận bút: 0 VNĐ";
                     lblDaChi.Text = "Đã chi: 0 VNĐ";
                     lblChuaChi.Text = "Chưa chi: 0 VNĐ";
-                    MessageBox.Show("Không có dữ liệu trong tháng này!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -124,6 +132,7 @@ namespace HETHONGTINHNHUANBUT
                     NgayDang = r.Field<DateTime?>("ngaychuyen")?.ToString("dd/MM/yyyy") ?? ""
                 }).ToList();
 
+                dgvDetail.SuspendLayout();
                 dgvDetail.DataSource = detailView;
                 if (dgvDetail.Columns.Count > 0)
                 {
@@ -143,6 +152,7 @@ namespace HETHONGTINHNHUANBUT
                     dgvDetail.Columns["NgayDang"].HeaderText = "Ngày đăng";
                     dgvDetail.Columns["NgayDang"].Width = 100;
                 }
+                dgvDetail.ResumeLayout();
 
                 var summaryView = dt.AsEnumerable()
                     .GroupBy(r => r.Field<string>("TacGia") ?? "(Không có)")
@@ -159,6 +169,7 @@ namespace HETHONGTINHNHUANBUT
                     .OrderByDescending(x => x.TongNB)
                     .ToList();
 
+                dgvSummary.SuspendLayout();
                 dgvSummary.DataSource = summaryView;
                 if (dgvSummary.Columns.Count > 0)
                 {
@@ -176,18 +187,25 @@ namespace HETHONGTINHNHUANBUT
                     dgvSummary.Columns["ChuaChi"].DefaultCellStyle.Format = "N0";
                     dgvSummary.Columns["ChuaChi"].Width = 180;
                 }
+                dgvSummary.ResumeLayout();
 
                 decimal tongTien = summaryView.Sum(x => x.TongNB);
                 decimal daChi = summaryView.Sum(x => x.DaChi);
                 decimal chuaChi = summaryView.Sum(x => x.ChuaChi);
-                int tongBai = dt.AsEnumerable().Select(r => r.Field<int>("Maso")).Distinct().Count();
+                int tongBai = summaryView.Sum(x => x.SoBai);
 
                 lblTongBai.Text = $"Tổng số bài: {tongBai}";
                 lblTongTien.Text = $"Tổng nhuận bút: {tongTien:N0} VNĐ";
                 lblDaChi.Text = $"Đã chi: {daChi:N0} VNĐ";
                 lblChuaChi.Text = $"Chưa chi: {chuaChi:N0} VNĐ";
 
-                DrawCharts(dt);
+                var topTacGia = summaryView
+                    .OrderByDescending(x => x.TongNB)
+                    .Take(8)
+                    .Select(x => new { x.TacGia, x.TongNB })
+                    .ToList();
+
+                UpdateCharts(daChi, chuaChi, topTacGia);
             }
             catch (Exception ex)
             {
@@ -195,47 +213,20 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void DrawCharts(DataTable dt)
+        private void UpdateCharts(decimal daChi, decimal chuaChi, dynamic topTacGia)
         {
-            pnlChart.Controls.Clear();
-            decimal daChi = dt.AsEnumerable()
-                .Where(r => r["SauThanhToan"] != DBNull.Value && r["SauThanhToan"].ToString() == "Y")
-                .Sum(r => Convert.ToDecimal(r["TienNhuanbut"]));
-            decimal chuaChi = dt.AsEnumerable()
-                .Where(r => r["SauThanhToan"] == DBNull.Value || r["SauThanhToan"].ToString() != "Y")
-                .Sum(r => Convert.ToDecimal(r["TienNhuanbut"]));
-            var topTacGia = dt.AsEnumerable()
-                .GroupBy(r => r.Field<string>("TacGia") ?? "(Không có)")
-                .Select(g => new { Name = g.Key, Total = g.Sum(r => Convert.ToDecimal(r["TienNhuanbut"])) })
-                .OrderByDescending(x => x.Total)
-                .Take(8)
-                .ToList();
-            int pieW = (int)(pnlChart.Width * 0.35);
-            Panel pnlPie = new Panel { Dock = DockStyle.Left, Width = pieW, BackColor = Color.White };
-            Panel pnlBar = new Panel { Dock = DockStyle.Fill, BackColor = Color.White };
-            pnlChart.Controls.Add(pnlBar);
-            pnlChart.Controls.Add(pnlPie);
-            GunaChart chartPie = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
-            chartPie.Legend.Position = LegendPosition.Bottom;
-            GunaDoughnutDataset dsPie = new GunaDoughnutDataset();
-            Color[] palette = new Color[] {
-                Color.FromArgb(16, 185, 129),
-                Color.FromArgb(239, 68, 68)
-            };
-            foreach (var c in palette) dsPie.FillColors.Add(c);
+            dsPie.DataPoints.Clear();
             dsPie.DataPoints.Add("Đã chi", (double)daChi);
             dsPie.DataPoints.Add("Chưa chi", (double)chuaChi);
-            chartPie.Datasets.Add(dsPie);
-            pnlPie.Controls.Add(chartPie);
             chartPie.Update();
-            GunaChart chartBar = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
-            chartBar.Legend.Position = LegendPosition.Bottom;
-            chartBar.XAxes.GridLines.Display = false;
-            GunaHorizontalBarDataset dsBar = new GunaHorizontalBarDataset();
+
+            dsBar.DataPoints.Clear();
             foreach (var tg in topTacGia)
-                dsBar.DataPoints.Add(tg.Name, (double)tg.Total);
-            chartBar.Datasets.Add(dsBar);
-            pnlBar.Controls.Add(chartBar);
+            {
+                string name = tg.TacGia;
+                double val = (double)(decimal)tg.TongNB;
+                dsBar.DataPoints.Add(name, val);
+            }
             chartBar.Update();
         }
 

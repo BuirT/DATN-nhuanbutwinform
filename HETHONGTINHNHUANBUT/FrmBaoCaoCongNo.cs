@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using ClosedXML.Excel;
 
 namespace HETHONGTINHNHUANBUT
@@ -20,6 +23,83 @@ namespace HETHONGTINHNHUANBUT
         {
             UIHelper.FormatGiaoDienBang(dgvCongNo);
             dtpDenThang.Value = DateTime.Now;
+            CreateChart();
+            btnTimKiem_Click(null, null);
+        }
+
+        private Chart chartCongNo;
+
+        private void CreateChart()
+        {
+            Label lblChartTitle = new Label();
+            lblChartTitle.Text = "📊 BIỂU ĐỒ CÔNG NỢ";
+            lblChartTitle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblChartTitle.ForeColor = Color.FromArgb(15, 23, 42);
+            lblChartTitle.Location = new Point(12, 8);
+            lblChartTitle.AutoSize = true;
+            pnlChart.Controls.Add(lblChartTitle);
+
+            chartCongNo = new Chart();
+            chartCongNo.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            chartCongNo.Location = new Point(0, 35);
+            chartCongNo.Size = new Size(pnlChart.Width, pnlChart.Height - 35);
+            chartCongNo.BackColor = Color.FromArgb(249, 250, 251);
+            chartCongNo.BorderlineColor = Color.Transparent;
+
+            ChartArea area = new ChartArea();
+            area.BackColor = Color.Transparent;
+            area.AxisX.Enabled = AxisEnabled.False;
+            area.AxisY.Enabled = AxisEnabled.False;
+            chartCongNo.ChartAreas.Add(area);
+
+            pnlChart.Controls.Add(chartCongNo);
+        }
+
+        private void PopulateChart(decimal tongNo, decimal daTra)
+        {
+            chartCongNo.Series.Clear();
+            chartCongNo.Titles.Clear();
+
+            decimal conNo = tongNo - daTra;
+
+            if (tongNo == 0)
+            {
+                chartCongNo.Titles.Add(new Title("Chưa có dữ liệu công nợ", Docking.Top,
+                    new Font("Segoe UI", 12, FontStyle.Italic), Color.FromArgb(156, 163, 175)));
+                return;
+            }
+
+            ChartArea area = chartCongNo.ChartAreas[0];
+            area.AxisX.Enabled = AxisEnabled.True;
+            area.AxisY.Enabled = AxisEnabled.True;
+            area.AxisX.MajorGrid.Enabled = false;
+            area.AxisY.MajorGrid.LineColor = Color.FromArgb(229, 231, 235);
+            area.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            area.AxisY.LabelStyle.Format = "N0";
+            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 8);
+
+            Series series = new Series();
+            series.ChartType = SeriesChartType.Column;
+            series.BorderColor = Color.White;
+            series.BorderWidth = 1;
+            series.IsValueShownAsLabel = true;
+            series.LabelForeColor = Color.White;
+            series.LabelFormat = "N0";
+
+            series.Points.AddXY("Tổng nợ", (double)tongNo);
+            series.Points[0].Color = Color.FromArgb(59, 130, 246);
+            series.Points[0].LabelBackColor = Color.FromArgb(59, 130, 246);
+
+            series.Points.AddXY("Đã thanh toán", (double)daTra);
+            series.Points[1].Color = Color.FromArgb(16, 185, 129);
+            series.Points[1].LabelBackColor = Color.FromArgb(16, 185, 129);
+
+            series.Points.AddXY("Còn nợ", (double)conNo);
+            series.Points[2].Color = conNo > 0 ? Color.FromArgb(239, 68, 68) : Color.FromArgb(16, 185, 129);
+            series.Points[2].LabelBackColor = conNo > 0 ? Color.FromArgb(239, 68, 68) : Color.FromArgb(16, 185, 129);
+
+            chartCongNo.Series.Add(series);
+            chartCongNo.Invalidate();
         }
 
         private async void btnTimKiem_Click(object sender, EventArgs e)
@@ -90,6 +170,8 @@ namespace HETHONGTINHNHUANBUT
                 // Nếu vẫn còn nợ (lớn hơn 0) thì in màu Đỏ (Crimson)
                 // Nếu đã trả hết (bằng 0) thì in màu Xanh lá cây
                 lblConNo.ForeColor = (conNo > 0) ? System.Drawing.Color.Crimson : System.Drawing.Color.FromArgb(16, 185, 129);
+
+                PopulateChart(tongNo, daTra);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
