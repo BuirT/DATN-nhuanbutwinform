@@ -70,7 +70,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string sql = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, 
-                                          TienNhuanbut, LuotXem, LuotThich, 
+                                          TienNhuanbut, 
                                            CASE TrangThaiDuyet 
                                                WHEN 0 THEN N'Chờ kiểm tra'
                                                WHEN 1 THEN N'Đã duyệt nội dung'
@@ -96,8 +96,6 @@ namespace HETHONGTINHNHUANBUT
                         if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "MỤC";
                         if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BÚT DANH";
                         if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIỀN"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
-                        if (dgvBaiCuaToi.Columns["LuotXem"] != null) { dgvBaiCuaToi.Columns["LuotXem"].HeaderText = "VIEWS"; dgvBaiCuaToi.Columns["LuotXem"].Visible = false; }
-                        if (dgvBaiCuaToi.Columns["LuotThich"] != null) { dgvBaiCuaToi.Columns["LuotThich"].HeaderText = "LIKES"; dgvBaiCuaToi.Columns["LuotThich"].Visible = false; }
                         if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRẠNG THÁI";
                     }
                 }
@@ -123,8 +121,8 @@ namespace HETHONGTINHNHUANBUT
                         newMa = Convert.ToInt32(result);
                     }
 
-                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, LuotXem, LuotThich, NguoiNhap, TrangThaiDuyet) 
-                                   VALUES (@ma, @ten, @trang, @muc, 0, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), 0, 0, @nguoiNhap, 0)";
+                    string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, NguoiNhap, TrangThaiDuyet) 
+                                   VALUES (@ma, @ten, @trang, @muc, 0, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @nguoiNhap, 0)";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@ma", newMa);

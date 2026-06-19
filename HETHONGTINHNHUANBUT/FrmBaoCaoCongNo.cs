@@ -67,7 +67,7 @@ namespace HETHONGTINHNHUANBUT
                     dgvCongNo.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
 
-                // Tính tổng nợ (Đã xử lý DBNull)
+                // Tính tổng nợ
                 decimal tongNo = 0;
                 decimal daTra = 0;
                 foreach (DataRow row in dtTong.Rows)
@@ -75,7 +75,10 @@ namespace HETHONGTINHNHUANBUT
                     if (row["Sotien"] != DBNull.Value) tongNo += Convert.ToDecimal(row["Sotien"]);
                     if (row["DaTT"] != DBNull.Value) daTra += Convert.ToDecimal(row["DaTT"]);
                 }
+                decimal conNo = tongNo - daTra;
                 lblTongNo.Text = $"TỔNG NỢ: {tongNo:N0} VNĐ";
+                lblDaThanhToan.Text = $"ĐÃ THANH TOÁN: {daTra:N0} VNĐ";
+                lblConNo.Text = $"CÒN NỢ: {conNo:N0} VNĐ";
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
