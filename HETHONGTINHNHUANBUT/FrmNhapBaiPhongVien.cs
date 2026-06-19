@@ -36,9 +36,9 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dtBao = new DataTable();
                     string sqlBao = "SELECT Maso, Tenbao + ' (' + CONVERT(VARCHAR, Ngayra, 103) + ')' as HienThi FROM Bao WHERE DaDuyet = 'N' ORDER BY Ngayra DESC";
                     using (SqlCommand cmd = new SqlCommand(sqlBao, conn))
-                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        dtBao.Load(r);
+                        await Task.Run(() => da.Fill(dtBao));
                     }
                     cboSoBao.DisplayMember = "HienThi";
                     cboSoBao.ValueMember = "Maso";
@@ -47,9 +47,9 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dtButDanh = new DataTable();
                     string sqlButDanh = "SELECT Maso, Butdanh FROM ButDanh ORDER BY Butdanh";
                     using (SqlCommand cmd = new SqlCommand(sqlButDanh, conn))
-                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        dtButDanh.Load(r);
+                        await Task.Run(() => da.Fill(dtButDanh));
                     }
                     cboButDanh.DisplayMember = "Butdanh";
                     cboButDanh.ValueMember = "Maso";
@@ -82,23 +82,23 @@ namespace HETHONGTINHNHUANBUT
                                    FROM Nhuanbut 
                                    WHERE NguoiNhap = @user
                                    ORDER BY ngaychuyen DESC";
+                    DataTable dt = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@user", NguoiDangNhap ?? "");
-                        DataTable dt = new DataTable();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            dt.Load(reader);
+                            await Task.Run(() => da.Fill(dt));
                         }
-                        dgvBaiCuaToi.DataSource = dt;
-                        if (dgvBaiCuaToi.Columns["Maso"] != null) dgvBaiCuaToi.Columns["Maso"].Visible = false;
-                        if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
-                        if (dgvBaiCuaToi.Columns["Trang"] != null) dgvBaiCuaToi.Columns["Trang"].HeaderText = "TRANG";
-                        if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "MỤC";
-                        if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                        if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIỀN"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
-                        if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRẠNG THÁI";
                     }
+                    dgvBaiCuaToi.DataSource = dt;
+                    if (dgvBaiCuaToi.Columns["Maso"] != null) dgvBaiCuaToi.Columns["Maso"].Visible = false;
+                    if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
+                    if (dgvBaiCuaToi.Columns["Trang"] != null) dgvBaiCuaToi.Columns["Trang"].HeaderText = "TRANG";
+                    if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "MỤC";
+                    if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BÚT DANH";
+                    if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIỀN"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
+                    if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRẠNG THÁI";
                 }
             }
             catch { }

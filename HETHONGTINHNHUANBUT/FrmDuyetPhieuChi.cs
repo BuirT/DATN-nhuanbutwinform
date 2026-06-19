@@ -96,64 +96,64 @@ namespace HETHONGTINHNHUANBUT
                 string keyword = txtTimKiem.Text.Trim();
 
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    await conn.OpenAsync();
-                    string query = @"SELECT Sophieu as Id, Sophieu, Ngaylap, Tacgia as TenTacGia, Nguoinhan, Lydo, Sotien as TongTien, Conlai as ThucLinh, LyDoTuChoi
-                                     FROM Phieuchi WHERE TrangThaiDuyet = @tt";
+            {
+                await conn.OpenAsync();
+                string query = @"SELECT Sophieu as Id, Sophieu, Ngaylap, Tacgia as TenTacGia, Nguoinhan, Lydo, Sotien as TongTien, Conlai as ThucLinh, LyDoTuChoi
+                                 FROM Phieuchi WHERE TrangThaiDuyet = @tt";
 
+                if (!string.IsNullOrEmpty(keyword))
+                    query += " AND (Sophieu LIKE @kw OR Tacgia LIKE @kw OR Nguoinhan LIKE @kw)";
+
+                query += " ORDER BY Ngaylap DESC";
+
+                DataTable dt = new DataTable();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@tt", trangThai);
                     if (!string.IsNullOrEmpty(keyword))
-                        query += " AND (Sophieu LIKE @kw OR Tacgia LIKE @kw OR Nguoinhan LIKE @kw)";
+                        cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
 
-                    query += " ORDER BY Ngaylap DESC";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                        cmd.Parameters.AddWithValue("@tt", trangThai);
-                        if (!string.IsNullOrEmpty(keyword))
-                            cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
-
-                        DataTable dt = new DataTable();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            dt.Load(reader);
-                        }
-
-                        dt.Columns.Add("NgayLapStr", typeof(string));
-                        foreach (DataRow r in dt.Rows)
-                        {
-                            if (r["Ngaylap"] != DBNull.Value)
-                                r["NgayLapStr"] = Convert.ToDateTime(r["Ngaylap"]).ToString("dd/MM/yyyy HH:mm");
-                        }
-
-                        dgvPhieuChi.DataSource = dt;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        await Task.Run(() => da.Fill(dt));
                     }
                 }
 
-                if (dgvPhieuChi.Columns.Count > 0)
+                dt.Columns.Add("NgayLapStr", typeof(string));
+                foreach (DataRow r in dt.Rows)
                 {
-                    if (dgvPhieuChi.Columns["Id"] != null) dgvPhieuChi.Columns["Id"].Visible = false;
-                    if (dgvPhieuChi.Columns["Ngaylap"] != null) dgvPhieuChi.Columns["Ngaylap"].Visible = false;
-                    if (dgvPhieuChi.Columns["LyDoTuChoi"] != null) dgvPhieuChi.Columns["LyDoTuChoi"].Visible = false;
-
-                    if (dgvPhieuChi.Columns["Sophieu"] != null) dgvPhieuChi.Columns["Sophieu"].HeaderText = "Số phiếu";
-                    if (dgvPhieuChi.Columns["NgayLapStr"] != null) dgvPhieuChi.Columns["NgayLapStr"].HeaderText = "Ngày lập";
-                    if (dgvPhieuChi.Columns["TenTacGia"] != null) dgvPhieuChi.Columns["TenTacGia"].HeaderText = "Tên tác giả";
-                    if (dgvPhieuChi.Columns["Nguoinhan"] != null) dgvPhieuChi.Columns["Nguoinhan"].HeaderText = "Người nhận";
-                    if (dgvPhieuChi.Columns["Lydo"] != null) dgvPhieuChi.Columns["Lydo"].HeaderText = "Lý do";
-                    if (dgvPhieuChi.Columns["TongTien"] != null)
-                    {
-                        dgvPhieuChi.Columns["TongTien"].HeaderText = "Tổng tiền";
-                        dgvPhieuChi.Columns["TongTien"].DefaultCellStyle.Format = "N0";
-                    }
-                    if (dgvPhieuChi.Columns["ThucLinh"] != null)
-                    {
-                        dgvPhieuChi.Columns["ThucLinh"].HeaderText = "Thực lĩnh";
-                        dgvPhieuChi.Columns["ThucLinh"].DefaultCellStyle.Format = "N0";
-                    }
+                    if (r["Ngaylap"] != DBNull.Value)
+                        r["NgayLapStr"] = Convert.ToDateTime(r["Ngaylap"]).ToString("dd/MM/yyyy HH:mm");
                 }
-                ClearDetails();
+
+                dgvPhieuChi.DataSource = dt;
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
+
+            if (dgvPhieuChi.Columns.Count > 0)
+            {
+                if (dgvPhieuChi.Columns["Id"] != null) dgvPhieuChi.Columns["Id"].Visible = false;
+                if (dgvPhieuChi.Columns["Ngaylap"] != null) dgvPhieuChi.Columns["Ngaylap"].Visible = false;
+                if (dgvPhieuChi.Columns["LyDoTuChoi"] != null) dgvPhieuChi.Columns["LyDoTuChoi"].Visible = false;
+
+                if (dgvPhieuChi.Columns["Sophieu"] != null) dgvPhieuChi.Columns["Sophieu"].HeaderText = "Số phiếu";
+                if (dgvPhieuChi.Columns["NgayLapStr"] != null) dgvPhieuChi.Columns["NgayLapStr"].HeaderText = "Ngày lập";
+                if (dgvPhieuChi.Columns["TenTacGia"] != null) dgvPhieuChi.Columns["TenTacGia"].HeaderText = "Tên tác giả";
+                if (dgvPhieuChi.Columns["Nguoinhan"] != null) dgvPhieuChi.Columns["Nguoinhan"].HeaderText = "Người nhận";
+                if (dgvPhieuChi.Columns["Lydo"] != null) dgvPhieuChi.Columns["Lydo"].HeaderText = "Lý do";
+                if (dgvPhieuChi.Columns["TongTien"] != null)
+                {
+                    dgvPhieuChi.Columns["TongTien"].HeaderText = "Tổng tiền";
+                    dgvPhieuChi.Columns["TongTien"].DefaultCellStyle.Format = "N0";
+                }
+                if (dgvPhieuChi.Columns["ThucLinh"] != null)
+                {
+                    dgvPhieuChi.Columns["ThucLinh"].HeaderText = "Thực lĩnh";
+                    dgvPhieuChi.Columns["ThucLinh"].DefaultCellStyle.Format = "N0";
+                }
+            }
+            ClearDetails();
+        }
+        catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
         }
 
         private async void cboTrangThai_SelectedIndexChanged(object sender, EventArgs e)

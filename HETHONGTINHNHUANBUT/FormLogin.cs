@@ -14,7 +14,6 @@ namespace HETHONGTINHNHUANBUT
         public FormLogin()
         {
             InitializeComponent();
-            TaoBangUsersNeuChuaCo();
         }
 
         private void TaoBangUsersNeuChuaCo()
@@ -43,8 +42,9 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-        private void FormLogin_Load(object sender, EventArgs e)
+        private async void FormLogin_Load(object sender, EventArgs e)
         {
+            await Task.Run(() => TaoBangUsersNeuChuaCo());
             txtUsername.Focus();
         }
 

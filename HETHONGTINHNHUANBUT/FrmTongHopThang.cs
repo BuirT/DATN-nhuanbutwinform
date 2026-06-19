@@ -43,9 +43,9 @@ namespace HETHONGTINHNHUANBUT
                     {
                         cmd.Parameters.AddWithValue("@start", startOfMonth);
                         cmd.Parameters.AddWithValue("@end", endOfMonth);
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            dt.Load(reader);
+                            await Task.Run(() => da.Fill(dt));
                         }
                     }
                 }

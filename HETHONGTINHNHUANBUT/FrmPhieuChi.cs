@@ -126,7 +126,7 @@ namespace HETHONGTINHNHUANBUT
 
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
-                    da.Fill(dt);
+                    await Task.Run(() => da.Fill(dt));
 
                     var authors = dt.AsEnumerable().Select(r => r.Field<string>("Butdanh")).ToList();
 
@@ -185,7 +185,7 @@ namespace HETHONGTINHNHUANBUT
                     SqlDataAdapter da = new SqlDataAdapter(sqlArticles, conn);
                     da.SelectCommand.Parameters.AddWithValue("@butdanh", penName);
                     DataTable dt = new DataTable();
-                    da.Fill(dt);
+                    await Task.Run(() => da.Fill(dt));
 
                     dgvChuaThanhToan.Rows.Clear();
                     foreach (DataRow row in dt.Rows)
@@ -291,7 +291,7 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmdGetMs = new SqlCommand("SELECT MsTacgia FROM Butdanh WHERE Butdanh = @bd", conn, trans))
                         {
                         cmdGetMs.Parameters.AddWithValue("@bd", cboTacGia.Text);
-                        msTG = cmdGetMs.ExecuteScalar()?.ToString() ?? "";
+                        msTG = (await cmdGetMs.ExecuteScalarAsync())?.ToString() ?? "";
                     }
 
                     foreach (DataGridViewRow row in selectedItems)
