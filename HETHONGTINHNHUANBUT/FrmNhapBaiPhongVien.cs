@@ -71,13 +71,14 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string sql = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, 
                                           TienNhuanbut, 
-                                           CASE TrangThaiDuyet 
-                                               WHEN 0 THEN N'Chờ kiểm tra'
-                                               WHEN 1 THEN N'Đã duyệt nội dung'
-                                               WHEN 2 THEN N'Đã tính tiền'
-                                               WHEN 3 THEN N'Đã ký duyệt'
-                                               ELSE N'Không rõ'
-                                           END AS TrangThaiDuyet
+                                            CASE TrangThaiDuyet 
+                                                WHEN 0 THEN N'Chờ chấm tiền'
+                                                WHEN 1 THEN N'Đã chấm tiền'
+                                                WHEN 2 THEN N'Đã nhập liệu'
+                                                WHEN 3 THEN N'Đã kiểm tra'
+                                                WHEN 4 THEN N'Đã ký duyệt'
+                                                ELSE N'Không rõ'
+                                            END AS TrangThaiDuyet
                                    FROM Nhuanbut 
                                    WHERE NguoiNhap = @user
                                    ORDER BY ngaychuyen DESC";

@@ -114,7 +114,7 @@ namespace HETHONGTINHNHUANBUT
                     sb.AppendLine(new string('─', 60));
                     sb.AppendLine($"  {"Trạng thái",-25} {"Bài",5} {"Thành tiền",15}");
                     sb.AppendLine(new string('─', 60));
-                    string[] ttLabel = { "Chờ duyệt (0)", "TK duyệt (1)", "KT duyệt (2)", "Đã duyệt (3)" };
+                    string[] ttLabel = { "Chờ chấm (0)", "Đã chấm (1)", "Đã nhập (2)", "Đã kiểm (3)", "Đã ký (4)" };
                     using (var cmd = new SqlCommand(@"
                         SELECT TrangThaiDuyet, COUNT(*) AS SL, ISNULL(SUM(TienNhuanbut),0) AS Tong
                         FROM Nhuanbut WHERE MONTH(ngaychuyen)=@t AND YEAR(ngaychuyen)=@n

@@ -173,9 +173,15 @@ namespace HETHONGTINHNHUANBUT
                     }
 
                     string sqlArticles = @"SELECT Maso, Tenbai, TienNhuanbut 
-                                           FROM Nhuanbut 
-                                           WHERE Butdanh = @butdanh 
-                                           AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)";
+                                            FROM Nhuanbut 
+                                            WHERE Butdanh = @butdanh 
+                                            AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)";
+                    if (QuyenHienTai?.Trim().ToLower() != "admin" && QuyenHienTai?.Trim().ToLower() != "quản trị viên")
+                        sqlArticles = @"SELECT Maso, Tenbai, TienNhuanbut 
+                                         FROM Nhuanbut 
+                                         WHERE Butdanh = @butdanh 
+                                         AND Maso NOT IN (SELECT MsNhuanbut FROM NhuanbutCT)
+                                         AND TrangThaiDuyet = 4";
                     SqlDataAdapter da = new SqlDataAdapter(sqlArticles, conn);
                     da.SelectCommand.Parameters.AddWithValue("@butdanh", penName);
                     DataTable dt = new DataTable();

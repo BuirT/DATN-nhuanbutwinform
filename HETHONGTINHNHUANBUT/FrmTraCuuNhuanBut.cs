@@ -78,10 +78,10 @@ namespace HETHONGTINHNHUANBUT
                 if (dgvTraCuu.Columns["Tiền_NB"] != null)
                     dgvTraCuu.Columns["Tiền_NB"].DefaultCellStyle.Format = "N0";
 
-                decimal daDuyet = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) >= 2).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
+                decimal daDuyet = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) >= 4).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
                 lblTongTien.Text = daDuyet.ToString("N0") + " VNĐ";
 
-                decimal dangCho = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) < 2).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
+                decimal dangCho = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) < 4).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
                 lblDangCho.Text = dangCho.ToString("N0") + " VNĐ";
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
@@ -89,10 +89,11 @@ namespace HETHONGTINHNHUANBUT
 
         private string GetStatusText(int trangThai, decimal tien)
         {
-            if (trangThai == 0) return "⏳ Chờ Thư ký";
-            if (trangThai == 1) return tien > 0 ? "💰 Chờ Lãnh đạo ký" : "💰 Chờ Kế toán nhập tiền";
-            if (trangThai == 2) return "✅ Đã duyệt";
-            if (trangThai == 3) return "✅ Đã nhận";
+            if (trangThai == 0) return "⏳ Chờ chấm tiền";
+            if (trangThai == 1) return "💰 Đã chấm (chờ nhập liệu)";
+            if (trangThai == 2) return "📝 Đã nhập liệu (chờ kiểm tra)";
+            if (trangThai == 3) return "🔍 Đã kiểm tra (chờ ký duyệt)";
+            if (trangThai == 4) return "✅ Đã ký duyệt";
             return "⏳ Chờ xử lý";
         }
 
