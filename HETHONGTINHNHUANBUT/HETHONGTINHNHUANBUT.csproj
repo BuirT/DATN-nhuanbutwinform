@@ -236,6 +236,12 @@
     <Compile Include="FrmBaoCaoTongHop.Designer.cs">
       <DependentUpon>FrmBaoCaoTongHop.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmBaoCaoLanhDao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBaoCaoLanhDao.Designer.cs">
+      <DependentUpon>FrmBaoCaoLanhDao.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmButdanh.cs">
       <SubType>Form</SubType>
     </Compile>

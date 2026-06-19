@@ -6,254 +6,56 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClosedXML.Excel;
+using Guna.Charts.WinForms;
 
 namespace HETHONGTINHNHUANBUT
 {
-    public class FrmBaoCaoLanhDao : Form
+    public partial class FrmBaoCaoLanhDao : Form
     {
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
-        private Guna.UI2.WinForms.Guna2Panel pnlTop;
-        private Guna.UI2.WinForms.Guna2Panel pnlSummary;
-        private Guna.UI2.WinForms.Guna2Panel pnlDetail;
-        private Label lblTitle;
-        private Label lblThang;
-        private Guna.UI2.WinForms.Guna2DateTimePicker dtpThang;
-        private Guna.UI2.WinForms.Guna2Button btnXem;
-        private Guna.UI2.WinForms.Guna2Button btnExcel;
-        private Label lblSummaryTitle;
-        private Label lblDetailTitle;
-        private Guna.UI2.WinForms.Guna2DataGridView dgvSummary;
-        private Guna.UI2.WinForms.Guna2DataGridView dgvDetail;
-
-        private Label lblTongBai;
-        private Label lblTongTien;
-        private Label lblDaChi;
-        private Label lblChuaChi;
-
         public FrmBaoCaoLanhDao()
         {
-            InitializeControls();
-            Load += FrmBaoCaoLanhDao_Load;
-        }
-
-        private void InitializeControls()
-        {
-            AutoScaleDimensions = new SizeF(96F, 96F);
-            AutoScaleMode = AutoScaleMode.Dpi;
-            BackColor = Color.FromArgb(244, 247, 254);
-            ClientSize = new Size(1500, 750);
-            DoubleBuffered = true;
-            Font = new Font("Segoe UI", 10F);
-            Name = "FrmBaoCaoLanhDao";
-            Padding = new Padding(20, 15, 20, 20);
-            Text = "Báo cáo lãnh đạo";
-
-            pnlTop = new Guna.UI2.WinForms.Guna2Panel();
-            pnlTop.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlTop.BackColor = Color.Transparent;
-            pnlTop.BorderRadius = 16;
-            pnlTop.FillColor = Color.White;
-            pnlTop.ShadowDecoration.Color = Color.FromArgb(226, 232, 240);
-            pnlTop.ShadowDecoration.Depth = 8;
-            pnlTop.ShadowDecoration.Enabled = true;
-            pnlTop.Size = new Size(1460, 120);
-            pnlTop.Location = new Point(0, 0);
-
-            lblTitle = new Label();
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.FromArgb(15, 23, 42);
-            lblTitle.Location = new Point(25, 18);
-            lblTitle.Text = "BÁO CÁO LÃNH ĐẠO";
-
-            lblThang = new Label();
-            lblThang.AutoSize = true;
-            lblThang.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblThang.ForeColor = Color.FromArgb(100, 116, 139);
-            lblThang.Location = new Point(25, 72);
-            lblThang.Text = "Chọn tháng";
-
-            dtpThang = new Guna.UI2.WinForms.Guna2DateTimePicker();
-            dtpThang.BorderColor = Color.FromArgb(226, 232, 240);
-            dtpThang.BorderRadius = 8;
-            dtpThang.Checked = true;
-            dtpThang.CustomFormat = "MM/yyyy";
-            dtpThang.FillColor = Color.FromArgb(248, 250, 252);
-            dtpThang.Font = new Font("Segoe UI", 10F);
-            dtpThang.ForeColor = Color.Black;
-            dtpThang.Format = DateTimePickerFormat.Custom;
-            dtpThang.Location = new Point(128, 66);
-            dtpThang.MaxDate = new DateTime(9998, 12, 31);
-            dtpThang.MinDate = new DateTime(2020, 1, 1);
-            dtpThang.Size = new Size(160, 36);
-            dtpThang.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-
-            btnXem = new Guna.UI2.WinForms.Guna2Button();
-            btnXem.Animated = true;
-            btnXem.BorderRadius = 8;
-            btnXem.FillColor = Color.FromArgb(16, 185, 129);
-            btnXem.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            btnXem.ForeColor = Color.White;
-            btnXem.Location = new Point(310, 62);
-            btnXem.Size = new Size(150, 40);
-            btnXem.Text = "XEM BÁO CÁO";
-            btnXem.Click += btnXem_Click;
-
-            btnExcel = new Guna.UI2.WinForms.Guna2Button();
-            btnExcel.Animated = true;
-            btnExcel.BorderRadius = 8;
-            btnExcel.FillColor = Color.FromArgb(245, 158, 11);
-            btnExcel.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            btnExcel.ForeColor = Color.White;
-            btnExcel.Location = new Point(475, 62);
-            btnExcel.Size = new Size(150, 40);
-            btnExcel.Text = "XUẤT EXCEL";
-            btnExcel.Click += btnExcel_Click;
-
-            pnlTop.Controls.Add(lblTitle);
-            pnlTop.Controls.Add(lblThang);
-            pnlTop.Controls.Add(dtpThang);
-            pnlTop.Controls.Add(btnXem);
-            pnlTop.Controls.Add(btnExcel);
-
-            // Summary panel
-            pnlSummary = new Guna.UI2.WinForms.Guna2Panel();
-            pnlSummary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlSummary.BackColor = Color.Transparent;
-            pnlSummary.BorderRadius = 16;
-            pnlSummary.FillColor = Color.White;
-            pnlSummary.ShadowDecoration.Color = Color.FromArgb(226, 232, 240);
-            pnlSummary.ShadowDecoration.Depth = 8;
-            pnlSummary.ShadowDecoration.Enabled = true;
-            pnlSummary.Size = new Size(1460, 260);
-            pnlSummary.Location = new Point(0, 135);
-
-            lblSummaryTitle = new Label();
-            lblSummaryTitle.AutoSize = true;
-            lblSummaryTitle.Font = new Font("Segoe UI", 13.5F, FontStyle.Bold);
-            lblSummaryTitle.ForeColor = Color.FromArgb(15, 23, 42);
-            lblSummaryTitle.Location = new Point(25, 18);
-            lblSummaryTitle.Text = "TỔNG HỢP THEO TÁC GIẢ";
-
-            dgvSummary = CreateGrid();
-            dgvSummary.Location = new Point(25, 55);
-            dgvSummary.Size = new Size(1410, 190);
-
-            pnlSummary.Controls.Add(lblSummaryTitle);
-            pnlSummary.Controls.Add(dgvSummary);
-
-            // Detail panel
-            pnlDetail = new Guna.UI2.WinForms.Guna2Panel();
-            pnlDetail.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pnlDetail.BackColor = Color.Transparent;
-            pnlDetail.BorderRadius = 16;
-            pnlDetail.FillColor = Color.White;
-            pnlDetail.ShadowDecoration.Color = Color.FromArgb(226, 232, 240);
-            pnlDetail.ShadowDecoration.Depth = 8;
-            pnlDetail.ShadowDecoration.Enabled = true;
-            pnlDetail.Size = new Size(1460, 320);
-            pnlDetail.Location = new Point(0, 410);
-
-            lblDetailTitle = new Label();
-            lblDetailTitle.AutoSize = true;
-            lblDetailTitle.Font = new Font("Segoe UI", 13.5F, FontStyle.Bold);
-            lblDetailTitle.ForeColor = Color.FromArgb(15, 23, 42);
-            lblDetailTitle.Location = new Point(25, 18);
-            lblDetailTitle.Text = "CHI TIẾT NHUẬN BÚT TRONG THÁNG";
-
-            dgvDetail = CreateGrid();
-            dgvDetail.Location = new Point(25, 55);
-            dgvDetail.Size = new Size(1410, 250);
-
-            // Footer labels
-            lblTongBai = new Label();
-            lblTongBai.AutoSize = true;
-            lblTongBai.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblTongBai.ForeColor = Color.FromArgb(15, 23, 42);
-            lblTongBai.Location = new Point(25, 5);
-            lblTongBai.Text = "Tổng số bài: 0";
-
-            lblTongTien = new Label();
-            lblTongTien.AutoSize = true;
-            lblTongTien.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblTongTien.ForeColor = Color.FromArgb(15, 23, 42);
-            lblTongTien.Location = new Point(200, 5);
-            lblTongTien.Text = "Tổng nhuận bút: 0 VNĐ";
-
-            lblDaChi = new Label();
-            lblDaChi.AutoSize = true;
-            lblDaChi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblDaChi.ForeColor = Color.FromArgb(16, 185, 129);
-            lblDaChi.Location = new Point(450, 5);
-            lblDaChi.Text = "Đã chi: 0 VNĐ";
-
-            lblChuaChi = new Label();
-            lblChuaChi.AutoSize = true;
-            lblChuaChi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblChuaChi.ForeColor = Color.Crimson;
-            lblChuaChi.Location = new Point(650, 5);
-            lblChuaChi.Text = "Chưa chi: 0 VNĐ";
-
-            pnlDetail.Controls.Add(lblDetailTitle);
-            pnlDetail.Controls.Add(dgvDetail);
-            pnlDetail.Controls.Add(lblTongBai);
-            pnlDetail.Controls.Add(lblTongTien);
-            pnlDetail.Controls.Add(lblDaChi);
-            pnlDetail.Controls.Add(lblChuaChi);
-
-            Controls.Add(pnlTop);
-            Controls.Add(pnlSummary);
-            Controls.Add(pnlDetail);
-        }
-
-        private Guna.UI2.WinForms.Guna2DataGridView CreateGrid()
-        {
-            var g = new Guna.UI2.WinForms.Guna2DataGridView();
-            g.AllowUserToAddRows = false;
-            g.AllowUserToDeleteRows = false;
-            g.AllowUserToResizeColumns = false;
-            g.AllowUserToResizeRows = false;
-            g.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            g.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            g.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
-            g.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-            g.BackgroundColor = Color.White;
-            g.BorderStyle = BorderStyle.None;
-            g.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
-            g.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F);
-            g.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            g.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
-            g.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 85, 105);
-            g.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            g.ColumnHeadersHeight = 40;
-            g.DefaultCellStyle.BackColor = Color.White;
-            g.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
-            g.DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
-            g.DefaultCellStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
-            g.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
-            g.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
-            g.GridColor = Color.FromArgb(241, 245, 249);
-            g.RowHeadersVisible = false;
-            g.RowTemplate.Height = 38;
-            g.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
-            g.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(100, 88, 255);
-            g.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            g.ThemeStyle.HeaderStyle.Height = 40;
-            g.ThemeStyle.ReadOnly = false;
-            g.ThemeStyle.RowsStyle.BackColor = Color.White;
-            g.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            g.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 69, 94);
-            g.ThemeStyle.RowsStyle.Height = 38;
-            g.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            g.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            return g;
+            InitializeComponent();
         }
 
         private void FrmBaoCaoLanhDao_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvSummary);
             UIHelper.FormatGiaoDienBang(dgvDetail);
+            LayoutPanels();
+        }
+
+        private void FrmBaoCaoLanhDao_Resize(object sender, EventArgs e)
+        {
+            LayoutPanels();
+        }
+
+        private void LayoutPanels()
+        {
+            if (pnlSummary == null || pnlDetail == null || pnlChart == null) return;
+            int padL = this.Padding.Left;
+            int padR = this.Padding.Right;
+            int startX = padL;
+            int startY = pnlTop.Bottom;
+            int contentW = ClientSize.Width - padL - padR;
+            int availH = ClientSize.Height - startY - this.Padding.Bottom;
+            int chartH = Math.Min(280, (int)(availH * 0.35));
+            int sumH = (int)((availH - chartH) * 0.35);
+            int detailH = availH - chartH - sumH;
+            int margin = 25;
+            pnlChart.Location = new Point(startX, startY);
+            pnlChart.Size = new Size(contentW, chartH);
+            pnlSummary.Location = new Point(startX, startY + chartH);
+            pnlSummary.Size = new Size(contentW, sumH);
+            pnlDetail.Location = new Point(startX, startY + chartH + sumH);
+            pnlDetail.Size = new Size(contentW, detailH);
+            dgvSummary.Location = new Point(margin, 50);
+            dgvSummary.Width = pnlSummary.Width - margin * 2;
+            dgvSummary.Height = pnlSummary.Height - 80;
+            dgvDetail.Location = new Point(margin, 50);
+            dgvDetail.Width = pnlDetail.Width - margin * 2;
+            dgvDetail.Height = pnlDetail.Height - 95;
         }
 
         private async void btnXem_Click(object sender, EventArgs e)
@@ -301,6 +103,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     dgvSummary.DataSource = null;
                     dgvDetail.DataSource = null;
+                    pnlChart.Controls.Clear();
                     lblTongBai.Text = "Tổng số bài: 0";
                     lblTongTien.Text = "Tổng nhuận bút: 0 VNĐ";
                     lblDaChi.Text = "Đã chi: 0 VNĐ";
@@ -310,7 +113,6 @@ namespace HETHONGTINHNHUANBUT
                     return;
                 }
 
-                // Detail grid
                 var detailView = dt.AsEnumerable().Select(r => new
                 {
                     Maso = r.Field<int>("Maso"),
@@ -342,7 +144,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvDetail.Columns["NgayDang"].Width = 100;
                 }
 
-                // Summary by author
                 var summaryView = dt.AsEnumerable()
                     .GroupBy(r => r.Field<string>("TacGia") ?? "(Không có)")
                     .Select(g => new
@@ -376,7 +177,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvSummary.Columns["ChuaChi"].Width = 180;
                 }
 
-                // Footer totals
                 decimal tongTien = summaryView.Sum(x => x.TongNB);
                 decimal daChi = summaryView.Sum(x => x.DaChi);
                 decimal chuaChi = summaryView.Sum(x => x.ChuaChi);
@@ -386,11 +186,57 @@ namespace HETHONGTINHNHUANBUT
                 lblTongTien.Text = $"Tổng nhuận bút: {tongTien:N0} VNĐ";
                 lblDaChi.Text = $"Đã chi: {daChi:N0} VNĐ";
                 lblChuaChi.Text = $"Chưa chi: {chuaChi:N0} VNĐ";
+
+                DrawCharts(dt);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void DrawCharts(DataTable dt)
+        {
+            pnlChart.Controls.Clear();
+            decimal daChi = dt.AsEnumerable()
+                .Where(r => r["SauThanhToan"] != DBNull.Value && r["SauThanhToan"].ToString() == "Y")
+                .Sum(r => Convert.ToDecimal(r["TienNhuanbut"]));
+            decimal chuaChi = dt.AsEnumerable()
+                .Where(r => r["SauThanhToan"] == DBNull.Value || r["SauThanhToan"].ToString() != "Y")
+                .Sum(r => Convert.ToDecimal(r["TienNhuanbut"]));
+            var topTacGia = dt.AsEnumerable()
+                .GroupBy(r => r.Field<string>("TacGia") ?? "(Không có)")
+                .Select(g => new { Name = g.Key, Total = g.Sum(r => Convert.ToDecimal(r["TienNhuanbut"])) })
+                .OrderByDescending(x => x.Total)
+                .Take(8)
+                .ToList();
+            int pieW = (int)(pnlChart.Width * 0.35);
+            Panel pnlPie = new Panel { Dock = DockStyle.Left, Width = pieW, BackColor = Color.White };
+            Panel pnlBar = new Panel { Dock = DockStyle.Fill, BackColor = Color.White };
+            pnlChart.Controls.Add(pnlBar);
+            pnlChart.Controls.Add(pnlPie);
+            GunaChart chartPie = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+            chartPie.Legend.Position = LegendPosition.Bottom;
+            GunaDoughnutDataset dsPie = new GunaDoughnutDataset();
+            Color[] palette = new Color[] {
+                Color.FromArgb(16, 185, 129),
+                Color.FromArgb(239, 68, 68)
+            };
+            foreach (var c in palette) dsPie.FillColors.Add(c);
+            dsPie.DataPoints.Add("Đã chi", (double)daChi);
+            dsPie.DataPoints.Add("Chưa chi", (double)chuaChi);
+            chartPie.Datasets.Add(dsPie);
+            pnlPie.Controls.Add(chartPie);
+            chartPie.Update();
+            GunaChart chartBar = new GunaChart { Dock = DockStyle.Fill, BackColor = Color.White };
+            chartBar.Legend.Position = LegendPosition.Bottom;
+            chartBar.XAxes.GridLines.Display = false;
+            GunaHorizontalBarDataset dsBar = new GunaHorizontalBarDataset();
+            foreach (var tg in topTacGia)
+                dsBar.DataPoints.Add(tg.Name, (double)tg.Total);
+            chartBar.Datasets.Add(dsBar);
+            pnlBar.Controls.Add(chartBar);
+            chartBar.Update();
         }
 
         private async void btnExcel_Click(object sender, EventArgs e)
@@ -411,7 +257,6 @@ namespace HETHONGTINHNHUANBUT
             {
                 using (var workbook = new XLWorkbook())
                 {
-                    // Sheet 1: Tổng hợp
                     var ws1 = workbook.Worksheets.Add("Tổng hợp tác giả");
                     var sumTable = new DataTable();
                     sumTable.Columns.Add("Tác giả");
@@ -434,7 +279,6 @@ namespace HETHONGTINHNHUANBUT
                     ws1.Cell(1, 1).InsertTable(sumTable);
                     ws1.Columns().AdjustToContents();
 
-                    // Sheet 2: Chi tiết
                     var ws2 = workbook.Worksheets.Add("Chi tiết nhuận bút");
                     var dt2 = new DataTable();
                     foreach (DataGridViewColumn col in dgvDetail.Columns)
