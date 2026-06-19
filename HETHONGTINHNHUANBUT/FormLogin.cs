@@ -173,5 +173,10 @@ namespace HETHONGTINHNHUANBUT
         }
 
         private void txtPassword_TextChanged(object sender, EventArgs e) { }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
