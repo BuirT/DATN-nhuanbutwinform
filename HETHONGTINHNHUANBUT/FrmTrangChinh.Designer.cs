@@ -363,11 +363,9 @@ namespace HETHONGTINHNHUANBUT
             // 
             this.btnBaoCaoAI = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCaoAI.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnBaoCaoAI.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(242)))), ((int)(((byte)(254)))));
+            this.btnBaoCaoAI.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoAI.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnBaoCaoAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
-            this.btnBaoCaoAI.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(197)))), ((int)(((byte)(253)))));
-            this.btnBaoCaoAI.BorderThickness = 1;
+            this.btnBaoCaoAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnBaoCaoAI.Name = "btnBaoCaoAI";
             this.btnBaoCaoAI.Size = new System.Drawing.Size(252, 50);
             this.btnBaoCaoAI.TabIndex = 15;

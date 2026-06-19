@@ -124,10 +124,8 @@ namespace HETHONGTINHNHUANBUT
             btn.Name = "btnBaoCaoAI";
             btn.Text = "BÁO CÁO TỔNG KẾT AI";
             btn.Dock = DockStyle.Top;
-            btn.FillColor = System.Drawing.Color.FromArgb(224, 242, 254);
-            btn.ForeColor = System.Drawing.Color.FromArgb(2, 132, 199);
-            btn.BorderColor = System.Drawing.Color.FromArgb(147, 197, 253);
-            btn.BorderThickness = 1;
+            btn.FillColor = System.Drawing.Color.Transparent;
+            btn.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
             btn.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             btn.Size = new System.Drawing.Size(252, 50);
             btn.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;

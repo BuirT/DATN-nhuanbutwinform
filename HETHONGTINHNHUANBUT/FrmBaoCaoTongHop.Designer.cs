@@ -88,9 +88,9 @@
             this.dtpThang.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.dtpThang.ForeColor = System.Drawing.Color.Black;
             this.dtpThang.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpThang.Location = new System.Drawing.Point(105, 60);
+            this.dtpThang.Location = new System.Drawing.Point(120, 58);
             this.dtpThang.Name = "dtpThang";
-            this.dtpThang.Size = new System.Drawing.Size(150, 36);
+            this.dtpThang.Size = new System.Drawing.Size(150, 40);
             this.dtpThang.TabIndex = 2;
             // 
             // btnTimKiem

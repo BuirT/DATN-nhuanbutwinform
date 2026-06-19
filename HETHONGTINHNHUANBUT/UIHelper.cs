@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
@@ -63,6 +64,35 @@ namespace HETHONGTINHNHUANBUT
             dgv.ThemeStyle.RowsStyle.Height = 38;
             dgv.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(232, 240, 254);
             dgv.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+        }
+
+        public static void ConfigureColumns(Guna2DataGridView dgv, params (string Name, string Header, bool IsNumeric, bool IsCenter)[] columns)
+        {
+            if (dgv == null || dgv.Columns.Count == 0) return;
+
+            foreach (var col in columns)
+            {
+                if (dgv.Columns[col.Name] == null) continue;
+
+                if (!string.IsNullOrEmpty(col.Header))
+                    dgv.Columns[col.Name].HeaderText = col.Header;
+
+                if (col.IsNumeric)
+                    dgv.Columns[col.Name].DefaultCellStyle.Format = "N0";
+
+                dgv.Columns[col.Name].DefaultCellStyle.Alignment = col.IsCenter ? DataGridViewContentAlignment.MiddleCenter : DataGridViewContentAlignment.MiddleLeft;
+            }
+
+            int visibleCount = 0;
+            foreach (DataGridViewColumn c in dgv.Columns)
+                if (c.Visible) visibleCount++;
+
+            if (visibleCount > 0)
+            {
+                float equalWeight = 100f / visibleCount;
+                foreach (DataGridViewColumn c in dgv.Columns)
+                    if (c.Visible) c.FillWeight = equalWeight;
+            }
         }
     }
 }
