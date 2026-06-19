@@ -360,10 +360,12 @@ namespace HETHONGTINHNHUANBUT
             bool isExpanded = btnSubBaoCaoTH.Visible;
             btnSubBaoCaoTH.Visible = !isExpanded;
             btnSubBaoCaoCN.Visible = !isExpanded;
+            btnSubBaoCaoLD.Visible = !isExpanded;
             btnBaoCao.Text = isExpanded ? "BÁO CÁO  ▼" : "BÁO CÁO  ▲";
         }
         private void btnSubBaoCaoTH_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
         private void btnSubBaoCaoCN_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
+        private void btnSubBaoCaoLD_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoLanhDao(), sender as Guna2Button);
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
