@@ -146,7 +146,6 @@
             this.btnExit.Size = new System.Drawing.Size(140, 30);
             this.btnExit.TabIndex = 5;
             this.btnExit.Text = "Thoát ứng dụng";
-            this.btnExit.Click += new System.EventHandler(this.btnexit_Click);
             // 
             // FormLogin
             // 

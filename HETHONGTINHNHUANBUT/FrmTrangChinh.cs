@@ -107,6 +107,8 @@ namespace HETHONGTINHNHUANBUT
                             ALTER TABLE Phieuchi ADD NgayDuyet DATETIME;
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LyDoTuChoi' AND Object_ID = Object_ID(N'Phieuchi'))
                             ALTER TABLE Phieuchi ADD LyDoTuChoi NVARCHAR(MAX);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'Dathutien' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD Dathutien NVARCHAR(1) DEFAULT 'N';
                         UPDATE Phieuchi SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
                     using (SqlCommand cmd2 = new SqlCommand(fixPhieuchi, conn))
                         await cmd2.ExecuteNonQueryAsync();
@@ -199,6 +201,7 @@ namespace HETHONGTINHNHUANBUT
                 btnPhieuChi.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
+                btnDuyetChi.Visible = true;
                 if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
                     btnDot2.Visible = true;
             }

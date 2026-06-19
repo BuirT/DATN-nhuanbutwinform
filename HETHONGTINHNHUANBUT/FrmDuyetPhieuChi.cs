@@ -15,6 +15,7 @@ namespace HETHONGTINHNHUANBUT
 
         public string NguoiDuyet { get; set; } = "Ban Giám Đốc";
         public string QuyenHienTai { get; set; }
+        private Guna.UI2.WinForms.Guna2Button btnThanhToan;
 
         public FrmDuyetPhieuChi()
         {
@@ -32,6 +33,21 @@ namespace HETHONGTINHNHUANBUT
             cboTrangThai.IntegralHeight = true;
             cboTrangThai.MaxDropDownItems = 15;
             cboTrangThai.SelectedIndex = 0;
+
+            // Tạo nút thanh toán programmatically
+            btnThanhToan = new Guna.UI2.WinForms.Guna2Button();
+            btnThanhToan.Animated = true;
+            btnThanhToan.BorderRadius = 8;
+            btnThanhToan.FillColor = Color.FromArgb(16, 185, 129);
+            btnThanhToan.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnThanhToan.ForeColor = Color.White;
+            btnThanhToan.Size = new Size(450, 40);
+            btnThanhToan.Location = new Point(690, 145);
+            btnThanhToan.Text = "✅ XÁC NHẬN ĐÃ THANH TOÁN";
+            btnThanhToan.Visible = false;
+            btnThanhToan.Click += btnThanhToan_Click;
+            pnlBottom.Controls.Add(btnThanhToan);
+
             await LoadDataAsync();
             PhanQuyenThaoTac();
         }
@@ -53,6 +69,8 @@ namespace HETHONGTINHNHUANBUT
                             ALTER TABLE Phieuchi ADD NgayDuyet DATETIME;
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LyDoTuChoi' AND Object_ID = Object_ID(N'Phieuchi'))
                             ALTER TABLE Phieuchi ADD LyDoTuChoi NVARCHAR(MAX);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'Dathutien' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD Dathutien NVARCHAR(1) DEFAULT 'N';
                     ";
                     using (SqlCommand cmd = new SqlCommand(fixSql, conn))
                         await cmd.ExecuteNonQueryAsync();
@@ -83,6 +101,12 @@ namespace HETHONGTINHNHUANBUT
                 btnXoa.Enabled = true;
                 txtLyDoTuChoi.ReadOnly = false;
             }
+
+            // Kế toán được xác nhận thanh toán
+            if (role == "kế toán")
+                btnThanhToan.Enabled = true;
+            else
+                btnThanhToan.Enabled = false;
         }
 
         private async Task LoadDataAsync()
@@ -98,7 +122,7 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    string query = @"SELECT Sophieu as Id, Sophieu, Ngaylap, Tacgia as TenTacGia, Nguoinhan, Lydo, Sotien as TongTien, Conlai as ThucLinh, LyDoTuChoi
+                    string query = @"SELECT Sophieu as Id, Sophieu, Ngaylap, Tacgia as TenTacGia, Nguoinhan, Lydo, Sotien as TongTien, Conlai as ThucLinh, LyDoTuChoi, Dathutien
                                      FROM Phieuchi WHERE TrangThaiDuyet = @tt";
 
                     if (!string.IsNullOrEmpty(keyword))
@@ -134,6 +158,7 @@ namespace HETHONGTINHNHUANBUT
                     if (dgvPhieuChi.Columns["Id"] != null) dgvPhieuChi.Columns["Id"].Visible = false;
                     if (dgvPhieuChi.Columns["Ngaylap"] != null) dgvPhieuChi.Columns["Ngaylap"].Visible = false;
                     if (dgvPhieuChi.Columns["LyDoTuChoi"] != null) dgvPhieuChi.Columns["LyDoTuChoi"].Visible = false;
+                    if (dgvPhieuChi.Columns["Dathutien"] != null) dgvPhieuChi.Columns["Dathutien"].Visible = false;
 
                     if (dgvPhieuChi.Columns["Sophieu"] != null) dgvPhieuChi.Columns["Sophieu"].HeaderText = "Số phiếu";
                     if (dgvPhieuChi.Columns["NgayLapStr"] != null) dgvPhieuChi.Columns["NgayLapStr"].HeaderText = "Ngày lập";
@@ -161,10 +186,13 @@ namespace HETHONGTINHNHUANBUT
             await LoadDataAsync();
 
             bool isChoDuyet = cboTrangThai.SelectedIndex == 0;
+            bool isDaDuyet = cboTrangThai.SelectedIndex == 1;
             btnDuyet.Visible = isChoDuyet;
             btnTuChoi.Visible = isChoDuyet;
             txtLyDoTuChoi.Visible = isChoDuyet || cboTrangThai.SelectedIndex == 2;
             lblLyDoTuChoi.Visible = isChoDuyet || cboTrangThai.SelectedIndex == 2;
+            if (btnThanhToan != null)
+                btnThanhToan.Visible = false;
         }
 
         private void dgvPhieuChi_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -180,11 +208,35 @@ namespace HETHONGTINHNHUANBUT
                 lblChiTietTien.Text = (thucLinh != null && thucLinh != DBNull.Value ? Convert.ToDecimal(thucLinh) : 0).ToString("N0") + " VNĐ";
 
                 if (cboTrangThai.SelectedIndex == 2)
+                {
                     txtLyDoTuChoi.Text = row.Cells["LyDoTuChoi"].Value?.ToString();
+                    if (btnThanhToan != null)
+                        btnThanhToan.Visible = false;
+                }
                 else if (cboTrangThai.SelectedIndex == 0)
+                {
                     txtLyDoTuChoi.Text = row.Cells["Lydo"].Value?.ToString();
+                    if (btnThanhToan != null)
+                        btnThanhToan.Visible = false;
+                }
                 else
+                {
                     txtLyDoTuChoi.Clear();
+                    // Hiển thị nút thanh toán nếu phiếu đã duyệt và chưa thanh toán
+                    if (btnThanhToan != null)
+                    {
+                        if (cboTrangThai.SelectedIndex == 1)
+                        {
+                            object val = row.Cells["Dathutien"].Value;
+                            string daThanhToan = (val != null && val != DBNull.Value) ? val.ToString() : "N";
+                            btnThanhToan.Visible = (daThanhToan == "N" || daThanhToan == "n");
+                        }
+                        else
+                        {
+                            btnThanhToan.Visible = false;
+                        }
+                    }
+                }
             }
         }
 
@@ -257,6 +309,53 @@ namespace HETHONGTINHNHUANBUT
                     await LoadDataAsync();
                 }
                 catch (Exception ex) { MessageBox.Show("Lỗi từ chối: " + ex.Message); }
+            }
+        }
+
+        private async void btnThanhToan_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_selectedId)) { MessageBox.Show("Vui lòng chọn phiếu cần xác nhận thanh toán!"); return; }
+
+            if (MessageBox.Show("Xác nhận ĐÃ THANH TOÁN phiếu chi này?\n\nSau khi xác nhận, các bài viết trong phiếu sẽ được đánh dấu là đã thanh toán và không thể chỉnh sửa.", "Xác nhận Thanh toán", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                    {
+                        await conn.OpenAsync();
+                        using (SqlTransaction trans = conn.BeginTransaction())
+                        {
+                            try
+                            {
+                                // 1. Cập nhật Phieuchi: Dathutien = 'Y'
+                                string sqlPhieu = "UPDATE Phieuchi SET Dathutien = 'Y' WHERE Sophieu = @id";
+                                using (SqlCommand cmd = new SqlCommand(sqlPhieu, conn, trans))
+                                {
+                                    cmd.Parameters.AddWithValue("@id", _selectedId);
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+
+                                // 2. Cập nhật NhuanbutCT: SauThanhToan = 'Y'
+                                string sqlCT = "UPDATE NhuanbutCT SET SauThanhToan = 'Y' WHERE SoPC = @id";
+                                using (SqlCommand cmd = new SqlCommand(sqlCT, conn, trans))
+                                {
+                                    cmd.Parameters.AddWithValue("@id", _selectedId);
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+
+                                trans.Commit();
+                                MessageBox.Show("✅ Xác nhận thanh toán thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                await LoadDataAsync();
+                            }
+                            catch
+                            {
+                                trans.Rollback();
+                                throw;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show("Lỗi xác nhận thanh toán: " + ex.Message); }
             }
         }
 
