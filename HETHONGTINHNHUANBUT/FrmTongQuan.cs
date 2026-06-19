@@ -36,12 +36,13 @@ namespace HETHONGTINHNHUANBUT
             label5.Text = "BIẾN ĐỘNG CHI TRẢ NHUẬN BÚT TOÀN THỜI GIAN";
             UIHelper.FormatGiaoDienBang(dgvHoatDong);
 
-            await Task.WhenAll(
-                LoadThongKe4TheAsync(),
-                LoadHoatDongGanDayAsync(),
-                VeBieuDoDuongAsync(),
-                VeBieuDoTronAsync()
-            );
+            await LoadThongKe4TheAsync();
+            await LoadHoatDongGanDayAsync();
+
+            this.SuspendLayout();
+            await VeBieuDoDuongAsync();
+            await VeBieuDoTronAsync();
+            this.ResumeLayout();
         }
 
         private void TimerClock_Tick(object sender, EventArgs e)
@@ -128,8 +129,8 @@ namespace HETHONGTINHNHUANBUT
                 }
 
                 chartLine.Datasets.Add(dataset);
-                chartLine.Update();
                 pnlChartMain.Controls.Add(chartLine);
+                chartLine.Update();
             }
             catch (Exception ex) { Console.WriteLine("Lỗi biểu đồ: " + ex.Message); }
         }
@@ -149,17 +150,19 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     using (SqlDataReader r = await cmd.ExecuteReaderAsync())
                     {
-                        DataTable dt = new DataTable();
-                        dt.Load(r);
-
-                        dgvHoatDong.DataSource = dt.AsEnumerable().Select(row => new
+                        var items = new List<dynamic>();
+                        while (await r.ReadAsync())
                         {
-                            SoPhieu = row["Sophieu"].ToString(),
-                            Ngay = Convert.ToDateTime(row["Ngaylap"]),
-                            Nhan = row["Nguoinhan"].ToString(),
-                            Tien = Convert.ToDecimal(row["Sotien"]).ToString("N0"),
-                            TT = row["TT"].ToString()
-                        }).ToList();
+                            items.Add(new
+                            {
+                                SoPhieu = r["Sophieu"].ToString(),
+                                Ngay = Convert.ToDateTime(r["Ngaylap"]),
+                                Nhan = r["Nguoinhan"].ToString(),
+                                Tien = Convert.ToDecimal(r["Sotien"]).ToString("N0"),
+                                TT = r["TT"].ToString()
+                            });
+                        }
+                        dgvHoatDong.DataSource = items;
                     }
                 }
 
@@ -220,8 +223,8 @@ namespace HETHONGTINHNHUANBUT
                 }
 
                 chartPie.Datasets.Add(dataset);
-                chartPie.Update();
                 pnlChartPie.Controls.Add(chartPie);
+                chartPie.Update();
             }
             catch { }
         }

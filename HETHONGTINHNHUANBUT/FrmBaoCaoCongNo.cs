@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClosedXML.Excel;
 
@@ -21,14 +22,14 @@ namespace HETHONGTINHNHUANBUT
             dtpDenThang.Value = DateTime.Now;
         }
 
-        private void btnTimKiem_Click(object sender, EventArgs e)
+        private async void btnTimKiem_Click(object sender, EventArgs e)
         {
             try
             {
                 DataTable dtTong = new DataTable();
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    conn.Open();
+                    await conn.OpenAsync();
                     string query = @"
                         SELECT tg.Maso, tg.Hoten,
                                ISNULL(SUM(ct.Sotien), 0) AS Sotien,
@@ -46,7 +47,7 @@ namespace HETHONGTINHNHUANBUT
                         ORDER BY Conlai DESC";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     da.SelectCommand.CommandTimeout = 120;
-                    da.Fill(dtTong);
+                    await Task.Run(() => da.Fill(dtTong));
                 }
 
                 dgvCongNo.DataSource = dtTong;

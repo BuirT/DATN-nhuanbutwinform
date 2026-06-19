@@ -333,7 +333,7 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmdGet = new SqlCommand("SELECT DaDuyet FROM Bao WHERE Maso=@ma", conn))
                         {
                         cmdGet.Parameters.AddWithValue("@ma", _selectedMaso);
-                        currentStatus = cmdGet.ExecuteScalar()?.ToString() ?? "N";
+                        currentStatus = (await cmdGet.ExecuteScalarAsync())?.ToString() ?? "N";
                     }
 
                     string nextStatus = currentStatus == "Y" ? "N" : "Y";
