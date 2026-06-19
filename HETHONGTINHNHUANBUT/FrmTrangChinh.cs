@@ -75,6 +75,12 @@ namespace HETHONGTINHNHUANBUT
                             ALTER TABLE Nhuanbut ADD NguoiKeToan NVARCHAR(100);
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TongThuKy' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD TongThuKy NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiChamTien' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiChamTien NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LyDoBaoSai' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD LyDoBaoSai NVARCHAR(500);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayBaoSai' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayBaoSai DATETIME;
                         UPDATE Nhuanbut SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
                     using (SqlCommand cmd = new SqlCommand(fixNhuanbut, conn))
                         await cmd.ExecuteNonQueryAsync();
@@ -205,6 +211,14 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCaoAI.Visible = true;
                 if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
                     btnDot2.Visible = true;
+            }
+            else if (role == "kiểm tra viên")
+            {
+                btnKiemDuyet.Visible = true;
+            }
+            else if (role == "tổng thư ký")
+            {
+                btnKiemDuyet.Visible = true;
             }
             else if (role == "admin" || role == "quản trị viên")
             {

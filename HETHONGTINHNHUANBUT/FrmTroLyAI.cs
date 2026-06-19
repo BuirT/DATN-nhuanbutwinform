@@ -122,17 +122,20 @@ namespace HETHONGTINHNHUANBUT
                     dataContext += @"
 
 【QUY TRÌNH NGHIỆP VỤ NEWSPAY】
-- Bài viết trải qua 4 bước duyệt:
-  Bước 1: Thư ký duyệt nội dung (TrangThaiDuyet: 0→1)
-  Bước 2: Kế toán nhập tiền nhuận bút (TrangThaiDuyet: 1→2)
-  Bước 3: Lãnh đạo ký duyệt (TrangThaiDuyet: 2→3)
-  Bước 4: Lập phiếu chi → Lãnh đạo duyệt chi → Thanh toán
+- Bài viết trải qua 5 bước duyệt:
+  Bước 1: Thư ký chấm tiền (TrangThaiDuyet: 0→1)
+  Bước 2: Kế toán nhập liệu nhuận bút (TrangThaiDuyet: 1→2)
+  Bước 3: Kiểm tra viên kiểm tra (TrangThaiDuyet: 2→3)
+  Bước 4: Tổng thư ký ký duyệt (TrangThaiDuyet: 3→4)
+  Bước 5: Lập phiếu chi → Lãnh đạo duyệt chi → Thanh toán
 
 【CÁC VAI TRÒ HỆ THỐNG】
 - Phóng viên (PV): Nộp bài, tra cứu thu nhập
-- Thư ký: Kiểm duyệt nội dung bài viết
-- Kế toán: Nhập tiền nhuận bút, quản lý phiếu chi
-- Lãnh đạo: Ký duyệt bài và phiếu chi
+- Thư ký: Chấm tiền bài viết
+- Kế toán: Nhập liệu nhuận bút, quản lý phiếu chi
+- Kiểm tra viên: Kiểm tra số liệu
+- Tổng thư ký: Ký duyệt bài
+- Lãnh đạo: Ký duyệt phiếu chi
 - Admin/Quản trị viên: Quản lý toàn bộ hệ thống
 
 【CÁC TÍNH NĂNG CHÍNH】
@@ -230,7 +233,7 @@ Câu hỏi: {userMessage}";
                     using (var cmd = new SqlCommand(@"
                         SELECT COUNT(*) AS TongBai, ISNULL(SUM(TienNhuanbut),0) AS TongTien,
                                AVG(TienNhuanbut) AS TrungBinh, MAX(TienNhuanbut) AS CaoNhat
-                        FROM Nhuanbut WHERE TrangThaiDuyet >= 2", conn))
+                        FROM Nhuanbut WHERE TrangThaiDuyet >= 4", conn))
                     using (var r = await cmd.ExecuteReaderAsync())
                     {
                         if (r.Read())
@@ -248,7 +251,7 @@ Câu hỏi: {userMessage}";
                         while (r.Read())
                         {
                             int tt = Convert.ToInt32(r["TrangThaiDuyet"]);
-                            string ten = tt == 0 ? "Chờ Thư ký" : tt == 1 ? "Chờ Kế toán nhập tiền" : tt == 2 ? "Chờ Lãnh đạo ký" : "Đã ký duyệt";
+                            string ten = tt == 0 ? "Chờ chấm tiền" : tt == 1 ? "Đã chấm - chờ nhập liệu" : tt == 2 ? "Đã nhập - chờ kiểm tra" : tt == 3 ? "Đã kiểm tra - chờ ký duyệt" : "Đã ký duyệt";
                             sb.AppendLine($"• {ten}: {r["SL"]} bài - {Convert.ToDecimal(r["TongTien"]):N0}đ");
                         }
                         r.Close();
@@ -307,7 +310,7 @@ Câu hỏi: {userMessage}";
                     string sql = @"
                         SELECT tg.Hoten, tg.MsTG, tg.PhongBan, tg.DienThoai, tg.Email, tg.LoaiTacgia,
                                (SELECT COUNT(*) FROM Nhuanbut nb JOIN ButDanh bd ON nb.Butdanh = bd.Butdanh WHERE bd.MsTacgia = tg.Maso) AS SoBai,
-                               (SELECT ISNULL(SUM(nb.TienNhuanbut),0) FROM Nhuanbut nb JOIN ButDanh bd ON nb.Butdanh = bd.Butdanh WHERE bd.MsTacgia = tg.Maso AND nb.TrangThaiDuyet >= 2) AS TongTien
+                                (SELECT ISNULL(SUM(nb.TienNhuanbut),0) FROM Nhuanbut nb JOIN ButDanh bd ON nb.Butdanh = bd.Butdanh WHERE bd.MsTacgia = tg.Maso AND nb.TrangThaiDuyet >= 4) AS TongTien
                         FROM TacGia tg
                         WHERE tg.Hoten LIKE N'%' + @k + '%' OR tg.MsTG LIKE '%' + @k + '%'";
 
@@ -482,7 +485,7 @@ Câu hỏi: {userMessage}";
                         WHERE TrangThaiDuyet < 2 AND ngaychuyen < DATEADD(DAY, -7, GETDATE())", conn))
                     {
                         int sl = (int)(await cmd.ExecuteScalarAsync() ?? 0);
-                        if (sl > 0) warnings.Add($"⚠️ {sl} bài chờ duyệt quá 7 ngày");
+                        if (sl > 0) warnings.Add($"⚠️ {sl} bài chờ ký duyệt quá 7 ngày");
                     }
 
                     // Tác giả nộp dày đặc 7 ngày
