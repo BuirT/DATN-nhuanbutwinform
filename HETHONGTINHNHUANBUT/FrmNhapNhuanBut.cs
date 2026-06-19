@@ -61,11 +61,20 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string fixSql = @"
-                        -- Thêm cột Người kế toán xử lý tiền
+                        -- Các cột cho quy trình duyệt (Kiểm duyệt nhuận bút)
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD TrangThaiDuyet INT DEFAULT 0;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiNhap' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiNhap NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiKiemTra' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NguoiKiemTra NVARCHAR(100);
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiKeToan' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD NguoiKeToan NVARCHAR(100);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TongThuKy' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD TongThuKy NVARCHAR(100);
                         -- Chuyển TrangThaiDuyet từ 2 (cũ) lên 3 (mới: đã ký duyệt)
-                        UPDATE Nhuanbut SET TrangThaiDuyet = 3 WHERE TrangThaiDuyet = 2;
+                        IF EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            UPDATE Nhuanbut SET TrangThaiDuyet = 3 WHERE TrangThaiDuyet = 2;
 
                         -- Tạo bảng định mức (nếu chưa có)
                         IF NOT EXISTS(SELECT * FROM sys.tables WHERE Name = N'DinhMuc')
