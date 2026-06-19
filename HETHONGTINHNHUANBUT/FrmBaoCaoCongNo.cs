@@ -67,7 +67,7 @@ namespace HETHONGTINHNHUANBUT
                     dgvCongNo.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
 
-                // Tính tổng nợ
+                // Tính tổng các cột
                 decimal tongNo = 0;
                 decimal daTra = 0;
                 foreach (DataRow row in dtTong.Rows)
@@ -76,9 +76,19 @@ namespace HETHONGTINHNHUANBUT
                     if (row["DaTT"] != DBNull.Value) daTra += Convert.ToDecimal(row["DaTT"]);
                 }
                 decimal conNo = tongNo - daTra;
-                lblTongNo.Text = $"TỔNG NỢ: {tongNo:N0} VNĐ";
-                lblDaThanhToan.Text = $"ĐÃ THANH TOÁN: {daTra:N0} VNĐ";
-                lblConNo.Text = $"CÒN NỢ: {conNo:N0} VNĐ";
+
+                // ==============================================================
+                // HIỂN THỊ DỮ LIỆU LÊN CÁC LABEL (THEO THIẾT KẾ CARD HIỆN ĐẠI)
+                // Dùng \n để tách dòng: Tiêu đề ở trên, Số tiền in to ở dưới
+                // ==============================================================
+                lblTongNo.Text = $"TỔNG NỢ\n{tongNo:N0} VNĐ";
+                lblDaThanhToan.Text = $"ĐÃ THANH TOÁN\n{daTra:N0} VNĐ";
+                lblConNo.Text = $"CÒN NỢ\n{conNo:N0} VNĐ";
+
+                // Đổi màu thông minh cho label Còn nợ
+                // Nếu vẫn còn nợ (lớn hơn 0) thì in màu Đỏ (Crimson)
+                // Nếu đã trả hết (bằng 0) thì in màu Xanh lá cây
+                lblConNo.ForeColor = (conNo > 0) ? System.Drawing.Color.Crimson : System.Drawing.Color.FromArgb(16, 185, 129);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
@@ -112,4 +122,3 @@ namespace HETHONGTINHNHUANBUT
         }
     }
 }
-
