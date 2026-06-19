@@ -303,6 +303,9 @@
     <Compile Include="FrmBaoCaoAI.Designer.cs">
       <DependentUpon>FrmBaoCaoAI.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmBaoCaoLanhDao.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmTroLyAI.cs">
       <SubType>Form</SubType>
     </Compile>

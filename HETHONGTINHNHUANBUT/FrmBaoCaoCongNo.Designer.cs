@@ -86,7 +86,7 @@
             // 
             this.lblTongNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongNo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTongNo.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lblTongNo.ForeColor = System.Drawing.Color.Crimson;
             this.lblTongNo.Location = new System.Drawing.Point(580, 40);
             this.lblTongNo.Name = "lblTongNo";
             this.lblTongNo.Size = new System.Drawing.Size(180, 55);

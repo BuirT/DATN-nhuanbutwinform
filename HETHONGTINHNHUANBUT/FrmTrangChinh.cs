@@ -81,6 +81,14 @@ namespace HETHONGTINHNHUANBUT
                             ALTER TABLE Nhuanbut ADD LyDoBaoSai NVARCHAR(500);
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayBaoSai' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD NgayBaoSai DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayChamTien' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayChamTien DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayNhapLieu' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayNhapLieu DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayKiemTra' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayKiemTra DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayKy' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayKy DATETIME;
                         UPDATE Nhuanbut SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
                     using (SqlCommand cmd = new SqlCommand(fixNhuanbut, conn))
                         await cmd.ExecuteNonQueryAsync();
@@ -107,6 +115,8 @@ namespace HETHONGTINHNHUANBUT
                             ALTER TABLE Phieuchi ADD NgayDuyet DATETIME;
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LyDoTuChoi' AND Object_ID = Object_ID(N'Phieuchi'))
                             ALTER TABLE Phieuchi ADD LyDoTuChoi NVARCHAR(MAX);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'Dathutien' AND Object_ID = Object_ID(N'Phieuchi'))
+                            ALTER TABLE Phieuchi ADD Dathutien NVARCHAR(1) DEFAULT 'N';
                         UPDATE Phieuchi SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
                     using (SqlCommand cmd2 = new SqlCommand(fixPhieuchi, conn))
                         await cmd2.ExecuteNonQueryAsync();
@@ -197,6 +207,7 @@ namespace HETHONGTINHNHUANBUT
                 btnPhieuChi.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
+                btnDuyetChi.Visible = true;
                 if (this.Controls.Find("btnDotThanhToan", true).FirstOrDefault() is Control btnDot2)
                     btnDot2.Visible = true;
             }
@@ -347,10 +358,12 @@ namespace HETHONGTINHNHUANBUT
             bool isExpanded = btnSubBaoCaoTH.Visible;
             btnSubBaoCaoTH.Visible = !isExpanded;
             btnSubBaoCaoCN.Visible = !isExpanded;
+            btnSubBaoCaoLD.Visible = !isExpanded;
             btnBaoCao.Text = isExpanded ? "BÁO CÁO  ▼" : "BÁO CÁO  ▲";
         }
         private void btnSubBaoCaoTH_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
         private void btnSubBaoCaoCN_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
+        private void btnSubBaoCaoLD_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoLanhDao(), sender as Guna2Button);
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
