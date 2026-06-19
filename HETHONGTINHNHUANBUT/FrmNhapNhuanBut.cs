@@ -136,8 +136,10 @@ namespace HETHONGTINHNHUANBUT
                     DataTable dtBao = new DataTable();
                     string sqlBao = "SELECT Maso, Tenbao + ' (' + CONVERT(VARCHAR, Ngayra, 103) + ')' as HienThi FROM Bao WHERE DaDuyet = 'N' ORDER BY Ngayra DESC";
                     using (SqlCommand cmd = new SqlCommand(sqlBao, conn))
-                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
-                        dtBao.Load(r);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        await Task.Run(() => da.Fill(dtBao));
+                    }
                     cboSoBao.DisplayMember = "HienThi";
                     cboSoBao.ValueMember = "Maso";
                     cboSoBao.DataSource = dtBao;
@@ -194,12 +196,14 @@ namespace HETHONGTINHNHUANBUT
                         query += " AND (Tenbai LIKE @kw OR Butdanh LIKE @kw)";
                     query += " ORDER BY STT ASC";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
+                    {
                         cmd.Parameters.AddWithValue("@maBao", maSoBao);
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
-                        using (SqlDataReader r = await cmd.ExecuteReaderAsync())
-                            dt.Load(r);
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(dt));
+                        }
                     }
                 }
                 dgvNhuanBut.DataSource = dt;
@@ -340,13 +344,13 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void btnLamMoi_Click(object sender, EventArgs e)
+        private async void btnLamMoi_Click(object sender, EventArgs e)
         {
             ClearInputs();
             txtTimKiem.Text = "";
             _searchKeyword = "";
             if (cboSoBao.SelectedValue != null)
-                LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), "").ConfigureAwait(false);
+                await LoadDataGridSQLAsync(cboSoBao.SelectedValue.ToString(), "");
         }
 
         private void ClearInputs()

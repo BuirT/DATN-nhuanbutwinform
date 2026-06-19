@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
@@ -14,23 +15,23 @@ namespace HETHONGTINHNHUANBUT
             InitializeComponent();
         }
 
-        private void FrmLoaiBao_Load(object sender, EventArgs e)
+        private async void FrmLoaiBao_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvLoaiBao);
-            LoadData();
+            await LoadDataAsync();
         }
 
-        private void LoadData() 
+        private async Task LoadDataAsync()
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    conn.Open();
+                    await conn.OpenAsync();
                     string query = "SELECT Maso, Tenloai FROM LoaiBao ORDER BY Maso";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
-                    da.Fill(dt);
+                    await Task.Run(() => da.Fill(dt));
                     dgvLoaiBao.DataSource = dt;
 
                     if (dgvLoaiBao.Columns.Count > 0)
@@ -48,7 +49,7 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void btnThem_Click(object sender, EventArgs e)
+        private async void btnThem_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtMaso.Text) || string.IsNullOrWhiteSpace(txtTenLoai.Text))
             {
@@ -60,14 +61,14 @@ namespace HETHONGTINHNHUANBUT
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    conn.Open();
+                    await conn.OpenAsync();
 
                     // Kiểm tra trùng mã
                     string checkSql = "SELECT COUNT(*) FROM LoaiBao WHERE Maso = @ma";
                     using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
                         {
                         checkCmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
-                        if ((int)checkCmd.ExecuteScalar() > 0)
+                        if ((int)await checkCmd.ExecuteScalarAsync() > 0)
                         {
                             MessageBox.Show("Mã loại báo này đã tồn tại!");
                             return;
@@ -80,12 +81,12 @@ namespace HETHONGTINHNHUANBUT
                         {
                         cmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtTenLoai.Text.Trim());
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                     }
                 }
 
                 MessageBox.Show("Thêm loại báo thành công!");
-                LoadData();
+                await LoadDataAsync();
                 txtMaso.Clear();
                 txtTenLoai.Clear();
                 txtMaso.Focus();
@@ -96,7 +97,7 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void btnSua_Click(object sender, EventArgs e)
+        private async void btnSua_Click(object sender, EventArgs e)
         {
             if (dgvLoaiBao.SelectedRows.Count == 0)
             {
@@ -116,7 +117,7 @@ namespace HETHONGTINHNHUANBUT
 
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    conn.Open();
+                    await conn.OpenAsync();
 
                     // Kiểm tra trùng mã nếu người dùng đổi mã
                     if (txtMaso.Text.Trim() != maSoCu)
@@ -125,7 +126,7 @@ namespace HETHONGTINHNHUANBUT
                         using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
                         {
                             checkCmd.Parameters.AddWithValue("@ma", txtMaso.Text.Trim());
-                            if ((int)checkCmd.ExecuteScalar() > 0)
+                            if ((int)await checkCmd.ExecuteScalarAsync() > 0)
                             {
                                 MessageBox.Show("Mã loại báo mới đã tồn tại!");
                                 return;
@@ -139,12 +140,12 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@maMoi", txtMaso.Text.Trim());
                         cmd.Parameters.AddWithValue("@ten", txtTenLoai.Text.Trim());
                         cmd.Parameters.AddWithValue("@maCu", maSoCu);
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                     }
                 }
 
                 MessageBox.Show("Cập nhật thành công!");
-                LoadData();
+                await LoadDataAsync();
                 txtMaso.Clear();
                 txtTenLoai.Clear();
             }
@@ -154,7 +155,7 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void btnXoa_Click(object sender, EventArgs e)
+        private async void btnXoa_Click(object sender, EventArgs e)
         {
             if (dgvLoaiBao.SelectedRows.Count == 0)
             {
@@ -170,14 +171,14 @@ namespace HETHONGTINHNHUANBUT
 
                     using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                     {
-                        conn.Open();
+                        await conn.OpenAsync();
 
                         // Kiểm tra xem loại báo có đang được dùng trong bảng Bao không
                         string checkUsage = "SELECT COUNT(*) FROM Bao WHERE Loaibao = @ma";
                         using (SqlCommand checkCmd = new SqlCommand(checkUsage, conn))
                         {
                             checkCmd.Parameters.AddWithValue("@ma", maSo);
-                            if ((int)checkCmd.ExecuteScalar() > 0)
+                            if ((int)await checkCmd.ExecuteScalarAsync() > 0)
                             {
                                 MessageBox.Show("Không thể xóa! Loại báo này đang được sử dụng trong bảng Bao.");
                                 return;
@@ -188,12 +189,12 @@ namespace HETHONGTINHNHUANBUT
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
                             cmd.Parameters.AddWithValue("@ma", maSo);
-                            cmd.ExecuteNonQuery();
+                            await cmd.ExecuteNonQueryAsync();
                         }
                     }
 
                     MessageBox.Show("Xóa thành công!");
-                    LoadData();
+                    await LoadDataAsync();
                     txtMaso.Clear();
                     txtTenLoai.Clear();
                 }
@@ -204,11 +205,11 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        private void btnLamMoi_Click(object sender, EventArgs e)
+        private async void btnLamMoi_Click(object sender, EventArgs e)
         {
             txtMaso.Clear();
             txtTenLoai.Clear();
-            LoadData();
+            await LoadDataAsync();
         }
 
         private void dgvLoaiBao_CellClick(object sender, DataGridViewCellEventArgs e)

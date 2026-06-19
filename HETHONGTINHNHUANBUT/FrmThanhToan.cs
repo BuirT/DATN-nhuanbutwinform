@@ -45,15 +45,15 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string query = "SELECT * FROM ThanhToan ORDER BY Maso DESC";
+                    DataTable dt = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        DataTable dt = new DataTable();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            dt.Load(reader);
+                            await Task.Run(() => da.Fill(dt));
                         }
-                        dgvThanhToan.DataSource = dt;
                     }
+                    dgvThanhToan.DataSource = dt;
                 }
 
                 if (dgvThanhToan.Columns.Count > 0)

@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using ClosedXML.Excel;
@@ -23,13 +24,13 @@ namespace HETHONGTINHNHUANBUT
             dtpThang.Value = DateTime.Now;
         }
 
-        private void btnTimKiem_Click(object sender, EventArgs e)
+        private async void btnTimKiem_Click(object sender, EventArgs e)
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    conn.Open();
+                    await conn.OpenAsync();
 
                     // 1. Lấy dữ liệu xu hướng theo tháng để vẽ biểu đồ
                     DataTable dtThang = new DataTable();
@@ -51,7 +52,7 @@ namespace HETHONGTINHNHUANBUT
                                t.TongNhuanbut - ISNULL(c.DaChi, 0) AS ConNo, 0 AS ChiBoSung
                         FROM ThongKeThang t LEFT JOIN ChiTraThang c ON t.Thang = c.Thang
                         ORDER BY t.Y, t.M", conn);
-                    daThang.Fill(dtThang);
+                    await Task.Run(() => daThang.Fill(dtThang));
 
                     // 2. Lấy dữ liệu tổng hợp theo tác giả
                     DataTable dtTong = new DataTable();
@@ -66,7 +67,7 @@ namespace HETHONGTINHNHUANBUT
                         GROUP BY tg.Maso, tg.Hoten
                         HAVING ISNULL(SUM(ct.Sotien), 0) > 0
                         ORDER BY Conlai DESC", conn);
-                    daTong.Fill(dtTong);
+                    await Task.Run(() => daTong.Fill(dtTong));
 
                     // 4. Vẽ biểu đồ (đã xử lý DBNull)
                     chartMain.Series.Clear();

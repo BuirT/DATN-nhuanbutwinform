@@ -44,8 +44,9 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = "SELECT Maso, Hoten FROM TacGia ORDER BY Hoten";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) { dt.Load(reader); }
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        await Task.Run(() => da.Fill(dt));
                     }
                 }
                 cboTacGia.DisplayMember = "Hoten";
@@ -80,11 +81,14 @@ namespace HETHONGTINHNHUANBUT
                     query += " ORDER BY b.Maso DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
+                    {
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
 
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) { dt.Load(reader); }
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(dt));
+                        }
                     }
                 }
                 dgvButDanh.DataSource = dt;

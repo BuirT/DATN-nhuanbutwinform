@@ -93,13 +93,15 @@ namespace HETHONGTINHNHUANBUT
 
                     query += " ORDER BY Ngayra DESC";
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                         if (!string.IsNullOrWhiteSpace(keyword))
                             cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
 
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                            dt.Load(reader);
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(dt));
+                        }
                     }
                 }
 
@@ -333,7 +335,7 @@ namespace HETHONGTINHNHUANBUT
                     using (SqlCommand cmdGet = new SqlCommand("SELECT DaDuyet FROM Bao WHERE Maso=@ma", conn))
                         {
                         cmdGet.Parameters.AddWithValue("@ma", _selectedMaso);
-                        currentStatus = cmdGet.ExecuteScalar()?.ToString() ?? "N";
+                        currentStatus = (await cmdGet.ExecuteScalarAsync())?.ToString() ?? "N";
                     }
 
                     string nextStatus = currentStatus == "Y" ? "N" : "Y";
