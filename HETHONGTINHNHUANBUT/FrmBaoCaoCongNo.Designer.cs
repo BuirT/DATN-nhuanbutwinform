@@ -39,7 +39,7 @@
             // 
             // pnlTop
             // 
-            this.pnlTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.pnlTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlTop.BackColor = System.Drawing.Color.Transparent;
             this.pnlTop.BorderRadius = 16;
@@ -87,9 +87,9 @@
             this.lblTongNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongNo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTongNo.ForeColor = System.Drawing.Color.Crimson;
-            this.lblTongNo.Location = new System.Drawing.Point(754, 24);
+            this.lblTongNo.Location = new System.Drawing.Point(580, 40);
             this.lblTongNo.Name = "lblTongNo";
-            this.lblTongNo.Size = new System.Drawing.Size(368, 48);
+            this.lblTongNo.Size = new System.Drawing.Size(180, 55);
             this.lblTongNo.TabIndex = 2;
             this.lblTongNo.Text = "TỔNG NỢ\n0 VNĐ";
             this.lblTongNo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -99,9 +99,9 @@
             this.lblDaThanhToan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDaThanhToan.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblDaThanhToan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblDaThanhToan.Location = new System.Drawing.Point(786, 72);
+            this.lblDaThanhToan.Location = new System.Drawing.Point(770, 40);
             this.lblDaThanhToan.Name = "lblDaThanhToan";
-            this.lblDaThanhToan.Size = new System.Drawing.Size(336, 24);
+            this.lblDaThanhToan.Size = new System.Drawing.Size(180, 55);
             this.lblDaThanhToan.TabIndex = 3;
             this.lblDaThanhToan.Text = "ĐÃ THANH TOÁN\n0 VNĐ";
             this.lblDaThanhToan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -111,9 +111,9 @@
             this.lblConNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConNo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblConNo.ForeColor = System.Drawing.Color.Crimson;
-            this.lblConNo.Location = new System.Drawing.Point(753, 109);
+            this.lblConNo.Location = new System.Drawing.Point(960, 40);
             this.lblConNo.Name = "lblConNo";
-            this.lblConNo.Size = new System.Drawing.Size(336, 24);
+            this.lblConNo.Size = new System.Drawing.Size(180, 55);
             this.lblConNo.TabIndex = 4;
             this.lblConNo.Text = "CÒN NỢ\n0 VNĐ";
             this.lblConNo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -128,11 +128,11 @@
             this.dtpDenThang.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.dtpDenThang.ForeColor = System.Drawing.Color.Black;
             this.dtpDenThang.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpDenThang.Location = new System.Drawing.Point(140, 60);
+            this.dtpDenThang.Location = new System.Drawing.Point(140, 56);
             this.dtpDenThang.MaxDate = new System.DateTime(9998, 12, 31, 0, 0, 0, 0);
             this.dtpDenThang.MinDate = new System.DateTime(1753, 1, 1, 0, 0, 0, 0);
             this.dtpDenThang.Name = "dtpDenThang";
-            this.dtpDenThang.Size = new System.Drawing.Size(150, 36);
+            this.dtpDenThang.Size = new System.Drawing.Size(150, 40);
             this.dtpDenThang.TabIndex = 2;
             this.dtpDenThang.Value = new System.DateTime(2026, 6, 18, 17, 56, 52, 62);
             // 
@@ -145,7 +145,7 @@
             this.btnTimKiem.ForeColor = System.Drawing.Color.White;
             this.btnTimKiem.Location = new System.Drawing.Point(310, 56);
             this.btnTimKiem.Name = "btnTimKiem";
-            this.btnTimKiem.Size = new System.Drawing.Size(130, 40);
+            this.btnTimKiem.Size = new System.Drawing.Size(110, 40);
             this.btnTimKiem.TabIndex = 3;
             this.btnTimKiem.Text = "TÌM KIẾM";
             this.btnTimKiem.Click += new System.EventHandler(this.btnTimKiem_Click);
@@ -157,17 +157,17 @@
             this.btnXuatExcel.FillColor = System.Drawing.Color.DarkOrange;
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
-            this.btnXuatExcel.Location = new System.Drawing.Point(455, 56);
+            this.btnXuatExcel.Location = new System.Drawing.Point(435, 56);
             this.btnXuatExcel.Name = "btnXuatExcel";
-            this.btnXuatExcel.Size = new System.Drawing.Size(130, 40);
+            this.btnXuatExcel.Size = new System.Drawing.Size(120, 40);
             this.btnXuatExcel.TabIndex = 4;
             this.btnXuatExcel.Text = "XUẤT EXCEL";
             this.btnXuatExcel.Click += new System.EventHandler(this.btnXuatExcel_Click);
             // 
             // pnlBottom
             // 
-            this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlBottom.BackColor = System.Drawing.Color.Transparent;
             this.pnlBottom.BorderRadius = 16;
@@ -201,8 +201,8 @@
             this.dgvCongNo.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             this.dgvCongNo.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvCongNo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.dgvCongNo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
@@ -225,7 +225,6 @@
             this.dgvCongNo.Name = "dgvCongNo";
             this.dgvCongNo.ReadOnly = true;
             this.dgvCongNo.RowHeadersVisible = false;
-            this.dgvCongNo.RowHeadersWidth = 51;
             this.dgvCongNo.RowTemplate.Height = 38;
             this.dgvCongNo.Size = new System.Drawing.Size(1110, 310);
             this.dgvCongNo.TabIndex = 0;

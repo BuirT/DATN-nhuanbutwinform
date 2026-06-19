@@ -4,8 +4,33 @@
 	</configSections>
 
 	<connectionStrings>
+		<!--
+		HƯỚNG DẪN CẤU HÌNH KẾT NỐI CHO THÀNH VIÊN
+		===========================================
+		Hệ thống dùng SQL Server chung qua mạng Radmin VPN.
+
+		CÁCH 1 - Kết nối đến SQL Server trung tâm (khuyên dùng):
+		- Cài Radmin VPN, kết nối đến mạng chung
+		- Liên hệ quản trị viên để biết IP Radmin của máy chủ SQL
+		- Dùng cú pháp:
+		    Server=IP_RADMIN_SERVER\SQLEXPRESS,1433;Database=DATNnhuanbut;User Id=DATNnhuanbut;Password=totnghiep;
+
+		CÁCH 2 - Kết nối local (nếu tự chạy SQL trên máy mình):
+		- Cài SQL Server Express (SQLEXPRESS)
+		- Restore file .bak vào database DATNnhuanbut
+		- Dùng cú pháp:
+		    Server=localhost\SQLEXPRESS;Database=DATNnhuanbut;Trusted_Connection=True;
+
+		LƯU Ý:
+		- Không commit file App.config lên git (đã có trong .gitignore)
+		- Chỉ sửa file App.config (KHÔNG sửa App.config.example)
+		- Nếu gặp lỗi kết nối, kiểm tra:
+		    1. Radmin VPN đã bật chưa?
+		    2. Ping được IP máy chủ không?
+		    3. Tên đăng nhập và mật khẩu SQL đúng chưa?
+		-->
 		<add name="TNConnection"
-             connectionString="Server=Tên thiết bị kết nối SQL\SQLEXPRESS;Database=Tên database SQL;Trusted_Connection=True;"
+             connectionString="Server=26.232.227.232\SQLEXPRESS,1433;Database=DATNnhuanbut;User Id=DATNnhuanbut;Password=totnghiep;"
              providerName="System.Data.SqlClient" />
 	</connectionStrings>
 
@@ -17,15 +42,15 @@
 		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
 			<dependentAssembly>
 				<assemblyIdentity name="System.Memory" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
-				<bindingRedirect oldVersion="0.0.0.0-4.0.1.2" newVersion="4.0.1.2" />
+				<bindingRedirect oldVersion="0.0.0.0-4.0.5.0" newVersion="4.0.5.0" />
 			</dependentAssembly>
 			<dependentAssembly>
 				<assemblyIdentity name="System.Numerics.Vectors" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
-				<bindingRedirect oldVersion="0.0.0.0-4.1.4.0" newVersion="4.1.4.0" />
+				<bindingRedirect oldVersion="0.0.0.0-4.1.6.0" newVersion="4.1.6.0" />
 			</dependentAssembly>
 			<dependentAssembly>
 				<assemblyIdentity name="System.Buffers" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
-				<bindingRedirect oldVersion="0.0.0.0-4.0.3.0" newVersion="4.0.3.0" />
+				<bindingRedirect oldVersion="0.0.0.0-4.0.5.0" newVersion="4.0.5.0" />
 			</dependentAssembly>
 		</assemblyBinding>
 	</runtime>

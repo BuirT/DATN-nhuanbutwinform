@@ -189,7 +189,7 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    string query = @"SELECT Maso, STT, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
+                    string query = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
                                             TienNhuanbut
                                      FROM Nhuanbut WHERE MsBao = @maBao";
                     if (!string.IsNullOrWhiteSpace(keyword))
@@ -209,15 +209,18 @@ namespace HETHONGTINHNHUANBUT
                 dgvNhuanBut.DataSource = dt;
                 if (dgvNhuanBut.Columns.Count > 0)
                 {
-                    dgvNhuanBut.Columns["Maso"].Visible = false;
-                    dgvNhuanBut.Columns["Vung"].Visible = false;
-                    dgvNhuanBut.Columns["VungChuyenDen"].Visible = false;
-                    dgvNhuanBut.Columns["STT"].HeaderText = "STT";
-                    dgvNhuanBut.Columns["Tenbai"].HeaderText = "TÊN BÀI VIẾT";
-                    dgvNhuanBut.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    dgvNhuanBut.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                    dgvNhuanBut.Columns["TienNhuanbut"].HeaderText = "TỔNG TIỀN (VNĐ)";
-                    dgvNhuanBut.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0";
+                    foreach (string col in new[] { "Maso", "Vung", "VungChuyenDen", "MsBao", "addby", "ngaychuyen",
+                        "NguoiNhap", "NguoiChamTien", "NguoiKiemTra", "NguoiKeToan", "TongThuKy",
+                        "TrangThaiDuyet", "DaThanhToan", "LoaiBao" })
+                        if (dgvNhuanBut.Columns[col] != null) dgvNhuanBut.Columns[col].Visible = false;
+
+                    UIHelper.ConfigureColumns(dgvNhuanBut,
+                        ("Tenbai", "TÊN BÀI VIẾT", false, false),
+                        ("Trang", "Trang", false, false),
+                        ("Muc", "Mục", false, false),
+                        ("Butdanh", "BÚT DANH", false, false),
+                        ("TienNhuanbut", "TỔNG TIỀN (VNĐ)", true, false)
+                    );
                 }
                 decimal tong = 0;
                 foreach (DataRow row in dt.Rows) tong += Convert.ToDecimal(row["TienNhuanbut"]);

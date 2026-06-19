@@ -18,6 +18,7 @@ namespace HETHONGTINHNHUANBUT
         public FrmNhapBaiPhongVien()
         {
             InitializeComponent();
+            UIHelper.FormatGiaoDienBang(dgvBaiCuaToi);
         }
 
         private async void FrmNhapBaiPhongVien_Load(object sender, EventArgs e)

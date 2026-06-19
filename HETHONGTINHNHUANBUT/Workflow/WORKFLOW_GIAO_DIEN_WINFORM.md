@@ -106,51 +106,38 @@ this.pnlBottom.ShadowDecoration.Enabled = true;
 
 ### 2.3. DataGridView — Cấu hình chuẩn
 
+**Luôn dùng `UIHelper.FormatGiaoDienBang()` trong constructor** thay vì inline config:
+
 ```csharp
-// Basic
-this.dgv.AllowUserToAddRows = false;
-this.dgv.AllowUserToDeleteRows = false;
-this.dgv.AllowUserToResizeColumns = false;
-this.dgv.AllowUserToResizeRows = false;
-this.dgv.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-this.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-this.dgv.BackgroundColor = Color.White;
-this.dgv.BorderStyle = BorderStyle.None;
-this.dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-this.dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-this.dgv.ReadOnly = true;
-this.dgv.RowHeadersVisible = false;
-this.dgv.RowTemplate.Height = 38;
-this.dgv.GridColor = Color.FromArgb(241, 245, 249);
-
-// Alternating rows
-dataGridViewCellStyle1.BackColor = Color.FromArgb(248, 250, 252);
-dataGridViewCellStyle1.ForeColor = Color.FromArgb(15, 23, 42);
-dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(248, 250, 252);
-dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(15, 23, 42);
-this.dgv.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-
-// Column headers
-dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-dataGridViewCellStyle2.BackColor = Color.FromArgb(241, 245, 249);
-dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-dataGridViewCellStyle2.ForeColor = Color.FromArgb(71, 85, 105);
-dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(241, 245, 249);
-dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(71, 85, 105);
-dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-this.dgv.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-this.dgv.ColumnHeadersHeight = 40;
-
-// Default rows
-dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-dataGridViewCellStyle3.BackColor = Color.White;
-dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
-dataGridViewCellStyle3.ForeColor = Color.FromArgb(15, 23, 42);
-dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(232, 240, 254);
-dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(15, 23, 42);
-dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-this.dgv.DefaultCellStyle = dataGridViewCellStyle3;
+public FrmExample()
+{
+    InitializeComponent();
+    UIHelper.FormatGiaoDienBang(dgvExample);
+}
 ```
+
+Phương thức này set toàn bộ style: màu sắc, font, border, alternating rows, ThemeStyle (Guna).
+
+### 2.4. DataGridView — Cột dàn đều
+
+Sau khi gán `DataSource`, dùng `UIHelper.ConfigureColumns()` để dàn đều cột:
+
+```csharp
+dgvExample.DataSource = dt;
+UIHelper.ConfigureColumns(dgvExample,
+    ("Tenbai", "Tên Bài", false, false),
+    ("Trang", "Trang", false, true),
+    ("Sotien", "Số tiền", true, true)
+);
+```
+
+**Parameters**: `(Name, Header, IsNumeric, IsCenter)`:
+- `Name` — tên cột trong DataTable
+- `Header` — tiêu đề hiển thị (để trống nếu giữ nguyên)
+- `IsNumeric` — `true` → format `N0` (phân cách số)
+- `IsCenter` — `true` → canh giữa
+
+Phương thức tự động set `FillWeight` bằng nhau cho tất cả cột visible.
 
 ---
 
@@ -366,7 +353,17 @@ btnDuyet_Click()
 ### ❌ Lỗi 8: DataGridView thiếu ThemeStyle (Guna)
 **Nguyên nhân**: Guna2DataGridView yêu cầu set ThemeStyle ngoài DefaultCellStyle.  
 **Hậu quả**: Màu sắc grid không đúng, selection bị lỗi.  
-**Cách tránh**: Luôn set cả `ThemeStyle` block sau `DefaultCellStyle`.
+**Cách tránh**: Luôn dùng `UIHelper.FormatGiaoDienBang()` — nó set cả DefaultCellStyle + ThemeStyle.
+
+### ❌ Lỗi 9: Dùng SqlDataReader + dt.Load() gây lag
+**Nguyên nhân**: `dt.Load(reader)` chạy đồng bộ trên UI thread.  
+**Hậu quả**: Form bị đơ khi load nhiều dữ liệu.  
+**Cách tránh**: Dùng `SqlDataAdapter` + `await Task.Run(() => da.Fill(dt))`.
+
+### ❌ Lỗi 10: Cột DataGridView không dàn đều
+**Nguyên nhân**: Quên set `FillWeight` hoặc `AutoSizeColumnsMode`.  
+**Hậu quả**: Cột không đều, có cột quá rộng/cột quá hẹp.  
+**Cách tránh**: Dùng `UIHelper.ConfigureColumns()` hoặc set `FillWeight = 1` manual.
 
 ---
 
@@ -389,23 +386,31 @@ btnDuyet_Click()
 - **ThanhToan** — Thanh toán
 - **Users** — Người dùng (Salt + SHA256 hash)
 
-### 8.3. Query pattern
+### 8.3. Query pattern (async với SqlDataAdapter)
+
+**Luôn dùng `SqlDataAdapter` + `Task.Run()` thay vì `SqlDataReader` + `dt.Load()`** để tránh block UI thread:
+
 ```csharp
 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
 {
     await conn.OpenAsync();
     string query = "SELECT * FROM ...";
+    DataTable dt = new DataTable();
     using (SqlCommand cmd = new SqlCommand(query, conn))
     {
-        DataTable dt = new DataTable();
-        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+        cmd.Parameters.AddWithValue("@p", value);
+        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
         {
-            dt.Load(reader);
+            await Task.Run(() => da.Fill(dt));  // chạy trên thread pool
         }
-        dgv.DataSource = dt;
     }
+    dgv.DataSource = dt;
+    UIHelper.ConfigureColumns(dgv, ...);
 }
 ```
+
+**Lý do**: `dt.Load(reader)` chạy đồng bộ trên UI thread → gây lag.  
+`da.Fill(dt)` trong `Task.Run()` giải phóng UI thread, app không bị đơ.
 
 ---
 
@@ -426,9 +431,11 @@ using (SqlConnection conn = new SqlConnection(sqlConnectionString))
 4. **Set Anchor** đúng: pnlTop(Top|Left|Right), pnlBottom(Top|Bottom|Left|Right)
 5. **Font**: Segoe UI (mọi control), không dùng VNI-Times
 6. **Button style**: theo màu chuẩn (Blue/Amber/Red/Ghost/Green)
-7. **DataGridView**: set đủ 3 cell style + ThemeStyle + ReadOnly
-8. **Kiểm tra** mọi button có `.Text` và `.Click` event
-9. **Kiểm tra** `Enabled` state của các nút đặc biệt
-10. **Anchor = Right** cho nút nằm bên phải
-11. **Build** — phải 0 warning, 0 error
-12. **Test** — chạy thử với dữ liệu thật
+7. **UIHelper**: Gọi `UIHelper.FormatGiaoDienBang(dgv)` trong constructor
+8. **Column config**: Dùng `UIHelper.ConfigureColumns()` sau khi set DataSource
+9. **Async DB**: Dùng `SqlDataAdapter` + `Task.Run`, không dùng `dt.Load(reader)`
+10. **Kiểm tra** mọi button có `.Text` và `.Click` event
+11. **Kiểm tra** `Enabled` state của các nút đặc biệt
+12. **Anchor = Right** cho nút nằm bên phải
+13. **Build** — phải 0 warning, 0 error
+14. **Test** — chạy thử với dữ liệu thật

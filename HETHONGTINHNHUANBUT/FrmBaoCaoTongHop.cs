@@ -57,15 +57,19 @@ namespace HETHONGTINHNHUANBUT
                     // 2. Lấy dữ liệu tổng hợp theo tác giả
                     DataTable dtTong = new DataTable();
                     SqlDataAdapter daTong = new SqlDataAdapter(@"
-                        SELECT tg.Maso, tg.Hoten,
-                               ISNULL(SUM(ct.Sotien), 0) AS Sotien,
-                               ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS DaTT,
-                               ISNULL(SUM(ct.Sotien), 0) - ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS Conlai
-                        FROM TacGia tg
-                        LEFT JOIN NhuanbutCT ct ON tg.Maso = ct.MsTacgia
-                        LEFT JOIN Phieuchi pc ON ct.SoPC = pc.Sophieu
-                        GROUP BY tg.Maso, tg.Hoten
-                        HAVING ISNULL(SUM(ct.Sotien), 0) > 0
+                        SELECT ROW_NUMBER() OVER (ORDER BY Conlai DESC) AS STT,
+                               Maso, Hoten, Sotien, DaTT, Conlai
+                        FROM (
+                            SELECT tg.Maso, tg.Hoten,
+                                   ISNULL(SUM(ct.Sotien), 0) AS Sotien,
+                                   ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS DaTT,
+                                   ISNULL(SUM(ct.Sotien), 0) - ISNULL(SUM(CASE WHEN pc.TrangThaiDuyet = 1 THEN ct.Sotien ELSE 0 END), 0) AS Conlai
+                            FROM TacGia tg
+                            LEFT JOIN NhuanbutCT ct ON tg.Maso = ct.MsTacgia
+                            LEFT JOIN Phieuchi pc ON ct.SoPC = pc.Sophieu
+                            GROUP BY tg.Maso, tg.Hoten
+                            HAVING ISNULL(SUM(ct.Sotien), 0) > 0
+                        ) AS sub
                         ORDER BY Conlai DESC", conn);
                     await Task.Run(() => daTong.Fill(dtTong));
 
@@ -125,19 +129,14 @@ namespace HETHONGTINHNHUANBUT
                     dgvTongHop.DataSource = dtTong;
                     if (dgvTongHop.Columns.Count > 0)
                     {
-                        dgvTongHop.Columns["Maso"].HeaderText = "Mã số";
-                        dgvTongHop.Columns["Maso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                        dgvTongHop.Columns["Hoten"].HeaderText = "Tác giả";
-                        dgvTongHop.Columns["Hoten"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                        dgvTongHop.Columns["Sotien"].HeaderText = "Tổng nợ (VNĐ)";
-                        dgvTongHop.Columns["Sotien"].DefaultCellStyle.Format = "N0";
-                        dgvTongHop.Columns["Sotien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                        dgvTongHop.Columns["DaTT"].HeaderText = "Đã thanh toán (VNĐ)";
-                        dgvTongHop.Columns["DaTT"].DefaultCellStyle.Format = "N0";
-                        dgvTongHop.Columns["DaTT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                        dgvTongHop.Columns["Conlai"].HeaderText = "Còn nợ (VNĐ)";
-                        dgvTongHop.Columns["Conlai"].DefaultCellStyle.Format = "N0";
-                        dgvTongHop.Columns["Conlai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                        if (dgvTongHop.Columns["Maso"] != null) dgvTongHop.Columns["Maso"].Visible = false;
+                        UIHelper.ConfigureColumns(dgvTongHop,
+                            ("STT", "STT", false, false),
+                            ("Hoten", "Tác giả", false, false),
+                            ("Sotien", "Tổng nợ (VNĐ)", true, false),
+                            ("DaTT", "Đã thanh toán (VNĐ)", true, false),
+                            ("Conlai", "Còn nợ (VNĐ)", true, false)
+                        );
                     }
                 }
             }
