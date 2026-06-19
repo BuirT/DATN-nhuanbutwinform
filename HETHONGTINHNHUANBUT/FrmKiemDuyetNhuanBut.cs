@@ -135,6 +135,8 @@ namespace HETHONGTINHNHUANBUT
                                n.TienNhuanbut,
                                n.NguoiNhap, n.NguoiChamTien, n.NguoiKeToan, n.NguoiKiemTra, n.TongThuKy,
                                n.LyDoBaoSai,
+                               n.ngaychuyen AS NgayNhap,
+                               n.NgayChamTien, n.NgayNhapLieu, n.NgayKiemTra, n.NgayKy,
                                b.Tenbao AS TenSoBao
                         FROM Nhuanbut n
                         LEFT JOIN Bao b ON n.MsBao = b.Maso
@@ -233,6 +235,7 @@ namespace HETHONGTINHNHUANBUT
                             TrangThaiDuyet = @tt, 
                             TienNhuanbut = @tien,
                             NguoiChamTien = @nguoi,
+                            NgayChamTien = GETDATE(),
                             LyDoBaoSai = NULL,
                             NgayBaoSai = NULL
                             WHERE Maso = @ma";
@@ -243,7 +246,8 @@ namespace HETHONGTINHNHUANBUT
                     trangThaiMoi = 2;
                     sql = @"UPDATE Nhuanbut SET 
                             TrangThaiDuyet = @tt, 
-                            NguoiKeToan = @nguoi 
+                            NguoiKeToan = @nguoi,
+                            NgayNhapLieu = GETDATE()
                             WHERE Maso = @ma";
                     break;
 
@@ -252,7 +256,8 @@ namespace HETHONGTINHNHUANBUT
                     trangThaiMoi = 3;
                     sql = @"UPDATE Nhuanbut SET 
                             TrangThaiDuyet = @tt, 
-                            NguoiKiemTra = @nguoi 
+                            NguoiKiemTra = @nguoi,
+                            NgayKiemTra = GETDATE()
                             WHERE Maso = @ma";
                     break;
 
@@ -604,14 +609,10 @@ namespace HETHONGTINHNHUANBUT
             pnlSignature.Controls.Add(flp);
             pnlSignatureContainer.Controls.Add(pnlSignature);
 
-            // Thêm vào form — tìm panel chứa DGV để chèn
-            if (this.Controls.Contains(pnlSignature) == false)
-            {
-                this.Controls.Add(pnlSignatureContainer);
-            }
+            this.Controls.Add(pnlSignatureContainer);
 
             LayoutBottomPanel();
-            pnlSignatureContainer.Resize += (s, e) => LayoutBottomPanel();
+            this.Resize += (s, e) => LayoutBottomPanel();
         }
 
         private void LayoutBottomPanel()
@@ -640,11 +641,11 @@ namespace HETHONGTINHNHUANBUT
                 if (lblSigNguoiNhap != null)
                     lblSigNguoiNhap.Text = GetVal("NguoiNhap") + GetDate("NgayNhap");
                 if (lblSigNguoiCham != null)
-                    lblSigNguoiCham.Text = GetVal("NguoiChamTien") + GetDate("NgayKiemTra");
+                    lblSigNguoiCham.Text = GetVal("NguoiChamTien") + GetDate("NgayChamTien");
                 if (lblSigNhapLieu != null)
-                    lblSigNhapLieu.Text = GetVal("NguoiKeToan") + GetDate("NgayKeToan");
+                    lblSigNhapLieu.Text = GetVal("NguoiKeToan") + GetDate("NgayNhapLieu");
                 if (lblSigKiemTra != null)
-                    lblSigKiemTra.Text = GetVal("NguoiKiemTra") + " (chưa có)";
+                    lblSigKiemTra.Text = GetVal("NguoiKiemTra") + GetDate("NgayKiemTra");
                 if (lblSigTongThuKy != null)
                     lblSigTongThuKy.Text = GetVal("TongThuKy") + GetDate("NgayKy");
             }

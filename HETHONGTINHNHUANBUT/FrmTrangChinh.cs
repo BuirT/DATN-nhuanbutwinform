@@ -81,6 +81,14 @@ namespace HETHONGTINHNHUANBUT
                             ALTER TABLE Nhuanbut ADD LyDoBaoSai NVARCHAR(500);
                         IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayBaoSai' AND Object_ID = Object_ID(N'Nhuanbut'))
                             ALTER TABLE Nhuanbut ADD NgayBaoSai DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayChamTien' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayChamTien DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayNhapLieu' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayNhapLieu DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayKiemTra' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayKiemTra DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayKy' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayKy DATETIME;
                         UPDATE Nhuanbut SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
                     using (SqlCommand cmd = new SqlCommand(fixNhuanbut, conn))
                         await cmd.ExecuteNonQueryAsync();
