@@ -9,6 +9,7 @@ namespace HETHONGTINHNHUANBUT
     public partial class FrmLoaiBao : Form
     {
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
+        public string QuyenHienTai { get; set; }
 
         public FrmLoaiBao()
         {
@@ -18,7 +19,15 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmLoaiBao_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvLoaiBao);
+            PhanQuyenThaoTac();
             await LoadDataAsync();
+        }
+
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+            bool coQuyen = (role == "thư ký" || role == "admin" || role == "quản trị viên");
+            btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = coQuyen;
         }
 
         private async Task LoadDataAsync()

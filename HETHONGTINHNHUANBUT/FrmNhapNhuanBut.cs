@@ -191,7 +191,6 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string query = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
                                             TienNhuanbut,
-                                            DiemChatLuongAI,
                                             DanhGiaAI
                                      FROM Nhuanbut WHERE MsBao = @maBao";
                     if (!string.IsNullOrWhiteSpace(keyword))
@@ -223,8 +222,7 @@ namespace HETHONGTINHNHUANBUT
                         ("Trang", "Trang", false, false),
                         ("Muc", "Mục", false, false),
                         ("Butdanh", "BÚT DANH", false, false),
-                        ("TienNhuanbut", "TỔNG TIỀN (VNĐ)", true, false),
-                        ("DiemChatLuongAI", "AI ĐIỂM", false, false)
+                        ("TienNhuanbut", "TỔNG TIỀN (VNĐ)", true, false)
                     );
                 }
                 decimal tong = 0;

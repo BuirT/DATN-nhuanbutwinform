@@ -113,6 +113,14 @@ namespace HETHONGTINHNHUANBUT
                     txtNguoiKy.Text = NguoiDangNhap ?? "";
                     break;
 
+                case "lãnh đạo":
+                    _trangThaiHienTai = -1;
+                    lblRoleInfo.Text = "👤 Lãnh đạo: Xem tất cả bài (chỉ xem)";
+                    lblRoleInfo.ForeColor = Color.FromArgb(100, 116, 139);
+                    btnXacNhan.Visible = false;
+                    btnTuChoi.Visible = false;
+                    break;
+
                 case "admin":
                 case "quản trị viên":
                     _trangThaiHienTai = -1;
@@ -139,9 +147,11 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
+                if (IsDisposed) return;
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
+                    if (IsDisposed) return;
                     string query = @"
                         SELECT n.Maso, n.Tenbai, n.Trang, n.Muc, n.Butdanh, 
                                n.TienNhuanbut,
@@ -150,9 +160,8 @@ namespace HETHONGTINHNHUANBUT
                                n.ngaychuyen AS NgayNhap,
                                n.NgayChamTien, n.NgayNhapLieu, n.NgayKiemTra, n.NgayKy,
                                b.Tenbao AS TenSoBao,
-                               n.TrangThaiDuyet,
-                                n.DiemChatLuongAI,
-                                n.DanhGiaAI
+                                n.TrangThaiDuyet,
+                                 n.DanhGiaAI
                         FROM Nhuanbut n
                         LEFT JOIN Bao b ON n.MsBao = b.Maso";
 
@@ -178,6 +187,7 @@ namespace HETHONGTINHNHUANBUT
                             await Task.Run(() => da.Fill(dt));
                         }
                     }
+                    if (IsDisposed) return;
                     dgvNhuanBut.DataSource = dt;
 
                     foreach (DataRow row in dt.Rows)
@@ -201,7 +211,6 @@ namespace HETHONGTINHNHUANBUT
                             ("Muc", "Mục", false, false),
                             ("Butdanh", "BÚT DANH", false, false),
                             ("TienNhuanbut", "TIỀN NB (VNĐ)", true, false),
-                            ("DiemChatLuongAI", "AI ĐIỂM", false, false),
                             ("LyDoBaoSai", "Lý do báo sai", false, false),
                             ("NgayNhap", "Ngày nhập", false, false),
                             ("TenSoBao", "SỐ BÁO", false, false)
@@ -214,12 +223,14 @@ namespace HETHONGTINHNHUANBUT
                     else if (role == "kế toán") trangThaiLabel = "đã chấm tiền";
                     else if (role == "kiểm tra viên") trangThaiLabel = "đã nhập liệu";
                     else if (role == "tổng thư ký") trangThaiLabel = "đã kiểm tra";
+                    if (IsDisposed) return;
                     lblCount.Text = $"📋 Tổng số: {dt.Rows.Count} bài {trangThaiLabel}";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+                if (!IsDisposed)
+                    MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
             }
         }
 
@@ -385,6 +396,7 @@ namespace HETHONGTINHNHUANBUT
                             {
                                 cmd.Parameters.AddWithValue("@nguoi", txtNguoiKy.Text.Trim());
                             }
+
 
                             await cmd.ExecuteNonQueryAsync();
                         }

@@ -138,7 +138,6 @@ namespace HETHONGTINHNHUANBUT
                     string sql = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, 
                                           TienNhuanbut, 
                                           NoiDungBaiViet,
-                                          DiemChatLuongAI,
                                           DanhGiaAI,
                                           NgayDanhGiaAI,
                                             CASE TrangThaiDuyet 
@@ -164,7 +163,6 @@ namespace HETHONGTINHNHUANBUT
                     dgvBaiCuaToi.DataSource = dt;
                     if (dgvBaiCuaToi.Columns["Maso"] != null) dgvBaiCuaToi.Columns["Maso"].Visible = false;
                     if (dgvBaiCuaToi.Columns["NoiDungBaiViet"] != null) dgvBaiCuaToi.Columns["NoiDungBaiViet"].Visible = false;
-                    if (dgvBaiCuaToi.Columns["DiemChatLuongAI"] != null) { dgvBaiCuaToi.Columns["DiemChatLuongAI"].HeaderText = "AI ĐIỂM"; dgvBaiCuaToi.Columns["DiemChatLuongAI"].DefaultCellStyle.Format = "N1"; }
                     if (dgvBaiCuaToi.Columns["DanhGiaAI"] != null) dgvBaiCuaToi.Columns["DanhGiaAI"].Visible = false;
                     if (dgvBaiCuaToi.Columns["NgayDanhGiaAI"] != null) dgvBaiCuaToi.Columns["NgayDanhGiaAI"].Visible = false;
                     if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
@@ -192,7 +190,7 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    string sql = @"SELECT NoiDungBaiViet, DiemChatLuongAI, DanhGiaAI, NgayDanhGiaAI
+                    string sql = @"SELECT NoiDungBaiViet, DanhGiaAI
                                    FROM Nhuanbut WHERE Maso = @ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
@@ -204,18 +202,12 @@ namespace HETHONGTINHNHUANBUT
                                 string noiDung = reader["NoiDungBaiViet"]?.ToString() ?? "";
                                 txtNoiDungBaiViet.Text = noiDung;
 
-                                double diemAI = 0;
-                                if (reader["DiemChatLuongAI"] != null && reader["DiemChatLuongAI"] != DBNull.Value)
-                                    double.TryParse(reader["DiemChatLuongAI"].ToString(), out diemAI);
-
                                 string danhGia = reader["DanhGiaAI"]?.ToString() ?? "";
 
-                                if (diemAI > 0)
+                                if (!string.IsNullOrEmpty(danhGia))
                                 {
                                     lblAIResult.Visible = true;
-                                    lblAIResult.Text = string.Format(
-                                        "🤖 AI: {0}/100 điểm\n{1}",
-                                        diemAI, danhGia);
+                                    lblAIResult.Text = "🤖 " + danhGia;
                                     lblAIResult.ForeColor = Color.FromArgb(16, 185, 129);
                                 }
                                 else
@@ -309,13 +301,13 @@ namespace HETHONGTINHNHUANBUT
 
                 lblAIResult.Visible = true;
                 lblAIResult.Text = string.Format(
-                    "🤖 Điểm chất lượng: {0:N1}/100\n{1}\n{2}",
-                    result.DiemChatLuong, result.ChiTietDanhGia, result.DanhGia);
+                    "{0}\n{1}",
+                    result.ChiTietDanhGia, result.DanhGia);
                 lblAIResult.ForeColor = Color.FromArgb(16, 185, 129);
 
                 string msg = string.Format(
-                    "🤖 KẾT QUẢ PHÂN TÍCH AI\n\nĐiểm chất lượng: {0:N1}/100\n\n{1}\n\n{2}\n\nLưu ý: Đây chỉ là điểm tham khảo. Biên tập viên quyết định tiền nhuận bút cuối cùng.",
-                    result.DiemChatLuong, result.ChiTietDanhGia, result.DanhGia);
+                    "🤖 KẾT QUẢ PHÂN TÍCH AI\n\n{0}\n\n{1}\n\nLưu ý: Đây chỉ là nhận xét tham khảo từ AI.",
+                    result.ChiTietDanhGia, result.DanhGia);
 
                 MessageBox.Show(msg, "AI Đánh giá chất lượng bài viết",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -347,13 +339,11 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string sql = @"UPDATE Nhuanbut SET 
-                                    DiemChatLuongAI = @diem,
                                     DanhGiaAI = @danhGia,
                                     NgayDanhGiaAI = GETDATE()
                                    WHERE Maso = @ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddWithValue("@diem", result.DiemChatLuong);
                         cmd.Parameters.AddWithValue("@danhGia", string.Format("{0}\n{1}", result.ChiTietDanhGia, result.DanhGia));
                         cmd.Parameters.AddWithValue("@ma", maso);
                         await cmd.ExecuteNonQueryAsync();

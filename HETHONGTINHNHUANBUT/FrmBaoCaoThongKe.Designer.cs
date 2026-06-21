@@ -42,12 +42,14 @@ namespace HETHONGTINHNHUANBUT
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaoCao)).BeginInit();
             this.SuspendLayout();
 
-            this.lblTitle.Text = "BÁO CÁO THỐNG KÊ NHUẬN BÚT";
+            this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(30, 41, 59);
             this.lblTitle.Location = new System.Drawing.Point(20, 15);
             this.lblTitle.Size = new System.Drawing.Size(400, 30);
+            this.lblTitle.Text = "BÁO CÁO THỐNG KÊ NHUẬN BÚT";
 
+            this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilter.FillColor = System.Drawing.Color.White;
             this.pnlFilter.BorderRadius = 12;
             this.pnlFilter.ShadowDecoration.Enabled = true;
@@ -104,8 +106,10 @@ namespace HETHONGTINHNHUANBUT
             this.pnlFilter.Controls.Add(this.btnLoc);
             this.pnlFilter.Controls.Add(this.btnXuatExcel);
 
-            this.dgvBaoCao.Location = new System.Drawing.Point(20, 130);
-            this.dgvBaoCao.Size = new System.Drawing.Size(1100, 450);
+            this.dgvBaoCao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvBaoCao.Location = new System.Drawing.Point(20, 125);
+            this.dgvBaoCao.Size = new System.Drawing.Size(1100, 490);
             this.dgvBaoCao.ReadOnly = true;
             this.dgvBaoCao.AllowUserToAddRows = false;
             this.dgvBaoCao.AllowUserToDeleteRows = false;
@@ -114,22 +118,31 @@ namespace HETHONGTINHNHUANBUT
             this.lblTongCong.Text = "Tổng cộng: 0 VNĐ";
             this.lblTongCong.Font = new System.Drawing.Font("Segoe UI", 12, System.Drawing.FontStyle.Bold);
             this.lblTongCong.ForeColor = System.Drawing.Color.FromArgb(30, 41, 59);
-            this.lblTongCong.Location = new System.Drawing.Point(20, 590);
+            this.lblTongCong.Location = new System.Drawing.Point(20, 630);
             this.lblTongCong.Size = new System.Drawing.Size(400, 25);
+            this.lblTongCong.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
 
             this.btnIn.Text = "🖨 In";
             this.btnIn.FillColor = System.Drawing.Color.FromArgb(100, 116, 139);
             this.btnIn.ForeColor = System.Drawing.Color.White;
-            this.btnIn.Location = new System.Drawing.Point(1030, 587); this.btnIn.Size = new System.Drawing.Size(90, 35);
+            this.btnIn.Location = new System.Drawing.Point(1030, 625);
+            this.btnIn.Size = new System.Drawing.Size(90, 35);
+            this.btnIn.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
 
-            this.ClientSize = new System.Drawing.Size(1140, 640);
+            this.ClientSize = new System.Drawing.Size(1140, 675);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.dgvBaoCao);
             this.Controls.Add(this.lblTongCong);
             this.Controls.Add(this.btnIn);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(241, 245, 249);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "FrmBaoCaoThongKe";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Báo Cáo Thống Kê";
             this.pnlFilter.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaoCao)).EndInit();

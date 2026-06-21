@@ -88,7 +88,7 @@ namespace HETHONGTINHNHUANBUT
 
                 StringBuilder sql = new StringBuilder(@"
                     SELECT n.Maso, n.Tenbai, n.Trang, n.Muc, n.Butdanh, n.TienNhuanbut,
-                           n.ngaychuyen AS NgayChuyen, n.DiemChatLuongAI,
+                           n.ngaychuyen AS NgayChuyen,
                            CASE n.TrangThaiDuyet
                                WHEN 0 THEN N'Chờ chấm tiền'
                                WHEN 1 THEN N'Đã chấm tiền'
@@ -143,11 +143,6 @@ namespace HETHONGTINHNHUANBUT
                 {
                     dgvBaoCao.Columns["NgayChuyen"].HeaderText = "NGÀY";
                     dgvBaoCao.Columns["NgayChuyen"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                }
-                if (dgvBaoCao.Columns["DiemChatLuongAI"] != null)
-                {
-                    dgvBaoCao.Columns["DiemChatLuongAI"].HeaderText = "AI ĐIỂM";
-                    dgvBaoCao.Columns["DiemChatLuongAI"].DefaultCellStyle.Format = "N1";
                 }
 
                 decimal tong = dtBaoCao.AsEnumerable()

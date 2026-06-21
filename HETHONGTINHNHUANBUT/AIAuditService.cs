@@ -30,8 +30,6 @@ namespace HETHONGTINHNHUANBUT
 
             alerts.AddRange(await KiemTraTienQuaCaoAsync());
             alerts.AddRange(await KiemTraTienQuaThapAsync());
-            alerts.AddRange(await KiemTraDiemCaoTienThapAsync());
-            alerts.AddRange(await KiemTraDiemThapTienCaoAsync());
             alerts.AddRange(await KiemTraTangDotBienTacGiaAsync());
             alerts.AddRange(await KiemTraTangDotBienSoBaiAsync());
 
@@ -212,93 +210,6 @@ namespace HETHONGTINHNHUANBUT
                                 NoiDung = string.Format(
                                     "Bài \"{0}\" (CM: {1}) có tiền NB {2:N0}đ, chỉ bằng {3:F1}% TB chuyên mục ({4:N0}đ).",
                                     tenBai, muc, tien, tb > 0 ? tien / tb * 100 : 0, tb)
-                            });
-                        }
-                    }
-                }
-            }
-            catch { }
-            return alerts;
-        }
-
-        // ======================================================================
-        // LUẬT 3: Điểm AI cao (>=80) nhưng tiền thấp (<150k)
-        // ======================================================================
-        private static async Task<List<AuditAlert>> KiemTraDiemCaoTienThapAsync()
-        {
-            List<AuditAlert> alerts = new List<AuditAlert>();
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    await conn.OpenAsync();
-                    using (SqlCommand cmd = new SqlCommand(@"
-                        SELECT Maso, Tenbai, Muc, Butdanh, TienNhuanbut, DiemChatLuongAI
-                        FROM Nhuanbut
-                        WHERE DiemChatLuongAI >= 80
-                          AND TienNhuanbut < 150000
-                          AND TienNhuanbut > 0
-                          AND TrangThaiDuyet >= 0", conn))
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            string tenBai = reader["Tenbai"]?.ToString() ?? "";
-                            double diem = Convert.ToDouble(reader["DiemChatLuongAI"]);
-                            decimal tien = Convert.ToDecimal(reader["TienNhuanbut"]);
-
-                            alerts.Add(new AuditAlert
-                            {
-                                LoaiCanhBao = "Điểm AI cao nhưng tiền thấp",
-                                MucDo = 2,
-                                MaBaiViet = Convert.ToInt32(reader["Maso"]),
-                                NoiDung = string.Format(
-                                    "Bài \"{0}\" có điểm AI {1:N1}/100 nhưng tiền NB chỉ {2:N0}đ. " +
-                                    "Bài viết chất lượng cao nhưng nhuận bút thấp bất thường.",
-                                    tenBai, diem, tien)
-                            });
-                        }
-                    }
-                }
-            }
-            catch { }
-            return alerts;
-        }
-
-        // ======================================================================
-        // LUẬT 4: Điểm AI thấp (<40) nhưng tiền cao (>=500k)
-        // ======================================================================
-        private static async Task<List<AuditAlert>> KiemTraDiemThapTienCaoAsync()
-        {
-            List<AuditAlert> alerts = new List<AuditAlert>();
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    await conn.OpenAsync();
-                    using (SqlCommand cmd = new SqlCommand(@"
-                        SELECT Maso, Tenbai, Muc, Butdanh, TienNhuanbut, DiemChatLuongAI
-                        FROM Nhuanbut
-                        WHERE DiemChatLuongAI < 40
-                          AND TienNhuanbut >= 500000
-                          AND TrangThaiDuyet >= 0", conn))
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            string tenBai = reader["Tenbai"]?.ToString() ?? "";
-                            double diem = Convert.ToDouble(reader["DiemChatLuongAI"]);
-                            decimal tien = Convert.ToDecimal(reader["TienNhuanbut"]);
-
-                            alerts.Add(new AuditAlert
-                            {
-                                LoaiCanhBao = "Điểm AI thấp nhưng tiền cao",
-                                MucDo = 3,
-                                MaBaiViet = Convert.ToInt32(reader["Maso"]),
-                                NoiDung = string.Format(
-                                    "Bài \"{0}\" chỉ có điểm AI {1:N1}/100 nhưng tiền NB lên tới {2:N0}đ. " +
-                                    "Cần kiểm tra lại mức nhuận bút.",
-                                    tenBai, diem, tien)
                             });
                         }
                     }

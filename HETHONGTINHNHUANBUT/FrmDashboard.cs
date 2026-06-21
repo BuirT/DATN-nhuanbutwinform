@@ -19,7 +19,6 @@ namespace HETHONGTINHNHUANBUT
         private GunaChart chartNBThang;
         private GunaChart chartTopPV;
         private GunaChart chartBaiTheoCM;
-        private GunaChart chartDiemAI;
 
         public FrmDashboard()
         {
@@ -114,24 +113,22 @@ namespace HETHONGTINHNHUANBUT
             TableLayoutPanel tlpCharts = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 2,
+                ColumnCount = 3,
+                RowCount = 1,
                 Padding = new Padding(0, 10, 0, 0)
             };
-            tlpCharts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            tlpCharts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            tlpCharts.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-            tlpCharts.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+            tlpCharts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
+            tlpCharts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
+            tlpCharts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
+            tlpCharts.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             chartNBThang = TaoChart("Nhuận bút theo tháng");
             chartTopPV = TaoChart("Top 10 PV nhận NB cao nhất");
             chartBaiTheoCM = TaoChart("Bài viết theo chuyên mục");
-            chartDiemAI = TaoChart("Điểm AI TB theo chuyên mục");
 
             tlpCharts.Controls.Add(BocChart(chartNBThang, "Nhuận bút theo tháng"), 0, 0);
             tlpCharts.Controls.Add(BocChart(chartTopPV, "Top 10 PV nhận NB cao nhất"), 1, 0);
-            tlpCharts.Controls.Add(BocChart(chartBaiTheoCM, "Bài viết theo chuyên mục"), 0, 1);
-            tlpCharts.Controls.Add(BocChart(chartDiemAI, "Điểm AI TB theo chuyên mục"), 1, 1);
+            tlpCharts.Controls.Add(BocChart(chartBaiTheoCM, "Bài viết theo chuyên mục"), 2, 0);
 
             pnlMain.Controls.Add(tlpCharts);
         }
@@ -212,7 +209,6 @@ namespace HETHONGTINHNHUANBUT
                     await LoadChartNBThang(conn);
                     await LoadChartTopPV(conn);
                     await LoadChartBaiTheoCM(conn);
-                    await LoadChartDiemAI(conn);
                 }
             }
             catch { }
@@ -312,34 +308,6 @@ namespace HETHONGTINHNHUANBUT
             chartBaiTheoCM.Datasets.Clear();
             chartBaiTheoCM.Datasets.Add(ds);
             chartBaiTheoCM.Update();
-        }
-
-        private async Task LoadChartDiemAI(SqlConnection conn)
-        {
-            GunaBarDataset ds = new GunaBarDataset();
-            ds.FillColors.Add(Color.FromArgb(59, 130, 246));
-            ds.BorderColors.Add(Color.FromArgb(59, 130, 246));
-
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT Muc, AVG(DiemChatLuongAI) AS DiemTB
-                FROM Nhuanbut
-                WHERE DiemChatLuongAI IS NOT NULL AND TrangThaiDuyet >= 0
-                GROUP BY Muc
-                HAVING AVG(DiemChatLuongAI) > 0
-                ORDER BY DiemTB DESC", conn))
-            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-            {
-                while (await reader.ReadAsync())
-                {
-                    string muc = reader["Muc"]?.ToString() ?? "";
-                    double diem = Convert.ToDouble(reader["DiemTB"]);
-                    ds.DataPoints.Add(muc, diem);
-                }
-            }
-
-            chartDiemAI.Datasets.Clear();
-            chartDiemAI.Datasets.Add(ds);
-            chartDiemAI.Update();
         }
 
         private async Task<object> ExecuteScalarAsync(SqlConnection conn, string sql)
