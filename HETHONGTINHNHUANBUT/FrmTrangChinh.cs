@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,9 +27,14 @@ namespace HETHONGTINHNHUANBUT
         {
             this.SuspendLayout();
             pnlMenu.SuspendLayout();
+            pnlMenuScroll.SuspendLayout();
+
+            pnlMenu.ShadowDecoration.Enabled = false;
+            pnlMain.ShadowDecoration.Enabled = false;
 
             if (!_dbFixed) { await AutoFixDatabaseColumns(); _dbFixed = true; }
 
+            AdjustMenuForScreen();
             ApplyPermissions();
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
@@ -43,8 +49,39 @@ namespace HETHONGTINHNHUANBUT
                 SetActiveButton(btnDashboard);
             }
 
+            pnlMenuScroll.ResumeLayout();
             pnlMenu.ResumeLayout();
             this.ResumeLayout();
+        }
+
+        private void AdjustMenuForScreen()
+        {
+            int availableH = Math.Min(Screen.FromControl(this).WorkingArea.Height, this.ClientSize.Height);
+            bool compact = availableH < 860;
+
+            int mainH = compact ? 40 : 44;
+            int subH = compact ? 34 : 40;
+            float mainFont = compact ? 9.75f : 10.5f;
+            float subFont = compact ? 9f : 10f;
+            int logoH = compact ? 56 : 64;
+
+            pnlLogo.Height = logoH;
+
+            foreach (Control c in pnlMenuScroll.Controls)
+            {
+                if (c is Guna2Button btn)
+                {
+                    bool isSub = btn.Name.StartsWith("btnSub");
+                    btn.Height = isSub ? subH : mainH;
+                    btn.Font = new Font("Segoe UI", isSub ? subFont : mainFont, FontStyle.Bold);
+                }
+            }
+
+            btnTaiKhoan.Height = compact ? 40 : 44;
+            btnDangXuat.Height = compact ? 40 : 44;
+            btnTaiKhoan.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
+            btnDangXuat.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
+            pnlMenuFooter.Height = (btnTaiKhoan.Height + btnDangXuat.Height) + 16;
         }
 
         private void SetActiveButton(Guna2Button clickedButton)
@@ -132,7 +169,7 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-            private void btnDashboard_Click(object sender, EventArgs e)
+        private void btnDashboard_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmDashboard(), sender as Guna2Button);
         }
@@ -147,47 +184,19 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(new FrmCanhBaoAI(), sender as Guna2Button);
         }
 
-    private void ApplyPermissions()
+        private void ApplyPermissions()
         {
-<<<<<<< HEAD
-            btnDuyetChi.Visible = false;
-            btnKiemDuyet.Visible = false;
-            btnPhieuChi.Visible = false;
-            btnTaiKhoan.Visible = false;
-            btnTroLyAI.Visible = false;
-            btnBaoCaoAI.Visible = false;
-            btnBaoCaoThongKe.Visible = false;
-            btnCanhBaoAI.Visible = false;
-            btnDashboard.Visible = false;
-            btnDotThanhToan.Visible = false;
-
-=======
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
-            // Ẩn toàn bộ nút chức năng (trừ Đăng xuất luôn hiện)
-            foreach (Control c in pnlMenu.Controls)
+            btnTaiKhoan.Visible = false;
+            foreach (Control c in pnlMenuScroll.Controls)
             {
-                if (c is Guna.UI2.WinForms.Guna2Button btn && btn != btnDangXuat)
+                if (c is Guna2Button btn)
                     btn.Visible = false;
             }
 
-            // Nhóm chỉ dành cho admin/quản trị
             if (role == "admin" || role == "quản trị viên")
             {
-<<<<<<< HEAD
-                btnTraCuuCaNhan.Visible = true;
-                btnKiemDuyet.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnPhieuChi.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
-                btnDotThanhToan.Visible = true;
-                btnTaiKhoan.Visible = true;
-=======
                 SetButtonVisible(true,
                     btnDashboard, btnTroLyAI, btnBaoCaoAI,
                     btnBaoCaoThongKe, btnCanhBaoAI,
@@ -197,67 +206,26 @@ namespace HETHONGTINHNHUANBUT
                     btnTacGia, btnSubTacGiaHoSo, btnSubButDanh,
                     btnQuanLyBao, btnSubSoBao, btnSubLoaiBao,
                     btnBaoCao, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD);
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
                 return;
             }
 
-            // Nhóm phóng viên – chỉ viết bài & tra cứu
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-<<<<<<< HEAD
-                btnTraCuuCaNhan.Visible = true;
-                btnQuanLyBao.Visible = false;
-                btnSubSoBao.Visible = false;
-                btnSubLoaiBao.Visible = false;
-                btnTacGia.Visible = false;
-                btnSubTacGiaHoSo.Visible = false;
-                btnSubButDanh.Visible = false;
-                btnBaoCao.Visible = false;
-                btnSubBaoCaoTH.Visible = false;
-                btnSubBaoCaoCN.Visible = false;
-                btnSubBaoCaoLD.Visible = false;
-                btnTroLyAI.Visible = false;
-                btnDotThanhToan.Visible = false;
-=======
-                SetButtonVisible(true,
-                    btnNhapNhuanBut, btnTraCuuCaNhan);
+                SetButtonVisible(true, btnNhapNhuanBut, btnTraCuuCaNhan);
                 return;
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
             }
 
-            // Nhóm thư ký
             if (role == "thư ký")
             {
-<<<<<<< HEAD
-                btnTraCuuCaNhan.Visible = true;
-                btnKiemDuyet.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-=======
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
                 return;
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
             }
 
-            // Nhóm kế toán
             if (role == "kế toán")
             {
-<<<<<<< HEAD
-                btnTraCuuCaNhan.Visible = true;
-                btnKiemDuyet.Visible = true;
-                btnPhieuChi.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
-                btnDotThanhToan.Visible = true;
-=======
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
@@ -266,24 +234,10 @@ namespace HETHONGTINHNHUANBUT
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan);
                 return;
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
             }
 
-            // Nhóm lãnh đạo
             if (role == "lãnh đạo")
             {
-<<<<<<< HEAD
-                btnTraCuuCaNhan.Visible = true;
-                btnKiemDuyet.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
-                btnDotThanhToan.Visible = true;
-                btnTaiKhoan.Visible = true;
-=======
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet, btnDuyetChi,
@@ -291,35 +245,23 @@ namespace HETHONGTINHNHUANBUT
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan, btnTaiKhoan);
                 return;
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
             }
 
-            // Nhóm kiểm tra viên
             if (role == "kiểm tra viên")
             {
-<<<<<<< HEAD
-                btnTraCuuCaNhan.Visible = true;
-                btnKiemDuyet.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-=======
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
                 return;
->>>>>>> f9a0bd8becfe782a8f14bf3eadceebede0e74d6b
             }
 
-            // Nhóm tổng thư ký
             if (role == "tổng thư ký")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
-                return;
             }
         }
 
@@ -458,6 +400,12 @@ namespace HETHONGTINHNHUANBUT
                 this.Hide();
                 new FormLogin().Show();
             }
+        }
+
+        private void FrmTrangChinh_Resize(object sender, EventArgs e)
+        {
+            if (!IsHandleCreated) return;
+            AdjustMenuForScreen();
         }
 
         private void FrmTrangChinh_FormClosed(object sender, FormClosedEventArgs e)
