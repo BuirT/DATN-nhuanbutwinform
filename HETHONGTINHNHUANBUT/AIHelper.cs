@@ -152,4 +152,115 @@ QUY TẮC:
         public string CanhBaoTrungBai { get; set; }
         public string TomTat { get; set; }
     }
+
+    public class BaiVietDanhGiaResult
+    {
+        public double DiemChatLuong { get; set; }
+        public string DanhGia { get; set; }
+        public string ChiTietDanhGia { get; set; }
+    }
+
+    public static class BaiVietAIHelper
+    {
+        private static readonly string baseUrl = "http://localhost:11434";
+        private static readonly string aiModel = "qwen2.5";
+
+        public static async Task<BaiVietDanhGiaResult> DanhGiaBaiVietAsync(
+            string tenBai, string muc, string noiDung, string butDanh)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromMinutes(3);
+
+                string truncatedNoiDung = noiDung;
+                if (!string.IsNullOrEmpty(noiDung) && noiDung.Length > 3000)
+                    truncatedNoiDung = noiDung.Substring(0, 3000) + "\n...(nội dung bị cắt do quá dài)";
+
+                string prompt = $@"Bạn là một biên tập viên giàu kinh nghiệm của một tòa soạn báo. 
+Nhiệm vụ của bạn là đánh giá chất lượng bài viết dựa trên nội dung dưới đây.
+
+THÔNG TIN BÀI VIẾT:
+- Tên bài: ""{tenBai}""
+- Mục (Thể loại): ""{muc}""
+- Bút danh: ""{butDanh}""
+
+NỘI DUNG BÀI VIẾT:
+""{truncatedNoiDung}""
+
+Hãy đánh giá bài viết theo 5 tiêu chí sau, mỗi tiêu chí có thang điểm riêng:
+1. Chính tả và ngữ pháp (tối đa 20 điểm) - Kiểm tra lỗi chính tả, dấu câu, ngữ pháp
+2. Cấu trúc và bố cục (tối đa 20 điểm) - Mạch lạc, logic, đầy đủ mở bài-thân bài-kết bài
+3. Giá trị thông tin (tối đa 25 điểm) - Tính thời sự, độ chính xác, nguồn tin
+4. Chiều sâu chuyên môn (tối đa 20 điểm) - Phân tích sắc sảo, góc nhìn độc đáo
+5. Tính hấp dẫn (tối đa 15 điểm) - Lôi cuốn, dễ đọc, phù hợp độc giả
+
+QUAN TRỌNG: Trả về KẾT QUẢ DUY NHẤT DƯỚI DẠNG JSON như sau (không thêm bất kỳ ký tự nào khác ngoài JSON):
+{{
+    ""diemChinhTa"": <số điểm 0-20>,
+    ""diemCauTruc"": <số điểm 0-20>,
+    ""diemThongTin"": <số điểm 0-25>,
+    ""diemChuyenSau"": <số điểm 0-20>,
+    ""diemHapDan"": <số điểm 0-15>,
+    ""diemTong"": <tổng điểm 0-100>,
+    ""nhanXet"": ""<nhận xét ngắn gọn 2-3 câu bằng tiếng Việt, tập trung vào điểm mạnh và điểm cần cải thiện>""
+}}
+
+TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm bất kỳ chữ nào ngoài JSON.";
+
+                var requestBody = new
+                {
+                    model = aiModel,
+                    prompt = prompt,
+                    stream = false,
+                    options = new
+                    {
+                        temperature = 0.1,
+                        top_p = 0.2
+                    }
+                };
+
+                string jsonString = JsonConvert.SerializeObject(requestBody);
+                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync($"{baseUrl}/api/generate", content);
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Lỗi kết nối AI Đánh Giá: {response.StatusCode}");
+
+                JObject jsonResult = JObject.Parse(responseString);
+                string rawText = jsonResult["response"]?.ToString();
+
+                if (string.IsNullOrEmpty(rawText))
+                    throw new Exception("AI không trả về kết quả.");
+
+                var match = Regex.Match(rawText, @"\{[\s\S]*\}", RegexOptions.Multiline);
+                if (!match.Success)
+                    throw new Exception($"AI không xuất JSON. Dữ liệu: {rawText}");
+
+                JObject data = JObject.Parse(match.Value);
+
+                double diemTong = 0;
+                double.TryParse(data["diemTong"]?.ToString() ?? "0", out diemTong);
+
+                string nhanXet = data["nhanXet"]?.ToString() ?? "";
+
+                string chiTiet = string.Format(
+                    "Chính tả: {0}/20 | Cấu trúc: {1}/20 | Thông tin: {2}/25 | Chuyên sâu: {3}/20 | Hấp dẫn: {4}/15",
+                    data["diemChinhTa"]?.ToString() ?? "?",
+                    data["diemCauTruc"]?.ToString() ?? "?",
+                    data["diemThongTin"]?.ToString() ?? "?",
+                    data["diemChuyenSau"]?.ToString() ?? "?",
+                    data["diemHapDan"]?.ToString() ?? "?"
+                );
+
+                return new BaiVietDanhGiaResult
+                {
+                    DiemChatLuong = diemTong,
+                    DanhGia = nhanXet,
+                    ChiTietDanhGia = chiTiet
+                };
+            }
+        }
+    }
 }

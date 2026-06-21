@@ -303,6 +303,26 @@
       <DependentUpon>FrmTrangChinh.cs</DependentUpon>
     </Compile>
     <Compile Include="AnomalyDetector.cs" />
+    <Compile Include="AIAuditService.cs" />
+    <Compile Include="AIReportService.cs" />
+    <Compile Include="FrmDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDashboard.Designer.cs">
+      <DependentUpon>FrmDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmBaoCaoThongKe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBaoCaoThongKe.Designer.cs">
+      <DependentUpon>FrmBaoCaoThongKe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmCanhBaoAI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmCanhBaoAI.Designer.cs">
+      <DependentUpon>FrmCanhBaoAI.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmBaoCaoAI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -323,6 +343,7 @@
     <Compile Include="Models\TacGia.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ThanhToan.cs" />
+    <Compile Include="Models\AICanhBao.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormLogin.resx">
@@ -413,9 +434,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
   </Target>
-  <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
   <PropertyGroup>
     <PreBuildEvent>taskkill /F /IM HETHONGTINHNHUANBUT.exe 2&gt;nul 1&gt;nul || exit 0</PreBuildEvent>
   </PropertyGroup>

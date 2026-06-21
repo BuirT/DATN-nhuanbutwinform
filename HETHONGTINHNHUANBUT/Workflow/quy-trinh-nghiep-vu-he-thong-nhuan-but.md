@@ -13,17 +13,17 @@ Hệ thống quản lý nhuận bút dành cho tòa soạn báo in, hỗ trợ q
 
 ## 2. Danh Mục Vai Trò Người Dùng
 
-| Vai trò | Mô tả | Quyền chính |
-|---------|-------|-------------|
-| Quản trị viên (Admin) | Quản lý toàn hệ thống | Tất cả quyền |
-| Phóng viên / CTV | Đối tượng nộp bài, được thanh toán nhuận bút | Nộp bài, xem thông tin cá nhân |
-| Thư ký | Chấm tiền nhuận bút, quản lý tác giả, bút danh, số báo | Quản lý tác giả, bút danh, bài viết, chấm tiền |
-| Kế toán | Nhập liệu nhuận bút vào hệ thống, lập phiếu chi | Nhập liệu, lập phiếu chi, AI assistant |
-| Kiểm tra viên | Kiểm tra tính chính xác của dữ liệu nhập, ký xác nhận | Kiểm tra, xác nhận |
-| Tổng thư ký | Ký duyệt nhuận bút cuối cùng | Ký duyệt bài, ký duyệt phiếu chi |
-| Lãnh đạo | Phê duyệt phiếu chi cấp cao | Duyệt chi |
+| Vai trò | Mô tả | Quyền chính | Menu thấy |
+|---------|-------|-------------|-----------|
+| Quản trị viên (Admin) | Quản lý toàn hệ thống | Tất cả quyền | Tất cả |
+| Phóng viên / CTV / Khách mời | Đối tượng nộp bài, được thanh toán | Nộp bài, tra cứu cá nhân | NhapBai, TraCuu |
+| Thư ký | Chấm tiền nhuận bút | Chấm tiền (0→1) | KiemDuyet |
+| Kế toán | Nhập liệu NB, lập phiếu chi, xác nhận thanh toán | Nhập liệu (1→2), báo sai sót, lập phiếu chi, duyệt chi, AI + BC AI, thanh toán | KiemDuyet, PhieuChi, DuyetChi, TroLyAI, BaoCaoAI, DotThanhToan |
+| Kiểm tra viên | Kiểm tra tính chính xác dữ liệu nhập | Kiểm tra (2→3), trả về Kế toán | KiemDuyet |
+| Tổng thư ký | Ký duyệt NB cuối cùng | Ký duyệt (3→4), nhập tên ký thủ công | KiemDuyet |
+| Lãnh đạo | Phê duyệt phiếu chi | Duyệt/từ chối phiếu chi, xem báo cáo, quản lý tài khoản | KiemDuyet, DuyetChi, TaiKhoan, TroLyAI, BaoCaoAI, DotThanhToan |
 
-**Lưu ý:** Vai trò "Thư ký" trong hệ thống tương ứng với **Ban thư ký tòa soạn** - người chấm tiền nhuận bút theo quy trình thực tế.
+**Lưu ý:** Vai trò "Thư ký" tương ứng **Ban thư ký tòa soạn** - người chấm tiền NB.
 
 ---
 
@@ -162,39 +162,56 @@ Hệ thống quản lý nhuận bút dành cho tòa soạn báo in, hỗ trợ q
 
 ### 4.4. Quản Lý Bài Viết / Nhuận Bút
 
-**Màn hình**: `FrmKiemDuyetNhuanBut` (Kiểm duyệt), `FrmNhapNhuanBut` (Nhập liệu - toàn quyền), `FrmNhapBaiPhongVien` (PV nộp bài)
+**Màn hình**: `FrmKiemDuyetNhuanBut` (Kiểm duyệt 5 bước), `FrmNhapNhuanBut` (Nhập liệu - toàn quyền), `FrmNhapBaiPhongVien` (PV nộp bài)
 
-**Luồng xử lý (theo quy trình thực tế):**
+**Luồng xử lý (theo quy trình thực tế - 5 bước):**
 
 ```
 Bước 0: Báo đã phát hành (in xong)
         │
         ├── Ban thư ký tòa soạn chấm tiền NB cho từng bài
-        │   (Thư ký nhập TienNhuanbut, TrangThaiDuyet = 1)
+        │   (btn = "✅ CHẤM TIỀN", nhập TienNhuanbut, TrangThaiDuyet = 1)
+        │   (btn từ chối = "❌ TỪ CHỐI" → TT=0)
         │
 Bước 1: Tổ nhập liệu nhập dữ liệu vào phần mềm
-        │   (Kế toán xác nhận đã nhập, TrangThaiDuyet = 2)
+        │   (btn = "✅ XÁC NHẬN NHẬP LIỆU", TrangThaiDuyet = 2)
         │
         ├── Trong quá trình nhập, xử lý sai sót:
         │   - Chấm sót, cao tiền, vượt tổng → AI cảnh báo
-        │   - Báo lại người chấm (Thư ký) để thống nhất
+        │   - Báo lại người chấm (btn = "📨 BÁO SAI SÓT" → nhập lý do → TT=0)
         │
 Bước 2: Người kiểm tra xác nhận tính chính xác
-        │   (TrangThaiDuyet = 3)
+        │   (btn = "✅ XÁC NHẬN ĐÚNG", TrangThaiDuyet = 3)
+        │   (btn trả về = "❌ TRẢ VỀ KẾ TOÁN" → TT=2)
         │
 Bước 3: Tổng thư ký ký duyệt
-            (TongThuKy, TrangThaiDuyet = 4)
+        │   (btn = "✅ KÝ DUYỆT", nhập tên ký thủ công txtNguoiKy, TrangThaiDuyet = 4)
+        │   (btn trả về = "❌ TRẢ VỀ KIỂM TRA" → TT=3)
+        │
+Sau khi ký duyệt: Bài sẵn sàng lập phiếu chi
+        │
+        ▼
+    Lập phiếu chi → Lãnh đạo duyệt → Kế toán xác nhận đã thanh toán
 ```
 
 **Trạng thái bài viết (Nhuanbut.TrangThaiDuyet):**
 
-| Giá trị | Ý nghĩa | Vai trò thực hiện |
-|---------|---------|-------------------|
-| 0 | Chờ chấm tiền (mới nộp / đã nhập từ báo in) | Ban thư ký |
-| 1 | Đã chấm tiền | Ban thư ký |
-| 2 | Đã nhập liệu vào phần mềm | Tổ nhập liệu / Kế toán |
-| 3 | Đã kiểm tra xác nhận | Kiểm tra viên |
-| 4 | Đã ký duyệt | Tổng thư ký |
+| Giá trị | Ý nghĩa | Vai trò thực hiện | Nút xác nhận | Nút từ chối/trả về |
+|---------|---------|-------------------|--------------|-------------------|
+| 0 | Chờ chấm tiền | Thư ký | ✅ CHẤM TIỀN → 1 | ❌ TỪ CHỐI → 0 |
+| 1 | Đã chấm tiền | Kế toán (nhập liệu) | ✅ XÁC NHẬN NHẬP LIỆU → 2 | 📨 BÁO SAI SÓT → 0 |
+| 2 | Đã nhập liệu | Kiểm tra viên | ✅ XÁC NHẬN ĐÚNG → 3 | ❌ TRẢ VỀ KẾ TOÁN → 2 |
+| 3 | Đã kiểm tra | Tổng thư ký | ✅ KÝ DUYỆT → 4 | ❌ TRẢ VỀ KIỂM TRA → 3 |
+| 4 | Đã ký duyệt | — | Đã hoàn tất | — |
+
+**Signature panel (5 labels dưới grid):**
+- 📝 Người nhập — `NguoiNhap` + ngày nhập
+- 🖊 Người chấm — `NguoiChamTien` + `NgayChamTien`
+- 📋 Nhập liệu — `NguoiKeToan` + `NgayNhapLieu`
+- ✅ Kiểm tra — `NguoiKiemTra` + `NgayKiemTra`
+- 📌 Ký duyệt — `TongThuKy` + `NgayKy`
+
+**Ô nhập tên ký (Tổng thư ký):** `txtNguoiKy` (Guna2TextBox, PlaceholderText = "Nhập tên ký...")
 
 ---
 
@@ -242,56 +259,72 @@ Bước 3: Tổng thư ký ký duyệt
 
 ### 4.7. Thanh Toán
 
-**Màn hình**: `FrmDuyetPhieuChi` (✅ XÁC NHẬN ĐÃ THANH TOÁN)
+**Màn hình**: `FrmDuyetPhieuChi` (btnThanhToan tạo programmatically)
 
 **Luồng xử lý:**
 
 1. Phiếu chi đã được duyệt (`TrangThaiDuyet = 1`)
-2. Click **✅ XÁC NHẬN ĐÃ THANH TOÁN**
-3. Cập nhật `Phieuchi.Dathutien = 'Y'`
-4. Cập nhật các bài viết trong phiếu chi -> `Nhuanbut.DaThanhToan = true`
-5. Ghi nhận thông tin người xác nhận + ngày giờ
+2. Kế toán mở `FrmDuyetPhieuChi` → chọn phiếu chi có `Dathutien = 'N'`
+3. Click **✅ XÁC NHẬN ĐÃ THANH TOÁN** (btnThanhToan, chỉ hiện khi role=Kế toán & phiếu đã duyệt & chưa thanh toán)
+4. Transaction:
+   - `UPDATE Phieuchi SET Dathutien = 'Y'` 
+   - `UPDATE NhuanbutCT SET SauThanhToan = 'Y' WHERE SoPC = @id`
+5. Nút tự động ẩn sau khi thanh toán
+
+**Lưu ý:** Không có FrmThanhToan riêng. Kế toán xác nhận trực tiếp trên lưới phiếu chi.
 
 ---
 
 ### 4.8. Báo Cáo Thống Kê
 
-**Màn hình**: `FrmBaoCaoTongHop`, `FrmBaoCaoCongNo`, `FrmBaoCaoAI`, `FrmTongHopThang`
+**Các màn hình báo cáo:**
 
-**Các loại báo cáo:**
+| Màn hình | Chức năng | Công nghệ biểu đồ |
+|----------|-----------|-------------------|
+| `FrmBaoCaoTongHop` | Báo cáo tổng hợp theo tháng | Chart (WinForms) |
+| `FrmBaoCaoCongNo` | Công nợ tác giả (3 cột: Tổng nợ/Đã trả/Còn nợ), xuất Excel | Chart cột + ClosedXML |
+| `FrmBaoCaoLanhDao` | Báo cáo lãnh đạo cuối tháng: 2 grid (tổng hợp tác giả + chi tiết NB), doughnut (đã chi/chưa chi), hbar (top 8 tác giả), footer thống kê, xuất Excel 2 sheets | Guna.Charts.WinForms + ClosedXML |
+| `FrmBaoCaoAI` | Bảng thống kê C# format + AI commentary (Ollama) | — |
+| `FrmTongQuan` | Dashboard: 4 thẻ tóm tắt, biểu đồ đường (chi theo tháng), biểu đồ tròn (loại báo), lưới hoạt động gần đây | Guna.Charts.WinForms |
+| `FrmTongHopThang` | Tổng hợp tháng | — |
 
-1. **Báo cáo tổng hợp:**
-   - Tổng hợp nhuận bút theo kỳ (tháng/quý/năm)
-   - Đã chi / chưa chi
+**Chi tiết FrmBaoCaoLanhDao:**
+- Grid trên: Tổng hợp theo tác giả (Tác giả, Số bài, Tổng NB, Đã chi, Chưa chi)
+- Grid dưới: Chi tiết từng bài (Maso, Tên bài, Bút danh, Tác giả, NB, Trạng thái, Ngày đăng)
+- Footer: Tổng số bài, Tổng NB, Đã chi, Chưa chi
+- Biểu đồ trái: Doughnut (Đã chi / Chưa chi)
+- Biểu đồ phải: Horizontal bar (Top 8 tác giả theo tổng NB)
+- Xuất Excel: 2 sheets (Tổng hợp tác giả + Chi tiết NB)
 
-2. **Báo cáo công nợ:**
-   - Công nợ tác giả
-   - Công nợ số báo
-
-3. **Báo cáo AI:**
-   - Bảng thống kê do C# tự format
-   - AI viết phần nhận xét ngắn
-
-4. **Báo cáo cuối tháng:**
-   - Tổng hợp NB đã chi
-   - Tổng hợp NB chưa chi
+**Chi tiết FrmBaoCaoCongNo:**
+- Biểu đồ cột 3 màu: Tổng nợ (xanh) / Đã thanh toán (xanh lá) / Còn nợ (đỏ)
+- 3 thẻ summary: Tổng nợ, Đã thanh toán, Còn nợ (đổi màu thông minh)
+- Xuất Excel
 
 ---
 
 ### 4.9. AI Hỗ Trợ
 
-**Màn hình**: `FrmTroLyAI`, `FrmBaoCaoAI`
+**Màn hình**: `FrmTroLyAI` (Chat AI), `FrmBaoCaoAI` (Báo cáo AI)
+
+**Endpoint**: `http://localhost:11434/api/generate` — Model: `qwen2.5:7b`
 
 **Các tính năng AI:**
 
-1. **Chatbot trợ lý:** Hướng dẫn nghiệp vụ, hỗ trợ người dùng
-2. **Phát hiện bất thường (AnomalyDetector):**
+1. **Chatbot trợ lý** (`FrmTroLyAI`):
+   - Hỏi đáp về tác giả, thống kê, phiếu chi, bất thường, định mức
+   - Giao diện chat bubbles (FlowLayoutPanel)
+
+2. **Phát hiện bất thường (AnomalyDetector)** — gọi trước khi duyệt:
    - Query raw stats từ DB
    - Gửi cho Ollama phân tích
-   - AI tự quyết định cảnh báo
-3. **Báo cáo AI:**
-   - C# tự format bảng thống kê
-   - AI chỉ viết nhận xét
+   - AI tự quyết định: `MucDo.Nhe` (cảnh báo kèm) / `MucDo.NghiemTrong` (popup Yes/No)
+   - Fallback silent nếu AI offline
+
+3. **Báo cáo AI** (`FrmBaoCaoAI`):
+   - C# tự format bảng thống kê (font Consolas, căn cột)
+   - AI chỉ viết phần nhận xét ngắn
+   - Copy / Save .txt
 
 ---
 
@@ -300,9 +333,11 @@ Bước 3: Tổng thư ký ký duyệt
 **Màn hình**: `FrmTaiKhoan`
 
 **Luồng xử lý:**
-1. Tạo tài khoản: Username, Password (mã hóa), Họ tên, Quyền
-2. Phân quyền theo vai trò
+1. Tạo tài khoản: Username, Password (SHA-256 + salt), Họ tên, Quyền
+2. Các quyền có sẵn: Admin, Thư ký, Kế toán, Kiểm tra viên, Tổng thư ký, Lãnh đạo, Phóng viên, Cộng tác viên, Khách mời
 3. Liên kết tác giả (MaTacGiaGoc)
+
+**Mã hóa:** `HashHelper.cs` — GenerateSalt() 16-byte + ComputeSha256(password, salt) → hex string
 
 ---
 
@@ -311,20 +346,31 @@ Bước 3: Tổng thư ký ký duyệt
 ### 5.1. Luồng trạng thái bài viết
 
 ```
-[Chờ chấm tiền (0)] ──> [Đã chấm tiền (1)] ──> [Đã nhập liệu (2)]
-       │                                                  │
-       └── (Báo sai sót) ──> [0]                          │
-                                                           ▼
-                                               [Đã kiểm tra (3)]
-                                                      │
-                                                      ▼
-                                               [Đã ký duyệt (4)]
-                                                      │
-                                                      ▼
-                                              Lập phiếu chi
-                                                      │
-                                                      ▼
-                                              Đã thanh toán
+[Chờ chấm tiền (0)] ──┬──> [Đã chấm tiền (1)] ──> [Đã nhập liệu (2)]
+       ▲              │                                │
+       │              └── Thư ký từ chối               │
+       │                                               │
+       ├── (Kế toán báo sai sót) ──────────────────────┘
+       │                                               │
+       │                                  ┌────────────┘
+       │                                  ▼
+       │                          [Đã kiểm tra (3)]
+       │                               │         │
+       │                               │         └── (Trả về Kế toán) ──> [2]
+       │                               ▼
+       │                        [Đã ký duyệt (4)]
+       │                             │         │
+       │                             │         └── (Trả về Kiểm tra) ──> [3]
+       │                             ▼
+       │                     Lập phiếu chi
+       │                             │
+       │                             ▼
+       │                     Lãnh đạo duyệt chi
+       │                             │
+       │                             ▼
+       │                     Kế toán xác nhận đã thanh toán
+       │
+       └── Admin có thể đưa về [0] bất kỳ lúc nào
 ```
 
 ### 5.2. Luồng trạng thái phiếu chi
@@ -405,27 +451,35 @@ TacGia (Tác giả)
 
 ```
 HETHONGTINHNHUANBUT/
-├── FrmTrangChinh.cs        # Main form - menu chính + phân quyền
-├── FormLogin.cs             # Đăng nhập
-├── FrmKiemDuyetNhuanBut.cs  # Duyệt bài (chấm tiền → nhập liệu → kiểm tra → ký)
-├── FrmNhapNhuanBut.cs       # Nhập liệu toàn quyền (admin/thư ký)
+├── FrmTrangChinh.cs        # Main form - menu + phân quyền (sidebar 280px + content 920px)
+├── FormLogin.cs             # Đăng nhập, SHA-256 + salt, tự tạo Users table
+├── FrmKiemDuyetNhuanBut.cs  # Duyệt bài 5 bước + signature panel + AI anomaly
+├── FrmNhapNhuanBut.cs       # Nhập liệu toàn quyền (admin/thư ký) + AI kiểm toán
 ├── FrmNhapBaiPhongVien.cs   # Nộp bài cho phóng viên/CTV
-├── FrmPhieuChi.cs           # Lập phiếu chi
-├── FrmDuyetPhieuChi.cs      # Duyệt chi + xác nhận thanh toán
-├── FrmBaoCaoTongHop.cs      # Báo cáo tổng hợp
-├── FrmBaoCaoCongNo.cs       # Báo cáo công nợ
-├── FrmBaoCaoAI.cs           # Báo cáo AI
+├── FrmPhieuChi.cs           # Lập phiếu chi (thuế 10% nếu >=2tr)
+├── FrmDuyetPhieuChi.cs      # Duyệt chi + btnThanhToan programmatic
+├── FrmBaoCaoTongHop.cs      # Báo cáo tổng hợp (Chart đường)
+├── FrmBaoCaoCongNo.cs       # Công nợ tác giả (Chart cột 3 màu + Excel)
+├── FrmBaoCaoLanhDao.cs      # Báo cáo lãnh đạo (Guna Doughnut + HBar + 2 grid + Excel 2 sheets)
+├── FrmBaoCaoAI.cs           # Báo cáo AI: bảng C# + AI commentary
 ├── FrmTongHopThang.cs       # Tổng hợp tháng
 ├── FrmTraCuuNhuanBut.cs     # Tra cứu nhuận bút (cá nhân)
-├── FrmTroLyAI.cs            # Chatbot AI
-├── FrmTongQuan.cs           # Dashboard
+├── FrmTroLyAI.cs            # Chatbot AI (Ollama qwen2.5)
+├── FrmTongQuan.cs           # Dashboard: Guna line chart + doughnut + 4 summary cards
 ├── FrmSoBao.cs              # Quản lý số báo
 ├── FrmLoaiBao.cs            # Quản lý loại báo
 ├── FrmTacGia.cs             # Quản lý tác giả
 ├── FrmButdanh.cs            # Quản lý bút danh
 ├── FrmTaiKhoan.cs           # Quản lý người dùng
-├── AnomalyDetector.cs       # AI phát hiện bất thường
-└── AIHelper.cs              # Helper gọi Ollama
+├── FrmThanhToan.cs          # Đợt thanh toán (menu DotThanhToan)
+├── AnomalyDetector.cs       # AI phát hiện bất thường (2 mức: Nhẹ/Nghiêm trọng)
+├── AIHelper.cs              # Helper gọi Ollama API
+├── UIHelper.cs              # FormatGiaoDienBang + ConfigureColumns
+└── HashHelper.cs            # SHA-256 + salt password
+
+Workflow/
+├── quy-trinh-nghiep-vu-he-thong-nhuan-but.md   # Quy trình nghiệp vụ (file này)
+└── WORKFLOW_GIAO_DIEN_WINFORM.md                  # Design guide + coding conventions
 ```
 
 ### 8.2. Database
@@ -440,4 +494,4 @@ HETHONGTINHNHUANBUT/
 
 ---
 
-*Tài liệu được cập nhật ngày 19/06/2026 - Dựa trên quy trình nghiệp vụ thực tế của tòa soạn*
+*Tài liệu được cập nhật ngày 20/06/2026 - Dựa trên quy trình nghiệp vụ thực tế của tòa soạn (báo in)*

@@ -150,7 +150,9 @@ namespace HETHONGTINHNHUANBUT
                                n.ngaychuyen AS NgayNhap,
                                n.NgayChamTien, n.NgayNhapLieu, n.NgayKiemTra, n.NgayKy,
                                b.Tenbao AS TenSoBao,
-                               n.TrangThaiDuyet
+                               n.TrangThaiDuyet,
+                                n.DiemChatLuongAI,
+                                n.DanhGiaAI
                         FROM Nhuanbut n
                         LEFT JOIN Bao b ON n.MsBao = b.Maso";
 
@@ -191,12 +193,15 @@ namespace HETHONGTINHNHUANBUT
                         foreach (string col in new[] { "NguoiNhap", "NguoiChamTien", "NguoiKeToan", "NguoiKiemTra", "TongThuKy", "NgayChamTien", "NgayNhapLieu", "NgayKiemTra", "NgayKy" })
                             if (dgvNhuanBut.Columns[col] != null) dgvNhuanBut.Columns[col].Visible = false;
 
+                        if (dgvNhuanBut.Columns["DanhGiaAI"] != null) dgvNhuanBut.Columns["DanhGiaAI"].Visible = false;
+
                         UIHelper.ConfigureColumns(dgvNhuanBut,
                             ("Tenbai", "TÊN BÀI", false, false),
                             ("Trang", "Trang", false, false),
                             ("Muc", "Mục", false, false),
                             ("Butdanh", "BÚT DANH", false, false),
                             ("TienNhuanbut", "TIỀN NB (VNĐ)", true, false),
+                            ("DiemChatLuongAI", "AI ĐIỂM", false, false),
                             ("LyDoBaoSai", "Lý do báo sai", false, false),
                             ("NgayNhap", "Ngày nhập", false, false),
                             ("TenSoBao", "SỐ BÁO", false, false)
@@ -541,6 +546,17 @@ namespace HETHONGTINHNHUANBUT
                 }
 
                 LoadSignaturePanel(row);
+
+                // Hiển thị AI evaluation nếu có
+                if (dgvNhuanBut.Columns["DanhGiaAI"] != null)
+                {
+                    string danhGiaAI = row.Cells["DanhGiaAI"].Value?.ToString() ?? "";
+                    if (!string.IsNullOrEmpty(danhGiaAI))
+                    {
+                        lblRoleInfo.Text = "🤖 AI: " + danhGiaAI;
+                        lblRoleInfo.ForeColor = Color.FromArgb(16, 185, 129);
+                    }
+                }
             }
         }
 

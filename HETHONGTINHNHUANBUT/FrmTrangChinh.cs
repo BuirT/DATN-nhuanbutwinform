@@ -132,7 +132,22 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-        private void ApplyPermissions()
+            private void btnDashboard_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmDashboard(), sender as Guna2Button);
+        }
+
+        private void btnBaoCaoThongKe_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmBaoCaoThongKe(), sender as Guna2Button);
+        }
+
+        private void btnCanhBaoAI_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmCanhBaoAI(), sender as Guna2Button);
+        }
+
+    private void ApplyPermissions()
         {
             btnDuyetChi.Visible = false;
             btnKiemDuyet.Visible = false;
@@ -140,6 +155,9 @@ namespace HETHONGTINHNHUANBUT
             btnTaiKhoan.Visible = false;
             btnTroLyAI.Visible = false;
             btnBaoCaoAI.Visible = false;
+            btnBaoCaoThongKe.Visible = false;
+            btnCanhBaoAI.Visible = false;
+            btnDashboard.Visible = false;
             btnTraCuuCaNhan.Visible = false;
             btnDotThanhToan.Visible = false;
 
@@ -153,6 +171,9 @@ namespace HETHONGTINHNHUANBUT
                 btnTaiKhoan.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
+                btnBaoCaoThongKe.Visible = true;
+                btnCanhBaoAI.Visible = true;
+                btnDashboard.Visible = true;
                 btnTraCuuCaNhan.Visible = true;
                 btnDotThanhToan.Visible = true;
                 return;
@@ -177,6 +198,9 @@ namespace HETHONGTINHNHUANBUT
             else if (role == "thư ký")
             {
                 btnKiemDuyet.Visible = true;
+                btnCanhBaoAI.Visible = true;
+                btnDashboard.Visible = true;
+                btnBaoCaoThongKe.Visible = true;
             }
             else if (role == "kế toán")
             {
@@ -184,6 +208,9 @@ namespace HETHONGTINHNHUANBUT
                 btnPhieuChi.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
+                btnBaoCaoThongKe.Visible = true;
+                btnCanhBaoAI.Visible = true;
+                btnDashboard.Visible = true;
                 btnDuyetChi.Visible = true;
                 btnDotThanhToan.Visible = true;
             }
@@ -194,11 +221,17 @@ namespace HETHONGTINHNHUANBUT
                 btnTaiKhoan.Visible = true;
                 btnTroLyAI.Visible = true;
                 btnBaoCaoAI.Visible = true;
+                btnBaoCaoThongKe.Visible = true;
+                btnCanhBaoAI.Visible = true;
+                btnDashboard.Visible = true;
                 btnDotThanhToan.Visible = true;
             }
             else if (role == "kiểm tra viên" || role == "tổng thư ký")
             {
                 btnKiemDuyet.Visible = true;
+                btnBaoCaoThongKe.Visible = true;
+                btnCanhBaoAI.Visible = true;
+                btnDashboard.Visible = true;
             }
         }
 

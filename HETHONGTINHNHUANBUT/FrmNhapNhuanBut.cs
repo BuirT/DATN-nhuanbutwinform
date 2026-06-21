@@ -190,7 +190,9 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     string query = @"SELECT Maso, Tenbai, Trang, Muc, Butdanh, Vung, VungChuyenDen, 
-                                            TienNhuanbut
+                                            TienNhuanbut,
+                                            DiemChatLuongAI,
+                                            DanhGiaAI
                                      FROM Nhuanbut WHERE MsBao = @maBao";
                     if (!string.IsNullOrWhiteSpace(keyword))
                         query += " AND (Tenbai LIKE @kw OR Butdanh LIKE @kw)";
@@ -214,12 +216,15 @@ namespace HETHONGTINHNHUANBUT
                         "TrangThaiDuyet", "DaThanhToan", "LoaiBao" })
                         if (dgvNhuanBut.Columns[col] != null) dgvNhuanBut.Columns[col].Visible = false;
 
+                    if (dgvNhuanBut.Columns["DanhGiaAI"] != null) dgvNhuanBut.Columns["DanhGiaAI"].Visible = false;
+
                     UIHelper.ConfigureColumns(dgvNhuanBut,
                         ("Tenbai", "TÊN BÀI VIẾT", false, false),
                         ("Trang", "Trang", false, false),
                         ("Muc", "Mục", false, false),
                         ("Butdanh", "BÚT DANH", false, false),
-                        ("TienNhuanbut", "TỔNG TIỀN (VNĐ)", true, false)
+                        ("TienNhuanbut", "TỔNG TIỀN (VNĐ)", true, false),
+                        ("DiemChatLuongAI", "AI ĐIỂM", false, false)
                     );
                 }
                 decimal tong = 0;
@@ -586,6 +591,18 @@ namespace HETHONGTINHNHUANBUT
             txtTienNhuanBut.Text = Convert.ToDecimal(row.Cells["TienNhuanbut"].Value).ToString("0");
             cboVung.Text = row.Cells["Vung"].Value?.ToString();
             cboVungChuyenDen.Text = row.Cells["VungChuyenDen"].Value?.ToString();
+
+            // Hiển thị AI evaluation nếu có
+            if (dgvNhuanBut.Columns["DanhGiaAI"] != null)
+            {
+                string danhGiaAI = row.Cells["DanhGiaAI"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(danhGiaAI))
+                {
+                    lblWarning.Text = "🤖 " + danhGiaAI;
+                    lblWarning.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
+                    lblWarning.Visible = true;
+                }
+            }
         }
     }
 }

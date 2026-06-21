@@ -28,6 +28,8 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
             this.btnDuyetChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnPhieuChi = new Guna.UI2.WinForms.Guna2Button();
+            this.btnCanhBaoAI = new Guna.UI2.WinForms.Guna2Button();
+            this.btnBaoCaoThongKe = new Guna.UI2.WinForms.Guna2Button();
             this.btnKiemDuyet = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCaoAI = new Guna.UI2.WinForms.Guna2Button();
             this.btnNhapNhuanBut = new Guna.UI2.WinForms.Guna2Button();
@@ -38,6 +40,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnSubButDanh = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubTacGiaHoSo = new Guna.UI2.WinForms.Guna2Button();
             this.btnTacGia = new Guna.UI2.WinForms.Guna2Button();
+            this.btnDashboard = new Guna.UI2.WinForms.Guna2Button();
             this.btnTroLyAI = new Guna.UI2.WinForms.Guna2Button();
             this.btnTongQuan = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
@@ -64,6 +67,8 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnDuyetChi);
             this.pnlMenu.Controls.Add(this.btnPhieuChi);
             this.pnlMenu.Controls.Add(this.btnKiemDuyet);
+            this.pnlMenu.Controls.Add(this.btnCanhBaoAI);
+            this.pnlMenu.Controls.Add(this.btnBaoCaoThongKe);
             this.pnlMenu.Controls.Add(this.btnBaoCaoAI);
             this.pnlMenu.Controls.Add(this.btnTraCuuCaNhan);
             this.pnlMenu.Controls.Add(this.btnNhapNhuanBut);
@@ -74,6 +79,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnSubTacGiaHoSo);
             this.pnlMenu.Controls.Add(this.btnTacGia);
             this.pnlMenu.Controls.Add(this.btnTroLyAI);
+            this.pnlMenu.Controls.Add(this.btnDashboard);
             this.pnlMenu.Controls.Add(this.btnTongQuan);
             this.pnlMenu.Controls.Add(this.pnlLogo);
             this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Left;
@@ -237,6 +243,36 @@ namespace HETHONGTINHNHUANBUT
             this.btnKiemDuyet.TextOffset = new System.Drawing.Point(20, 0);
             this.btnKiemDuyet.Click += new System.EventHandler(this.btnKiemDuyet_Click);
             // 
+            // btnCanhBaoAI
+            // 
+            this.btnCanhBaoAI.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnCanhBaoAI.FillColor = System.Drawing.Color.Transparent;
+            this.btnCanhBaoAI.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnCanhBaoAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnCanhBaoAI.Location = new System.Drawing.Point(14, 550);
+            this.btnCanhBaoAI.Name = "btnCanhBaoAI";
+            this.btnCanhBaoAI.Size = new System.Drawing.Size(235, 50);
+            this.btnCanhBaoAI.TabIndex = 20;
+            this.btnCanhBaoAI.Text = "⚠️ CẢNH BÁO AI";
+            this.btnCanhBaoAI.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnCanhBaoAI.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnCanhBaoAI.Click += new System.EventHandler(this.btnCanhBaoAI_Click);
+            // 
+            // btnBaoCaoThongKe
+            // 
+            this.btnBaoCaoThongKe.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnBaoCaoThongKe.FillColor = System.Drawing.Color.Transparent;
+            this.btnBaoCaoThongKe.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnBaoCaoThongKe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnBaoCaoThongKe.Location = new System.Drawing.Point(14, 550);
+            this.btnBaoCaoThongKe.Name = "btnBaoCaoThongKe";
+            this.btnBaoCaoThongKe.Size = new System.Drawing.Size(235, 50);
+            this.btnBaoCaoThongKe.TabIndex = 21;
+            this.btnBaoCaoThongKe.Text = "📈 BÁO CÁO THỐNG KÊ";
+            this.btnBaoCaoThongKe.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnBaoCaoThongKe.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnBaoCaoThongKe.Click += new System.EventHandler(this.btnBaoCaoThongKe_Click);
+            // 
             // btnBaoCaoAI
             // 
             this.btnBaoCaoAI.Dock = System.Windows.Forms.DockStyle.Top;
@@ -392,6 +428,21 @@ namespace HETHONGTINHNHUANBUT
             this.btnTroLyAI.TextOffset = new System.Drawing.Point(20, 0);
             this.btnTroLyAI.Click += new System.EventHandler(this.btnTroLyAI_Click);
             // 
+            // btnDashboard
+            // 
+            this.btnDashboard.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDashboard.FillColor = System.Drawing.Color.Transparent;
+            this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnDashboard.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnDashboard.Location = new System.Drawing.Point(14, 120);
+            this.btnDashboard.Name = "btnDashboard";
+            this.btnDashboard.Size = new System.Drawing.Size(235, 50);
+            this.btnDashboard.TabIndex = 19;
+            this.btnDashboard.Text = "📊 DASHBOARD";
+            this.btnDashboard.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnDashboard.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
+            // 
             // btnTongQuan
             // 
             this.btnTongQuan.Dock = System.Windows.Forms.DockStyle.Top;
@@ -467,7 +518,10 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Panel pnlLogo;
         private System.Windows.Forms.PictureBox picLogo;
         private Guna.UI2.WinForms.Guna2Button btnTongQuan;
+        private Guna.UI2.WinForms.Guna2Button btnDashboard;
         private Guna.UI2.WinForms.Guna2Button btnBaoCaoAI;
+        private Guna.UI2.WinForms.Guna2Button btnBaoCaoThongKe;
+        private Guna.UI2.WinForms.Guna2Button btnCanhBaoAI;
         private Guna.UI2.WinForms.Guna2Button btnTroLyAI;
         private Guna.UI2.WinForms.Guna2Button btnTacGia;
         private Guna.UI2.WinForms.Guna2Button btnSubTacGiaHoSo;

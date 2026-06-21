@@ -66,7 +66,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlTop.ShadowDecoration.Depth = 8;
             this.pnlTop.ShadowDecoration.Enabled = true;
-            this.pnlTop.Size = new System.Drawing.Size(1160, 290);
+            this.pnlTop.Size = new System.Drawing.Size(1160, 520);
             this.pnlTop.TabIndex = 0;
 
             // lblTitle
@@ -245,9 +245,9 @@ namespace HETHONGTINHNHUANBUT
             this.btnNopBai.FillColor = System.Drawing.Color.FromArgb(24, 119, 242);
             this.btnNopBai.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnNopBai.ForeColor = System.Drawing.Color.White;
-            this.btnNopBai.Location = new System.Drawing.Point(25, 225);
+            this.btnNopBai.Location = new System.Drawing.Point(25, 210);
             this.btnNopBai.Name = "btnNopBai";
-            this.btnNopBai.Size = new System.Drawing.Size(150, 42);
+            this.btnNopBai.Size = new System.Drawing.Size(140, 38);
             this.btnNopBai.TabIndex = 7;
             this.btnNopBai.Text = "📤 NỘP BÀI";
             this.btnNopBai.Click += new System.EventHandler(this.btnNopBai_Click);
@@ -258,9 +258,9 @@ namespace HETHONGTINHNHUANBUT
             this.btnKiemToanAI.FillColor = System.Drawing.Color.FromArgb(139, 92, 246);
             this.btnKiemToanAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnKiemToanAI.ForeColor = System.Drawing.Color.White;
-            this.btnKiemToanAI.Location = new System.Drawing.Point(195, 225);
+            this.btnKiemToanAI.Location = new System.Drawing.Point(180, 210);
             this.btnKiemToanAI.Name = "btnKiemToanAI";
-            this.btnKiemToanAI.Size = new System.Drawing.Size(160, 42);
+            this.btnKiemToanAI.Size = new System.Drawing.Size(150, 38);
             this.btnKiemToanAI.TabIndex = 8;
             this.btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
             this.btnKiemToanAI.Click += new System.EventHandler(this.btnKiemToanAI_Click);
@@ -269,9 +269,9 @@ namespace HETHONGTINHNHUANBUT
             this.lblWarning.AutoSize = false;
             this.lblWarning.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
-            this.lblWarning.Location = new System.Drawing.Point(375, 225);
+            this.lblWarning.Location = new System.Drawing.Point(25, 460);
             this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(760, 45);
+            this.lblWarning.Size = new System.Drawing.Size(1110, 50);
             this.lblWarning.Text = "";
             this.lblWarning.Visible = false;
 
@@ -282,12 +282,12 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.Controls.Add(this.lblDataTitle);
             this.pnlBottom.Controls.Add(this.dgvBaiCuaToi);
             this.pnlBottom.FillColor = System.Drawing.Color.White;
-            this.pnlBottom.Location = new System.Drawing.Point(20, 320);
+            this.pnlBottom.Location = new System.Drawing.Point(20, 555);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlBottom.ShadowDecoration.Depth = 8;
             this.pnlBottom.ShadowDecoration.Enabled = true;
-            this.pnlBottom.Size = new System.Drawing.Size(1160, 420);
+            this.pnlBottom.Size = new System.Drawing.Size(1160, 185);
             this.pnlBottom.TabIndex = 1;
 
             // lblDataTitle
