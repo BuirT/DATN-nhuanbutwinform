@@ -149,90 +149,98 @@ namespace HETHONGTINHNHUANBUT
 
     private void ApplyPermissions()
         {
-            btnDuyetChi.Visible = false;
-            btnKiemDuyet.Visible = false;
-            btnPhieuChi.Visible = false;
-            btnTaiKhoan.Visible = false;
-            btnTroLyAI.Visible = false;
-            btnBaoCaoAI.Visible = false;
-            btnBaoCaoThongKe.Visible = false;
-            btnCanhBaoAI.Visible = false;
-            btnDashboard.Visible = false;
-            btnTraCuuCaNhan.Visible = false;
-            btnDotThanhToan.Visible = false;
-
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
+            // Ẩn toàn bộ nút chức năng (trừ Đăng xuất luôn hiện)
+            foreach (Control c in pnlMenu.Controls)
+            {
+                if (c is Guna.UI2.WinForms.Guna2Button btn && btn != btnDangXuat)
+                    btn.Visible = false;
+            }
+
+            // Nhóm chỉ dành cho admin/quản trị
             if (role == "admin" || role == "quản trị viên")
             {
-                btnKiemDuyet.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnPhieuChi.Visible = true;
-                btnTaiKhoan.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnTraCuuCaNhan.Visible = true;
-                btnDotThanhToan.Visible = true;
+                SetButtonVisible(true,
+                    btnTongQuan, btnDashboard, btnTroLyAI, btnBaoCaoAI,
+                    btnBaoCaoThongKe, btnCanhBaoAI,
+                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnKiemDuyet, btnPhieuChi, btnDuyetChi,
+                    btnDotThanhToan, btnTaiKhoan,
+                    btnTacGia, btnSubTacGiaHoSo, btnSubButDanh,
+                    btnQuanLyBao, btnSubSoBao, btnSubLoaiBao,
+                    btnBaoCao, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD);
                 return;
             }
 
+            // Nhóm phóng viên – chỉ viết bài & tra cứu
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-                btnTongQuan.Visible = false;
-                btnQuanLyBao.Visible = false;
-                btnSubSoBao.Visible = false;
-                btnSubLoaiBao.Visible = false;
-                btnTacGia.Visible = false;
-                btnSubTacGiaHoSo.Visible = false;
-                btnSubButDanh.Visible = false;
-                btnBaoCao.Visible = false;
-                btnSubBaoCaoTH.Visible = false;
-                btnSubBaoCaoCN.Visible = false;
-                btnTraCuuCaNhan.Visible = true;
-                btnTroLyAI.Visible = false;
-                btnDotThanhToan.Visible = false;
+                SetButtonVisible(true,
+                    btnNhapNhuanBut, btnTraCuuCaNhan);
+                return;
             }
-            else if (role == "thư ký")
+
+            // Nhóm thư ký
+            if (role == "thư ký")
             {
-                btnKiemDuyet.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
+                SetButtonVisible(true,
+                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnKiemDuyet,
+                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+                return;
             }
-            else if (role == "kế toán")
+
+            // Nhóm kế toán
+            if (role == "kế toán")
             {
-                btnKiemDuyet.Visible = true;
-                btnPhieuChi.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnDotThanhToan.Visible = true;
+                SetButtonVisible(true,
+                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnKiemDuyet,
+                    btnPhieuChi, btnDuyetChi,
+                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
+                    btnTroLyAI, btnBaoCaoAI,
+                    btnDotThanhToan);
+                return;
             }
-            else if (role == "lãnh đạo")
+
+            // Nhóm lãnh đạo
+            if (role == "lãnh đạo")
             {
-                btnKiemDuyet.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnTaiKhoan.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
-                btnDotThanhToan.Visible = true;
+                SetButtonVisible(true,
+                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnKiemDuyet, btnDuyetChi,
+                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
+                    btnTroLyAI, btnBaoCaoAI,
+                    btnDotThanhToan, btnTaiKhoan);
+                return;
             }
-            else if (role == "kiểm tra viên" || role == "tổng thư ký")
+
+            // Nhóm kiểm tra viên
+            if (role == "kiểm tra viên")
             {
-                btnKiemDuyet.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
-                btnCanhBaoAI.Visible = true;
-                btnDashboard.Visible = true;
+                SetButtonVisible(true,
+                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnKiemDuyet,
+                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+                return;
             }
+
+            // Nhóm tổng thư ký
+            if (role == "tổng thư ký")
+            {
+                SetButtonVisible(true,
+                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnKiemDuyet,
+                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+                return;
+            }
+        }
+
+        private void SetButtonVisible(bool visible, params Guna.UI2.WinForms.Guna2Button[] buttons)
+        {
+            foreach (var btn in buttons)
+                btn.Visible = visible;
         }
 
         private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
