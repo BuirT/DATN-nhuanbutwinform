@@ -158,30 +158,29 @@ namespace HETHONGTINHNHUANBUT
             btnBaoCaoThongKe.Visible = false;
             btnCanhBaoAI.Visible = false;
             btnDashboard.Visible = false;
-            btnTraCuuCaNhan.Visible = false;
             btnDotThanhToan.Visible = false;
 
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
             if (role == "admin" || role == "quản trị viên")
             {
+                btnTraCuuCaNhan.Visible = true;
                 btnKiemDuyet.Visible = true;
-                btnDuyetChi.Visible = true;
-                btnPhieuChi.Visible = true;
-                btnTaiKhoan.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
                 btnBaoCaoThongKe.Visible = true;
                 btnCanhBaoAI.Visible = true;
                 btnDashboard.Visible = true;
-                btnTraCuuCaNhan.Visible = true;
+                btnPhieuChi.Visible = true;
+                btnDuyetChi.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
                 btnDotThanhToan.Visible = true;
+                btnTaiKhoan.Visible = true;
                 return;
             }
 
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-                btnDashboard.Visible = false;
+                btnTraCuuCaNhan.Visible = true;
                 btnQuanLyBao.Visible = false;
                 btnSubSoBao.Visible = false;
                 btnSubLoaiBao.Visible = false;
@@ -191,43 +190,47 @@ namespace HETHONGTINHNHUANBUT
                 btnBaoCao.Visible = false;
                 btnSubBaoCaoTH.Visible = false;
                 btnSubBaoCaoCN.Visible = false;
-                btnTraCuuCaNhan.Visible = true;
+                btnSubBaoCaoLD.Visible = false;
                 btnTroLyAI.Visible = false;
                 btnDotThanhToan.Visible = false;
             }
             else if (role == "thư ký")
             {
+                btnTraCuuCaNhan.Visible = true;
                 btnKiemDuyet.Visible = true;
+                btnBaoCaoThongKe.Visible = true;
                 btnCanhBaoAI.Visible = true;
                 btnDashboard.Visible = true;
-                btnBaoCaoThongKe.Visible = true;
             }
             else if (role == "kế toán")
             {
+                btnTraCuuCaNhan.Visible = true;
                 btnKiemDuyet.Visible = true;
                 btnPhieuChi.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
+                btnDuyetChi.Visible = true;
                 btnBaoCaoThongKe.Visible = true;
                 btnCanhBaoAI.Visible = true;
                 btnDashboard.Visible = true;
-                btnDuyetChi.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
                 btnDotThanhToan.Visible = true;
             }
             else if (role == "lãnh đạo")
             {
+                btnTraCuuCaNhan.Visible = true;
                 btnKiemDuyet.Visible = true;
                 btnDuyetChi.Visible = true;
-                btnTaiKhoan.Visible = true;
-                btnTroLyAI.Visible = true;
-                btnBaoCaoAI.Visible = true;
                 btnBaoCaoThongKe.Visible = true;
                 btnCanhBaoAI.Visible = true;
                 btnDashboard.Visible = true;
+                btnTroLyAI.Visible = true;
+                btnBaoCaoAI.Visible = true;
                 btnDotThanhToan.Visible = true;
+                btnTaiKhoan.Visible = true;
             }
             else if (role == "kiểm tra viên" || role == "tổng thư ký")
             {
+                btnTraCuuCaNhan.Visible = true;
                 btnKiemDuyet.Visible = true;
                 btnBaoCaoThongKe.Visible = true;
                 btnCanhBaoAI.Visible = true;

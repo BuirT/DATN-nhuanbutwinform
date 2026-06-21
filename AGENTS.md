@@ -256,15 +256,15 @@ private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
 
 ## Role & Permission mapping
 
-| Role (currentPrivilege)                | Menu thấy                                                      |
-| -------------------------------------- | -------------------------------------------------------------- |
-| Admin / Quản trị viên                  | Tất cả                                                         |
-| Phóng viên / Cộng tác viên / Khách mời | NhapBaiPhongVien, TraCuuCaNhan (Tien read-only)                |
-| Thư ký                                 | KiemDuyet                                                      |
-| Kế toán                                | KiemDuyet, PhieuChi, TroLyAI, BaoCaoAI, DuyetChi, DotThanhToan |
-| Lãnh đạo                               | KiemDuyet, DuyetChi, TaiKhoan, TroLyAI, BaoCaoAI, DotThanhToan |
-| Kiểm tra viên                          | KiemDuyet                                                      |
-| Tổng thư ký                            | KiemDuyet                                                      |
+| Role                               | Các nút hiển thị                                                                              |
+| ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| Admin                              | Tất cả                                                                                        |
+| Phóng viên / CTV / Khách mời       | NHẬP BÀI, TRA CỨU CÁ NHÂN                                                                     |
+| Thư ký                             | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD                            |
+| Kế toán                            | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, PHIẾU CHI, DUYỆT CHI, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD, TRỢ LÝ AI, BÁO CÁO AI, ĐỢT CHI |
+| Lãnh đạo                           | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, DUYỆT CHI, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD, TRỢ LÝ AI, BÁO CÁO AI, ĐỢT CHI, TÀI KHOẢN |
+| Kiểm tra viên                      | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD                            |
+| Tổng thư ký                        | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD                            |
 
 ---
 
