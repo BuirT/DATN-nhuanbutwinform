@@ -24,6 +24,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnRefresh.Click += btnRefresh_Click;
             this.btnRunAudit.Click += btnRunAudit_Click;
             this.btnMarkProcessed.Click += btnMarkProcessed_Click;
+            this.btnXoaDaXuLy.Click += btnXoaDaXuLy_Click;
         }
 
         private async void FrmCanhBaoAI_Load(object sender, EventArgs e)
@@ -121,6 +122,42 @@ namespace HETHONGTINHNHUANBUT
             {
                 btnRunAudit.Enabled = true;
                 btnRunAudit.Text = "🔍 Kiểm toán toàn bộ";
+            }
+        }
+
+        private async void btnXoaDaXuLy_Click(object sender, EventArgs e)
+        {
+            var processed = dtCanhBao?.AsEnumerable().Where(r => Convert.ToBoolean(r["DaXuLy"])).ToList();
+            if (processed == null || processed.Count == 0)
+            {
+                MessageBox.Show("Không có cảnh báo đã xử lý nào để xoá.", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(string.Format(
+                "Xoá {0} cảnh báo đã xử lý?", processed.Count),
+                "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(
+                        "DELETE FROM AICanhBao WHERE DaXuLy = 1", conn))
+                    {
+                        int deleted = await cmd.ExecuteNonQueryAsync();
+                        MessageBox.Show(string.Format("Đã xoá {0} cảnh báo.", deleted),
+                            "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                await TaiDuLieuAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi xoá: " + ex.Message);
             }
         }
 

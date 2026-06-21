@@ -8,6 +8,7 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnMarkProcessed;
         private Guna.UI2.WinForms.Guna2Button btnRefresh;
         private Guna.UI2.WinForms.Guna2Button btnRunAudit;
+        private Guna.UI2.WinForms.Guna2Button btnXoaDaXuLy;
         private System.Windows.Forms.Label lblCount;
         private System.Windows.Forms.Label lblTitle;
 
@@ -27,6 +28,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnMarkProcessed = new Guna.UI2.WinForms.Guna2Button();
             this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.btnRunAudit = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoaDaXuLy = new Guna.UI2.WinForms.Guna2Button();
             this.lblCount = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCanhBao)).BeginInit();
@@ -99,6 +101,17 @@ namespace HETHONGTINHNHUANBUT
             this.btnMarkProcessed.TabIndex = 3;
             this.btnMarkProcessed.Text = "✓ Đánh dấu đã xử lý";
             // 
+            // btnXoaDaXuLy
+            // 
+            this.btnXoaDaXuLy.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this.btnXoaDaXuLy.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXoaDaXuLy.ForeColor = System.Drawing.Color.White;
+            this.btnXoaDaXuLy.Location = new System.Drawing.Point(450, 55);
+            this.btnXoaDaXuLy.Name = "btnXoaDaXuLy";
+            this.btnXoaDaXuLy.Size = new System.Drawing.Size(150, 32);
+            this.btnXoaDaXuLy.TabIndex = 4;
+            this.btnXoaDaXuLy.Text = "🗑 Xoá đã xử lý";
+            // 
             // btnRefresh
             // 
             this.btnRefresh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
@@ -157,6 +170,7 @@ namespace HETHONGTINHNHUANBUT
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnRunAudit);
             this.Controls.Add(this.btnMarkProcessed);
+            this.Controls.Add(this.btnXoaDaXuLy);
             this.Controls.Add(this.lblCount);
             this.Controls.Add(this.dgvCanhBao);
             this.Name = "FrmCanhBaoAI";
