@@ -229,18 +229,18 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
+                int newMa = 1;
+                string noiDungBaiViet = txtNoiDungBaiViet.Text?.Trim() ?? "";
+
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    int newMa = 1;
                     string sqlMax = "SELECT ISNULL(MAX(Maso), 0) + 1 FROM Nhuanbut";
                     using (SqlCommand cmdMax = new SqlCommand(sqlMax, conn))
                     {
                         object result = await cmdMax.ExecuteScalarAsync();
                         newMa = Convert.ToInt32(result);
                     }
-
-                    string noiDungBaiViet = txtNoiDungBaiViet.Text?.Trim() ?? "";
 
                     string sql = @"INSERT INTO Nhuanbut (Maso, Tenbai, Trang, Muc, TienNhuanbut, Butdanh, MsBao, Vung, VungChuyenDen, addby, ngaychuyen, NguoiNhap, TrangThaiDuyet, NoiDungBaiViet) 
                                    VALUES (@ma, @ten, @trang, @muc, 0, @bd, @msBao, @vung, @vungCD, @user, GETDATE(), @nguoiNhap, 0, @noiDung)";
@@ -260,7 +260,10 @@ namespace HETHONGTINHNHUANBUT
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
-                MessageBox.Show("Nộp bài thành công! Bài viết đang chờ kiểm duyệt.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Nộp bài thành công! Đang chạy phân tích AI...", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                await PhanTichAISauKhiNop(newMa, noiDungBaiViet);
+
                 ClearInputs();
                 await LoadBaiCuaToiAsync();
             }
@@ -329,6 +332,23 @@ namespace HETHONGTINHNHUANBUT
                 btnPhanTichAI.Enabled = true;
                 btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
             }
+        }
+
+        private async Task PhanTichAISauKhiNop(int maso, string noiDung)
+        {
+            string tenBai = txtTenBai.Text?.Trim() ?? "";
+            string muc = txtMuc.Text?.Trim() ?? "";
+            string butDanh = cboButDanh.Text?.Trim() ?? "";
+
+            if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh) || string.IsNullOrEmpty(noiDung))
+                return;
+
+            try
+            {
+                BaiVietDanhGiaResult result = await BaiVietAIHelper.DanhGiaBaiVietAsync(tenBai, muc, noiDung, butDanh);
+                await LuuKetQuaAIVaoDb(maso.ToString(), result);
+            }
+            catch { }
         }
 
         private async Task LuuKetQuaAIVaoDb(string maso, BaiVietDanhGiaResult result)
