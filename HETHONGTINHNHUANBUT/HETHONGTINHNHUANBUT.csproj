@@ -119,9 +119,6 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Resources.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Resources.Extensions.6.0.0\lib\net462\System.Resources.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
@@ -210,12 +207,6 @@
     </Compile>
     <Compile Include="FrmTaiKhoan.Designer.cs">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FrmTongQuan.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmTongQuan.Designer.cs">
-      <DependentUpon>FrmTongQuan.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmTraCuuNhuanBut.cs">
       <SubType>Form</SubType>
@@ -385,9 +376,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTaiKhoan.resx">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmTongQuan.resx">
-      <DependentUpon>FrmTongQuan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmThanhToan.resx">
       <DependentUpon>FrmThanhToan.cs</DependentUpon>

@@ -39,8 +39,8 @@ namespace HETHONGTINHNHUANBUT
             }
             else
             {
-                btnTongQuan_Click(null, null);
-                SetActiveButton(btnTongQuan);
+                btnDashboard_Click(null, null);
+                SetActiveButton(btnDashboard);
             }
 
             pnlMenu.ResumeLayout();
@@ -304,7 +304,6 @@ namespace HETHONGTINHNHUANBUT
             frm.NguoiDangNhap = this.currentUserName;
             OpenChildForm(frm, sender as Guna2Button);
         }
-        private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
         private void btnTacGia_Click(object sender, EventArgs e)
         {
             bool isExpanded = btnSubTacGiaHoSo.Visible;
