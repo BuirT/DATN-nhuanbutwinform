@@ -46,7 +46,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 225);
             this.pnlTop.TabIndex = 0;
 
@@ -71,7 +71,7 @@
             this.lblMaSo.Text = "";
 
             // btnRefresh
-            this.btnRefresh.Animated = true;
+            this.btnRefresh.Animated = false;
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.BorderRadius = 8;
             this.btnRefresh.FillColor = System.Drawing.Color.FromArgb(241, 245, 249);
@@ -96,7 +96,7 @@
             this.pnlDaNhan.Name = "pnlDaNhan";
             this.pnlDaNhan.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlDaNhan.ShadowDecoration.Depth = 8;
-            this.pnlDaNhan.ShadowDecoration.Enabled = true;
+            this.pnlDaNhan.ShadowDecoration.Enabled = false;
             this.pnlDaNhan.Size = new System.Drawing.Size(380, 110);
             this.pnlDaNhan.TabIndex = 3;
 
@@ -131,7 +131,7 @@
             this.pnlChoChi.Name = "pnlChoChi";
             this.pnlChoChi.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlChoChi.ShadowDecoration.Depth = 8;
-            this.pnlChoChi.ShadowDecoration.Enabled = true;
+            this.pnlChoChi.ShadowDecoration.Enabled = false;
             this.pnlChoChi.Size = new System.Drawing.Size(380, 110);
             this.pnlChoChi.TabIndex = 4;
 
@@ -168,7 +168,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1160, 475);
 
             // dgvTraCuu

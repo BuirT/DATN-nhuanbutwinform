@@ -49,13 +49,6 @@ namespace HETHONGTINHNHUANBUT
         {
             this.SuspendLayout();
 
-            panelOverlay.ShadowDecoration.Enabled = false;
-            panelOverlay.ShadowDecoration.Depth = 0;
-            txtUsername.Animated = false;
-            txtPassword.Animated = false;
-            btnLogin.Animated = false;
-            btnExit.Animated = false;
-
             if (!_dbFixed) { await Task.Run(() => TaoBangUsersNeuChuaCo()); _dbFixed = true; }
 
             txtUsername.Focus();

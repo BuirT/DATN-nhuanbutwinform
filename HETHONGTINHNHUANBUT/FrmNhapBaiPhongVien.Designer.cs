@@ -1,4 +1,4 @@
-namespace HETHONGTINHNHUANBUT
+﻿namespace HETHONGTINHNHUANBUT
 {
     partial class FrmNhapBaiPhongVien
     {
@@ -65,7 +65,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 520);
             this.pnlTop.TabIndex = 0;
 
@@ -240,7 +240,7 @@ namespace HETHONGTINHNHUANBUT
             this.cboVungChuyenDen.TabIndex = 6;
 
             // btnNopBai
-            this.btnNopBai.Animated = true;
+            this.btnNopBai.Animated = false;
             this.btnNopBai.BorderRadius = 8;
             this.btnNopBai.FillColor = System.Drawing.Color.FromArgb(24, 119, 242);
             this.btnNopBai.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -253,7 +253,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnNopBai.Click += new System.EventHandler(this.btnNopBai_Click);
 
             // btnKiemToanAI
-            this.btnKiemToanAI.Animated = true;
+            this.btnKiemToanAI.Animated = false;
             this.btnKiemToanAI.BorderRadius = 8;
             this.btnKiemToanAI.FillColor = System.Drawing.Color.FromArgb(139, 92, 246);
             this.btnKiemToanAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -286,7 +286,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1160, 185);
             this.pnlBottom.TabIndex = 1;
 

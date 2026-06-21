@@ -1,4 +1,4 @@
-using Guna.Charts.WinForms;
+﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using System.Drawing;
 using System.Windows.Forms;
@@ -504,7 +504,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlGridBox.Padding = new System.Windows.Forms.Padding(15);
             this.pnlGridBox.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlGridBox.ShadowDecoration.Depth = 6;
-            this.pnlGridBox.ShadowDecoration.Enabled = true;
+            this.pnlGridBox.ShadowDecoration.Enabled = false;
             this.pnlGridBox.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 4, 4);
             this.pnlGridBox.Size = new System.Drawing.Size(1211, 342);
             this.pnlGridBox.TabIndex = 2;
@@ -567,7 +567,7 @@ namespace HETHONGTINHNHUANBUT
             this.chartPanel1.Padding = new System.Windows.Forms.Padding(15);
             this.chartPanel1.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.chartPanel1.ShadowDecoration.Depth = 6;
-            this.chartPanel1.ShadowDecoration.Enabled = true;
+            this.chartPanel1.ShadowDecoration.Enabled = false;
             this.chartPanel1.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 4, 4);
             this.chartPanel1.Size = new System.Drawing.Size(587, 342);
             this.chartPanel1.TabIndex = 0;
@@ -611,7 +611,7 @@ namespace HETHONGTINHNHUANBUT
             this.chartPanel2.Padding = new System.Windows.Forms.Padding(15);
             this.chartPanel2.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.chartPanel2.ShadowDecoration.Depth = 6;
-            this.chartPanel2.ShadowDecoration.Enabled = true;
+            this.chartPanel2.ShadowDecoration.Enabled = false;
             this.chartPanel2.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 4, 4);
             this.chartPanel2.Size = new System.Drawing.Size(588, 342);
             this.chartPanel2.TabIndex = 1;
@@ -654,7 +654,7 @@ namespace HETHONGTINHNHUANBUT
             this.chartPanel3.Padding = new System.Windows.Forms.Padding(15);
             this.chartPanel3.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.chartPanel3.ShadowDecoration.Depth = 6;
-            this.chartPanel3.ShadowDecoration.Enabled = true;
+            this.chartPanel3.ShadowDecoration.Enabled = false;
             this.chartPanel3.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 4, 4);
             this.chartPanel3.Size = new System.Drawing.Size(587, 342);
             this.chartPanel3.TabIndex = 2;
@@ -698,7 +698,7 @@ namespace HETHONGTINHNHUANBUT
             this.chartPanel4.Padding = new System.Windows.Forms.Padding(15);
             this.chartPanel4.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.chartPanel4.ShadowDecoration.Depth = 6;
-            this.chartPanel4.ShadowDecoration.Enabled = true;
+            this.chartPanel4.ShadowDecoration.Enabled = false;
             this.chartPanel4.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 4, 4);
             this.chartPanel4.Size = new System.Drawing.Size(588, 342);
             this.chartPanel4.TabIndex = 3;

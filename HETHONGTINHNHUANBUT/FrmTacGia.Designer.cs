@@ -107,7 +107,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Controls.Add(this.btnXoa);
             this.pnlTop.Controls.Add(this.btnLamMoi);
 
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
 
@@ -135,7 +135,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnChonAnh
             // 
-            this.btnChonAnh.Animated = true;
+            this.btnChonAnh.Animated = false;
             this.btnChonAnh.BorderRadius = 8;
             this.btnChonAnh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.btnChonAnh.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -204,7 +204,7 @@ namespace HETHONGTINHNHUANBUT
             this.txtNganHang.BorderRadius = 8; this.txtNganHang.BorderColor = borderCol; this.txtNganHang.FocusedState.BorderColor = focusCol;
             this.txtNganHang.Location = new System.Drawing.Point(190, 217); this.txtNganHang.Size = new System.Drawing.Size(500, 36);
 
-            this.btnChonPDF.Animated = true; this.btnChonPDF.BorderRadius = 8;
+            this.btnChonPDF.Animated = false; this.btnChonPDF.BorderRadius = 8;
             this.btnChonPDF.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnChonPDF.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnChonPDF.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
@@ -213,7 +213,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnChonPDF.Text = "Đính kèm CV (PDF)";
             this.btnChonPDF.Click += new System.EventHandler(this.btnChonPDF_Click);
 
-            this.btnXemPDF.Animated = true; this.btnXemPDF.BorderRadius = 8;
+            this.btnXemPDF.Animated = false; this.btnXemPDF.BorderRadius = 8;
             this.btnXemPDF.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(253)))), ((int)(((byte)(244)))));
             this.btnXemPDF.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnXemPDF.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
@@ -229,7 +229,7 @@ namespace HETHONGTINHNHUANBUT
             this.lblFilePDF.Text = "Chưa có file...";
 
             // Nút tác vụ CRUD
-            this.btnThem.Animated = true; this.btnThem.BorderRadius = 8;
+            this.btnThem.Animated = false; this.btnThem.BorderRadius = 8;
             this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnThem.ForeColor = System.Drawing.Color.White;
@@ -238,7 +238,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnThem.Text = "THÊM MỚI";
             this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
 
-            this.btnSua.Animated = true; this.btnSua.BorderRadius = 8;
+            this.btnSua.Animated = false; this.btnSua.BorderRadius = 8;
             this.btnSua.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
             this.btnSua.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSua.ForeColor = System.Drawing.Color.White;
@@ -247,7 +247,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnSua.Text = "CẬP NHẬT";
             this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
 
-            this.btnXoa.Animated = true; this.btnXoa.BorderRadius = 8;
+            this.btnXoa.Animated = false; this.btnXoa.BorderRadius = 8;
             this.btnXoa.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnXoa.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(165)))), ((int)(((byte)(165)))));
             this.btnXoa.BorderThickness = 1;
@@ -259,7 +259,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnXoa.Text = "XÓA HỒ SƠ";
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
 
-            this.btnLamMoi.Animated = true; this.btnLamMoi.BorderRadius = 8;
+            this.btnLamMoi.Animated = false; this.btnLamMoi.BorderRadius = 8;
             this.btnLamMoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnLamMoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
@@ -286,7 +286,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.Controls.Add(this.txtTimKiem);
             this.pnlBottom.Controls.Add(this.dgvTacGia);
 
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
 

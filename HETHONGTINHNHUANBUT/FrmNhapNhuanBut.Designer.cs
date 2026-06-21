@@ -86,7 +86,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 355);
             this.pnlTop.TabIndex = 0;
             // lblTitle
@@ -293,7 +293,7 @@
 
             // ==================== CÁC NÚT ====================
             // btnThem (LƯU DỮ LIỆU)
-            this.btnThem.Animated = true;
+            this.btnThem.Animated = false;
             this.btnThem.BorderRadius = 8;
             this.btnThem.FillColor = System.Drawing.Color.FromArgb(24, 119, 242);
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -306,7 +306,7 @@
             this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
 
             // btnSua (CẬP NHẬT) - ĐÃ HIỂN THỊ
-            this.btnSua.Animated = true;
+            this.btnSua.Animated = false;
             this.btnSua.BorderRadius = 8;
             this.btnSua.FillColor = System.Drawing.Color.FromArgb(245, 158, 11);
             this.btnSua.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -320,7 +320,7 @@
             this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
 
             // btnXoa (XÓA BÀI)
-            this.btnXoa.Animated = true;
+            this.btnXoa.Animated = false;
             this.btnXoa.BorderColor = System.Drawing.Color.FromArgb(252, 165, 165);
             this.btnXoa.BorderRadius = 8;
             this.btnXoa.BorderThickness = 1;
@@ -336,7 +336,7 @@
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
 
             // btnLamMoi (LÀM MỚI)
-            this.btnLamMoi.Animated = true;
+            this.btnLamMoi.Animated = false;
             this.btnLamMoi.BorderRadius = 8;
             this.btnLamMoi.FillColor = System.Drawing.Color.FromArgb(241, 245, 249);
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -350,7 +350,7 @@
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
 
             // btnKiemToanAI (AI KIỂM TOÁN)
-            this.btnKiemToanAI.Animated = true;
+            this.btnKiemToanAI.Animated = false;
             this.btnKiemToanAI.BorderRadius = 8;
             this.btnKiemToanAI.FillColor = System.Drawing.Color.FromArgb(139, 92, 246);
             this.btnKiemToanAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -389,7 +389,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1160, 396);
             this.pnlBottom.TabIndex = 1;
 

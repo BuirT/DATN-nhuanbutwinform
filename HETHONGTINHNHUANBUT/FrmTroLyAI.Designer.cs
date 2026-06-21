@@ -42,7 +42,7 @@
             this.panelOverlay.Padding = new System.Windows.Forms.Padding(20);
             this.panelOverlay.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.panelOverlay.ShadowDecoration.Depth = 12;
-            this.panelOverlay.ShadowDecoration.Enabled = true;
+            this.panelOverlay.ShadowDecoration.Enabled = false;
             this.panelOverlay.Size = new System.Drawing.Size(1485, 652);
             this.panelOverlay.TabIndex = 0;
             // 
@@ -73,7 +73,7 @@
             // 
             this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Animated = true;
+            this.btnRefresh.Animated = false;
             this.btnRefresh.BorderRadius = 10;
             this.btnRefresh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -152,7 +152,7 @@
             // btnGui
             // 
             this.btnGui.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGui.Animated = true;
+            this.btnGui.Animated = false;
             this.btnGui.BorderRadius = 8;
             this.btnGui.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnGui.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
@@ -183,6 +183,7 @@
             this.pnlHeader.PerformLayout();
             this.pnlChat.ResumeLayout(false);
             this.pnlInput.ResumeLayout(false);
+            this.DoubleBuffered = true;
             this.ResumeLayout(false);
 
         }

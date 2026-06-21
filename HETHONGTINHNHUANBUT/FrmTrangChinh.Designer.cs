@@ -69,7 +69,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Padding = new System.Windows.Forms.Padding(14, 0, 14, 0);
             this.pnlMenu.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.pnlMenu.ShadowDecoration.Depth = 12;
-            this.pnlMenu.ShadowDecoration.Enabled = true;
+            this.pnlMenu.ShadowDecoration.Enabled = false;
             this.pnlMenu.Size = new System.Drawing.Size(260, 750);
             this.pnlMenu.TabIndex = 0;
             // 
@@ -498,7 +498,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlMain.ShadowDecoration.Depth = 10;
-            this.pnlMain.ShadowDecoration.Enabled = true;
+            this.pnlMain.ShadowDecoration.Enabled = false;
             this.pnlMain.Size = new System.Drawing.Size(940, 750);
             this.pnlMain.TabIndex = 1;
             // 
@@ -523,6 +523,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenuFooter.ResumeLayout(false);
             this.pnlLogo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
+            this.DoubleBuffered = true;
             this.ResumeLayout(false);
 
         }

@@ -50,7 +50,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1460, 155);
             this.pnlTop.TabIndex = 0;
             this.pnlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlTop_Paint);
@@ -120,7 +120,7 @@
             // btnXacNhan
             // 
             this.btnXacNhan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXacNhan.Animated = true;
+            this.btnXacNhan.Animated = false;
             this.btnXacNhan.BorderRadius = 8;
             this.btnXacNhan.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnXacNhan.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -135,7 +135,7 @@
             // btnTuChoi
             // 
             this.btnTuChoi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTuChoi.Animated = true;
+            this.btnTuChoi.Animated = false;
             this.btnTuChoi.BorderRadius = 8;
             this.btnTuChoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.btnTuChoi.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -162,7 +162,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1460, 550);
             this.pnlBottom.TabIndex = 2;
             // 

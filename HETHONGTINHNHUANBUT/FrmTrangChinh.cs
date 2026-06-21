@@ -29,9 +29,6 @@ namespace HETHONGTINHNHUANBUT
             pnlMenu.SuspendLayout();
             pnlMenuScroll.SuspendLayout();
 
-            pnlMenu.ShadowDecoration.Enabled = false;
-            pnlMain.ShadowDecoration.Enabled = false;
-
             if (!_dbFixed) { await AutoFixDatabaseColumns(); _dbFixed = true; }
 
             AdjustMenuForScreen();
@@ -203,9 +200,7 @@ namespace HETHONGTINHNHUANBUT
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet, btnPhieuChi, btnDuyetChi,
                     btnDotThanhToan, btnTaiKhoan,
-                    btnTacGia, btnSubTacGiaHoSo, btnSubButDanh,
-                    btnQuanLyBao, btnSubSoBao, btnSubLoaiBao,
-                    btnBaoCao, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD);
+                    btnTacGia, btnQuanLyBao, btnBaoCao);
                 return;
             }
 

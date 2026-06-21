@@ -1,4 +1,4 @@
-namespace HETHONGTINHNHUANBUT
+﻿namespace HETHONGTINHNHUANBUT
 {
     partial class FrmBaoCaoLanhDao
     {
@@ -58,7 +58,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1460, 120);
             this.pnlTop.TabIndex = 0;
             // 
@@ -104,7 +104,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnXem
             // 
-            this.btnXem.Animated = true;
+            this.btnXem.Animated = false;
             this.btnXem.BorderRadius = 8;
             this.btnXem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnXem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -118,7 +118,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnExcel
             // 
-            this.btnExcel.Animated = true;
+            this.btnExcel.Animated = false;
             this.btnExcel.BorderRadius = 8;
             this.btnExcel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
             this.btnExcel.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -141,7 +141,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlChart.Name = "pnlChart";
             this.pnlChart.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlChart.ShadowDecoration.Depth = 8;
-            this.pnlChart.ShadowDecoration.Enabled = true;
+            this.pnlChart.ShadowDecoration.Enabled = false;
             this.pnlChart.Size = new System.Drawing.Size(1460, 180);
             this.pnlChart.TabIndex = 1;
             // 
@@ -158,7 +158,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlSummary.Name = "pnlSummary";
             this.pnlSummary.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlSummary.ShadowDecoration.Depth = 8;
-            this.pnlSummary.ShadowDecoration.Enabled = true;
+            this.pnlSummary.ShadowDecoration.Enabled = false;
             this.pnlSummary.Size = new System.Drawing.Size(1460, 250);
             this.pnlSummary.TabIndex = 2;
             // 
@@ -231,7 +231,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlDetail.Name = "pnlDetail";
             this.pnlDetail.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlDetail.ShadowDecoration.Depth = 8;
-            this.pnlDetail.ShadowDecoration.Enabled = true;
+            this.pnlDetail.ShadowDecoration.Enabled = false;
             this.pnlDetail.Size = new System.Drawing.Size(1460, 135);
             this.pnlDetail.TabIndex = 3;
             // 

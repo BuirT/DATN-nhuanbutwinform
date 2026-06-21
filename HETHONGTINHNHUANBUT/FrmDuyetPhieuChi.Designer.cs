@@ -57,7 +57,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 80);
             this.pnlTop.TabIndex = 0;
 
@@ -129,7 +129,7 @@
             this.pnlGrid.Name = "pnlGrid";
             this.pnlGrid.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlGrid.ShadowDecoration.Depth = 8;
-            this.pnlGrid.ShadowDecoration.Enabled = true;
+            this.pnlGrid.ShadowDecoration.Enabled = false;
             this.pnlGrid.Size = new System.Drawing.Size(1160, 470);
             this.pnlGrid.TabIndex = 1;
 
@@ -228,7 +228,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1160, 185);
             this.pnlBottom.TabIndex = 2;
 
@@ -313,7 +313,7 @@
             // 
             // btnXoa
             // 
-            this.btnXoa.Animated = true;
+            this.btnXoa.Animated = false;
             this.btnXoa.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(165)))), ((int)(((byte)(165)))));
             this.btnXoa.BorderRadius = 8;
             this.btnXoa.BorderThickness = 1;
@@ -331,7 +331,7 @@
             // 
             // btnDuyet
             // 
-            this.btnDuyet.Animated = true;
+            this.btnDuyet.Animated = false;
             this.btnDuyet.BorderRadius = 8;
             this.btnDuyet.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnDuyet.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -346,7 +346,7 @@
             // 
             // btnTuChoi
             // 
-            this.btnTuChoi.Animated = true;
+            this.btnTuChoi.Animated = false;
             this.btnTuChoi.BorderRadius = 8;
             this.btnTuChoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.btnTuChoi.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);

@@ -56,7 +56,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 155);
             this.pnlTop.TabIndex = 0;
             // 
@@ -138,7 +138,7 @@
             // 
             // btnTimKiem
             // 
-            this.btnTimKiem.Animated = true;
+            this.btnTimKiem.Animated = false;
             this.btnTimKiem.BorderRadius = 8;
             this.btnTimKiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.btnTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -152,7 +152,7 @@
             // 
             // btnXuatExcel
             // 
-            this.btnXuatExcel.Animated = true;
+            this.btnXuatExcel.Animated = false;
             this.btnXuatExcel.BorderRadius = 8;
             this.btnXuatExcel.FillColor = System.Drawing.Color.DarkOrange;
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -190,7 +190,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1160, 450);
             this.pnlBottom.TabIndex = 1;
             // 

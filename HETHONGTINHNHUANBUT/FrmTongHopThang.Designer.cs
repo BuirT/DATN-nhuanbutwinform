@@ -48,7 +48,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(2540, 120);
             this.pnlTop.TabIndex = 0;
             // 
@@ -94,7 +94,7 @@
             // 
             // btnXemBaoCao
             // 
-            this.btnXemBaoCao.Animated = true;
+            this.btnXemBaoCao.Animated = false;
             this.btnXemBaoCao.BorderRadius = 8;
             this.btnXemBaoCao.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnXemBaoCao.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -108,7 +108,7 @@
             // 
             // btnXuatExcel
             // 
-            this.btnXuatExcel.Animated = true;
+            this.btnXuatExcel.Animated = false;
             this.btnXuatExcel.BorderRadius = 8;
             this.btnXuatExcel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -134,7 +134,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(2540, 1228);
             this.pnlBottom.TabIndex = 1;
             // 

@@ -18,7 +18,6 @@ namespace HETHONGTINHNHUANBUT
         public FrmCanhBaoAI()
         {
             InitializeComponent();
-            this.DoubleBuffered = true;
             UIHelper.FormatGiaoDienBang(dgvCanhBao);
             this.Load += FrmCanhBaoAI_Load;
             this.btnRefresh.Click += btnRefresh_Click;
@@ -168,6 +167,23 @@ namespace HETHONGTINHNHUANBUT
             int id = Convert.ToInt32(dgvCanhBao.CurrentRow.Cells["Id"].Value);
             await AIAuditService.DanhDauDaXuLyAsync(id);
             await TaiDuLieuAsync();
+        }
+
+        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            if (dtCanhBao == null) return;
+            string keyword = txtTimKiem.Text.Trim().ToLower();
+            DataView dv = new DataView(dtCanhBao);
+            if (!string.IsNullOrEmpty(keyword))
+                dv.RowFilter = string.Format(
+                    "CONVERT(LoaiCanhBao, 'System.String') LIKE '%{0}%' OR " +
+                    "CONVERT(TenBai, 'System.String') LIKE '%{0}%' OR " +
+                    "CONVERT(Butdanh, 'System.String') LIKE '%{0}%' OR " +
+                    "CONVERT(NoiDung, 'System.String') LIKE '%{0}%'",
+                    keyword.Replace("'", "''"));
+            else
+                dv.RowFilter = "";
+            dgvCanhBao.DataSource = dv;
         }
 
         private void dgvCanhBao_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

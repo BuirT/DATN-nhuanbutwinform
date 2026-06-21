@@ -85,7 +85,7 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 200);
             this.pnlTop.TabIndex = 0;
             // 
@@ -305,7 +305,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1160, 355);
             this.pnlBottom.TabIndex = 1;
             // 
@@ -406,7 +406,7 @@
             this.pnlFooter.Name = "pnlFooter";
             this.pnlFooter.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlFooter.ShadowDecoration.Depth = 8;
-            this.pnlFooter.ShadowDecoration.Enabled = true;
+            this.pnlFooter.ShadowDecoration.Enabled = false;
             this.pnlFooter.Size = new System.Drawing.Size(1160, 177);
             this.pnlFooter.TabIndex = 2;
             // 
@@ -568,7 +568,7 @@
             // 
             // btnLapPhieu
             // 
-            this.btnLapPhieu.Animated = true;
+            this.btnLapPhieu.Animated = false;
             this.btnLapPhieu.BorderRadius = 8;
             this.btnLapPhieu.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.btnLapPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -582,7 +582,7 @@
             // 
             // btnHuy
             // 
-            this.btnHuy.Animated = true;
+            this.btnHuy.Animated = false;
             this.btnHuy.BorderRadius = 8;
             this.btnHuy.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);

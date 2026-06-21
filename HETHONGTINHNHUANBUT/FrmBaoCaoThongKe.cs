@@ -22,7 +22,6 @@ namespace HETHONGTINHNHUANBUT
         public FrmBaoCaoThongKe()
         {
             InitializeComponent();
-            this.DoubleBuffered = true;
             UIHelper.FormatGiaoDienBang(dgvBaoCao);
             this.Load += FrmBaoCaoThongKe_Load;
             this.btnLoc.Click += btnLoc_Click;

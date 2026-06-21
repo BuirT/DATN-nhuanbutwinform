@@ -44,7 +44,7 @@
             this.panelOverlay.Name = "panelOverlay";
             this.panelOverlay.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.panelOverlay.ShadowDecoration.Depth = 20;
-            this.panelOverlay.ShadowDecoration.Enabled = true;
+            this.panelOverlay.ShadowDecoration.Enabled = false;
             this.panelOverlay.Size = new System.Drawing.Size(420, 450);
             this.panelOverlay.TabIndex = 0;
             // 
@@ -71,7 +71,7 @@
             // 
             // txtUsername
             // 
-            this.txtUsername.Animated = true;
+            this.txtUsername.Animated = false;
             this.txtUsername.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.txtUsername.BorderRadius = 10;
             this.txtUsername.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -93,7 +93,7 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Animated = true;
+            this.txtPassword.Animated = false;
             this.txtPassword.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.txtPassword.BorderRadius = 10;
             this.txtPassword.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -120,7 +120,7 @@
             // 
             // btnLogin
             // 
-            this.btnLogin.Animated = true;
+            this.btnLogin.Animated = false;
             this.btnLogin.BorderRadius = 22;
             this.btnLogin.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLogin.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
@@ -136,7 +136,7 @@
             // 
             // btnExit
             // 
-            this.btnExit.Animated = true;
+            this.btnExit.Animated = false;
             this.btnExit.FillColor = System.Drawing.Color.Transparent;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Underline);
             this.btnExit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));

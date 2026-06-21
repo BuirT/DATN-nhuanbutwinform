@@ -66,7 +66,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1134, 215);
             this.pnlTop.TabIndex = 0;
             // 
@@ -160,7 +160,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnThem
             // 
-            this.btnThem.Animated = true;
+            this.btnThem.Animated = false;
             this.btnThem.BorderRadius = 8;
             this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -174,7 +174,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSua
             // 
-            this.btnSua.Animated = true;
+            this.btnSua.Animated = false;
             this.btnSua.BorderRadius = 8;
             this.btnSua.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
             this.btnSua.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -188,7 +188,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnXoa
             // 
-            this.btnXoa.Animated = true;
+            this.btnXoa.Animated = false;
             this.btnXoa.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(165)))), ((int)(((byte)(165)))));
             this.btnXoa.BorderRadius = 8;
             this.btnXoa.BorderThickness = 1;
@@ -205,7 +205,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnLamMoi
             // 
-            this.btnLamMoi.Animated = true;
+            this.btnLamMoi.Animated = false;
             this.btnLamMoi.BorderRadius = 8;
             this.btnLamMoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -233,7 +233,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.ShadowDecoration.Enabled = true;
+            this.pnlBottom.ShadowDecoration.Enabled = false;
             this.pnlBottom.Size = new System.Drawing.Size(1134, 395);
             this.pnlBottom.TabIndex = 1;
             // 

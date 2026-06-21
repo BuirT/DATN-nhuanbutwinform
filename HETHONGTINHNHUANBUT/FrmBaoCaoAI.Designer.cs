@@ -1,4 +1,4 @@
-namespace HETHONGTINHNHUANBUT
+﻿namespace HETHONGTINHNHUANBUT
 {
     partial class FrmBaoCaoAI
     {
@@ -38,7 +38,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.ShadowDecoration.Enabled = true;
+            this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1160, 120);
             this.pnlTop.TabIndex = 0;
 
@@ -66,7 +66,7 @@ namespace HETHONGTINHNHUANBUT
             this.dtpThang.Size = new System.Drawing.Size(160, 25);
             this.dtpThang.TabIndex = 3;
 
-            this.btnTaoBaoCao.Animated = true;
+            this.btnTaoBaoCao.Animated = false;
             this.btnTaoBaoCao.BorderRadius = 8;
             this.btnTaoBaoCao.FillColor = System.Drawing.Color.FromArgb(79, 70, 229);
             this.btnTaoBaoCao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -78,7 +78,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnTaoBaoCao.Text = "🤖 TẠO BÁO CÁO AI";
             this.btnTaoBaoCao.Click += new System.EventHandler(this.btnTaoBaoCao_Click);
 
-            this.btnCopy.Animated = true;
+            this.btnCopy.Animated = false;
             this.btnCopy.BorderRadius = 8;
             this.btnCopy.FillColor = System.Drawing.Color.FromArgb(16, 185, 129);
             this.btnCopy.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -90,7 +90,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnCopy.Text = "📋 COPY";
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
 
-            this.btnLuu.Animated = true;
+            this.btnLuu.Animated = false;
             this.btnLuu.BorderRadius = 8;
             this.btnLuu.FillColor = System.Drawing.Color.FromArgb(245, 158, 11);
             this.btnLuu.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -112,7 +112,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBot.Name = "pnlBot";
             this.pnlBot.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
             this.pnlBot.ShadowDecoration.Depth = 8;
-            this.pnlBot.ShadowDecoration.Enabled = true;
+            this.pnlBot.ShadowDecoration.Enabled = false;
             this.pnlBot.Size = new System.Drawing.Size(1160, 630);
             this.pnlBot.TabIndex = 1;
 
