@@ -42,7 +42,6 @@ namespace HETHONGTINHNHUANBUT
             this.btnTacGia = new Guna.UI2.WinForms.Guna2Button();
             this.btnDashboard = new Guna.UI2.WinForms.Guna2Button();
             this.btnTroLyAI = new Guna.UI2.WinForms.Guna2Button();
-            this.btnTongQuan = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.pnlMain = new Guna.UI2.WinForms.Guna2Panel();
@@ -80,7 +79,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.Controls.Add(this.btnTacGia);
             this.pnlMenu.Controls.Add(this.btnTroLyAI);
             this.pnlMenu.Controls.Add(this.btnDashboard);
-            this.pnlMenu.Controls.Add(this.btnTongQuan);
             this.pnlMenu.Controls.Add(this.pnlLogo);
             this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlMenu.Location = new System.Drawing.Point(0, 0);
@@ -443,21 +441,6 @@ namespace HETHONGTINHNHUANBUT
             this.btnDashboard.TextOffset = new System.Drawing.Point(20, 0);
             this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
             // 
-            // btnTongQuan
-            // 
-            this.btnTongQuan.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnTongQuan.FillColor = System.Drawing.Color.Transparent;
-            this.btnTongQuan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnTongQuan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnTongQuan.Location = new System.Drawing.Point(14, 70);
-            this.btnTongQuan.Name = "btnTongQuan";
-            this.btnTongQuan.Size = new System.Drawing.Size(235, 50);
-            this.btnTongQuan.TabIndex = 0;
-            this.btnTongQuan.Text = "DASHBOARD HỆ THỐNG";
-            this.btnTongQuan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnTongQuan.TextOffset = new System.Drawing.Point(20, 0);
-            this.btnTongQuan.Click += new System.EventHandler(this.btnTongQuan_Click);
-            // 
             // pnlLogo
             // 
             this.pnlLogo.BackColor = System.Drawing.Color.Transparent;
@@ -517,7 +500,6 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Panel pnlMenu;
         private Guna.UI2.WinForms.Guna2Panel pnlLogo;
         private System.Windows.Forms.PictureBox picLogo;
-        private Guna.UI2.WinForms.Guna2Button btnTongQuan;
         private Guna.UI2.WinForms.Guna2Button btnDashboard;
         private Guna.UI2.WinForms.Guna2Button btnBaoCaoAI;
         private Guna.UI2.WinForms.Guna2Button btnBaoCaoThongKe;
