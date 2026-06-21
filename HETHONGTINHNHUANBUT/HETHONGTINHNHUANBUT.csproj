@@ -168,7 +168,9 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="System.ValueTuple" />
+    <Reference Include="System.ValueTuple, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.6.2\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
@@ -290,12 +292,6 @@
     <Compile Include="FrmTongHopThang.Designer.cs">
       <DependentUpon>FrmTongHopThang.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmTongQuan.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmTongQuan.Designer.cs">
-      <DependentUpon>FrmTongQuan.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmTrangChinh.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -355,6 +351,9 @@
     <EmbeddedResource Include="FrmButdanh.resx">
       <DependentUpon>FrmButdanh.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmDashboard.resx">
+      <DependentUpon>FrmDashboard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmDuyetPhieuChi.resx">
       <DependentUpon>FrmDuyetPhieuChi.cs</DependentUpon>
     </EmbeddedResource>
@@ -384,9 +383,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTongHopThang.resx">
       <DependentUpon>FrmTongHopThang.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmTongQuan.resx">
-      <DependentUpon>FrmTongQuan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmTraCuuNhuanBut.resx">
       <DependentUpon>FrmTraCuuNhuanBut.cs</DependentUpon>

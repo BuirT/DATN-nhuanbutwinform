@@ -104,6 +104,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlFilter.Controls.Add(this.btnLoc);
             this.pnlFilter.Controls.Add(this.btnXuatExcel);
 
+            this.dgvBaoCao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvBaoCao.Location = new System.Drawing.Point(20, 130);
             this.dgvBaoCao.Size = new System.Drawing.Size(1100, 450);
             this.dgvBaoCao.ReadOnly = true;
@@ -111,24 +112,27 @@ namespace HETHONGTINHNHUANBUT
             this.dgvBaoCao.AllowUserToDeleteRows = false;
             this.dgvBaoCao.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 
+            this.lblTongCong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblTongCong.Text = "Tổng cộng: 0 VNĐ";
             this.lblTongCong.Font = new System.Drawing.Font("Segoe UI", 12, System.Drawing.FontStyle.Bold);
             this.lblTongCong.ForeColor = System.Drawing.Color.FromArgb(30, 41, 59);
             this.lblTongCong.Location = new System.Drawing.Point(20, 590);
             this.lblTongCong.Size = new System.Drawing.Size(400, 25);
 
+            this.btnIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIn.Text = "🖨 In";
             this.btnIn.FillColor = System.Drawing.Color.FromArgb(100, 116, 139);
             this.btnIn.ForeColor = System.Drawing.Color.White;
             this.btnIn.Location = new System.Drawing.Point(1030, 587); this.btnIn.Size = new System.Drawing.Size(90, 35);
 
-            this.ClientSize = new System.Drawing.Size(1140, 640);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.dgvBaoCao);
             this.Controls.Add(this.lblTongCong);
             this.Controls.Add(this.btnIn);
-            this.BackColor = System.Drawing.Color.FromArgb(241, 245, 249);
+            this.BackColor = System.Drawing.Color.FromArgb(244, 247, 254);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.Name = "FrmBaoCaoThongKe";
             this.Text = "Báo Cáo Thống Kê";
             this.pnlFilter.ResumeLayout(false);

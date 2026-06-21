@@ -68,14 +68,15 @@ namespace HETHONGTINHNHUANBUT
             this.dgvCanhBao.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCanhBao.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvCanhBao_CellFormatting);
 
-            this.ClientSize = new System.Drawing.Size(1140, 620);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnRunAudit);
             this.Controls.Add(this.btnMarkProcessed);
             this.Controls.Add(this.lblCount);
             this.Controls.Add(this.dgvCanhBao);
-            this.BackColor = System.Drawing.Color.FromArgb(241, 245, 249);
+            this.BackColor = System.Drawing.Color.FromArgb(244, 247, 254);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.Name = "FrmCanhBaoAI";
             this.Text = "Cảnh Báo AI";
             ((System.ComponentModel.ISupportInitialize)(this.dgvCanhBao)).EndInit();

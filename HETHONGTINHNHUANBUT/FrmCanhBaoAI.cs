@@ -28,7 +28,9 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmCanhBaoAI_Load(object sender, EventArgs e)
         {
+            this.SuspendLayout();
             await TaiDuLieuAsync();
+            this.ResumeLayout();
         }
 
         private async Task TaiDuLieuAsync()
@@ -93,7 +95,10 @@ namespace HETHONGTINHNHUANBUT
                 lblCount.Text = string.Format("Tổng: {0} cảnh báo (chưa xử lý: {1})",
                     dtCanhBao.Rows.Count, count);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi tải dữ liệu AI: " + ex.Message);
+            }
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)

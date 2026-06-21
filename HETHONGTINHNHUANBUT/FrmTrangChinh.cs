@@ -22,29 +22,30 @@ namespace HETHONGTINHNHUANBUT
             InitializeComponent();
         }
 
-        private async void FrmTrangChinh_Load(object sender, EventArgs e)
+        private void FrmTrangChinh_Load(object sender, EventArgs e)
         {
             this.SuspendLayout();
             pnlMenu.SuspendLayout();
-
-            if (!_dbFixed) { await AutoFixDatabaseColumns(); _dbFixed = true; }
-
             ApplyPermissions();
-
-            string role = currentPrivilege?.Trim().ToLower() ?? "";
-            if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
-            {
-                btnNhapNhuanBut_Click(null, null);
-                SetActiveButton(this.btnNhapNhuanBut);
-            }
-            else
-            {
-                btnTongQuan_Click(null, null);
-                SetActiveButton(btnTongQuan);
-            }
-
             pnlMenu.ResumeLayout();
             this.ResumeLayout();
+
+            this.BeginInvoke(new Action(async () =>
+            {
+                if (!_dbFixed) { await AutoFixDatabaseColumns(); _dbFixed = true; }
+
+                string role = currentPrivilege?.Trim().ToLower() ?? "";
+                if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
+                {
+                    btnNhapNhuanBut_Click(null, null);
+                    SetActiveButton(btnNhapNhuanBut);
+                }
+                else
+                {
+                    btnDashboard_Click(null, null);
+                    SetActiveButton(btnDashboard);
+                }
+            }));
         }
 
         private void SetActiveButton(Guna2Button clickedButton)
@@ -127,6 +128,31 @@ namespace HETHONGTINHNHUANBUT
                         UPDATE Phieuchi SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
                     using (SqlCommand cmd2 = new SqlCommand(fixPhieuchi, conn))
                         await cmd2.ExecuteNonQueryAsync();
+
+                    string fixAISchema = @"
+                        -- Cột cho AI
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'DiemChatLuongAI' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD DiemChatLuongAI FLOAT;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'DanhGiaAI' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD DanhGiaAI NVARCHAR(MAX);
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayDanhGiaAI' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NgayDanhGiaAI DATETIME;
+                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NoiDungBaiViet' AND Object_ID = Object_ID(N'Nhuanbut'))
+                            ALTER TABLE Nhuanbut ADD NoiDungBaiViet NVARCHAR(MAX);
+                        -- Bảng cảnh báo AI
+                        IF NOT EXISTS(SELECT * FROM sys.objects WHERE Name = N'AICanhBao' AND Type = N'U')
+                            CREATE TABLE AICanhBao (
+                                Id INT IDENTITY(1,1) PRIMARY KEY,
+                                NgayCanhBao DATETIME DEFAULT GETDATE(),
+                                LoaiCanhBao NVARCHAR(200),
+                                MucDo INT DEFAULT 1,
+                                MaBaiViet INT,
+                                MaPhongVien INT,
+                                NoiDung NVARCHAR(MAX),
+                                DaXuLy BIT DEFAULT 0
+                            );";
+                    using (SqlCommand cmdAI = new SqlCommand(fixAISchema, conn))
+                        await cmdAI.ExecuteNonQueryAsync();
                 }
             }
             catch { }
@@ -181,7 +207,6 @@ namespace HETHONGTINHNHUANBUT
 
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-                btnTongQuan.Visible = false;
                 btnQuanLyBao.Visible = false;
                 btnSubSoBao.Visible = false;
                 btnSubLoaiBao.Visible = false;
@@ -296,7 +321,6 @@ namespace HETHONGTINHNHUANBUT
             frm.NguoiDangNhap = this.currentUserName;
             OpenChildForm(frm, sender as Guna2Button);
         }
-        private void btnTongQuan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTongQuan(), sender as Guna2Button);
         private void btnTacGia_Click(object sender, EventArgs e)
         {
             bool isExpanded = btnSubTacGiaHoSo.Visible;

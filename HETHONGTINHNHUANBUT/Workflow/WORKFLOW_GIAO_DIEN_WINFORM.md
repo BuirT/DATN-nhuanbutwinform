@@ -365,6 +365,16 @@ btnDuyet_Click()
 **Hậu quả**: Cột không đều, có cột quá rộng/cột quá hẹp.  
 **Cách tránh**: Dùng `UIHelper.ConfigureColumns()` hoặc set `FillWeight = 1` manual.
 
+### ❌ Lỗi 11: Form Dashboard dùng Anchor + fixed Size cho pnlMain
+**Nguyên nhân**: Set `pnlMain.Anchor = Top|Bottom|Left|Right` + `pnlMain.Size = 2540x1188` thay vì `Dock = Fill`.  
+**Hậu quả**: Form tràn màn hình, không fill đúng container.  
+**Cách tránh**: `pnlMain.Dock = DockStyle.Fill` — không set fixed Size.
+
+### ❌ Lỗi 12: AICanhBao table / DiemChatLuongAI column chưa tồn tại
+**Nguyên nhân**: Query vào bảng/cột AI trước khi được tạo.  
+**Hậu quả**: SQL lỗi runtime.  
+**Cách tránh**: Đảm bảo `AutoFixDatabaseColumns()` trong FrmTrangChinh tạo đủ bảng + cột.
+
 ---
 
 ## 8. DATABASE PATTERNS
@@ -418,8 +428,27 @@ using (SqlConnection conn = new SqlConnection(sqlConnectionString))
 
 - **Endpoint**: `http://localhost:11434/api/generate`
 - **Model**: `qwen2.5:7b` (offline)
-- **Dùng cho**: Kiểm định bài viết (FrmKiemDinhAI), trợ lý AI chat (FrmTroLyAI)
+- **Dùng cho**: Trợ lý AI chat (FrmTroLyAI), kiểm toán metadata (FrmNhapNhuanBut, FrmNhapBaiPhongVien), đánh giá chất lượng bài viết (FrmNhapBaiPhongVien), phát hiện bất thường trước duyệt (FrmKiemDuyetNhuanBut), kiểm toán tự động 6 luật (AIAuditService)
 - **Gọi API**: HTTP POST với HTTPClient, stream response
+- **Các service AI**: `AIHelper`, `BaiVietAIHelper`, `AIAuditService`, `AIReportService`, `AnomalyDetector`
+
+### 9.1. AIAuditService — 6 luật kiểm toán tự động
+
+| # | Luật | Query | Mức |
+|---|------|-------|-----|
+| 1 | Tiền NB cao >3x TB chuyên mục + 2σ | CROSS APPLY + GROUP BY | 3 |
+| 2 | Tiền NB thấp <30% TB chuyên mục | CROSS APPLY + GROUP BY | 2 |
+| 3 | Điểm AI >=80 nhưng tiền <150k | WHERE đơn giản | 2 |
+| 4 | Điểm AI <40 nhưng tiền >=500k | WHERE đơn giản | 3 |
+| 5 | PV nhận NB tháng này >3x TB 3 tháng | CASE WHEN + GROUP BY | 3 |
+| 6 | Số bài PV tháng này >3x TB 3 tháng, >=5 bài | CASE WHEN + GROUP BY | 2 |
+
+### 9.2. BaiVietAIHelper — Đánh giá chất lượng bài viết
+
+- 5 tiêu chí: Chính tả (20), Cấu trúc (20), Thông tin (25), Chuyên sâu (20), Hấp dẫn (15)
+- Tổng điểm 0-100
+- Kết quả lưu vào Nhuanbut: `DiemChatLuongAI`, `DanhGiaAI`, `NgayDanhGiaAI`
+- Dùng trong FrmNhapBaiPhongVien
 
 ---
 
@@ -437,8 +466,12 @@ using (SqlConnection conn = new SqlConnection(sqlConnectionString))
 10. **Kiểm tra** mọi button có `.Text` và `.Click` event
 11. **Kiểm tra** `Enabled` state của các nút đặc biệt
 12. **Anchor = Right** cho nút nằm bên phải
-13. **Build** — phải 0 warning, 0 error
-14. **Test** — chạy thử với dữ liệu thật
+13. **Dashboard pattern**: pnlTop (Dock=Top) + pnlMain (Dock=Fill), KHÔNG dùng Anchor+fixed Size
+14. **DB Schema**: Đảm bảo `AutoFixDatabaseColumns()` tạo đủ bảng AICanhBao + cột AI
+15. **Parallel queries**: Dùng `Task.WhenAll` cho KPI và chart độc lập
+16. **SuspendLayout/ResumeLayout**: Bao quanh mọi thay đổi UI trong Load
+17. **Build** — phải 0 warning, 0 error
+18. **Test** — chạy thử với dữ liệu thật
 
 ---
 
