@@ -162,7 +162,7 @@ namespace HETHONGTINHNHUANBUT
             if (role == "admin" || role == "quản trị viên")
             {
                 SetButtonVisible(true,
-                    btnTongQuan, btnDashboard, btnTroLyAI, btnBaoCaoAI,
+                    btnDashboard, btnTroLyAI, btnBaoCaoAI,
                     btnBaoCaoThongKe, btnCanhBaoAI,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet, btnPhieuChi, btnDuyetChi,
