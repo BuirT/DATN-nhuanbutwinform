@@ -11,9 +11,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
     <Deterministic>true</Deterministic>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
