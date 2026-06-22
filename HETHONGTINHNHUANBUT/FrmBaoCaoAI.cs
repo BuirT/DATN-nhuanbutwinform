@@ -182,10 +182,19 @@ namespace HETHONGTINHNHUANBUT
                 }
 
                 // ── AI NHẬN XÉT ──
-                string nhanXet = await AiNhanXetAsync(thang, nam);
-                sb.AppendLine("7. NHẬN XÉT CỦA AI");
-                sb.AppendLine(new string('─', 60));
-                sb.AppendLine(nhanXet);
+                try
+                {
+                    string nhanXet = await AiNhanXetAsync(thang, nam);
+                    sb.AppendLine("7. NHẬN XÉT CỦA AI");
+                    sb.AppendLine(new string('─', 60));
+                    sb.AppendLine(nhanXet);
+                }
+                catch (Exception exAi)
+                {
+                    sb.AppendLine("7. NHẬN XÉT CỦA AI");
+                    sb.AppendLine(new string('─', 60));
+                    sb.AppendLine("  ⚠ AI chưa phản hồi (Ollama không chạy?): " + exAi.Message);
+                }
 
                 txtBaoCao.Text = sb.ToString();
             }

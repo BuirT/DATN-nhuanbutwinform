@@ -126,7 +126,7 @@
             this.txtBaoCao.DisabledState.BorderColor = System.Drawing.Color.FromArgb(208, 208, 208);
             this.txtBaoCao.DisabledState.FillColor = System.Drawing.Color.FromArgb(226, 232, 240);
             this.txtBaoCao.DisabledState.ForeColor = System.Drawing.Color.FromArgb(138, 138, 138);
-            this.txtBaoCao.Enabled = false;
+            this.txtBaoCao.Enabled = true;
             this.txtBaoCao.FocusedState.BorderColor = System.Drawing.Color.FromArgb(79, 70, 229);
             this.txtBaoCao.Font = new System.Drawing.Font("Segoe UI", 10.5F);
             this.txtBaoCao.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);

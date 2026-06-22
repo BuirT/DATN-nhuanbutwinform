@@ -25,7 +25,7 @@ namespace HETHONGTINHNHUANBUT
 
             if (string.IsNullOrEmpty(MaTacGiaCuaToi))
             {
-                lblMaSo.Text = "⚠️ Lỗi: Không xác định được tác giả!";
+                
                 lblMaSo.ForeColor = Color.Red;
                 return;
             }

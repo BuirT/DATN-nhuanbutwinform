@@ -527,5 +527,10 @@ namespace HETHONGTINHNHUANBUT
             _selectedMaso = "";
             txtTenBai.Focus();
         }
+
+        private void pnlTop_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
