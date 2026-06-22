@@ -414,11 +414,11 @@
             this.pnlBottom.Controls.Add(this.txtTimKiem);
             this.pnlBottom.Controls.Add(this.dgvNhuanBut);
             this.pnlBottom.FillColor = System.Drawing.Color.White;
-            this.pnlBottom.Location = new System.Drawing.Point(20, 521);
+            this.pnlBottom.Location = new System.Drawing.Point(20, 372);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.Size = new System.Drawing.Size(1160, 454);
+            this.pnlBottom.Size = new System.Drawing.Size(1160, 603);
             this.pnlBottom.TabIndex = 1;
             // 
             // lblDataTitle
@@ -487,7 +487,7 @@
             this.dgvNhuanBut.ReadOnly = true;
             this.dgvNhuanBut.RowHeadersVisible = false;
             this.dgvNhuanBut.RowTemplate.Height = 38;
-            this.dgvNhuanBut.Size = new System.Drawing.Size(1110, 370);
+            this.dgvNhuanBut.Size = new System.Drawing.Size(1110, 519);
             this.dgvNhuanBut.TabIndex = 2;
             this.dgvNhuanBut.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvNhuanBut.ThemeStyle.AlternatingRowsStyle.Font = null;

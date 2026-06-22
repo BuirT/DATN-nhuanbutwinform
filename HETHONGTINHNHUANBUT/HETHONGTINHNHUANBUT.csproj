@@ -204,6 +204,7 @@
     <Compile Include="FrmKiemDuyetNhuanBut.Designer.cs">
       <DependentUpon>FrmKiemDuyetNhuanBut.cs</DependentUpon>
     </Compile>
+    <Compile Include="KiemDuyetService.cs" />
     <Compile Include="FrmLoaiBao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -364,7 +365,6 @@
     <EmbeddedResource Include="FrmCanhBaoAI.resx">
       <DependentUpon>FrmCanhBaoAI.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="FrmDashboard.resx">
       <DependentUpon>FrmDashboard.cs</DependentUpon>
     </EmbeddedResource>
