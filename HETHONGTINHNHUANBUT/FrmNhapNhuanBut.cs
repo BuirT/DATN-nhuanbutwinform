@@ -46,6 +46,7 @@ namespace HETHONGTINHNHUANBUT
 
             txtTienNhuanBut.Leave += txtTienNhuanBut_Leave;
 
+            txtTrang.KeyPress += txtTrang_KeyPress;
             cboSoBao.SelectedIndexChanged += cboSoBao_SelectedIndexChanged;
             txtTimKiem.TextChanged += txtTimKiem_TextChanged;
 
@@ -119,7 +120,8 @@ namespace HETHONGTINHNHUANBUT
             bool biKhoa = (role == "kế toán" || role == "lãnh đạo");
 
             btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = btnLamMoi.Enabled = btnKiemToanAI.Enabled = !biKhoa;
-            txtTenBai.ReadOnly = txtTrang.ReadOnly = txtMuc.ReadOnly = biKhoa;
+            txtTenBai.ReadOnly = txtTrang.ReadOnly = biKhoa;
+            cboMuc.Enabled = !biKhoa;
             cboButDanh.Enabled = cboVung.Enabled = cboVungChuyenDen.Enabled = !biKhoa;
 
             // Phóng viên chỉ nhập tên bài, mục, bút danh - KHÔNG nhập tiền
@@ -163,6 +165,19 @@ namespace HETHONGTINHNHUANBUT
                         cboButDanh.DroppedDown = false;
                         cboButDanh.BeginInvoke(new Action(() => cboButDanh.DroppedDown = true));
                     };
+
+                    string sqlMuc = "SELECT DISTINCT Muc FROM DinhMuc ORDER BY Muc";
+                    using (SqlCommand cmd = new SqlCommand(sqlMuc, conn))
+                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    {
+                        cboMuc.Items.Clear();
+                        while (await r.ReadAsync())
+                            cboMuc.Items.Add(r["Muc"].ToString());
+                    }
+                    cboMuc.DropDownWidth = 300;
+                    cboMuc.DropDownHeight = 200;
+                    cboMuc.IntegralHeight = true;
+                    cboMuc.MaxDropDownItems = 15;
                 }
             }
             catch (Exception ex) { MessageBox.Show("Lỗi tải danh mục: " + ex.Message); }
@@ -224,6 +239,9 @@ namespace HETHONGTINHNHUANBUT
                         ("Butdanh", "BÚT DANH", false, false),
                         ("TienNhuanbut", "TỔNG TIỀN (VNĐ)", true, false)
                     );
+
+                    if (dgvNhuanBut.Columns["Trang"] != null)
+                        dgvNhuanBut.Columns["Trang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
                 decimal tong = 0;
                 foreach (DataRow row in dt.Rows) tong += Convert.ToDecimal(row["TienNhuanbut"]);
@@ -261,8 +279,8 @@ namespace HETHONGTINHNHUANBUT
                         {
                         cmd.Parameters.AddWithValue("@ma", newMa);
                         cmd.Parameters.AddWithValue("@ten", txtTenBai.Text);
-                        cmd.Parameters.AddWithValue("@trang", txtTrang.Text);
-                        cmd.Parameters.AddWithValue("@muc", txtMuc.Text);
+                        cmd.Parameters.AddWithValue("@trang", SanitizeNumber(txtTrang.Text));
+                        cmd.Parameters.AddWithValue("@muc", cboMuc.Text);
                         cmd.Parameters.AddWithValue("@tien", tongTien);
                         cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
                         cmd.Parameters.AddWithValue("@msBao", cboSoBao.SelectedValue.ToString());
@@ -310,8 +328,8 @@ namespace HETHONGTINHNHUANBUT
                         {
                         cmd.Parameters.AddWithValue("@ma", _selectedMaso);
                         cmd.Parameters.AddWithValue("@ten", txtTenBai.Text);
-                        cmd.Parameters.AddWithValue("@trang", txtTrang.Text);
-                        cmd.Parameters.AddWithValue("@muc", txtMuc.Text);
+                        cmd.Parameters.AddWithValue("@trang", SanitizeNumber(txtTrang.Text));
+                        cmd.Parameters.AddWithValue("@muc", cboMuc.Text);
                         cmd.Parameters.AddWithValue("@tien", tongTien);
                         cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
                         cmd.Parameters.AddWithValue("@vung", cboVung.Text ?? (object)DBNull.Value);
@@ -364,7 +382,7 @@ namespace HETHONGTINHNHUANBUT
             _selectedMaso = null;
             txtTenBai.Clear();
             txtTrang.Clear();
-            txtMuc.Clear();
+            cboMuc.SelectedIndex = -1;
             txtTienNhuanBut.Clear();
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
@@ -385,7 +403,7 @@ namespace HETHONGTINHNHUANBUT
         {
             lblWarning.Visible = false;
 
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             if (string.IsNullOrEmpty(muc)) return;
 
             decimal tienNhap = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
@@ -434,7 +452,7 @@ namespace HETHONGTINHNHUANBUT
         private async void btnKiemToanAI_Click(object sender, EventArgs e)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
@@ -577,14 +595,26 @@ namespace HETHONGTINHNHUANBUT
             catch { return Array.Empty<string>(); }
         }
 
+        private static string SanitizeNumber(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return "";
+            return new string(value.Where(char.IsDigit).ToArray());
+        }
+
+        private void txtTrang_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+        }
+
         private void dgvNhuanBut_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || dgvNhuanBut.CurrentRow == null) return;
             DataGridViewRow row = dgvNhuanBut.Rows[e.RowIndex];
             _selectedMaso = row.Cells["Maso"].Value?.ToString();
             txtTenBai.Text = row.Cells["Tenbai"].Value?.ToString();
-            txtTrang.Text = row.Cells["Trang"].Value?.ToString();
-            txtMuc.Text = row.Cells["Muc"].Value?.ToString();
+            txtTrang.Text = SanitizeNumber(row.Cells["Trang"].Value?.ToString());
+            cboMuc.Text = row.Cells["Muc"].Value?.ToString();
             cboButDanh.Text = row.Cells["Butdanh"].Value?.ToString();
             txtTienNhuanBut.Text = Convert.ToDecimal(row.Cells["TienNhuanbut"].Value).ToString("0");
             cboVung.Text = row.Cells["Vung"].Value?.ToString();
