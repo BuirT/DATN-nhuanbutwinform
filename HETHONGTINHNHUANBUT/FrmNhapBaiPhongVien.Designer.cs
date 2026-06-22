@@ -1,4 +1,7 @@
-﻿namespace HETHONGTINHNHUANBUT
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace HETHONGTINHNHUANBUT
 {
     partial class FrmNhapBaiPhongVien
     {
@@ -439,6 +442,59 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaiCuaToi)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).EndInit();
             this.ResumeLayout(false);
+            // btnPhanTichAI
+            btnPhanTichAI = new Guna.UI2.WinForms.Guna2Button();
+            btnPhanTichAI.Animated = true;
+            btnPhanTichAI.BorderRadius = 8;
+            btnPhanTichAI.FillColor = Color.FromArgb(16, 185, 129);
+            btnPhanTichAI.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnPhanTichAI.ForeColor = Color.White;
+            btnPhanTichAI.Location = new Point(345, 210);
+            btnPhanTichAI.Name = "btnPhanTichAI";
+            btnPhanTichAI.Size = new Size(170, 38);
+            btnPhanTichAI.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            btnPhanTichAI.TabIndex = 10;
+            btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
+            btnPhanTichAI.Click += btnPhanTichAI_Click;
+            pnlTop.Controls.Add(btnPhanTichAI);
+
+            // label7 - NỘI DUNG BÀI VIẾT
+            label7 = new Label();
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            label7.ForeColor = Color.FromArgb(100, 116, 139);
+            label7.Location = new Point(25, 265);
+            label7.Name = "label7";
+            label7.Size = new Size(130, 17);
+            label7.Text = "NỘI DUNG BÀI VIẾT";
+            pnlTop.Controls.Add(label7);
+
+            // txtNoiDungBaiViet
+            txtNoiDungBaiViet = new RichTextBox();
+            txtNoiDungBaiViet.BorderStyle = BorderStyle.FixedSingle;
+            txtNoiDungBaiViet.BackColor = Color.White;
+            txtNoiDungBaiViet.Font = new Font("Segoe UI", 10F);
+            txtNoiDungBaiViet.ForeColor = Color.FromArgb(15, 23, 42);
+            txtNoiDungBaiViet.Location = new Point(25, 288);
+            txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
+            txtNoiDungBaiViet.Size = new Size(1110, 150);
+            txtNoiDungBaiViet.TabIndex = 9;
+            txtNoiDungBaiViet.Text = "";
+            txtNoiDungBaiViet.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlTop.Controls.Add(txtNoiDungBaiViet);
+
+            // lblAIResult
+            lblAIResult = new Label();
+            lblAIResult.AutoSize = false;
+            lblAIResult.Font = new Font("Segoe UI", 9.5F);
+            lblAIResult.ForeColor = Color.FromArgb(15, 23, 42);
+            lblAIResult.Location = new Point(25, 448);
+            lblAIResult.Name = "lblAIResult";
+            lblAIResult.Size = new Size(1110, 60);
+            lblAIResult.Text = "";
+            lblAIResult.Visible = false;
+            lblAIResult.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlTop.Controls.Add(lblAIResult);
 
         }
 
