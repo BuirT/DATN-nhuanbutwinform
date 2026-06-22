@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -46,9 +47,62 @@ namespace HETHONGTINHNHUANBUT
                 SetActiveButton(btnDashboard);
             }
 
+            LoadButtonIcons();
             pnlMenuScroll.ResumeLayout();
             pnlMenu.ResumeLayout();
             this.ResumeLayout();
+        }
+
+        private void LoadButtonIcons()
+        {
+            string iconDir = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\resources\"));
+            if (!Directory.Exists(iconDir)) return;
+
+            void SetIcon(Guna2Button btn, string name)
+            {
+                string path = Path.Combine(iconDir, name + ".png");
+                if (File.Exists(path))
+                {
+                    btn.Image = Image.FromFile(path);
+                    btn.ImageSize = new Size(24, 24);
+                    btn.ImageAlign = HorizontalAlignment.Left;
+                }
+            }
+
+            void SetIconSub(Guna2Button btn, string name)
+            {
+                string path = Path.Combine(iconDir, name + ".png");
+                if (File.Exists(path))
+                {
+                    btn.Image = Image.FromFile(path);
+                    btn.ImageSize = new Size(18, 18);
+                    btn.ImageAlign = HorizontalAlignment.Left;
+                }
+            }
+
+            SetIcon(btnDashboard, "dashboard");
+            SetIcon(btnTroLyAI, "tro-ly-ai");
+            SetIcon(btnBaoCaoAI, "bao-cao-ai");
+            SetIcon(btnBaoCaoThongKe, "thong-ke");
+            SetIcon(btnCanhBaoAI, "canh-bao");
+            SetIcon(btnTacGia, "tac-gia");
+            SetIconSub(btnSubTacGiaHoSo, "ho-so");
+            SetIconSub(btnSubButDanh, "but-danh");
+            SetIcon(btnQuanLyBao, "quan-ly-bao");
+            SetIconSub(btnSubSoBao, "so-bao");
+            SetIconSub(btnSubLoaiBao, "loai-bao");
+            SetIcon(btnNhapNhuanBut, "nhuan-but");
+            SetIcon(btnTraCuuCaNhan, "tra-cuu");
+            SetIcon(btnKiemDuyet, "kiem-duyet");
+            SetIcon(btnPhieuChi, "phieu-chi");
+            SetIcon(btnDuyetChi, "duyet-chi");
+            SetIcon(btnBaoCao, "bao-cao");
+            SetIconSub(btnSubBaoCaoLD, "lanh-dao");
+            SetIconSub(btnSubBaoCaoCN, "cong-no");
+            SetIconSub(btnSubBaoCaoTH, "tong-hop");
+            SetIcon(btnDotThanhToan, "dot-thanh-toan");
+            SetIcon(btnTaiKhoan, "tai-khoan");
+            SetIcon(btnDangXuat, "dang-xuat");
         }
 
         private void AdjustMenuForScreen()

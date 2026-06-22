@@ -289,7 +289,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnCanhBaoAI.Name = "btnCanhBaoAI";
             this.btnCanhBaoAI.Size = new System.Drawing.Size(232, 44);
             this.btnCanhBaoAI.TabIndex = 20;
-            this.btnCanhBaoAI.Text = "⚠️ CẢNH BÁO AI";
+            this.btnCanhBaoAI.Text = "CẢNH BÁO AI";
             this.btnCanhBaoAI.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnCanhBaoAI.TextOffset = new System.Drawing.Point(20, 0);
             this.btnCanhBaoAI.Click += new System.EventHandler(this.btnCanhBaoAI_Click);
@@ -305,7 +305,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCaoThongKe.Name = "btnBaoCaoThongKe";
             this.btnBaoCaoThongKe.Size = new System.Drawing.Size(232, 44);
             this.btnBaoCaoThongKe.TabIndex = 21;
-            this.btnBaoCaoThongKe.Text = "📈 BÁO CÁO THỐNG KÊ";
+            this.btnBaoCaoThongKe.Text = "BÁO CÁO THỐNG KÊ";
             this.btnBaoCaoThongKe.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnBaoCaoThongKe.TextOffset = new System.Drawing.Point(20, 0);
             this.btnBaoCaoThongKe.Click += new System.EventHandler(this.btnBaoCaoThongKe_Click);
@@ -470,7 +470,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnTroLyAI.Name = "btnTroLyAI";
             this.btnTroLyAI.Size = new System.Drawing.Size(232, 44);
             this.btnTroLyAI.TabIndex = 14;
-            this.btnTroLyAI.Text = "🤖 TRỢ LÝ AI KẾ TOÁN";
+            this.btnTroLyAI.Text = "TRỢ LÝ AI KẾ TOÁN";
             this.btnTroLyAI.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnTroLyAI.TextOffset = new System.Drawing.Point(20, 0);
             this.btnTroLyAI.Click += new System.EventHandler(this.btnTroLyAI_Click);
@@ -486,7 +486,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Size = new System.Drawing.Size(232, 44);
             this.btnDashboard.TabIndex = 19;
-            this.btnDashboard.Text = "📊 DASHBOARD";
+            this.btnDashboard.Text = "DASHBOARD";
             this.btnDashboard.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnDashboard.TextOffset = new System.Drawing.Point(20, 0);
             this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
