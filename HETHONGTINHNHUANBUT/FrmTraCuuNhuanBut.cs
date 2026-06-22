@@ -13,6 +13,10 @@ namespace HETHONGTINHNHUANBUT
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
         public string MaTacGiaCuaToi { get; set; }
         public string NguoiDangNhap { get; set; }
+        public string QuyenHienTai { get; set; }
+
+        private bool LaAdmin => string.Equals(QuyenHienTai?.Trim(), "admin", StringComparison.OrdinalIgnoreCase)
+                             || string.Equals(QuyenHienTai?.Trim(), "quản trị viên", StringComparison.OrdinalIgnoreCase);
 
         public FrmTraCuuNhuanBut()
         {
@@ -25,12 +29,22 @@ namespace HETHONGTINHNHUANBUT
 
             if (string.IsNullOrEmpty(MaTacGiaCuaToi))
             {
-                
-                lblMaSo.ForeColor = Color.Red;
-                return;
+                if (LaAdmin)
+                {
+                    lblMaSo.Text = "📋 Toàn bộ dữ liệu (admin)";
+                    lblMaSo.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+                }
+                else
+                {
+                    lblMaSo.Text = "Hiển thị bài do bạn nhập";
+                    lblMaSo.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+                }
             }
-
-            lblMaSo.Text = "Mã hồ sơ: " + MaTacGiaCuaToi;
+            else
+            {
+                lblMaSo.Text = "Mã hồ sơ: " + MaTacGiaCuaToi;
+                lblMaSo.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            }
             await LoadDataTraCuuAsync();
         }
 
@@ -43,21 +57,45 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
 
-                    string query = @"
-                        SELECT nb.Butdanh, nb.Tenbai, nb.TienNhuanbut, nb.TrangThaiDuyet,
-                               b.Tenbao AS TenSoBao
-                        FROM Nhuanbut nb
-                        LEFT JOIN Bao b ON nb.MsBao = b.Maso
-                        WHERE (@ms <> '' AND nb.Butdanh IN (
-                            SELECT Butdanh FROM ButDanh WHERE MsTacgia = @ms
-                        ))
-                        OR (@ms = '' AND nb.NguoiNhap = @nguoi)
-                        ORDER BY nb.ngaychuyen DESC";
+                    string query;
+                    if (!string.IsNullOrEmpty(MaTacGiaCuaToi))
+                    {
+                        query = @"
+                            SELECT nb.Butdanh, nb.Tenbai, nb.TienNhuanbut, nb.TrangThaiDuyet,
+                                   b.Tenbao AS TenSoBao
+                            FROM Nhuanbut nb
+                            LEFT JOIN Bao b ON nb.MsBao = b.Maso
+                            WHERE nb.Butdanh IN (
+                                SELECT Butdanh FROM ButDanh WHERE MsTacgia = @ms
+                            )
+                            ORDER BY nb.ngaychuyen DESC";
+                    }
+                    else if (LaAdmin)
+                    {
+                        query = @"
+                            SELECT nb.Butdanh, nb.Tenbai, nb.TienNhuanbut, nb.TrangThaiDuyet,
+                                   b.Tenbao AS TenSoBao
+                            FROM Nhuanbut nb
+                            LEFT JOIN Bao b ON nb.MsBao = b.Maso
+                            ORDER BY nb.ngaychuyen DESC";
+                    }
+                    else
+                    {
+                        query = @"
+                            SELECT nb.Butdanh, nb.Tenbai, nb.TienNhuanbut, nb.TrangThaiDuyet,
+                                   b.Tenbao AS TenSoBao
+                            FROM Nhuanbut nb
+                            LEFT JOIN Bao b ON nb.MsBao = b.Maso
+                            WHERE nb.NguoiNhap = @nguoi
+                            ORDER BY nb.ngaychuyen DESC";
+                    }
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@ms", MaTacGiaCuaToi ?? "");
-                        cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "");
+                        if (!string.IsNullOrEmpty(MaTacGiaCuaToi))
+                            cmd.Parameters.AddWithValue("@ms", MaTacGiaCuaToi);
+                        if (string.IsNullOrEmpty(MaTacGiaCuaToi) && !LaAdmin)
+                            cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "");
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
                             await Task.Run(() => da.Fill(dt));
@@ -68,15 +106,26 @@ namespace HETHONGTINHNHUANBUT
                 if (dt.Rows.Count == 0) return;
 
                 dgvTraCuu.DataSource = dt.AsEnumerable().Select(n => new {
-                    Số_Báo = n.Field<string>("TenSoBao") ?? "",
-                    Tên_Bài = n.Field<string>("Tenbai"),
-                    Bút_Danh = n.Field<string>("Butdanh"),
-                    Tiền_NB = n.Field<decimal?>("TienNhuanbut") ?? 0,
-                    Trạng_Thái = GetStatusText(n.Field<int?>("TrangThaiDuyet") ?? 0, n.Field<decimal?>("TienNhuanbut") ?? 0)
-                }).OrderByDescending(x => x.Số_Báo).ToList();
+                    SoBao = n.Field<string>("TenSoBao") ?? "",
+                    TenBai = n.Field<string>("Tenbai"),
+                    ButDanh = n.Field<string>("Butdanh"),
+                    TienNB = n.Field<decimal?>("TienNhuanbut") ?? 0,
+                    TrangThai = GetStatusText(n.Field<int?>("TrangThaiDuyet") ?? 0, n.Field<decimal?>("TienNhuanbut") ?? 0)
+                }).OrderByDescending(x => x.SoBao).ToList();
 
-                if (dgvTraCuu.Columns["Tiền_NB"] != null)
-                    dgvTraCuu.Columns["Tiền_NB"].DefaultCellStyle.Format = "N0";
+                if (dgvTraCuu.Columns["SoBao"] != null)
+                    dgvTraCuu.Columns["SoBao"].HeaderText = "Số Báo";
+                if (dgvTraCuu.Columns["TenBai"] != null)
+                    dgvTraCuu.Columns["TenBai"].HeaderText = "Tên Bài";
+                if (dgvTraCuu.Columns["ButDanh"] != null)
+                    dgvTraCuu.Columns["ButDanh"].HeaderText = "Bút Danh";
+                if (dgvTraCuu.Columns["TienNB"] != null)
+                {
+                    dgvTraCuu.Columns["TienNB"].HeaderText = "Tiền NB";
+                    dgvTraCuu.Columns["TienNB"].DefaultCellStyle.Format = "N0";
+                }
+                if (dgvTraCuu.Columns["TrangThai"] != null)
+                    dgvTraCuu.Columns["TrangThai"].HeaderText = "Trạng Thái";
 
                 decimal daDuyet = dt.AsEnumerable().Where(n => (n.Field<int?>("TrangThaiDuyet") ?? 0) >= 4).Sum(n => n.Field<decimal?>("TienNhuanbut") ?? 0);
                 lblTongTien.Text = daDuyet.ToString("N0") + " VNĐ";

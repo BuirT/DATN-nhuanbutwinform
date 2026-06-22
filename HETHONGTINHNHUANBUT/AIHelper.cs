@@ -162,6 +162,7 @@ QUY TẮC:
         public static async Task<BaiVietDanhGiaResult> DanhGiaBaiVietAsync(
             string tenBai, string muc, string noiDung, string butDanh)
         {
+            string rawText = "";
             using (HttpClient client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(3);
@@ -219,7 +220,7 @@ TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm b�
                     throw new Exception($"Lỗi kết nối AI Đánh Giá: {response.StatusCode}");
 
                 JObject jsonResult = JObject.Parse(responseString);
-                string rawText = jsonResult["response"]?.ToString();
+                rawText = jsonResult["response"]?.ToString() ?? "";
 
                 if (string.IsNullOrEmpty(rawText))
                     throw new Exception("AI không trả về kết quả.");
@@ -243,6 +244,12 @@ TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm b�
                     DiemChatLuongAI = diem
                 };
             }
+
+            return new BaiVietDanhGiaResult
+            {
+                DanhGia = "",
+                ChiTietDanhGia = rawText
+            };
         }
     }
 }

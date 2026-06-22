@@ -33,6 +33,7 @@ namespace HETHONGTINHNHUANBUT
         {
             await LoadComboboxDataSQLAsync();
             await LoadBaiCuaToiAsync();
+            UpdatePanelLayout();
         }
 
         private async Task LoadComboboxDataSQLAsync()
@@ -63,6 +64,17 @@ namespace HETHONGTINHNHUANBUT
                     cboButDanh.DisplayMember = "Butdanh";
                     cboButDanh.ValueMember = "Maso";
                     cboButDanh.DataSource = dtButDanh;
+
+                    string sqlMuc = "SELECT DISTINCT Muc FROM DinhMuc ORDER BY Muc";
+                    using (SqlCommand cmd = new SqlCommand(sqlMuc, conn))
+                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    {
+                        cboMuc.Items.Clear();
+                        while (await r.ReadAsync())
+                            cboMuc.Items.Add(r["Muc"].ToString());
+                    }
+                    cboMuc.DropDownWidth = 300;
+                    cboMuc.DropDownHeight = 200;
                 }
             }
             catch (Exception ex)
@@ -158,7 +170,7 @@ namespace HETHONGTINHNHUANBUT
 
                                 if (diemAI > 0 || !string.IsNullOrEmpty(danhGia))
                                 {
-                                    lblDiemAI.Text = diemAI > 0 ? $"đŸ¤– Äiá»ƒm AI: {diemAI}/100" : "";
+                                    lblDiemAI.Text = diemAI > 0 ? $"🤖 Điểm AI: {diemAI}/100" : "";
                                     lblDiemAI.Visible = true;
                                     txtDanhGiaAI.Text = danhGia ?? "";
                                 }
@@ -174,7 +186,7 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                lblDiemAI.Text = "❌ " + "Loi tai danh gia AI: " + ex.Message;
+                lblDiemAI.Text = "❌ " + "Lỗi tại đánh giá AI: " + ex.Message;
                 lblDiemAI.Visible = true;
                 lblDiemAI.ForeColor = Color.FromArgb(220, 38, 38);
             }
@@ -207,7 +219,7 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@ma", newMa);
                         cmd.Parameters.AddWithValue("@ten", txtTenBai.Text.Trim());
                         cmd.Parameters.AddWithValue("@trang", txtTrang.Text.Trim());
-                        cmd.Parameters.AddWithValue("@muc", txtMuc.Text.Trim());
+                        cmd.Parameters.AddWithValue("@muc", cboMuc.Text.Trim());
                         cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
                         cmd.Parameters.AddWithValue("@msBao", cboSoBao.SelectedValue.ToString());
                         cmd.Parameters.AddWithValue("@vung", cboVung.Text ?? (object)DBNull.Value);
@@ -234,7 +246,7 @@ namespace HETHONGTINHNHUANBUT
         private async void btnPhanTichAI_Click(object sender, EventArgs e)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
             string noiDung = txtNoiDungBaiViet.Text?.Trim() ?? "";
 
@@ -291,14 +303,15 @@ namespace HETHONGTINHNHUANBUT
             finally
             {
                 btnPhanTichAI.Enabled = true;
-                btnPhanTichAI.Text = "đŸ¤– PHĂ‚N TĂCH AI";
+                btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
+                UpdatePanelLayout();
             }
         }
 
         private async Task PhanTichAISauKhiNop(int maso, string noiDung)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh) || string.IsNullOrEmpty(noiDung))
@@ -345,7 +358,7 @@ namespace HETHONGTINHNHUANBUT
         private async void btnKiemToanAI_Click(object sender, EventArgs e)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
@@ -418,7 +431,8 @@ namespace HETHONGTINHNHUANBUT
             finally
             {
                 btnKiemToanAI.Enabled = true;
-                btnKiemToanAI.Text = "đŸ“‹ AI KIá»‚M TOĂN";
+                btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
+                UpdatePanelLayout();
             }
         }
 
@@ -483,11 +497,17 @@ namespace HETHONGTINHNHUANBUT
             catch { return System.Array.Empty<string>(); }
         }
 
+        private void txtTrang_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+        }
+
         private void ClearInputs()
         {
             txtTenBai.Clear();
             txtTrang.Clear();
-            txtMuc.Clear();
+            cboMuc.SelectedIndex = -1;
             txtNoiDungBaiViet.Clear();
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
@@ -496,6 +516,27 @@ namespace HETHONGTINHNHUANBUT
             txtDanhGiaAI.Text = "";
             _selectedMaso = "";
             txtTenBai.Focus();
+            UpdatePanelLayout();
+        }
+
+        private void UpdatePanelLayout()
+        {
+            int baseHeight = 460;
+            if (lblDiemAI.Visible || lblWarning.Visible)
+            {
+                int maxBottom = baseHeight;
+                if (lblDiemAI.Visible)
+                    maxBottom = Math.Max(maxBottom, txtDanhGiaAI.Bottom + 10);
+                if (lblWarning.Visible)
+                    maxBottom = Math.Max(maxBottom, lblWarning.Bottom + 10);
+                pnlTop.Height = maxBottom;
+            }
+            else
+            {
+                pnlTop.Height = baseHeight;
+            }
+            pnlBottom.Location = new Point(20, pnlTop.Bottom + 15);
+            pnlBottom.Height = ClientSize.Height - pnlBottom.Top - 15;
         }
 
     }

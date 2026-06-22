@@ -287,7 +287,7 @@ private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
 | `Controls.Find` chậm       | Dùng field Designer                               |
 | Shadow/Animation gây lag   | Tắt trong Load                                    |
 | Form con set ClientSize    | Bỏ, để runtime fill                               |
-| Quên kiểm tra DBNull       | Kiểm tra `r["col"] != DBNull.Value` trước convert |
+| `System.Resources.Extensions` version mismatch  | .NET 10 SDK preserializes resx images → cần v6.0.0 tại runtime. Fix: `GenerateResourceUsePreserializedResources=true` trong csproj + NuGet `System.Resources.Extensions` v6.0.0 + binding redirect trong App.config |
 | Font VNI-Times             | Chỉ dùng Segoe UI                                 |
 
 ---
