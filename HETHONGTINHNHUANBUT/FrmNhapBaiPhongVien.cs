@@ -34,6 +34,7 @@ namespace HETHONGTINHNHUANBUT
         {
             await LoadComboboxDataSQLAsync();
             await LoadBaiCuaToiAsync();
+            UpdatePanelLayout();
         }
 
         private async Task LoadComboboxDataSQLAsync()
@@ -64,6 +65,17 @@ namespace HETHONGTINHNHUANBUT
                     cboButDanh.DisplayMember = "Butdanh";
                     cboButDanh.ValueMember = "Maso";
                     cboButDanh.DataSource = dtButDanh;
+
+                    string sqlMuc = "SELECT DISTINCT Muc FROM DinhMuc ORDER BY Muc";
+                    using (SqlCommand cmd = new SqlCommand(sqlMuc, conn))
+                    using (SqlDataReader r = await cmd.ExecuteReaderAsync())
+                    {
+                        cboMuc.Items.Clear();
+                        while (await r.ReadAsync())
+                            cboMuc.Items.Add(r["Muc"].ToString());
+                    }
+                    cboMuc.DropDownWidth = 300;
+                    cboMuc.DropDownHeight = 200;
                 }
             }
             catch (Exception ex)
@@ -173,6 +185,7 @@ namespace HETHONGTINHNHUANBUT
                 }
             }
             catch { }
+            UpdatePanelLayout();
         }
 
         private async void btnNopBai_Click(object sender, EventArgs e)
@@ -202,7 +215,7 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@ma", newMa);
                         cmd.Parameters.AddWithValue("@ten", txtTenBai.Text.Trim());
                         cmd.Parameters.AddWithValue("@trang", txtTrang.Text.Trim());
-                        cmd.Parameters.AddWithValue("@muc", txtMuc.Text.Trim());
+                        cmd.Parameters.AddWithValue("@muc", cboMuc.Text.Trim());
                         cmd.Parameters.AddWithValue("@bd", cboButDanh.Text);
                         cmd.Parameters.AddWithValue("@msBao", cboSoBao.SelectedValue.ToString());
                         cmd.Parameters.AddWithValue("@vung", cboVung.Text ?? (object)DBNull.Value);
@@ -229,7 +242,7 @@ namespace HETHONGTINHNHUANBUT
         private async void btnPhanTichAI_Click(object sender, EventArgs e)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
             string noiDung = txtNoiDungBaiViet.Text?.Trim() ?? "";
 
@@ -284,13 +297,14 @@ namespace HETHONGTINHNHUANBUT
             {
                 btnPhanTichAI.Enabled = true;
                 btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
+                UpdatePanelLayout();
             }
         }
 
         private async Task PhanTichAISauKhiNop(int maso, string noiDung)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh) || string.IsNullOrEmpty(noiDung))
@@ -329,7 +343,7 @@ namespace HETHONGTINHNHUANBUT
         private async void btnKiemToanAI_Click(object sender, EventArgs e)
         {
             string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = txtMuc.Text?.Trim() ?? "";
+            string muc = cboMuc.Text?.Trim() ?? "";
             string butDanh = cboButDanh.Text?.Trim() ?? "";
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
@@ -403,6 +417,7 @@ namespace HETHONGTINHNHUANBUT
             {
                 btnKiemToanAI.Enabled = true;
                 btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
+                UpdatePanelLayout();
             }
         }
 
@@ -467,11 +482,17 @@ namespace HETHONGTINHNHUANBUT
             catch { return System.Array.Empty<string>(); }
         }
 
+        private void txtTrang_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+        }
+
         private void ClearInputs()
         {
             txtTenBai.Clear();
             txtTrang.Clear();
-            txtMuc.Clear();
+            cboMuc.SelectedIndex = -1;
             txtNoiDungBaiViet.Clear();
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
@@ -479,6 +500,27 @@ namespace HETHONGTINHNHUANBUT
             lblAIResult.Visible = false;
             _selectedMaso = "";
             txtTenBai.Focus();
+            UpdatePanelLayout();
+        }
+
+        private void UpdatePanelLayout()
+        {
+            int baseHeight = 460;
+            if (lblAIResult.Visible || lblWarning.Visible)
+            {
+                int maxBottom = baseHeight;
+                if (lblAIResult.Visible)
+                    maxBottom = Math.Max(maxBottom, lblAIResult.Bottom + 10);
+                if (lblWarning.Visible)
+                    maxBottom = Math.Max(maxBottom, lblWarning.Bottom + 10);
+                pnlTop.Height = maxBottom;
+            }
+            else
+            {
+                pnlTop.Height = baseHeight;
+            }
+            pnlBottom.Location = new Point(20, pnlTop.Bottom + 15);
+            pnlBottom.Height = ClientSize.Height - pnlBottom.Top - 15;
         }
 
         private void pnlTop_Paint(object sender, PaintEventArgs e)

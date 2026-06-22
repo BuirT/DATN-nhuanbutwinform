@@ -123,6 +123,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnTaiKhoan.FillColor = System.Drawing.Color.Transparent;
             this.btnTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
             this.btnTaiKhoan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnTaiKhoan.BorderRadius = 10;
             this.btnTaiKhoan.Location = new System.Drawing.Point(0, 4);
             this.btnTaiKhoan.Name = "btnTaiKhoan";
             this.btnTaiKhoan.Size = new System.Drawing.Size(232, 44);
@@ -134,6 +135,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnDangXuat
             // 
+            this.btnDangXuat.BorderRadius = 10;
             this.btnDangXuat.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnDangXuat.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
             this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
@@ -147,6 +149,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnDotThanhToan
             // 
+            this.btnDotThanhToan.BorderRadius = 10;
             this.btnDotThanhToan.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDotThanhToan.FillColor = System.Drawing.Color.Transparent;
             this.btnDotThanhToan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -162,6 +165,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubBaoCaoTH
             // 
+            this.btnSubBaoCaoTH.BorderRadius = 10;
             this.btnSubBaoCaoTH.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubBaoCaoTH.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubBaoCaoTH.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -178,6 +182,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubBaoCaoCN
             // 
+            this.btnSubBaoCaoCN.BorderRadius = 10;
             this.btnSubBaoCaoCN.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubBaoCaoCN.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubBaoCaoCN.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -194,6 +199,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubBaoCaoLD
             // 
+            this.btnSubBaoCaoLD.BorderRadius = 10;
             this.btnSubBaoCaoLD.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubBaoCaoLD.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubBaoCaoLD.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -210,6 +216,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnBaoCao
             // 
+            this.btnBaoCao.BorderRadius = 10;
             this.btnBaoCao.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCao.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -225,6 +232,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnDuyetChi
             // 
+            this.btnDuyetChi.BorderRadius = 10;
             this.btnDuyetChi.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDuyetChi.FillColor = System.Drawing.Color.Transparent;
             this.btnDuyetChi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -240,6 +248,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnPhieuChi
             // 
+            this.btnPhieuChi.BorderRadius = 10;
             this.btnPhieuChi.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnPhieuChi.FillColor = System.Drawing.Color.Transparent;
             this.btnPhieuChi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -255,6 +264,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnKiemDuyet
             // 
+            this.btnKiemDuyet.BorderRadius = 10;
             this.btnKiemDuyet.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnKiemDuyet.FillColor = System.Drawing.Color.Transparent;
             this.btnKiemDuyet.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -270,6 +280,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnCanhBaoAI
             // 
+            this.btnCanhBaoAI.BorderRadius = 10;
             this.btnCanhBaoAI.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnCanhBaoAI.FillColor = System.Drawing.Color.Transparent;
             this.btnCanhBaoAI.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -285,6 +296,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnBaoCaoThongKe
             // 
+            this.btnBaoCaoThongKe.BorderRadius = 10;
             this.btnBaoCaoThongKe.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCaoThongKe.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoThongKe.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -300,6 +312,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnBaoCaoAI
             // 
+            this.btnBaoCaoAI.BorderRadius = 10;
             this.btnBaoCaoAI.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBaoCaoAI.FillColor = System.Drawing.Color.Transparent;
             this.btnBaoCaoAI.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -315,6 +328,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnNhapNhuanBut
             // 
+            this.btnNhapNhuanBut.BorderRadius = 10;
             this.btnNhapNhuanBut.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnNhapNhuanBut.FillColor = System.Drawing.Color.Transparent;
             this.btnNhapNhuanBut.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -330,6 +344,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnTraCuuCaNhan
             // 
+            this.btnTraCuuCaNhan.BorderRadius = 10;
             this.btnTraCuuCaNhan.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnTraCuuCaNhan.FillColor = System.Drawing.Color.Transparent;
             this.btnTraCuuCaNhan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -346,6 +361,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubLoaiBao
             // 
+            this.btnSubLoaiBao.BorderRadius = 10;
             this.btnSubLoaiBao.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubLoaiBao.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubLoaiBao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -362,6 +378,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubSoBao
             // 
+            this.btnSubSoBao.BorderRadius = 10;
             this.btnSubSoBao.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubSoBao.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubSoBao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -378,6 +395,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnQuanLyBao
             // 
+            this.btnQuanLyBao.BorderRadius = 10;
             this.btnQuanLyBao.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnQuanLyBao.FillColor = System.Drawing.Color.Transparent;
             this.btnQuanLyBao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -393,6 +411,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubButDanh
             // 
+            this.btnSubButDanh.BorderRadius = 10;
             this.btnSubButDanh.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubButDanh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubButDanh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -409,6 +428,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnSubTacGiaHoSo
             // 
+            this.btnSubTacGiaHoSo.BorderRadius = 10;
             this.btnSubTacGiaHoSo.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSubTacGiaHoSo.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.btnSubTacGiaHoSo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -425,6 +445,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnTacGia
             // 
+            this.btnTacGia.BorderRadius = 10;
             this.btnTacGia.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnTacGia.FillColor = System.Drawing.Color.Transparent;
             this.btnTacGia.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -440,6 +461,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnTroLyAI
             // 
+            this.btnTroLyAI.BorderRadius = 10;
             this.btnTroLyAI.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnTroLyAI.FillColor = System.Drawing.Color.Transparent;
             this.btnTroLyAI.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
@@ -455,6 +477,7 @@ namespace HETHONGTINHNHUANBUT
             // 
             // btnDashboard
             // 
+            this.btnDashboard.BorderRadius = 10;
             this.btnDashboard.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDashboard.FillColor = System.Drawing.Color.Transparent;
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);

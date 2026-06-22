@@ -26,7 +26,7 @@ namespace HETHONGTINHNHUANBUT
             this.label3 = new System.Windows.Forms.Label();
             this.txtTrang = new Guna.UI2.WinForms.Guna2TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtMuc = new Guna.UI2.WinForms.Guna2TextBox();
+            this.cboMuc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.cboButDanh = new Guna.UI2.WinForms.Guna2ComboBox();
             this.lblVung = new System.Windows.Forms.Label();
@@ -62,7 +62,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Controls.Add(this.label3);
             this.pnlTop.Controls.Add(this.txtTrang);
             this.pnlTop.Controls.Add(this.label4);
-            this.pnlTop.Controls.Add(this.txtMuc);
+            this.pnlTop.Controls.Add(this.cboMuc);
             this.pnlTop.Controls.Add(this.label5);
             this.pnlTop.Controls.Add(this.cboButDanh);
             this.pnlTop.Controls.Add(this.lblVung);
@@ -154,7 +154,7 @@ namespace HETHONGTINHNHUANBUT
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.label3.Location = new System.Drawing.Point(395, 145);
+            this.label3.Location = new System.Drawing.Point(390, 145);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 17);
             this.label3.TabIndex = 3;
@@ -168,45 +168,47 @@ namespace HETHONGTINHNHUANBUT
             this.txtTrang.DefaultText = "";
             this.txtTrang.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.txtTrang.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtTrang.Location = new System.Drawing.Point(395, 167);
+            this.txtTrang.Location = new System.Drawing.Point(390, 167);
             this.txtTrang.Name = "txtTrang";
             this.txtTrang.PlaceholderText = "";
             this.txtTrang.SelectedText = "";
             this.txtTrang.Size = new System.Drawing.Size(80, 36);
             this.txtTrang.TabIndex = 2;
+            this.txtTrang.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTrang_KeyPress);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.label4.Location = new System.Drawing.Point(495, 145);
+            this.label4.Location = new System.Drawing.Point(485, 145);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 17);
             this.label4.TabIndex = 4;
             this.label4.Text = "Mục";
             // 
-            // txtMuc
+            // cboMuc
             // 
-            this.txtMuc.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.txtMuc.BorderRadius = 8;
-            this.txtMuc.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtMuc.DefaultText = "";
-            this.txtMuc.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
-            this.txtMuc.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtMuc.Location = new System.Drawing.Point(495, 167);
-            this.txtMuc.Name = "txtMuc";
-            this.txtMuc.PlaceholderText = "";
-            this.txtMuc.SelectedText = "";
-            this.txtMuc.Size = new System.Drawing.Size(80, 36);
-            this.txtMuc.TabIndex = 3;
+            this.cboMuc.BackColor = System.Drawing.Color.Transparent;
+            this.cboMuc.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.cboMuc.BorderRadius = 8;
+            this.cboMuc.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboMuc.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboMuc.FocusedColor = System.Drawing.Color.Empty;
+            this.cboMuc.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cboMuc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.cboMuc.ItemHeight = 30;
+            this.cboMuc.Location = new System.Drawing.Point(485, 167);
+            this.cboMuc.Name = "cboMuc";
+            this.cboMuc.Size = new System.Drawing.Size(130, 36);
+            this.cboMuc.TabIndex = 3;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.label5.Location = new System.Drawing.Point(595, 145);
+            this.label5.Location = new System.Drawing.Point(630, 145);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(64, 17);
             this.label5.TabIndex = 5;
@@ -223,7 +225,7 @@ namespace HETHONGTINHNHUANBUT
             this.cboButDanh.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cboButDanh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.cboButDanh.ItemHeight = 30;
-            this.cboButDanh.Location = new System.Drawing.Point(595, 167);
+            this.cboButDanh.Location = new System.Drawing.Point(630, 167);
             this.cboButDanh.Name = "cboButDanh";
             this.cboButDanh.Size = new System.Drawing.Size(200, 36);
             this.cboButDanh.TabIndex = 4;
@@ -233,7 +235,7 @@ namespace HETHONGTINHNHUANBUT
             this.lblVung.AutoSize = true;
             this.lblVung.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblVung.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblVung.Location = new System.Drawing.Point(815, 145);
+            this.lblVung.Location = new System.Drawing.Point(845, 145);
             this.lblVung.Name = "lblVung";
             this.lblVung.Size = new System.Drawing.Size(108, 17);
             this.lblVung.TabIndex = 6;
@@ -254,7 +256,7 @@ namespace HETHONGTINHNHUANBUT
             "HNI",
             "HCM",
             "DNG"});
-            this.cboVung.Location = new System.Drawing.Point(815, 167);
+            this.cboVung.Location = new System.Drawing.Point(845, 167);
             this.cboVung.Name = "cboVung";
             this.cboVung.Size = new System.Drawing.Size(150, 36);
             this.cboVung.TabIndex = 5;
@@ -264,7 +266,7 @@ namespace HETHONGTINHNHUANBUT
             this.lblVungChuyenDen.AutoSize = true;
             this.lblVungChuyenDen.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblVungChuyenDen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblVungChuyenDen.Location = new System.Drawing.Point(985, 145);
+            this.lblVungChuyenDen.Location = new System.Drawing.Point(1010, 145);
             this.lblVungChuyenDen.Name = "lblVungChuyenDen";
             this.lblVungChuyenDen.Size = new System.Drawing.Size(148, 17);
             this.lblVungChuyenDen.TabIndex = 7;
@@ -286,7 +288,7 @@ namespace HETHONGTINHNHUANBUT
             "HNI",
             "HCM",
             "DNG"});
-            this.cboVungChuyenDen.Location = new System.Drawing.Point(985, 167);
+            this.cboVungChuyenDen.Location = new System.Drawing.Point(1010, 167);
             this.cboVungChuyenDen.Name = "cboVungChuyenDen";
             this.cboVungChuyenDen.Size = new System.Drawing.Size(150, 36);
             this.cboVungChuyenDen.TabIndex = 6;
@@ -499,7 +501,7 @@ namespace HETHONGTINHNHUANBUT
         private System.Windows.Forms.Label label3;
         private Guna.UI2.WinForms.Guna2TextBox txtTrang;
         private System.Windows.Forms.Label label4;
-        private Guna.UI2.WinForms.Guna2TextBox txtMuc;
+        private Guna.UI2.WinForms.Guna2ComboBox cboMuc;
         private System.Windows.Forms.Label label5;
         private Guna.UI2.WinForms.Guna2ComboBox cboButDanh;
         private System.Windows.Forms.Label lblVung;
