@@ -15,8 +15,8 @@ namespace HETHONGTINHNHUANBUT
         private static readonly string connStr =
             System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
-        private static readonly string ollamaUrl = "http://localhost:11434/api/generate";
-        private static readonly string modelName = "qwen2.5";
+        private static readonly string ollamaUrl = AIConfig.GenerateUrl;
+        private static readonly string modelName = AIConfig.OllamaModel;
 
         public class AnomalyResult
         {

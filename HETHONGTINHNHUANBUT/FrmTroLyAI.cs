@@ -13,8 +13,8 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTroLyAI : Form
     {
-        private static readonly string endpoint = "http://localhost:11434/api/generate";
-        private static readonly string aiModel = "qwen2.5";
+        private static readonly string endpoint = AIConfig.GenerateUrl;
+        private static readonly string aiModel = AIConfig.OllamaModel;
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         public FrmTroLyAI()

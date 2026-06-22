@@ -12,10 +12,16 @@ BEGIN
         MaBaiViet INT NULL,
         MaPhongVien INT NULL,
         NoiDung NVARCHAR(MAX) NULL,
-        DaXuLy BIT NOT NULL DEFAULT 0
+        DaXuLy BIT NOT NULL DEFAULT 0,
+        GiaTriPhatHien NVARCHAR(500) NULL
     );
     PRINT N'Da tao bang AICanhBao';
 END
+GO
+
+-- Thêm cột GiaTriPhatHien nếu chưa có
+IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'GiaTriPhatHien' AND Object_ID = Object_ID(N'AICanhBao'))
+    ALTER TABLE AICanhBao ADD GiaTriPhatHien NVARCHAR(500) NULL;
 GO
 
 -- 2. Thêm cột cho bảng Nhuanbut
@@ -31,10 +37,6 @@ IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayDanhGiaAI' AND Object
     ALTER TABLE Nhuanbut ADD NgayDanhGiaAI DATETIME;
 GO
 
--- 3. Xoa DiemChatLuongAI neu con
-IF EXISTS(SELECT * FROM sys.columns WHERE Name = N'DiemChatLuongAI' AND Object_ID = Object_ID(N'Nhuanbut'))
-    ALTER TABLE Nhuanbut DROP COLUMN DiemChatLuongAI;
-GO
-
+-- 3. Giu lai DiemChatLuongAI (khong xoa)
 PRINT N'Cap nhat schema hoan tat!';
 GO

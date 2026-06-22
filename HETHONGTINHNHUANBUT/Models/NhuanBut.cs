@@ -13,7 +13,7 @@ namespace HETHONGTINHNHUANBUT.Models
         public decimal TienNhuanbut { get; set; }
         public string Butdanh { get; set; }
 
-        public object MsBao { get; set; }
+        public int MsBao { get; set; }
 
         public string Vung { get; set; }
         public string VungChuyenDen { get; set; }
@@ -30,6 +30,6 @@ namespace HETHONGTINHNHUANBUT.Models
         public decimal TienNhuanBut { get => TienNhuanbut; set => TienNhuanbut = value; }
         public string NguoiNhap { get => addby; set => addby = value; }
         public DateTime NgayNhap { get => ngaychuyen ?? DateTime.Now; set => ngaychuyen = value; }
-        public string IdBao { get => MsBao?.ToString(); set => MsBao = value; }
+        public string IdBao { get => MsBao.ToString(); set { if (int.TryParse(value, out var id)) MsBao = id; } }
     }
 }

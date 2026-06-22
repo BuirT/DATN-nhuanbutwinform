@@ -115,7 +115,7 @@
             this.txtPassword.TabIndex = 2;
             this.txtPassword.TextOffset = new System.Drawing.Point(5, 0);
             this.txtPassword.IconRightClick += new System.EventHandler(this.txtPassword_IconRightClick);
-            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
+
             this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyDown);
             // 
             // btnLogin

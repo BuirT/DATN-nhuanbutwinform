@@ -22,6 +22,12 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2TextBox txtNguoiKy;
         private Label lblNguoiKy;
 
+        private Guna.UI2.WinForms.Guna2Panel pnlContent;
+        private System.Windows.Forms.RichTextBox txtNoiDungBaiViet;
+        private System.Windows.Forms.Label lblDiemAI;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.RichTextBox txtDanhGiaAI;
+
         public string QuyenHienTai { get; set; }
         public string NguoiDangNhap { get; set; }
 
@@ -38,6 +44,7 @@ namespace HETHONGTINHNHUANBUT
         {
             CreateSignaturePanel();
             SetupRoleUI();
+            CreateContentPanel();
 
             if (string.IsNullOrEmpty(QuyenHienTai?.Trim()))
             {
@@ -155,6 +162,8 @@ namespace HETHONGTINHNHUANBUT
                     string query = @"
                         SELECT n.Maso, n.Tenbai, n.Trang, n.Muc, n.Butdanh, 
                                n.TienNhuanbut,
+                               n.NoiDungBaiViet,
+                               n.DiemChatLuongAI,
                                n.NguoiNhap, n.NguoiChamTien, n.NguoiKeToan, n.NguoiKiemTra, n.TongThuKy,
                                n.LyDoBaoSai,
                                n.ngaychuyen AS NgayNhap,
@@ -204,6 +213,8 @@ namespace HETHONGTINHNHUANBUT
                             if (dgvNhuanBut.Columns[col] != null) dgvNhuanBut.Columns[col].Visible = false;
 
                         if (dgvNhuanBut.Columns["DanhGiaAI"] != null) dgvNhuanBut.Columns["DanhGiaAI"].Visible = false;
+                        if (dgvNhuanBut.Columns["DiemChatLuongAI"] != null) dgvNhuanBut.Columns["DiemChatLuongAI"].Visible = false;
+                        if (dgvNhuanBut.Columns["NoiDungBaiViet"] != null) dgvNhuanBut.Columns["NoiDungBaiViet"].Visible = false;
 
                         UIHelper.ConfigureColumns(dgvNhuanBut,
                             ("Tenbai", "TÊN BÀI", false, false),
@@ -529,6 +540,83 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
+        // =====================================================================
+        // CONTENT + AI PANEL
+        // =====================================================================
+        private void CreateContentPanel()
+        {
+            pnlContent = new Guna.UI2.WinForms.Guna2Panel();
+            pnlContent.BackColor = System.Drawing.Color.Transparent;
+            pnlContent.BorderRadius = 16;
+            pnlContent.FillColor = System.Drawing.Color.White;
+            pnlContent.Location = new System.Drawing.Point(20, 185);
+            pnlContent.Name = "pnlContent";
+            pnlContent.ShadowDecoration.Color = System.Drawing.Color.FromArgb(226, 232, 240);
+            pnlContent.ShadowDecoration.Depth = 8;
+            pnlContent.Size = new System.Drawing.Size(1460, 235);
+            pnlContent.TabIndex = 3;
+
+            var lblContentTitle = new System.Windows.Forms.Label();
+            lblContentTitle.AutoSize = true;
+            lblContentTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            lblContentTitle.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            lblContentTitle.Location = new System.Drawing.Point(25, 15);
+            lblContentTitle.Size = new System.Drawing.Size(131, 17);
+            lblContentTitle.Text = "NỘI DUNG BÀI VIẾT";
+
+            txtNoiDungBaiViet = new System.Windows.Forms.RichTextBox();
+            txtNoiDungBaiViet.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtNoiDungBaiViet.BackColor = System.Drawing.Color.White;
+            txtNoiDungBaiViet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtNoiDungBaiViet.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtNoiDungBaiViet.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
+            txtNoiDungBaiViet.Location = new System.Drawing.Point(25, 37);
+            txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
+            txtNoiDungBaiViet.ReadOnly = true;
+            txtNoiDungBaiViet.Size = new System.Drawing.Size(1410, 80);
+            txtNoiDungBaiViet.TabIndex = 0;
+            txtNoiDungBaiViet.Text = "";
+
+            lblDiemAI = new System.Windows.Forms.Label();
+            lblDiemAI.AutoSize = true;
+            lblDiemAI.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            lblDiemAI.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
+            lblDiemAI.Location = new System.Drawing.Point(25, 125);
+            lblDiemAI.Name = "lblDiemAI";
+            lblDiemAI.Size = new System.Drawing.Size(0, 21);
+            lblDiemAI.TabIndex = 1;
+
+            label8 = new System.Windows.Forms.Label();
+            label8.AutoSize = true;
+            label8.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            label8.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            label8.Location = new System.Drawing.Point(25, 150);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(95, 17);
+            label8.Text = "ĐÁNH GIÁ AI";
+
+            txtDanhGiaAI = new System.Windows.Forms.RichTextBox();
+            txtDanhGiaAI.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtDanhGiaAI.BackColor = System.Drawing.Color.White;
+            txtDanhGiaAI.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtDanhGiaAI.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            txtDanhGiaAI.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
+            txtDanhGiaAI.Location = new System.Drawing.Point(25, 172);
+            txtDanhGiaAI.Name = "txtDanhGiaAI";
+            txtDanhGiaAI.ReadOnly = true;
+            txtDanhGiaAI.Size = new System.Drawing.Size(1410, 55);
+            txtDanhGiaAI.TabIndex = 2;
+            txtDanhGiaAI.Text = "";
+
+            pnlContent.Controls.Add(lblContentTitle);
+            pnlContent.Controls.Add(txtNoiDungBaiViet);
+            pnlContent.Controls.Add(lblDiemAI);
+            pnlContent.Controls.Add(label8);
+            pnlContent.Controls.Add(txtDanhGiaAI);
+
+            this.Controls.Add(pnlContent);
+        }
+
         private void dgvNhuanBut_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && dgvNhuanBut.CurrentRow != null)
@@ -559,14 +647,35 @@ namespace HETHONGTINHNHUANBUT
 
                 LoadSignaturePanel(row);
 
-                // Hiển thị AI evaluation nếu có
-                if (dgvNhuanBut.Columns["DanhGiaAI"] != null)
+                // Load nội dung bài viết
+                if (dgvNhuanBut.Columns["NoiDungBaiViet"] != null)
                 {
-                    string danhGiaAI = row.Cells["DanhGiaAI"].Value?.ToString() ?? "";
-                    if (!string.IsNullOrEmpty(danhGiaAI))
+                    string noiDung = row.Cells["NoiDungBaiViet"].Value?.ToString() ?? "";
+                    txtNoiDungBaiViet.Text = noiDung;
+                }
+
+                // Hiển thị AI score + evaluation (dùng controls riêng, không ghi đè lblRoleInfo)
+                if (dgvNhuanBut.Columns["DiemChatLuongAI"] != null)
+                {
+                    int diemAI = 0;
+                    var diemVal = row.Cells["DiemChatLuongAI"].Value;
+                    if (diemVal != null && diemVal != DBNull.Value)
+                        int.TryParse(diemVal.ToString(), out diemAI);
+
+                    string danhGiaAI = "";
+                    if (dgvNhuanBut.Columns["DanhGiaAI"] != null)
+                        danhGiaAI = row.Cells["DanhGiaAI"].Value?.ToString() ?? "";
+
+                    if (diemAI > 0 || !string.IsNullOrEmpty(danhGiaAI))
                     {
-                        lblRoleInfo.Text = "🤖 AI: " + danhGiaAI;
-                        lblRoleInfo.ForeColor = Color.FromArgb(16, 185, 129);
+                        lblDiemAI.Text = diemAI > 0 ? $"🤖 Điểm AI: {diemAI}/100" : "";
+                        lblDiemAI.Visible = true;
+                        txtDanhGiaAI.Text = danhGiaAI ?? "";
+                    }
+                    else
+                    {
+                        lblDiemAI.Visible = false;
+                        txtDanhGiaAI.Text = "";
                     }
                 }
             }
@@ -720,8 +829,5 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-        private void txtTienNhuanBut_TextChanged(object sender, EventArgs e) { }
-        private void pnlTop_Paint(object sender, PaintEventArgs e) { }
-        private void lblTien_Click(object sender, EventArgs e) { }
     }
 }

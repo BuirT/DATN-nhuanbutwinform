@@ -132,7 +132,7 @@ namespace HETHONGTINHNHUANBUT
             this.lblWelcome.Size = new System.Drawing.Size(325, 37);
             this.lblWelcome.TabIndex = 0;
             this.lblWelcome.Text = "TỔNG QUAN HỆ THỐNG";
-            this.lblWelcome.Click += new System.EventHandler(this.lblWelcome_Click);
+
             // 
             // lblUpdate
             // 

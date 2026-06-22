@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -19,7 +19,6 @@ namespace HETHONGTINHNHUANBUT
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RichTextBox txtNoiDungBaiViet;
         private Guna.UI2.WinForms.Guna2Button btnPhanTichAI;
-        private System.Windows.Forms.Label lblAIResult;
 
         public FrmNhapBaiPhongVien()
         {
@@ -68,7 +67,7 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+                MessageBox.Show("Lá»—i táº£i dá»¯ liá»‡u: " + ex.Message);
             }
         }
 
@@ -83,14 +82,15 @@ namespace HETHONGTINHNHUANBUT
                                           TienNhuanbut, 
                                           NoiDungBaiViet,
                                           DanhGiaAI,
+                                          DiemChatLuongAI,
                                           NgayDanhGiaAI,
                                             CASE TrangThaiDuyet 
-                                                WHEN 0 THEN N'Chờ chấm tiền'
-                                                WHEN 1 THEN N'Đã chấm tiền'
-                                                WHEN 2 THEN N'Đã nhập liệu'
-                                                WHEN 3 THEN N'Đã kiểm tra'
-                                                WHEN 4 THEN N'Đã ký duyệt'
-                                                ELSE N'Không rõ'
+                                                WHEN 0 THEN N'Chá» cháº¥m tiá»n'
+                                                WHEN 1 THEN N'ÄĂ£ cháº¥m tiá»n'
+                                                WHEN 2 THEN N'ÄĂ£ nháº­p liá»‡u'
+                                                WHEN 3 THEN N'ÄĂ£ kiá»ƒm tra'
+                                                WHEN 4 THEN N'ÄĂ£ kĂ½ duyá»‡t'
+                                                ELSE N'KhĂ´ng rĂµ'
                                             END AS TrangThaiDuyet
                                    FROM Nhuanbut 
                                    WHERE NguoiNhap = @user
@@ -108,16 +108,20 @@ namespace HETHONGTINHNHUANBUT
                     if (dgvBaiCuaToi.Columns["Maso"] != null) dgvBaiCuaToi.Columns["Maso"].Visible = false;
                     if (dgvBaiCuaToi.Columns["NoiDungBaiViet"] != null) dgvBaiCuaToi.Columns["NoiDungBaiViet"].Visible = false;
                     if (dgvBaiCuaToi.Columns["DanhGiaAI"] != null) dgvBaiCuaToi.Columns["DanhGiaAI"].Visible = false;
+                    if (dgvBaiCuaToi.Columns["DiemChatLuongAI"] != null) dgvBaiCuaToi.Columns["DiemChatLuongAI"].Visible = false;
                     if (dgvBaiCuaToi.Columns["NgayDanhGiaAI"] != null) dgvBaiCuaToi.Columns["NgayDanhGiaAI"].Visible = false;
-                    if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TÊN BÀI"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
+                    if (dgvBaiCuaToi.Columns["Tenbai"] != null) { dgvBaiCuaToi.Columns["Tenbai"].HeaderText = "TĂN BĂ€I"; dgvBaiCuaToi.Columns["Tenbai"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; }
                     if (dgvBaiCuaToi.Columns["Trang"] != null) dgvBaiCuaToi.Columns["Trang"].HeaderText = "TRANG";
-                    if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "MỤC";
-                    if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BÚT DANH";
-                    if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIỀN"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
-                    if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRẠNG THÁI";
+                    if (dgvBaiCuaToi.Columns["Muc"] != null) dgvBaiCuaToi.Columns["Muc"].HeaderText = "Má»¤C";
+                    if (dgvBaiCuaToi.Columns["Butdanh"] != null) dgvBaiCuaToi.Columns["Butdanh"].HeaderText = "BĂT DANH";
+                    if (dgvBaiCuaToi.Columns["TienNhuanbut"] != null) { dgvBaiCuaToi.Columns["TienNhuanbut"].HeaderText = "TIá»€N"; dgvBaiCuaToi.Columns["TienNhuanbut"].DefaultCellStyle.Format = "N0"; }
+                    if (dgvBaiCuaToi.Columns["TrangThaiDuyet"] != null) dgvBaiCuaToi.Columns["TrangThaiDuyet"].HeaderText = "TRáº NG THĂI";
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Loi LoadBaiCuaToiAsync: " + ex.Message);
+            }
         }
 
         private async void dgvBaiCuaToi_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -134,7 +138,7 @@ namespace HETHONGTINHNHUANBUT
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
-                    string sql = @"SELECT NoiDungBaiViet, DanhGiaAI
+                    string sql = @"SELECT NoiDungBaiViet, DanhGiaAI, DiemChatLuongAI
                                    FROM Nhuanbut WHERE Maso = @ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
@@ -146,30 +150,40 @@ namespace HETHONGTINHNHUANBUT
                                 string noiDung = reader["NoiDungBaiViet"]?.ToString() ?? "";
                                 txtNoiDungBaiViet.Text = noiDung;
 
+                                int diemAI = 0;
+                                if (reader["DiemChatLuongAI"] != DBNull.Value)
+                                    int.TryParse(reader["DiemChatLuongAI"].ToString(), out diemAI);
+
                                 string danhGia = reader["DanhGiaAI"]?.ToString() ?? "";
 
-                                if (!string.IsNullOrEmpty(danhGia))
+                                if (diemAI > 0 || !string.IsNullOrEmpty(danhGia))
                                 {
-                                    lblAIResult.Visible = true;
-                                    lblAIResult.Text = "🤖 " + danhGia;
-                                    lblAIResult.ForeColor = Color.FromArgb(16, 185, 129);
+                                    lblDiemAI.Text = diemAI > 0 ? $"đŸ¤– Äiá»ƒm AI: {diemAI}/100" : "";
+                                    lblDiemAI.Visible = true;
+                                    txtDanhGiaAI.Text = danhGia ?? "";
                                 }
                                 else
                                 {
-                                    lblAIResult.Visible = false;
+                                    lblDiemAI.Visible = false;
+                                    txtDanhGiaAI.Text = "";
                                 }
                             }
                         }
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                lblDiemAI.Text = "❌ " + "Loi tai danh gia AI: " + ex.Message;
+                lblDiemAI.Visible = true;
+                lblDiemAI.ForeColor = Color.FromArgb(220, 38, 38);
+            }
         }
 
         private async void btnNopBai_Click(object sender, EventArgs e)
         {
-            if (cboSoBao.SelectedValue == null) { MessageBox.Show("Vui lòng chọn số báo!"); return; }
-            if (string.IsNullOrWhiteSpace(txtTenBai.Text)) { MessageBox.Show("Vui lòng nhập tên bài!"); return; }
+            if (cboSoBao.SelectedValue == null) { MessageBox.Show("Vui lĂ²ng chá»n sá»‘ bĂ¡o!"); return; }
+            if (string.IsNullOrWhiteSpace(txtTenBai.Text)) { MessageBox.Show("Vui lĂ²ng nháº­p tĂªn bĂ i!"); return; }
 
             try
             {
@@ -204,7 +218,7 @@ namespace HETHONGTINHNHUANBUT
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
-                MessageBox.Show("Nộp bài thành công! Đang chạy phân tích AI...", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Ná»™p bĂ i thĂ nh cĂ´ng! Äang cháº¡y phĂ¢n tĂ­ch AI...", "ThĂ nh cĂ´ng", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 await PhanTichAISauKhiNop(newMa, noiDungBaiViet);
 
@@ -213,7 +227,7 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                MessageBox.Show("Lá»—i: " + ex.Message);
             }
         }
 
@@ -226,37 +240,40 @@ namespace HETHONGTINHNHUANBUT
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ: Tên bài, Mục và Bút danh trước khi phân tích AI.",
-                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lĂ²ng nháº­p Ä‘áº§y Ä‘á»§: TĂªn bĂ i, Má»¥c vĂ  BĂºt danh trÆ°á»›c khi phĂ¢n tĂ­ch AI.",
+                    "Thiáº¿u thĂ´ng tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (string.IsNullOrEmpty(noiDung))
             {
-                MessageBox.Show("Vui lòng nhập nội dung bài viết để phân tích AI.",
-                    "Thiếu nội dung", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lĂ²ng nháº­p ná»™i dung bĂ i viáº¿t Ä‘á»ƒ phĂ¢n tĂ­ch AI.",
+                    "Thiáº¿u ná»™i dung", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             btnPhanTichAI.Enabled = false;
-            btnPhanTichAI.Text = "🔄 AI ĐANG PHÂN TÍCH...";
-            lblAIResult.Visible = false;
+            btnPhanTichAI.Text = "đŸ”„ AI ÄANG PHĂ‚N TĂCH...";
+            lblDiemAI.Visible = false;
+            txtDanhGiaAI.Text = "";
 
             try
             {
                 BaiVietDanhGiaResult result = await BaiVietAIHelper.DanhGiaBaiVietAsync(tenBai, muc, noiDung, butDanh);
 
-                lblAIResult.Visible = true;
-                lblAIResult.Text = string.Format(
-                    "{0}\n{1}",
+                lblDiemAI.Text = result.DiemChatLuongAI > 0
+                    ? $"đŸ¤– Äiá»ƒm AI: {result.DiemChatLuongAI}/100"
+                    : "đŸ¤– Äiá»ƒm AI: Äang cháº¥m...";
+                lblDiemAI.Visible = true;
+                txtDanhGiaAI.Text = string.Format(
+                    "{0}\n\n{1}",
                     result.ChiTietDanhGia, result.DanhGia);
-                lblAIResult.ForeColor = Color.FromArgb(16, 185, 129);
 
                 string msg = string.Format(
-                    "🤖 KẾT QUẢ PHÂN TÍCH AI\n\n{0}\n\n{1}\n\nLưu ý: Đây chỉ là nhận xét tham khảo từ AI.",
-                    result.ChiTietDanhGia, result.DanhGia);
+                    "đŸ¤– Káº¾T QUáº¢ PHĂ‚N TĂCH AI\n\nÄiá»ƒm: {0}/100\n\n{1}\n\n{2}\n\nLÆ°u Ă½: ÄĂ¢y chá»‰ lĂ  nháº­n xĂ©t tham kháº£o tá»« AI.",
+                    result.DiemChatLuongAI, result.ChiTietDanhGia, result.DanhGia);
 
-                MessageBox.Show(msg, "AI Đánh giá chất lượng bài viết",
+                MessageBox.Show(msg, "AI ÄĂ¡nh giĂ¡ cháº¥t lÆ°á»£ng bĂ i viáº¿t",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 if (!string.IsNullOrEmpty(_selectedMaso))
@@ -266,15 +283,15 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                lblAIResult.Visible = true;
-                lblAIResult.Text = "❌ Lỗi kết nối AI: " + ex.Message;
-                lblAIResult.ForeColor = Color.FromArgb(220, 38, 38);
-                MessageBox.Show("Lỗi kết nối AI Đánh Giá: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblDiemAI.Visible = true;
+                lblDiemAI.Text = "âŒ Lá»—i káº¿t ná»‘i AI: " + ex.Message;
+                lblDiemAI.ForeColor = Color.FromArgb(220, 38, 38);
+                MessageBox.Show("Lá»—i káº¿t ná»‘i AI ÄĂ¡nh GiĂ¡: " + ex.Message, "Lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 btnPhanTichAI.Enabled = true;
-                btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
+                btnPhanTichAI.Text = "đŸ¤– PHĂ‚N TĂCH AI";
             }
         }
 
@@ -292,7 +309,10 @@ namespace HETHONGTINHNHUANBUT
                 BaiVietDanhGiaResult result = await BaiVietAIHelper.DanhGiaBaiVietAsync(tenBai, muc, noiDung, butDanh);
                 await LuuKetQuaAIVaoDb(maso.ToString(), result);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Phan tich AI sau khi nop that bai: " + ex.Message + "\n\nBai viet da nop thanh cong nhung chua co danh gia AI. Dong chi co the bam nut PHAN TICH AI de thu lai.", "Loi AI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private async Task LuuKetQuaAIVaoDb(string maso, BaiVietDanhGiaResult result)
@@ -304,17 +324,22 @@ namespace HETHONGTINHNHUANBUT
                     await conn.OpenAsync();
                     string sql = @"UPDATE Nhuanbut SET 
                                     DanhGiaAI = @danhGia,
+                                    DiemChatLuongAI = @diem,
                                     NgayDanhGiaAI = GETDATE()
                                    WHERE Maso = @ma";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@danhGia", string.Format("{0}\n{1}", result.ChiTietDanhGia, result.DanhGia));
+                        cmd.Parameters.AddWithValue("@diem", result.DiemChatLuongAI);
                         cmd.Parameters.AddWithValue("@ma", maso);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Luu ket qua AI that bai: " + ex.Message);
+            }
         }
 
         private async void btnKiemToanAI_Click(object sender, EventArgs e)
@@ -325,13 +350,13 @@ namespace HETHONGTINHNHUANBUT
 
             if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ: Tên bài, Mục và Bút danh trước khi dùng AI Kiểm Toán.",
-                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lĂ²ng nháº­p Ä‘áº§y Ä‘á»§: TĂªn bĂ i, Má»¥c vĂ  BĂºt danh trÆ°á»›c khi dĂ¹ng AI Kiá»ƒm ToĂ¡n.",
+                    "Thiáº¿u thĂ´ng tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             btnKiemToanAI.Enabled = false;
-            btnKiemToanAI.Text = "🔄 AI ĐANG KIỂM TOÁN...";
+            btnKiemToanAI.Text = "đŸ”„ AI ÄANG KIá»‚M TOĂN...";
 
             try
             {
@@ -342,25 +367,25 @@ namespace HETHONGTINHNHUANBUT
                 string warning = "";
                 bool coCanhBao = false;
 
-                if (!string.IsNullOrEmpty(canhBaoLaSan)) { warning += string.Format("⚠️ {0}\n", canhBaoLaSan); coCanhBao = true; }
-                if (!string.IsNullOrEmpty(ketQua.CanhBaoTheLoai)) { warning += string.Format("🚨 {0}\n", ketQua.CanhBaoTheLoai); coCanhBao = true; }
-                if (!string.IsNullOrEmpty(ketQua.CanhBaoTrungBai)) { warning += string.Format("⚠️ {0}\n", ketQua.CanhBaoTrungBai); coCanhBao = true; }
+                if (!string.IsNullOrEmpty(canhBaoLaSan)) { warning += string.Format("â ï¸ {0}\n", canhBaoLaSan); coCanhBao = true; }
+                if (!string.IsNullOrEmpty(ketQua.CanhBaoTheLoai)) { warning += string.Format("đŸ¨ {0}\n", ketQua.CanhBaoTheLoai); coCanhBao = true; }
+                if (!string.IsNullOrEmpty(ketQua.CanhBaoTrungBai)) { warning += string.Format("â ï¸ {0}\n", ketQua.CanhBaoTrungBai); coCanhBao = true; }
 
                 if (coCanhBao)
                 {
                     lblWarning.Text = warning.TrimEnd('\n');
                     lblWarning.ForeColor = Color.FromArgb(220, 38, 38);
                     lblWarning.Visible = true;
-                    MessageBox.Show(string.Format("AI Kiểm Toán phát hiện vấn đề:\n\n{0}\n\nĐồng chí vui lòng kiểm tra lại!", warning),
-                        "AI Kiểm Toán - Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(string.Format("AI Kiá»ƒm ToĂ¡n phĂ¡t hiá»‡n váº¥n Ä‘á»:\n\n{0}\n\nÄá»“ng chĂ­ vui lĂ²ng kiá»ƒm tra láº¡i!", warning),
+                        "AI Kiá»ƒm ToĂ¡n - Cáº£nh bĂ¡o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    lblWarning.Text = string.Format("✅ {0}", ketQua.TomTat);
+                    lblWarning.Text = string.Format("âœ… {0}", ketQua.TomTat);
                     lblWarning.ForeColor = Color.FromArgb(16, 185, 129);
                     lblWarning.Visible = true;
-                    MessageBox.Show(string.Format("✅ AI Kiểm Toán: {0}", ketQua.TomTat),
-                        "AI Kiểm Toán", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(string.Format("âœ… AI Kiá»ƒm ToĂ¡n: {0}", ketQua.TomTat),
+                        "AI Kiá»ƒm ToĂ¡n", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 var batThuong = await AnomalyDetector.KiemTraAsync(
@@ -371,8 +396,8 @@ namespace HETHONGTINHNHUANBUT
                 {
                     string noiDung = string.Join("\n", batThuong.CanhBao);
                     string tieuDe = batThuong.MucDo == AnomalyDetector.MucDo.NghiemTrong
-                        ? "🚨 CẢNH BÁO NGHIÊM TRỌNG"
-                        : "⚠️ PHÁT HIỆN BẤT THƯỜNG";
+                        ? "đŸ¨ Cáº¢NH BĂO NGHIĂM TRá»ŒNG"
+                        : "â ï¸ PHĂT HIá»†N Báº¤T THÆ¯á»œNG";
                     warning += "\n" + noiDung;
                     lblWarning.Text = warning.TrimEnd('\n');
                     lblWarning.ForeColor = Color.FromArgb(220, 38, 38);
@@ -385,15 +410,15 @@ namespace HETHONGTINHNHUANBUT
             }
             catch (Exception ex)
             {
-                lblWarning.Text = string.Format("❌ Lỗi AI: {0}", ex.Message);
+                lblWarning.Text = string.Format("âŒ Lá»—i AI: {0}", ex.Message);
                 lblWarning.ForeColor = Color.FromArgb(220, 38, 38);
                 lblWarning.Visible = true;
-                MessageBox.Show("Lỗi kết nối AI Kiểm Toán: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lá»—i káº¿t ná»‘i AI Kiá»ƒm ToĂ¡n: " + ex.Message, "Lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 btnKiemToanAI.Enabled = true;
-                btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
+                btnKiemToanAI.Text = "đŸ“‹ AI KIá»‚M TOĂN";
             }
         }
 
@@ -422,7 +447,7 @@ namespace HETHONGTINHNHUANBUT
                         if (cacMucThuongViet.Count > 0 && !cacMucThuongViet.Contains(mucHienTai, StringComparer.OrdinalIgnoreCase))
                         {
                             string mucThuongViet = string.Join(", ", cacMucThuongViet);
-                            return string.Format("Bút danh '{0}' thường viết mục: {1}. Bài này thuộc mục '{2}' - đồng chí có chắc không?", butDanh, mucThuongViet, mucHienTai);
+                            return string.Format("BĂºt danh '{0}' thÆ°á»ng viáº¿t má»¥c: {1}. BĂ i nĂ y thuá»™c má»¥c '{2}' - Ä‘á»“ng chĂ­ cĂ³ cháº¯c khĂ´ng?", butDanh, mucThuongViet, mucHienTai);
                         }
                     }
                 }
@@ -467,14 +492,11 @@ namespace HETHONGTINHNHUANBUT
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
             lblWarning.Visible = false;
-            lblAIResult.Visible = false;
+            lblDiemAI.Visible = false;
+            txtDanhGiaAI.Text = "";
             _selectedMaso = "";
             txtTenBai.Focus();
         }
 
-        private void pnlTop_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

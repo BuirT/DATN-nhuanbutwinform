@@ -36,14 +36,18 @@ namespace HETHONGTINHNHUANBUT
             this.btnNopBai = new Guna.UI2.WinForms.Guna2Button();
             this.btnKiemToanAI = new Guna.UI2.WinForms.Guna2Button();
             this.lblWarning = new System.Windows.Forms.Label();
+            this.btnPhanTichAI = new Guna.UI2.WinForms.Guna2Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtNoiDungBaiViet = new System.Windows.Forms.RichTextBox();
+            this.lblDiemAI = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtDanhGiaAI = new System.Windows.Forms.RichTextBox();
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDataTitle = new System.Windows.Forms.Label();
             this.dgvBaiCuaToi = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.guna2CirclePictureBox1 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.pnlTop.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaiCuaToi)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlTop
@@ -52,7 +56,6 @@ namespace HETHONGTINHNHUANBUT
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlTop.BackColor = System.Drawing.Color.Transparent;
             this.pnlTop.BorderRadius = 16;
-            this.pnlTop.Controls.Add(this.guna2CirclePictureBox1);
             this.pnlTop.Controls.Add(this.lblTitle);
             this.pnlTop.Controls.Add(this.label1);
             this.pnlTop.Controls.Add(this.cboSoBao);
@@ -71,14 +74,20 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Controls.Add(this.btnNopBai);
             this.pnlTop.Controls.Add(this.btnKiemToanAI);
             this.pnlTop.Controls.Add(this.lblWarning);
+            this.pnlTop.Controls.Add(this.btnPhanTichAI);
+            this.pnlTop.Controls.Add(this.label7);
+            this.pnlTop.Controls.Add(this.txtNoiDungBaiViet);
+            this.pnlTop.Controls.Add(this.lblDiemAI);
+            this.pnlTop.Controls.Add(this.label8);
+            this.pnlTop.Controls.Add(this.txtDanhGiaAI);
             this.pnlTop.FillColor = System.Drawing.Color.White;
             this.pnlTop.Location = new System.Drawing.Point(20, 15);
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.Size = new System.Drawing.Size(1160, 520);
+            this.pnlTop.Size = new System.Drawing.Size(1160, 580);
             this.pnlTop.TabIndex = 0;
-            this.pnlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlTop_Paint);
+
             // 
             // lblTitle
             // 
@@ -316,11 +325,86 @@ namespace HETHONGTINHNHUANBUT
             // 
             this.lblWarning.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.lblWarning.Location = new System.Drawing.Point(25, 460);
+            this.lblWarning.Location = new System.Drawing.Point(25, 530);
             this.lblWarning.Name = "lblWarning";
             this.lblWarning.Size = new System.Drawing.Size(1110, 50);
             this.lblWarning.TabIndex = 9;
             this.lblWarning.Visible = false;
+            // 
+            // btnPhanTichAI
+            // 
+            this.btnPhanTichAI.Animated = true;
+            this.btnPhanTichAI.BorderRadius = 8;
+            this.btnPhanTichAI.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.btnPhanTichAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnPhanTichAI.ForeColor = System.Drawing.Color.White;
+            this.btnPhanTichAI.Location = new System.Drawing.Point(345, 210);
+            this.btnPhanTichAI.Name = "btnPhanTichAI";
+            this.btnPhanTichAI.Size = new System.Drawing.Size(170, 38);
+            this.btnPhanTichAI.TabIndex = 10;
+            this.btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
+            this.btnPhanTichAI.Click += new System.EventHandler(this.btnPhanTichAI_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.label7.Location = new System.Drawing.Point(25, 265);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(131, 17);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "NỘI DUNG BÀI VIẾT";
+            // 
+            // txtNoiDungBaiViet
+            // 
+            this.txtNoiDungBaiViet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNoiDungBaiViet.BackColor = System.Drawing.Color.White;
+            this.txtNoiDungBaiViet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtNoiDungBaiViet.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtNoiDungBaiViet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.txtNoiDungBaiViet.Location = new System.Drawing.Point(25, 288);
+            this.txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
+            this.txtNoiDungBaiViet.Size = new System.Drawing.Size(1110, 100);
+            this.txtNoiDungBaiViet.TabIndex = 9;
+            this.txtNoiDungBaiViet.Text = "";
+            // 
+            // lblDiemAI
+            // 
+            this.lblDiemAI.AutoSize = true;
+            this.lblDiemAI.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblDiemAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.lblDiemAI.Location = new System.Drawing.Point(25, 398);
+            this.lblDiemAI.Name = "lblDiemAI";
+            this.lblDiemAI.Size = new System.Drawing.Size(0, 21);
+            this.lblDiemAI.TabIndex = 12;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.label8.Location = new System.Drawing.Point(25, 430);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(95, 17);
+            this.label8.TabIndex = 13;
+            this.label8.Text = "ĐÁNH GIÁ AI";
+            // 
+            // txtDanhGiaAI
+            // 
+            this.txtDanhGiaAI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDanhGiaAI.BackColor = System.Drawing.Color.White;
+            this.txtDanhGiaAI.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDanhGiaAI.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.txtDanhGiaAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.txtDanhGiaAI.Location = new System.Drawing.Point(25, 452);
+            this.txtDanhGiaAI.Name = "txtDanhGiaAI";
+            this.txtDanhGiaAI.ReadOnly = true;
+            this.txtDanhGiaAI.Size = new System.Drawing.Size(1110, 60);
+            this.txtDanhGiaAI.TabIndex = 14;
+            this.txtDanhGiaAI.Text = "";
             // 
             // pnlBottom
             // 
@@ -332,7 +416,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.Controls.Add(this.lblDataTitle);
             this.pnlBottom.Controls.Add(this.dgvBaiCuaToi);
             this.pnlBottom.FillColor = System.Drawing.Color.White;
-            this.pnlBottom.Location = new System.Drawing.Point(20, 555);
+            this.pnlBottom.Location = new System.Drawing.Point(20, 615);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
@@ -411,22 +495,12 @@ namespace HETHONGTINHNHUANBUT
             this.dgvBaiCuaToi.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvBaiCuaToi.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             // 
-            // guna2CirclePictureBox1
-            // 
-            this.guna2CirclePictureBox1.ImageRotate = 0F;
-            this.guna2CirclePictureBox1.Location = new System.Drawing.Point(382, 241);
-            this.guna2CirclePictureBox1.Name = "guna2CirclePictureBox1";
-            this.guna2CirclePictureBox1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            this.guna2CirclePictureBox1.Size = new System.Drawing.Size(64, 64);
-            this.guna2CirclePictureBox1.TabIndex = 10;
-            this.guna2CirclePictureBox1.TabStop = false;
-            // 
             // FrmNhapBaiPhongVien
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1200, 760);
+            this.ClientSize = new System.Drawing.Size(1200, 850);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlTop);
             this.DoubleBuffered = true;
@@ -440,61 +514,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.ResumeLayout(false);
             this.pnlBottom.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaiCuaToi)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).EndInit();
             this.ResumeLayout(false);
-            // btnPhanTichAI
-            btnPhanTichAI = new Guna.UI2.WinForms.Guna2Button();
-            btnPhanTichAI.Animated = true;
-            btnPhanTichAI.BorderRadius = 8;
-            btnPhanTichAI.FillColor = Color.FromArgb(16, 185, 129);
-            btnPhanTichAI.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnPhanTichAI.ForeColor = Color.White;
-            btnPhanTichAI.Location = new Point(345, 210);
-            btnPhanTichAI.Name = "btnPhanTichAI";
-            btnPhanTichAI.Size = new Size(170, 38);
-            btnPhanTichAI.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            btnPhanTichAI.TabIndex = 10;
-            btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
-            btnPhanTichAI.Click += btnPhanTichAI_Click;
-            pnlTop.Controls.Add(btnPhanTichAI);
-
-            // label7 - NỘI DUNG BÀI VIẾT
-            label7 = new Label();
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            label7.ForeColor = Color.FromArgb(100, 116, 139);
-            label7.Location = new Point(25, 265);
-            label7.Name = "label7";
-            label7.Size = new Size(130, 17);
-            label7.Text = "NỘI DUNG BÀI VIẾT";
-            pnlTop.Controls.Add(label7);
-
-            // txtNoiDungBaiViet
-            txtNoiDungBaiViet = new RichTextBox();
-            txtNoiDungBaiViet.BorderStyle = BorderStyle.FixedSingle;
-            txtNoiDungBaiViet.BackColor = Color.White;
-            txtNoiDungBaiViet.Font = new Font("Segoe UI", 10F);
-            txtNoiDungBaiViet.ForeColor = Color.FromArgb(15, 23, 42);
-            txtNoiDungBaiViet.Location = new Point(25, 288);
-            txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
-            txtNoiDungBaiViet.Size = new Size(1110, 150);
-            txtNoiDungBaiViet.TabIndex = 9;
-            txtNoiDungBaiViet.Text = "";
-            txtNoiDungBaiViet.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlTop.Controls.Add(txtNoiDungBaiViet);
-
-            // lblAIResult
-            lblAIResult = new Label();
-            lblAIResult.AutoSize = false;
-            lblAIResult.Font = new Font("Segoe UI", 9.5F);
-            lblAIResult.ForeColor = Color.FromArgb(15, 23, 42);
-            lblAIResult.Location = new Point(25, 448);
-            lblAIResult.Name = "lblAIResult";
-            lblAIResult.Size = new Size(1110, 60);
-            lblAIResult.Text = "";
-            lblAIResult.Visible = false;
-            lblAIResult.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlTop.Controls.Add(lblAIResult);
 
         }
 
@@ -517,9 +537,11 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnNopBai;
         private Guna.UI2.WinForms.Guna2Button btnKiemToanAI;
         private System.Windows.Forms.Label lblWarning;
+        private System.Windows.Forms.Label lblDiemAI;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.RichTextBox txtDanhGiaAI;
         private Guna.UI2.WinForms.Guna2Panel pnlBottom;
         private System.Windows.Forms.Label lblDataTitle;
         private Guna.UI2.WinForms.Guna2DataGridView dgvBaiCuaToi;
-        private Guna.UI2.WinForms.Guna2CirclePictureBox guna2CirclePictureBox1;
     }
 }

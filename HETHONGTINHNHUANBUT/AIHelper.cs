@@ -12,9 +12,6 @@ namespace HETHONGTINHNHUANBUT
 {
     public static class AIHelper
     {
-        private static readonly string baseUrl = "http://localhost:11434";
-        private static readonly string aiModel = "qwen2.5";
-
         public static async Task<string> ChatVoiTroLyAIAsync(string cauHoiCuaUser)
         {
             using (HttpClient client = new HttpClient())
@@ -41,7 +38,7 @@ QUY TẮC NGHIÊM NGẶT:
 
                 var requestBody = new
                 {
-                    model = aiModel,
+                    model = AIConfig.OllamaModel,
                     prompt = fullPrompt,
                     stream = false,
                     options = new
@@ -54,7 +51,7 @@ QUY TẮC NGHIÊM NGẶT:
                 string jsonString = JsonConvert.SerializeObject(requestBody);
                 var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync($"{baseUrl}/api/generate", content);
+                HttpResponseMessage response = await client.PostAsync(AIConfig.GenerateUrl, content);
                 string responseString = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -105,7 +102,7 @@ QUY TẮC:
 
                 var requestBody = new
                 {
-                    model = aiModel,
+                    model = AIConfig.OllamaModel,
                     prompt = prompt,
                     stream = false,
                     options = new
@@ -118,7 +115,7 @@ QUY TẮC:
                 string jsonString = JsonConvert.SerializeObject(requestBody);
                 var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync($"{baseUrl}/api/generate", content);
+                HttpResponseMessage response = await client.PostAsync(AIConfig.GenerateUrl, content);
                 string responseString = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -157,13 +154,11 @@ QUY TẮC:
     {
         public string DanhGia { get; set; }
         public string ChiTietDanhGia { get; set; }
+        public int DiemChatLuongAI { get; set; }
     }
 
     public static class BaiVietAIHelper
     {
-        private static readonly string baseUrl = "http://localhost:11434";
-        private static readonly string aiModel = "qwen2.5";
-
         public static async Task<BaiVietDanhGiaResult> DanhGiaBaiVietAsync(
             string tenBai, string muc, string noiDung, string butDanh)
         {
@@ -195,6 +190,7 @@ Hãy đánh giá bài viết, tập trung vào các khía cạnh sau:
 
 QUAN TRỌNG: Trả về KẾT QUẢ DUY NHẤT DƯỚI DẠNG JSON như sau (không thêm bất kỳ ký tự nào khác ngoài JSON):
 {{
+    ""diem"": <số nguyên từ 0 đến 100, đánh giá tổng thể chất lượng bài viết>,
     ""chiTiet"": ""<nhận xét chi tiết cho từng tiêu chí, viết thành đoạn văn>"",
     ""nhanXet"": ""<nhận xét tổng quan 2-3 câu bằng tiếng Việt, tập trung vào điểm mạnh và điểm cần cải thiện>""
 }}
@@ -203,7 +199,7 @@ TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm b�
 
                 var requestBody = new
                 {
-                    model = aiModel,
+                    model = AIConfig.OllamaModel,
                     prompt = prompt,
                     stream = false,
                     options = new
@@ -216,7 +212,7 @@ TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm b�
                 string jsonString = JsonConvert.SerializeObject(requestBody);
                 var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync($"{baseUrl}/api/generate", content);
+                HttpResponseMessage response = await client.PostAsync(AIConfig.GenerateUrl, content);
                 string responseString = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -236,11 +232,15 @@ TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm b�
 
                 string chiTiet = data["chiTiet"]?.ToString() ?? "";
                 string nhanXet = data["nhanXet"]?.ToString() ?? "";
+                int diem = 0;
+                if (data["diem"] != null)
+                    int.TryParse(data["diem"].ToString(), out diem);
 
                 return new BaiVietDanhGiaResult
                 {
                     DanhGia = nhanXet,
-                    ChiTietDanhGia = chiTiet
+                    ChiTietDanhGia = chiTiet,
+                    DiemChatLuongAI = diem
                 };
             }
         }

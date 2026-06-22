@@ -11,6 +11,7 @@ namespace HETHONGTINHNHUANBUT
     {
         bool isAddNew = false;
         private readonly string sqlConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
+        public string QuyenHienTai { get; set; }
 
         public FrmThanhToan()
         {
@@ -35,6 +36,30 @@ namespace HETHONGTINHNHUANBUT
             btnDuyet.Enabled = false;
 
             await LoadDataAsync();
+            PhanQuyenThaoTac();
+        }
+
+        private void PhanQuyenThaoTac()
+        {
+            string role = QuyenHienTai?.Trim().ToLower() ?? "";
+            bool coQuyen = (role == "kế toán" || role == "admin" || role == "quản trị viên");
+            btnThem.Enabled = coQuyen;
+            btnSua.Enabled = coQuyen;
+            btnXoa.Enabled = coQuyen;
+            btnDuyet.Enabled = coQuyen;
+
+            if (!coQuyen)
+            {
+                txtTenGoi.ReadOnly = true;
+                txtSoTien.ReadOnly = true;
+                dtpNgay.Enabled = false;
+                dtpTuNgay.Enabled = false;
+                dtpDenNgay.Enabled = false;
+                cboLoaiBao.Enabled = false;
+                cboVung.Enabled = false;
+                cboLoaiTT.Enabled = false;
+                cboHinhThuc.Enabled = false;
+            }
         }
 
         private async Task LoadDataAsync()

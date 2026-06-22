@@ -16,7 +16,8 @@ BEGIN
         MaBaiViet INT NULL,
         MaPhongVien INT NULL,
         NoiDung NVARCHAR(MAX) NULL,
-        DaXuLy BIT NOT NULL DEFAULT 0
+        DaXuLy BIT NOT NULL DEFAULT 0,
+        GiaTriPhatHien NVARCHAR(500) NULL
     );
 
     PRINT N'Đã tạo bảng AICanhBao!';

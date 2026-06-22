@@ -250,7 +250,10 @@ namespace HETHONGTINHNHUANBUT
                 chartDiemAI.Legend.Display = false;
                 chartDiemAI.Update();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi LoadChartDiemAI: " + ex.Message);
+            }
         }
 
         private async Task LoadHoatDongGanDayAsync()
@@ -299,9 +302,5 @@ namespace HETHONGTINHNHUANBUT
             catch { }
         }
 
-        private void lblWelcome_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

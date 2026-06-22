@@ -28,7 +28,7 @@ namespace HETHONGTINHNHUANBUT
         private async void FrmDuyetPhieuChi_Load(object sender, EventArgs e)
         {
             UIHelper.FormatGiaoDienBang(dgvPhieuChi);
-            await AutoFixDatabaseColumns(); // Tự động vá Database
+            await DatabaseMigrator.AutoFixDatabaseColumnsAsync();
             cboTrangThai.DropDownHeight = 200;
             cboTrangThai.IntegralHeight = true;
             cboTrangThai.MaxDropDownItems = 15;
@@ -52,61 +52,18 @@ namespace HETHONGTINHNHUANBUT
             PhanQuyenThaoTac();
         }
 
-        // Tự động thêm các cột quản lý Duyệt Chi vào bảng Phieuchi trong SQL
-        private async Task AutoFixDatabaseColumns()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    await conn.OpenAsync();
-                    string fixSql = @"
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TrangThaiDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
-                            ALTER TABLE Phieuchi ADD TrangThaiDuyet INT DEFAULT 0;
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NguoiDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
-                            ALTER TABLE Phieuchi ADD NguoiDuyet NVARCHAR(100);
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'NgayDuyet' AND Object_ID = Object_ID(N'Phieuchi'))
-                            ALTER TABLE Phieuchi ADD NgayDuyet DATETIME;
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'LyDoTuChoi' AND Object_ID = Object_ID(N'Phieuchi'))
-                            ALTER TABLE Phieuchi ADD LyDoTuChoi NVARCHAR(MAX);
-                        IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'Dathutien' AND Object_ID = Object_ID(N'Phieuchi'))
-                            ALTER TABLE Phieuchi ADD Dathutien NVARCHAR(1) DEFAULT 'N';
-                    ";
-                    using (SqlCommand cmd = new SqlCommand(fixSql, conn))
-                        await cmd.ExecuteNonQueryAsync();
-
-                    // Cập nhật các phiếu cũ thành trạng thái 'Đang chờ duyệt'
-                    string updateNulls = "UPDATE Phieuchi SET TrangThaiDuyet = 0 WHERE TrangThaiDuyet IS NULL;";
-                    using (SqlCommand cmd2 = new SqlCommand(updateNulls, conn))
-                        await cmd2.ExecuteNonQueryAsync();
-                }
-            }
-            catch { }
-        }
-
         private void PhanQuyenThaoTac()
         {
             string role = QuyenHienTai?.Trim().ToLower() ?? "";
-            if (role == "kế toán" || role == "thư ký")
-            {
-                btnDuyet.Enabled = false;
-                btnTuChoi.Enabled = false;
-                btnXoa.Enabled = false;
-                txtLyDoTuChoi.ReadOnly = true;
-            }
-            else
-            {
-                btnDuyet.Enabled = true;
-                btnTuChoi.Enabled = true;
-                btnXoa.Enabled = true;
-                txtLyDoTuChoi.ReadOnly = false;
-            }
+            bool laLanhDaoAdmin = (role == "lãnh đạo" || role == "admin" || role == "quản trị viên");
+            bool laKeToan = (role == "kế toán");
 
-            // Kế toán được xác nhận thanh toán
-            if (role == "kế toán")
-                btnThanhToan.Enabled = true;
-            else
-                btnThanhToan.Enabled = false;
+            btnDuyet.Enabled = laLanhDaoAdmin;
+            btnTuChoi.Enabled = laLanhDaoAdmin;
+            btnXoa.Enabled = laLanhDaoAdmin;
+            txtLyDoTuChoi.ReadOnly = !laLanhDaoAdmin;
+
+            btnThanhToan.Enabled = laKeToan;
         }
 
         private async Task LoadDataAsync()
@@ -338,6 +295,17 @@ namespace HETHONGTINHNHUANBUT
                                 // 2. Cập nhật NhuanbutCT: SauThanhToan = 'Y'
                                 string sqlCT = "UPDATE NhuanbutCT SET SauThanhToan = 'Y' WHERE SoPC = @id";
                                 using (SqlCommand cmd = new SqlCommand(sqlCT, conn, trans))
+                                {
+                                    cmd.Parameters.AddWithValue("@id", _selectedId);
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+
+                                // 3. Cập nhật Nhuanbut: DaThanhToan = 1
+                                string sqlNB = @"UPDATE n SET DaThanhToan = 1
+                                                  FROM Nhuanbut n
+                                                  INNER JOIN NhuanbutCT ct ON n.Maso = ct.MsNhuanbut
+                                                  WHERE ct.SoPC = @id";
+                                using (SqlCommand cmd = new SqlCommand(sqlNB, conn, trans))
                                 {
                                     cmd.Parameters.AddWithValue("@id", _selectedId);
                                     await cmd.ExecuteNonQueryAsync();

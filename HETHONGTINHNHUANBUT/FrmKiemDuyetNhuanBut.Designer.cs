@@ -53,7 +53,7 @@
             this.pnlTop.ShadowDecoration.Enabled = false;
             this.pnlTop.Size = new System.Drawing.Size(1460, 155);
             this.pnlTop.TabIndex = 0;
-            this.pnlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlTop_Paint);
+
             // 
             // lblTitle
             // 
@@ -81,13 +81,13 @@
             this.lblTien.AutoSize = true;
             this.lblTien.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblTien.Location = new System.Drawing.Point(22, 100);
+            this.lblTien.Location = new System.Drawing.Point(25, 100);
             this.lblTien.Name = "lblTien";
             this.lblTien.Size = new System.Drawing.Size(103, 17);
             this.lblTien.TabIndex = 3;
             this.lblTien.Text = "Tiền nhuận bút";
             this.lblTien.Visible = false;
-            this.lblTien.Click += new System.EventHandler(this.lblTien_Click);
+
             // 
             // txtTienNhuanBut
             // 
@@ -158,7 +158,7 @@
             this.pnlBottom.Controls.Add(this.txtTimKiem);
             this.pnlBottom.Controls.Add(this.dgvNhuanBut);
             this.pnlBottom.FillColor = System.Drawing.Color.White;
-            this.pnlBottom.Location = new System.Drawing.Point(20, 180);
+            this.pnlBottom.Location = new System.Drawing.Point(20, 435);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
@@ -187,7 +187,7 @@
             this.txtTimKiem.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtTimKiem.ForeColor = System.Drawing.Color.Black;
-            this.txtTimKiem.Location = new System.Drawing.Point(1185, 15);
+            this.txtTimKiem.Location = new System.Drawing.Point(1180, 15);
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.PlaceholderText = "Tìm kiếm...";
             this.txtTimKiem.SelectedText = "";
@@ -263,7 +263,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1500, 750);
+            this.ClientSize = new System.Drawing.Size(1500, 850);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlTop);
             this.DoubleBuffered = true;

@@ -17,6 +17,7 @@ namespace HETHONGTINHNHUANBUT
         public int? MaPhongVien { get; set; }
         public string NoiDung { get; set; }
         public bool DaXuLy { get; set; }
+        public string GiaTriPhatHien { get; set; }
     }
 
     public static class AIAuditService
@@ -32,6 +33,8 @@ namespace HETHONGTINHNHUANBUT
             alerts.AddRange(await KiemTraTienQuaThapAsync());
             alerts.AddRange(await KiemTraTangDotBienTacGiaAsync());
             alerts.AddRange(await KiemTraTangDotBienSoBaiAsync());
+            alerts.AddRange(await KiemTraDiemCaoTienThapAsync());
+            alerts.AddRange(await KiemTraDiemThapTienCaoAsync());
 
             foreach (var alert in alerts)
                 await LuuCanhBao(alert);
@@ -47,8 +50,8 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(@"
-                        INSERT INTO AICanhBao (NgayCanhBao, LoaiCanhBao, MucDo, MaBaiViet, MaPhongVien, NoiDung, DaXuLy)
-                        VALUES (@Ngay, @Loai, @MucDo, @MaBai, @MaPV, @NoiDung, 0)", conn))
+                        INSERT INTO AICanhBao (NgayCanhBao, LoaiCanhBao, MucDo, MaBaiViet, MaPhongVien, NoiDung, DaXuLy, GiaTriPhatHien)
+                        VALUES (@Ngay, @Loai, @MucDo, @MaBai, @MaPV, @NoiDung, 0, @GiaTri)", conn))
                     {
                         cmd.Parameters.AddWithValue("@Ngay", DateTime.Now);
                         cmd.Parameters.AddWithValue("@Loai", alert.LoaiCanhBao);
@@ -56,6 +59,7 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@MaBai", (object)alert.MaBaiViet ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@MaPV", (object)alert.MaPhongVien ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@NoiDung", alert.NoiDung ?? "");
+                        cmd.Parameters.AddWithValue("@GiaTri", (object)alert.GiaTriPhatHien ?? DBNull.Value);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -72,7 +76,7 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(@"
-                        SELECT Id, NgayCanhBao, LoaiCanhBao, MucDo, MaBaiViet, MaPhongVien, NoiDung, DaXuLy
+                        SELECT Id, NgayCanhBao, LoaiCanhBao, MucDo, MaBaiViet, MaPhongVien, NoiDung, DaXuLy, GiaTriPhatHien
                         FROM AICanhBao ORDER BY NgayCanhBao DESC", conn))
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -114,7 +118,8 @@ namespace HETHONGTINHNHUANBUT
                 MaBaiViet = reader["MaBaiViet"] != DBNull.Value ? Convert.ToInt32(reader["MaBaiViet"]) : (int?)null,
                 MaPhongVien = reader["MaPhongVien"] != DBNull.Value ? Convert.ToInt32(reader["MaPhongVien"]) : (int?)null,
                 NoiDung = reader["NoiDung"]?.ToString() ?? "",
-                DaXuLy = Convert.ToBoolean(reader["DaXuLy"])
+                DaXuLy = Convert.ToBoolean(reader["DaXuLy"]),
+                GiaTriPhatHien = reader["GiaTriPhatHien"]?.ToString() ?? ""
             };
         }
 
@@ -152,6 +157,7 @@ namespace HETHONGTINHNHUANBUT
                             decimal tien = Convert.ToDecimal(reader["TienNhuanbut"]);
                             decimal tb = Convert.ToDecimal(reader["TrungBinh"]);
 
+                            decimal tyLe = tb > 0 ? tien / tb : 0;
                             alerts.Add(new AuditAlert
                             {
                                 LoaiCanhBao = "Tiền nhuận bút quá cao",
@@ -159,7 +165,10 @@ namespace HETHONGTINHNHUANBUT
                                 MaBaiViet = Convert.ToInt32(reader["Maso"]),
                                 NoiDung = string.Format(
                                     "Bài \"{0}\" (CM: {1}) có tiền NB {2:N0}đ, gấp {3:F1} lần TB chuyên mục ({4:N0}đ).",
-                                    tenBai, muc, tien, tb > 0 ? tien / tb : 0, tb)
+                                    tenBai, muc, tien, tyLe, tb),
+                                GiaTriPhatHien = string.Format(
+                                    "TB chuyên mục: {0:N0}đ | Tiền hiện tại: {1:N0}đ | Tỷ lệ: {2:F0}%",
+                                    tb, tien, tyLe * 100)
                             });
                         }
                     }
@@ -202,6 +211,7 @@ namespace HETHONGTINHNHUANBUT
                             decimal tien = Convert.ToDecimal(reader["TienNhuanbut"]);
                             decimal tb = Convert.ToDecimal(reader["TrungBinh"]);
 
+                            decimal tyLe = tb > 0 ? tien / tb * 100 : 0;
                             alerts.Add(new AuditAlert
                             {
                                 LoaiCanhBao = "Tiền nhuận bút quá thấp",
@@ -209,7 +219,10 @@ namespace HETHONGTINHNHUANBUT
                                 MaBaiViet = Convert.ToInt32(reader["Maso"]),
                                 NoiDung = string.Format(
                                     "Bài \"{0}\" (CM: {1}) có tiền NB {2:N0}đ, chỉ bằng {3:F1}% TB chuyên mục ({4:N0}đ).",
-                                    tenBai, muc, tien, tb > 0 ? tien / tb * 100 : 0, tb)
+                                    tenBai, muc, tien, tyLe, tb),
+                                GiaTriPhatHien = string.Format(
+                                    "TB chuyên mục: {0:N0}đ | Tiền hiện tại: {1:N0}đ | Tỷ lệ: {2:F0}%",
+                                    tb, tien, tyLe)
                             });
                         }
                     }
@@ -263,13 +276,17 @@ namespace HETHONGTINHNHUANBUT
                             decimal tb = reader["TrungBinh3Thang"] != DBNull.Value
                                 ? Convert.ToDecimal(reader["TrungBinh3Thang"]) : 0;
 
+                            decimal tyLe = tb > 0 ? thangNay / tb : 0;
                             alerts.Add(new AuditAlert
                             {
                                 LoaiCanhBao = "PV nhận NB tăng đột biến",
                                 MucDo = 3,
                                 NoiDung = string.Format(
                                     "PV \"{0}\" nhận {1:N0}đ tháng này, gấp {2:F1} lần TB 3 tháng ({3:N0}đ/tháng). Cần kiểm tra.",
-                                    butDanh, thangNay, tb > 0 ? thangNay / tb : 0, tb)
+                                    butDanh, thangNay, tyLe, tb),
+                                GiaTriPhatHien = string.Format(
+                                    "Tháng này: {0:N0}đ | TB 3 tháng: {1:N0}đ | Tỷ lệ: {2:F0}%",
+                                    thangNay, tb, tyLe * 100)
                             });
                         }
                     }
@@ -319,13 +336,133 @@ namespace HETHONGTINHNHUANBUT
                             double tb = reader["TbBai3Thang"] != DBNull.Value
                                 ? Convert.ToDouble(reader["TbBai3Thang"]) : 0;
 
+                            double tyLe = tb > 0 ? soBai / tb : 0;
                             alerts.Add(new AuditAlert
                             {
                                 LoaiCanhBao = "Số bài viết tăng đột biến",
                                 MucDo = 2,
                                 NoiDung = string.Format(
                                     "PV \"{0}\" có {1} bài tháng này, gấp {2:F1} lần TB 3 tháng ({3:F1} bài/tháng).",
-                                    butDanh, soBai, tb > 0 ? soBai / tb : 0, tb)
+                                    butDanh, soBai, tyLe, tb),
+                                GiaTriPhatHien = string.Format(
+                                    "Tháng này: {0} bài | TB 3 tháng: {1:F0} bài | Tỷ lệ: {2:F0}%",
+                                    soBai, tb, tyLe * 100)
+                            });
+                        }
+                    }
+                }
+            }
+            catch { }
+            return alerts;
+        }
+
+        // ======================================================================
+        // LUẬT 5: Điểm AI cao nhưng tiền nhuận bút thấp bất thường
+        // ======================================================================
+        private static async Task<List<AuditAlert>> KiemTraDiemCaoTienThapAsync()
+        {
+            List<AuditAlert> alerts = new List<AuditAlert>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(@"
+                        SELECT n.Maso, n.Tenbai, n.TienNhuanbut, n.DiemChatLuongAI, n.Muc, n.Butdanh,
+                               AVG(n2.TienNhuanbut) AS TrungBinh
+                        FROM Nhuanbut n
+                        CROSS APPLY (
+                            SELECT TienNhuanbut FROM Nhuanbut
+                            WHERE Muc = n.Muc AND TienNhuanbut > 0 AND Maso != n.Maso
+                        ) n2
+                        WHERE n.TienNhuanbut > 0
+                          AND n.TrangThaiDuyet >= 0
+                          AND n.DiemChatLuongAI IS NOT NULL
+                          AND n.DiemChatLuongAI >= 85
+                        GROUP BY n.Maso, n.Tenbai, n.TienNhuanbut, n.DiemChatLuongAI, n.Muc, n.Butdanh
+                        HAVING n.TienNhuanbut < AVG(n2.TienNhuanbut)
+                           AND AVG(n2.TienNhuanbut) > 0
+                        ORDER BY n.TienNhuanbut ASC", conn))
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            string tenBai = reader["Tenbai"]?.ToString() ?? "";
+                            string muc = reader["Muc"]?.ToString() ?? "";
+                            decimal tien = Convert.ToDecimal(reader["TienNhuanbut"]);
+                            int diemAI = Convert.ToInt32(reader["DiemChatLuongAI"]);
+                            decimal tb = Convert.ToDecimal(reader["TrungBinh"]);
+
+                            decimal tyLe = tb > 0 ? tien / tb * 100 : 0;
+                            alerts.Add(new AuditAlert
+                            {
+                                LoaiCanhBao = "Điểm AI cao nhưng mức nhuận bút được chấm thấp bất thường",
+                                MucDo = 2,
+                                MaBaiViet = Convert.ToInt32(reader["Maso"]),
+                                NoiDung = string.Format(
+                                    "Bài \"{0}\" (CM: {1}) có điểm AI {2}/100 nhưng tiền NB chỉ {3:N0}đ, thấp hơn TB chuyên mục ({4:N0}đ).",
+                                    tenBai, muc, diemAI, tien, tb),
+                                GiaTriPhatHien = string.Format(
+                                    "Điểm AI: {0}/100 | Tiền NB: {1:N0}đ | TB chuyên mục: {2:N0}đ | Tỷ lệ: {3:F0}%",
+                                    diemAI, tien, tb, tyLe)
+                            });
+                        }
+                    }
+                }
+            }
+            catch { }
+            return alerts;
+        }
+
+        // ======================================================================
+        // LUẬT 6: Điểm AI thấp nhưng tiền nhuận bút cao bất thường
+        // ======================================================================
+        private static async Task<List<AuditAlert>> KiemTraDiemThapTienCaoAsync()
+        {
+            List<AuditAlert> alerts = new List<AuditAlert>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(@"
+                        SELECT n.Maso, n.Tenbai, n.TienNhuanbut, n.DiemChatLuongAI, n.Muc, n.Butdanh,
+                               AVG(n2.TienNhuanbut) AS TrungBinh
+                        FROM Nhuanbut n
+                        CROSS APPLY (
+                            SELECT TienNhuanbut FROM Nhuanbut
+                            WHERE Muc = n.Muc AND TienNhuanbut > 0 AND Maso != n.Maso
+                        ) n2
+                        WHERE n.TienNhuanbut > 0
+                          AND n.TrangThaiDuyet >= 0
+                          AND n.DiemChatLuongAI IS NOT NULL
+                          AND n.DiemChatLuongAI <= 60
+                        GROUP BY n.Maso, n.Tenbai, n.TienNhuanbut, n.DiemChatLuongAI, n.Muc, n.Butdanh
+                        HAVING n.TienNhuanbut > AVG(n2.TienNhuanbut)
+                           AND AVG(n2.TienNhuanbut) > 0
+                        ORDER BY n.TienNhuanbut DESC", conn))
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            string tenBai = reader["Tenbai"]?.ToString() ?? "";
+                            string muc = reader["Muc"]?.ToString() ?? "";
+                            decimal tien = Convert.ToDecimal(reader["TienNhuanbut"]);
+                            int diemAI = Convert.ToInt32(reader["DiemChatLuongAI"]);
+                            decimal tb = Convert.ToDecimal(reader["TrungBinh"]);
+
+                            decimal tyLe = tb > 0 ? tien / tb * 100 : 0;
+                            alerts.Add(new AuditAlert
+                            {
+                                LoaiCanhBao = "Điểm AI thấp nhưng mức nhuận bút được chấm cao bất thường",
+                                MucDo = 3,
+                                MaBaiViet = Convert.ToInt32(reader["Maso"]),
+                                NoiDung = string.Format(
+                                    "Bài \"{0}\" (CM: {1}) có điểm AI {2}/100 nhưng tiền NB {3:N0}đ, cao hơn TB chuyên mục ({4:N0}đ).",
+                                    tenBai, muc, diemAI, tien, tb),
+                                GiaTriPhatHien = string.Format(
+                                    "Điểm AI: {0}/100 | Tiền NB: {1:N0}đ | TB chuyên mục: {2:N0}đ | Tỷ lệ: {3:F0}%",
+                                    diemAI, tien, tb, tyLe)
                             });
                         }
                     }

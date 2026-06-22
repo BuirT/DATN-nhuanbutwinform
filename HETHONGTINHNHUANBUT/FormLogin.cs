@@ -179,8 +179,6 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex) { MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void txtPassword_TextChanged(object sender, EventArgs e) { }
-
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
