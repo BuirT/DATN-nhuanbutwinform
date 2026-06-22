@@ -14,9 +14,9 @@ namespace HETHONGTINHNHUANBUT
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlTop = new Guna.UI2.WinForms.Guna2Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -35,13 +35,13 @@ namespace HETHONGTINHNHUANBUT
             this.cboVungChuyenDen = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnNopBai = new Guna.UI2.WinForms.Guna2Button();
             this.btnKiemToanAI = new Guna.UI2.WinForms.Guna2Button();
-            this.lblWarning = new System.Windows.Forms.Label();
             this.btnPhanTichAI = new Guna.UI2.WinForms.Guna2Button();
             this.label7 = new System.Windows.Forms.Label();
             this.txtNoiDungBaiViet = new System.Windows.Forms.RichTextBox();
             this.lblDiemAI = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.txtDanhGiaAI = new System.Windows.Forms.RichTextBox();
+            this.lblWarning = new System.Windows.Forms.Label();
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDataTitle = new System.Windows.Forms.Label();
             this.dgvBaiCuaToi = new Guna.UI2.WinForms.Guna2DataGridView();
@@ -73,21 +73,20 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Controls.Add(this.cboVungChuyenDen);
             this.pnlTop.Controls.Add(this.btnNopBai);
             this.pnlTop.Controls.Add(this.btnKiemToanAI);
-            this.pnlTop.Controls.Add(this.lblWarning);
             this.pnlTop.Controls.Add(this.btnPhanTichAI);
             this.pnlTop.Controls.Add(this.label7);
             this.pnlTop.Controls.Add(this.txtNoiDungBaiViet);
             this.pnlTop.Controls.Add(this.lblDiemAI);
             this.pnlTop.Controls.Add(this.label8);
             this.pnlTop.Controls.Add(this.txtDanhGiaAI);
+            this.pnlTop.Controls.Add(this.lblWarning);
             this.pnlTop.FillColor = System.Drawing.Color.White;
             this.pnlTop.Location = new System.Drawing.Point(20, 15);
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.Size = new System.Drawing.Size(1160, 580);
+            this.pnlTop.Size = new System.Drawing.Size(1160, 607);
             this.pnlTop.TabIndex = 0;
-
             // 
             // lblTitle
             // 
@@ -323,16 +322,6 @@ namespace HETHONGTINHNHUANBUT
             this.btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
             this.btnKiemToanAI.Click += new System.EventHandler(this.btnKiemToanAI_Click);
             // 
-            // lblWarning
-            // 
-            this.lblWarning.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.lblWarning.Location = new System.Drawing.Point(25, 530);
-            this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(1110, 50);
-            this.lblWarning.TabIndex = 9;
-            this.lblWarning.Visible = false;
-            // 
             // btnPhanTichAI
             // 
             this.btnPhanTichAI.Animated = true;
@@ -368,7 +357,7 @@ namespace HETHONGTINHNHUANBUT
             this.txtNoiDungBaiViet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.txtNoiDungBaiViet.Location = new System.Drawing.Point(25, 288);
             this.txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
-            this.txtNoiDungBaiViet.Size = new System.Drawing.Size(1110, 100);
+            this.txtNoiDungBaiViet.Size = new System.Drawing.Size(1110, 131);
             this.txtNoiDungBaiViet.TabIndex = 9;
             this.txtNoiDungBaiViet.Text = "";
             // 
@@ -389,7 +378,7 @@ namespace HETHONGTINHNHUANBUT
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.label8.Location = new System.Drawing.Point(25, 430);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(95, 17);
+            this.label8.Size = new System.Drawing.Size(90, 17);
             this.label8.TabIndex = 13;
             this.label8.Text = "ĐÁNH GIÁ AI";
             // 
@@ -404,9 +393,20 @@ namespace HETHONGTINHNHUANBUT
             this.txtDanhGiaAI.Location = new System.Drawing.Point(25, 452);
             this.txtDanhGiaAI.Name = "txtDanhGiaAI";
             this.txtDanhGiaAI.ReadOnly = true;
-            this.txtDanhGiaAI.Size = new System.Drawing.Size(1110, 60);
+            this.txtDanhGiaAI.Size = new System.Drawing.Size(1110, 123);
             this.txtDanhGiaAI.TabIndex = 14;
             this.txtDanhGiaAI.Text = "";
+            // 
+            // lblWarning
+            // 
+            this.lblWarning.BackColor = System.Drawing.Color.Transparent;
+            this.lblWarning.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.lblWarning.Location = new System.Drawing.Point(25, 580);
+            this.lblWarning.Name = "lblWarning";
+            this.lblWarning.Size = new System.Drawing.Size(1110, 25);
+            this.lblWarning.TabIndex = 15;
+            this.lblWarning.Visible = false;
             // 
             // pnlBottom
             // 
@@ -418,11 +418,11 @@ namespace HETHONGTINHNHUANBUT
             this.pnlBottom.Controls.Add(this.lblDataTitle);
             this.pnlBottom.Controls.Add(this.dgvBaiCuaToi);
             this.pnlBottom.FillColor = System.Drawing.Color.White;
-            this.pnlBottom.Location = new System.Drawing.Point(20, 615);
+            this.pnlBottom.Location = new System.Drawing.Point(20, 628);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlBottom.ShadowDecoration.Depth = 8;
-            this.pnlBottom.Size = new System.Drawing.Size(1160, 295);
+            this.pnlBottom.Size = new System.Drawing.Size(1160, 282);
             this.pnlBottom.TabIndex = 1;
             // 
             // lblDataTitle
@@ -442,38 +442,38 @@ namespace HETHONGTINHNHUANBUT
             this.dgvBaiCuaToi.AllowUserToDeleteRows = false;
             this.dgvBaiCuaToi.AllowUserToResizeColumns = false;
             this.dgvBaiCuaToi.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.dgvBaiCuaToi.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.dgvBaiCuaToi.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvBaiCuaToi.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvBaiCuaToi.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvBaiCuaToi.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvBaiCuaToi.ColumnHeadersHeight = 40;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(240)))), ((int)(((byte)(254)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvBaiCuaToi.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(240)))), ((int)(((byte)(254)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvBaiCuaToi.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvBaiCuaToi.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.dgvBaiCuaToi.Location = new System.Drawing.Point(25, 55);
             this.dgvBaiCuaToi.Name = "dgvBaiCuaToi";
             this.dgvBaiCuaToi.ReadOnly = true;
             this.dgvBaiCuaToi.RowHeadersVisible = false;
             this.dgvBaiCuaToi.RowTemplate.Height = 38;
-            this.dgvBaiCuaToi.Size = new System.Drawing.Size(1110, 419);
+            this.dgvBaiCuaToi.Size = new System.Drawing.Size(1110, 406);
             this.dgvBaiCuaToi.TabIndex = 0;
             this.dgvBaiCuaToi.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvBaiCuaToi.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -538,10 +538,10 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2ComboBox cboVungChuyenDen;
         private Guna.UI2.WinForms.Guna2Button btnNopBai;
         private Guna.UI2.WinForms.Guna2Button btnKiemToanAI;
-        private System.Windows.Forms.Label lblWarning;
         private System.Windows.Forms.Label lblDiemAI;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.RichTextBox txtDanhGiaAI;
+        private System.Windows.Forms.Label lblWarning;
         private Guna.UI2.WinForms.Guna2Panel pnlBottom;
         private System.Windows.Forms.Label lblDataTitle;
         private Guna.UI2.WinForms.Guna2DataGridView dgvBaiCuaToi;

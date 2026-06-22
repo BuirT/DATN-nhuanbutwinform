@@ -43,11 +43,7 @@
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoi = new Guna.UI2.WinForms.Guna2Button();
-            this.btnKiemToanAI = new Guna.UI2.WinForms.Guna2Button();
             this.lblWarning = new System.Windows.Forms.Label();
-            this.txtNoiDungBaiViet = new System.Windows.Forms.RichTextBox();
-            this.lblDiemAI = new System.Windows.Forms.Label();
-            this.txtDanhGiaAI = new System.Windows.Forms.RichTextBox();
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDataTitle = new System.Windows.Forms.Label();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
@@ -85,17 +81,13 @@
             this.pnlTop.Controls.Add(this.btnSua);
             this.pnlTop.Controls.Add(this.btnXoa);
             this.pnlTop.Controls.Add(this.btnLamMoi);
-            this.pnlTop.Controls.Add(this.btnKiemToanAI);
             this.pnlTop.Controls.Add(this.lblWarning);
-            this.pnlTop.Controls.Add(this.txtNoiDungBaiViet);
-            this.pnlTop.Controls.Add(this.lblDiemAI);
-            this.pnlTop.Controls.Add(this.txtDanhGiaAI);
             this.pnlTop.FillColor = System.Drawing.Color.White;
             this.pnlTop.Location = new System.Drawing.Point(20, 15);
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlTop.ShadowDecoration.Depth = 8;
-            this.pnlTop.Size = new System.Drawing.Size(1160, 500);
+            this.pnlTop.Size = new System.Drawing.Size(1160, 351);
             this.pnlTop.TabIndex = 0;
             // 
             // lblTitle
@@ -400,19 +392,6 @@
             this.btnLamMoi.Text = "LÀM MỚI";
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
             // 
-            // btnKiemToanAI
-            // 
-            this.btnKiemToanAI.BorderRadius = 8;
-            this.btnKiemToanAI.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(139)))), ((int)(((byte)(92)))), ((int)(((byte)(246)))));
-            this.btnKiemToanAI.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnKiemToanAI.ForeColor = System.Drawing.Color.White;
-            this.btnKiemToanAI.Location = new System.Drawing.Point(795, 292);
-            this.btnKiemToanAI.Name = "btnKiemToanAI";
-            this.btnKiemToanAI.Size = new System.Drawing.Size(160, 40);
-            this.btnKiemToanAI.TabIndex = 28;
-            this.btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
-            this.btnKiemToanAI.Click += new System.EventHandler(this.btnKiemToanAI_Click);
-            // 
             // lblWarning
             // 
             this.lblWarning.BackColor = System.Drawing.Color.Transparent;
@@ -424,41 +403,6 @@
             this.lblWarning.TabIndex = 29;
             this.lblWarning.Visible = false;
             // 
-            // txtNoiDungBaiViet
-            // 
-            this.txtNoiDungBaiViet.BackColor = System.Drawing.Color.White;
-            this.txtNoiDungBaiViet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtNoiDungBaiViet.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtNoiDungBaiViet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.txtNoiDungBaiViet.Location = new System.Drawing.Point(25, 355);
-            this.txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
-            this.txtNoiDungBaiViet.ReadOnly = true;
-            this.txtNoiDungBaiViet.Size = new System.Drawing.Size(1110, 55);
-            this.txtNoiDungBaiViet.TabIndex = 30;
-            this.txtNoiDungBaiViet.Text = "";
-            // 
-            // lblDiemAI
-            // 
-            this.lblDiemAI.AutoSize = true;
-            this.lblDiemAI.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblDiemAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblDiemAI.Location = new System.Drawing.Point(25, 415);
-            this.lblDiemAI.Name = "lblDiemAI";
-            this.lblDiemAI.Size = new System.Drawing.Size(0, 21);
-            this.lblDiemAI.TabIndex = 31;
-            // 
-            // txtDanhGiaAI
-            // 
-            this.txtDanhGiaAI.BackColor = System.Drawing.Color.White;
-            this.txtDanhGiaAI.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDanhGiaAI.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.txtDanhGiaAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.txtDanhGiaAI.Location = new System.Drawing.Point(25, 440);
-            this.txtDanhGiaAI.Name = "txtDanhGiaAI";
-            this.txtDanhGiaAI.ReadOnly = true;
-            this.txtDanhGiaAI.Size = new System.Drawing.Size(1110, 55);
-            this.txtDanhGiaAI.TabIndex = 32;
-            this.txtDanhGiaAI.Text = "";
             // pnlBottom
             // 
             this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -543,7 +487,7 @@
             this.dgvNhuanBut.ReadOnly = true;
             this.dgvNhuanBut.RowHeadersVisible = false;
             this.dgvNhuanBut.RowTemplate.Height = 38;
-            this.dgvNhuanBut.Size = new System.Drawing.Size(1110, 560);
+            this.dgvNhuanBut.Size = new System.Drawing.Size(1110, 370);
             this.dgvNhuanBut.TabIndex = 2;
             this.dgvNhuanBut.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvNhuanBut.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -613,7 +557,6 @@
         private Guna.UI2.WinForms.Guna2ComboBox cboVung;
         private System.Windows.Forms.Label lblVungChuyenDen;
         private Guna.UI2.WinForms.Guna2ComboBox cboVungChuyenDen;
-        private Guna.UI2.WinForms.Guna2Button btnKiemToanAI;
         private Guna.UI2.WinForms.Guna2Button btnThem;
         private Guna.UI2.WinForms.Guna2Button btnSua;
         private Guna.UI2.WinForms.Guna2Button btnXoa;
@@ -622,8 +565,5 @@
         private System.Windows.Forms.Label lblDataTitle;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiem;
         private Guna.UI2.WinForms.Guna2DataGridView dgvNhuanBut;
-        private System.Windows.Forms.RichTextBox txtNoiDungBaiViet;
-        private System.Windows.Forms.Label lblDiemAI;
-        private System.Windows.Forms.RichTextBox txtDanhGiaAI;
     }
 }

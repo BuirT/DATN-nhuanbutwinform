@@ -61,7 +61,7 @@ namespace HETHONGTINHNHUANBUT
             bool laPhoiVien = (role == "phóng viên");
             bool biKhoa = (role == "kế toán" || role == "lãnh đạo");
 
-            btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = btnLamMoi.Enabled = btnKiemToanAI.Enabled = !biKhoa;
+            btnThem.Enabled = btnSua.Enabled = btnXoa.Enabled = btnLamMoi.Enabled = !biKhoa;
             txtTenBai.ReadOnly = txtTrang.ReadOnly = biKhoa;
             cboMuc.Enabled = !biKhoa;
             cboButDanh.Enabled = cboVung.Enabled = cboVungChuyenDen.Enabled = !biKhoa;
@@ -326,9 +326,6 @@ namespace HETHONGTINHNHUANBUT
             cboVung.SelectedIndex = -1;
             cboVungChuyenDen.SelectedIndex = -1;
             cboButDanh.SelectedIndex = -1;
-            txtNoiDungBaiViet.Text = "";
-            lblDiemAI.Text = "";
-            txtDanhGiaAI.Text = "";
             lblWarning.Visible = false;
             txtTenBai.Focus();
         }
@@ -388,155 +385,6 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
-        // =====================================================================
-        // AI KIỂM TOÁN (Rà soát logic metadata)
-        // =====================================================================
-        private async void btnKiemToanAI_Click(object sender, EventArgs e)
-        {
-            string tenBai = txtTenBai.Text?.Trim() ?? "";
-            string muc = cboMuc.Text?.Trim() ?? "";
-            string butDanh = cboButDanh.Text?.Trim() ?? "";
-
-            if (string.IsNullOrEmpty(tenBai) || string.IsNullOrEmpty(muc) || string.IsNullOrEmpty(butDanh))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ: Tên bài, Mục (Thể loại) và Bút danh trước khi dùng AI Kiểm Toán.",
-                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            btnKiemToanAI.Enabled = false;
-            btnKiemToanAI.Text = "🔄 AI ĐANG KIỂM TOÁN...";
-
-            try
-            {
-                // Bước 1: Kiểm tra bút danh lạ sân (SQL - không cần AI)
-                string canhBaoLaSan = await KiemTraButDanhLaSanAsync(butDanh, muc);
-
-                // Bước 2: Lấy danh sách bài hôm nay của cùng tác giả (để AI check trùng)
-                string[] baiHomNay = await LayDanhSachBaiHomNayAsync(butDanh);
-
-                // Bước 3: Gọi AI kiểm tra metadata
-                AIKiemToanResult ketQua = await AIHelper.KiemTraMetadataNhapLieuAsync(
-                    tenBai, muc, butDanh, baiHomNay);
-
-                // Bước 4: Tổng hợp kết quả
-                string warning = "";
-                bool coCanhBao = false;
-
-                if (!string.IsNullOrEmpty(canhBaoLaSan))
-                {
-                    warning += $"⚠️ {canhBaoLaSan}\n";
-                    coCanhBao = true;
-                }
-
-                if (!string.IsNullOrEmpty(ketQua.CanhBaoTheLoai))
-                {
-                    warning += $"🚨 {ketQua.CanhBaoTheLoai}\n";
-                    coCanhBao = true;
-                }
-
-                if (!string.IsNullOrEmpty(ketQua.CanhBaoTrungBai))
-                {
-                    warning += $"⚠️ {ketQua.CanhBaoTrungBai}\n";
-                    coCanhBao = true;
-                }
-
-                if (coCanhBao)
-                {
-                    lblWarning.Text = warning.TrimEnd('\n');
-                    lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
-                    lblWarning.Visible = true;
-                    MessageBox.Show($"AI Kiểm Toán phát hiện vấn đề:\n\n{warning}\n\nĐồng chí vui lòng kiểm tra lại!",
-                        "AI Kiểm Toán - Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                else
-                {
-                    lblWarning.Text = $"✅ {ketQua.TomTat}";
-                    lblWarning.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
-                    lblWarning.Visible = true;
-                    MessageBox.Show($"✅ AI Kiểm Toán: {ketQua.TomTat}",
-                        "AI Kiểm Toán", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                lblWarning.Text = $"❌ Lỗi AI: {ex.Message}";
-                lblWarning.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
-                lblWarning.Visible = true;
-                MessageBox.Show("Lỗi kết nối AI Kiểm Toán: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                btnKiemToanAI.Enabled = true;
-                btnKiemToanAI.Text = "📋 AI KIỂM TOÁN";
-            }
-        }
-
-        // Kiểm tra bút danh có lạ sân không (SQL, không cần AI)
-        private async Task<string> KiemTraButDanhLaSanAsync(string butDanh, string mucHienTai)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    await conn.OpenAsync();
-
-                    // Lấy top 5 mục tác giả này thường viết
-                    string sql = @"SELECT TOP 5 Muc, COUNT(*) as SoLan
-                                   FROM Nhuanbut
-                                   WHERE Butdanh = @bd AND Muc IS NOT NULL AND Muc <> ''
-                                   GROUP BY Muc
-                                   ORDER BY COUNT(*) DESC";
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@bd", butDanh);
-                        List<string> cacMucThuongViet = new List<string>();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                                cacMucThuongViet.Add(reader["Muc"].ToString());
-                        }
-
-                        if (cacMucThuongViet.Count > 0 && !cacMucThuongViet.Contains(mucHienTai, StringComparer.OrdinalIgnoreCase))
-                        {
-                            string mucThuongViet = string.Join(", ", cacMucThuongViet.Take(3));
-                            return $"Bút danh '{butDanh}' thường viết mục: {mucThuongViet}. Bài này thuộc mục '{mucHienTai}' - đồng chí có chắc không?";
-                        }
-                    }
-                }
-            }
-            catch { /* im lặng nếu lỗi */ }
-            return "";
-        }
-
-        // Lấy danh sách bài hôm nay của cùng tác giả (cho AI check trùng)
-        private async Task<string[]> LayDanhSachBaiHomNayAsync(string butDanh)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    await conn.OpenAsync();
-                    string sql = @"SELECT Tenbai FROM Nhuanbut
-                                   WHERE Butdanh = @bd
-                                   AND CAST(ngaychuyen AS DATE) = CAST(GETDATE() AS DATE)
-                                   ORDER BY ngaychuyen DESC";
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@bd", butDanh);
-                        List<string> ds = new List<string>();
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                                ds.Add(reader["Tenbai"].ToString());
-                        }
-                        return ds.ToArray();
-                    }
-                }
-            }
-            catch { return Array.Empty<string>(); }
-        }
-
         private static string SanitizeNumber(string value)
         {
             if (string.IsNullOrEmpty(value)) return "";
@@ -561,14 +409,6 @@ namespace HETHONGTINHNHUANBUT
             txtTienNhuanBut.Text = Convert.ToDecimal(row.Cells["TienNhuanbut"].Value).ToString("0");
             cboVung.Text = row.Cells["Vung"].Value?.ToString();
             cboVungChuyenDen.Text = row.Cells["VungChuyenDen"].Value?.ToString();
-
-            txtNoiDungBaiViet.Text = row.Cells["NoiDungBaiViet"].Value?.ToString() ?? "";
-            object diemAI = row.Cells["DiemChatLuongAI"].Value;
-            lblDiemAI.Text = diemAI != null && diemAI != DBNull.Value
-                ? $"đŸ¤– Điểm AI: {Convert.ToInt32(diemAI)}/100"
-                : "";
-            string danhGia = row.Cells["DanhGiaAI"].Value?.ToString() ?? "";
-            txtDanhGiaAI.Text = danhGia;
         }
     }
 }
