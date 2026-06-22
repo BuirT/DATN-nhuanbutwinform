@@ -24,67 +24,11 @@ namespace HETHONGTINHNHUANBUT
         public FrmNhapBaiPhongVien()
         {
             InitializeComponent();
-            InitializeAIComponents();
             UIHelper.FormatGiaoDienBang(dgvBaiCuaToi);
             dgvBaiCuaToi.CellClick += dgvBaiCuaToi_CellClick;
         }
 
-        private void InitializeAIComponents()
-        {
-            // btnPhanTichAI
-            btnPhanTichAI = new Guna.UI2.WinForms.Guna2Button();
-            btnPhanTichAI.Animated = true;
-            btnPhanTichAI.BorderRadius = 8;
-            btnPhanTichAI.FillColor = Color.FromArgb(16, 185, 129);
-            btnPhanTichAI.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnPhanTichAI.ForeColor = Color.White;
-            btnPhanTichAI.Location = new Point(345, 210);
-            btnPhanTichAI.Name = "btnPhanTichAI";
-            btnPhanTichAI.Size = new Size(170, 38);
-            btnPhanTichAI.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            btnPhanTichAI.TabIndex = 10;
-            btnPhanTichAI.Text = "🤖 PHÂN TÍCH AI";
-            btnPhanTichAI.Click += btnPhanTichAI_Click;
-            pnlTop.Controls.Add(btnPhanTichAI);
-
-            // label7 - NỘI DUNG BÀI VIẾT
-            label7 = new Label();
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            label7.ForeColor = Color.FromArgb(100, 116, 139);
-            label7.Location = new Point(25, 265);
-            label7.Name = "label7";
-            label7.Size = new Size(130, 17);
-            label7.Text = "NỘI DUNG BÀI VIẾT";
-            pnlTop.Controls.Add(label7);
-
-            // txtNoiDungBaiViet
-            txtNoiDungBaiViet = new RichTextBox();
-            txtNoiDungBaiViet.BorderStyle = BorderStyle.FixedSingle;
-            txtNoiDungBaiViet.BackColor = Color.White;
-            txtNoiDungBaiViet.Font = new Font("Segoe UI", 10F);
-            txtNoiDungBaiViet.ForeColor = Color.FromArgb(15, 23, 42);
-            txtNoiDungBaiViet.Location = new Point(25, 288);
-            txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
-            txtNoiDungBaiViet.Size = new Size(1110, 150);
-            txtNoiDungBaiViet.TabIndex = 9;
-            txtNoiDungBaiViet.Text = "";
-            txtNoiDungBaiViet.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlTop.Controls.Add(txtNoiDungBaiViet);
-
-            // lblAIResult
-            lblAIResult = new Label();
-            lblAIResult.AutoSize = false;
-            lblAIResult.Font = new Font("Segoe UI", 9.5F);
-            lblAIResult.ForeColor = Color.FromArgb(15, 23, 42);
-            lblAIResult.Location = new Point(25, 448);
-            lblAIResult.Name = "lblAIResult";
-            lblAIResult.Size = new Size(1110, 60);
-            lblAIResult.Text = "";
-            lblAIResult.Visible = false;
-            lblAIResult.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlTop.Controls.Add(lblAIResult);
-        }
+       
 
         private async void FrmNhapBaiPhongVien_Load(object sender, EventArgs e)
         {
@@ -206,8 +150,17 @@ namespace HETHONGTINHNHUANBUT
 
                                 if (!string.IsNullOrEmpty(danhGia))
                                 {
+                                    // Làm sạch JSON cũ (nếu có) để chỉ hiện text
+                                    string clean = System.Text.RegularExpressions.Regex.Replace(danhGia, @"\{[\s\S]*\}", m => {
+                                        try {
+                                            var obj = Newtonsoft.Json.Linq.JObject.Parse(m.Value);
+                                            var vals = obj.Properties().Select(p => p.Value?.ToString()).Where(v => !string.IsNullOrEmpty(v));
+                                            return string.Join("\n", vals);
+                                        } catch { return m.Value; }
+                                    });
+                                    if (clean == danhGia) clean = danhGia;
                                     lblAIResult.Visible = true;
-                                    lblAIResult.Text = "🤖 " + danhGia;
+                                    lblAIResult.Text = "🤖 " + clean;
                                     lblAIResult.ForeColor = Color.FromArgb(16, 185, 129);
                                 }
                                 else
@@ -526,6 +479,11 @@ namespace HETHONGTINHNHUANBUT
             lblAIResult.Visible = false;
             _selectedMaso = "";
             txtTenBai.Focus();
+        }
+
+        private void pnlTop_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

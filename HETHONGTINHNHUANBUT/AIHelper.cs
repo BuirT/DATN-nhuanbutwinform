@@ -167,6 +167,7 @@ QUY TẮC:
         public static async Task<BaiVietDanhGiaResult> DanhGiaBaiVietAsync(
             string tenBai, string muc, string noiDung, string butDanh)
         {
+            string rawText = "";
             using (HttpClient client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(3);
@@ -193,13 +194,7 @@ Hãy đánh giá bài viết, tập trung vào các khía cạnh sau:
 4. Chiều sâu chuyên môn
 5. Tính hấp dẫn
 
-QUAN TRỌNG: Trả về KẾT QUẢ DUY NHẤT DƯỚI DẠNG JSON như sau (không thêm bất kỳ ký tự nào khác ngoài JSON):
-{{
-    ""chiTiet"": ""<nhận xét chi tiết cho từng tiêu chí, viết thành đoạn văn>"",
-    ""nhanXet"": ""<nhận xét tổng quan 2-3 câu bằng tiếng Việt, tập trung vào điểm mạnh và điểm cần cải thiện>""
-}}
-
-TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm bất kỳ chữ nào ngoài JSON.";
+Hãy trả lời bằng tiếng Việt, viết thành đoạn văn nhận xét ngắn gọn, tự nhiên (không cần JSON).";
 
                 var requestBody = new
                 {
@@ -223,26 +218,45 @@ TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm b�
                     throw new Exception($"Lỗi kết nối AI Đánh Giá: {response.StatusCode}");
 
                 JObject jsonResult = JObject.Parse(responseString);
-                string rawText = jsonResult["response"]?.ToString();
+                rawText = jsonResult["response"]?.ToString() ?? "";
 
                 if (string.IsNullOrEmpty(rawText))
                     throw new Exception("AI không trả về kết quả.");
 
                 var match = Regex.Match(rawText, @"\{[\s\S]*\}", RegexOptions.Multiline);
-                if (!match.Success)
-                    throw new Exception($"AI không xuất JSON. Dữ liệu: {rawText}");
-
-                JObject data = JObject.Parse(match.Value);
-
-                string chiTiet = data["chiTiet"]?.ToString() ?? "";
-                string nhanXet = data["nhanXet"]?.ToString() ?? "";
-
-                return new BaiVietDanhGiaResult
+                if (match.Success)
                 {
-                    DanhGia = nhanXet,
-                    ChiTietDanhGia = chiTiet
-                };
+                    JObject data = JObject.Parse(match.Value);
+                    string chiTiet = data["chiTiet"]?.ToString() ?? "";
+                    string nhanXet = data["nhanXet"]?.ToString() ?? "";
+
+                    if (!string.IsNullOrEmpty(chiTiet) || !string.IsNullOrEmpty(nhanXet))
+                    {
+                        return new BaiVietDanhGiaResult
+                        {
+                            DanhGia = nhanXet,
+                            ChiTietDanhGia = chiTiet
+                        };
+                    }
+
+                    var values = data.Properties().Select(p => p.Value?.ToString()).Where(v => !string.IsNullOrEmpty(v));
+                    string combined = string.Join("\n", values);
+                    if (!string.IsNullOrEmpty(combined))
+                    {
+                        return new BaiVietDanhGiaResult
+                        {
+                            DanhGia = "",
+                            ChiTietDanhGia = combined
+                        };
+                    }
+                }
             }
+
+            return new BaiVietDanhGiaResult
+            {
+                DanhGia = "",
+                ChiTietDanhGia = rawText
+            };
         }
     }
 }

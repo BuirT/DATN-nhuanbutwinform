@@ -43,6 +43,7 @@ namespace HETHONGTINHNHUANBUT
             else
             {
                 lblMaSo.Text = "Mã hồ sơ: " + MaTacGiaCuaToi;
+                lblMaSo.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
             }
             await LoadDataTraCuuAsync();
         }

@@ -362,6 +362,9 @@
     <EmbeddedResource Include="FrmLoaiBao.resx">
       <DependentUpon>FrmLoaiBao.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmNhapBaiPhongVien.resx">
+      <DependentUpon>FrmNhapBaiPhongVien.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmNhapNhuanBut.resx">
       <DependentUpon>FrmNhapNhuanBut.cs</DependentUpon>
     </EmbeddedResource>
