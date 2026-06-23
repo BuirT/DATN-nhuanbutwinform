@@ -1,4 +1,4 @@
-﻿namespace HETHONGTINHNHUANBUT
+namespace HETHONGTINHNHUANBUT
 {
     partial class FrmTroLyAI
     {
@@ -14,7 +14,7 @@
         private void InitializeComponent()
         {
             this.panelOverlay = new Guna.UI2.WinForms.Guna2Panel();
-            this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlHeader = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlChat = new Guna.UI2.WinForms.Guna2Panel();
             this.flpChat = new System.Windows.Forms.FlowLayoutPanel();
@@ -49,10 +49,13 @@
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
+            this.pnlHeader.BorderRadius = 12;
             this.pnlHeader.Controls.Add(this.btnRefresh);
             this.pnlHeader.Controls.Add(this.lblTitle);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.FillColor = System.Drawing.Color.Transparent;
+            this.pnlHeader.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(44)))), ((int)(((byte)(34)))));
+            this.pnlHeader.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.pnlHeader.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
             this.pnlHeader.Location = new System.Drawing.Point(20, 20);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1445, 70);
@@ -62,8 +65,8 @@
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblTitle.Location = new System.Drawing.Point(0, 20);
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
+            this.lblTitle.Location = new System.Drawing.Point(20, 20);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(313, 32);
             this.lblTitle.TabIndex = 0;
@@ -73,12 +76,12 @@
             // 
             this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Animated = false;
-            this.btnRefresh.BorderRadius = 10;
-            this.btnRefresh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.btnRefresh.Animated = true;
+            this.btnRefresh.BorderRadius = 8;
+            this.btnRefresh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnRefresh.ForeColor = System.Drawing.Color.White;
-            this.btnRefresh.Location = new System.Drawing.Point(1155, 15);
+            this.btnRefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(78)))), ((int)(((byte)(59)))));
+            this.btnRefresh.Location = new System.Drawing.Point(1285, 15);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(140, 42);
             this.btnRefresh.TabIndex = 6;
@@ -132,36 +135,37 @@
             // 
             this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtInput.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.txtInput.BorderRadius = 8;
+            this.txtInput.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.txtInput.BorderRadius = 22;
             this.txtInput.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtInput.DefaultText = "";
-            this.txtInput.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
-            this.txtInput.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.txtInput.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.txtInput.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.txtInput.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
+            this.txtInput.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.txtInput.Location = new System.Drawing.Point(0, 5);
-            this.txtInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtInput.Name = "txtInput";
             this.txtInput.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
-            this.txtInput.PlaceholderText = "💬 Nhập câu hỏi về luật thuế, nghiệp vụ hoặc chính sách...";
+            this.txtInput.PlaceholderText = "💬 Nhập câu hỏi về số liệu, nghiệp vụ hoặc tìm kiếm...";
             this.txtInput.SelectedText = "";
-            this.txtInput.Size = new System.Drawing.Size(1315, 45);
+            this.txtInput.Size = new System.Drawing.Size(1300, 45);
             this.txtInput.TabIndex = 4;
+            this.txtInput.TextOffset = new System.Drawing.Point(10, 0);
             // 
             // btnGui
             // 
             this.btnGui.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGui.Animated = false;
-            this.btnGui.BorderRadius = 8;
+            this.btnGui.Animated = true;
+            this.btnGui.BorderRadius = 22;
             this.btnGui.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnGui.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
+            this.btnGui.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnGui.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnGui.ForeColor = System.Drawing.Color.White;
-            this.btnGui.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(56)))), ((int)(((byte)(202)))));
-            this.btnGui.Location = new System.Drawing.Point(1325, 5);
+            this.btnGui.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(5)))), ((int)(((byte)(150)))), ((int)(((byte)(105)))));
+            this.btnGui.Location = new System.Drawing.Point(1315, 5);
             this.btnGui.Name = "btnGui";
-            this.btnGui.Size = new System.Drawing.Size(120, 45);
+            this.btnGui.Size = new System.Drawing.Size(130, 45);
             this.btnGui.TabIndex = 5;
             this.btnGui.Text = "GỬI ➤";
             this.btnGui.Click += new System.EventHandler(this.btnGui_Click);
@@ -190,7 +194,7 @@
         #endregion
 
         private Guna.UI2.WinForms.Guna2Panel panelOverlay;
-        private Guna.UI2.WinForms.Guna2Panel pnlHeader;
+        private Guna.UI2.WinForms.Guna2GradientPanel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
         private Guna.UI2.WinForms.Guna2Panel pnlChat;
         private System.Windows.Forms.FlowLayoutPanel flpChat;

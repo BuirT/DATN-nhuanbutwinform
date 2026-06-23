@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Drawing;
@@ -21,6 +21,7 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             txtInput.KeyDown += TxtInput_KeyDown;
+            flpChat.Resize += FlpChat_Resize;
 
             ThemBongBongChat("🤖 Chào đồng chí! Tôi là Trợ lý AI hệ thống NewsPay. " +
                 "Tôi có thể:\n" +
@@ -30,6 +31,22 @@ namespace HETHONGTINHNHUANBUT
                 "• 💰 Phiếu chi, thuế (vd: 'phiếu chi tháng này')\n" +
                 "• 🔍 Phát hiện bất thường (vd: 'kiểm tra bài bất thường')\n" +
                 "Đồng chí muốn hỏi gì?", false);
+        }
+
+        private void FlpChat_Resize(object sender, EventArgs e)
+        {
+            if (flpChat.IsDisposed) return;
+            foreach (Control c in flpChat.Controls)
+            {
+                if (c is Label lbl)
+                {
+                    lbl.MaximumSize = new Size(flpChat.ClientSize.Width - 100, 0);
+                    if (lbl.BackColor == Color.FromArgb(6, 78, 59)) // isUser
+                    {
+                        lbl.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - lbl.Width - 25), 10, 10, 10);
+                    }
+                }
+            }
         }
 
         private void TxtInput_KeyDown(object sender, KeyEventArgs e)
@@ -573,24 +590,25 @@ Câu hỏi: {userMessage}";
                 Label lbl = new Label();
                 lbl.Text = tinNhan;
                 lbl.AutoSize = true;
-                lbl.MaximumSize = new Size(flpChat.Width - 60, 0);
-                lbl.Padding = new Padding(14);
-                lbl.Margin = new Padding(10, 8, 10, 8);
-                lbl.Font = new Font("Segoe UI", 10.5F);
+                lbl.MaximumSize = new Size(flpChat.ClientSize.Width - 100, 0);
+                lbl.Padding = new Padding(16);
+                lbl.Font = new Font("Segoe UI", 11.5F);
+
+                flpChat.Controls.Add(lbl); // Thêm vào trước để WinForms tính toán lbl.Width
 
                 if (isUser)
                 {
-                    lbl.BackColor = Color.FromArgb(79, 70, 229);
+                    lbl.BackColor = Color.FromArgb(6, 78, 59);
                     lbl.ForeColor = Color.White;
-                    lbl.TextAlign = ContentAlignment.MiddleRight;
+                    lbl.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - lbl.Width - 25), 10, 10, 10);
                 }
                 else
                 {
                     lbl.BackColor = Color.FromArgb(241, 245, 249);
-                    lbl.ForeColor = Color.FromArgb(15, 23, 42);
+                    lbl.ForeColor = Color.FromArgb(6, 78, 59);
+                    lbl.Margin = new Padding(10, 10, 10, 10);
                 }
 
-                flpChat.Controls.Add(lbl);
                 flpChat.ScrollControlIntoView(lbl);
             }
             catch (ObjectDisposedException) { }
