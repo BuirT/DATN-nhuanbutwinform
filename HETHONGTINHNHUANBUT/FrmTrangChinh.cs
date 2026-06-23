@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -46,62 +46,30 @@ namespace HETHONGTINHNHUANBUT
                 SetActiveButton(btnDashboard);
             }
 
-            LoadButtonIcons();
+            // LoadButtonIcons(); removed, now in Designer
             pnlMenuScroll.ResumeLayout();
             pnlMenu.ResumeLayout();
             this.ResumeLayout();
         }
 
-        private void LoadButtonIcons()
+        public void BtnSidebar_MouseEnter(object sender, EventArgs e)
         {
-            string iconDir = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\resources\"));
-            if (!Directory.Exists(iconDir)) return;
-
-            void SetIcon(Guna2Button btn, string name)
+            if (sender is Guna2Button btn)
             {
-                string path = Path.Combine(iconDir, name + ".png");
-                if (File.Exists(path))
-                {
-                    btn.Image = Image.FromFile(path);
-                    btn.ImageSize = new Size(24, 24);
-                    btn.ImageAlign = HorizontalAlignment.Left;
-                }
+                btn.TextOffset = new Point(btn.TextOffset.X + 8, btn.TextOffset.Y);
+                if (btn.Image != null)
+                    btn.ImageOffset = new Point(btn.ImageOffset.X + 8, btn.ImageOffset.Y);
             }
+        }
 
-            void SetIconSub(Guna2Button btn, string name)
+        public void BtnSidebar_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Guna2Button btn)
             {
-                string path = Path.Combine(iconDir, name + ".png");
-                if (File.Exists(path))
-                {
-                    btn.Image = Image.FromFile(path);
-                    btn.ImageSize = new Size(18, 18);
-                    btn.ImageAlign = HorizontalAlignment.Left;
-                }
+                btn.TextOffset = new Point(btn.TextOffset.X - 8, btn.TextOffset.Y);
+                if (btn.Image != null)
+                    btn.ImageOffset = new Point(btn.ImageOffset.X - 8, btn.ImageOffset.Y);
             }
-
-            SetIcon(btnDashboard, "dashboard");
-            SetIcon(btnTroLyAI, "tro-ly-ai");
-            SetIcon(btnBaoCaoAI, "bao-cao-ai");
-            SetIcon(btnBaoCaoThongKe, "thong-ke");
-            SetIcon(btnCanhBaoAI, "canh-bao");
-            SetIcon(btnTacGia, "tac-gia");
-            SetIconSub(btnSubTacGiaHoSo, "ho-so");
-            SetIconSub(btnSubButDanh, "but-danh");
-            SetIcon(btnQuanLyBao, "quan-ly-bao");
-            SetIconSub(btnSubSoBao, "so-bao");
-            SetIconSub(btnSubLoaiBao, "loai-bao");
-            SetIcon(btnNhapNhuanBut, "nhuan-but");
-            SetIcon(btnTraCuuCaNhan, "tra-cuu");
-            SetIcon(btnKiemDuyet, "kiem-duyet");
-            SetIcon(btnPhieuChi, "phieu-chi");
-            SetIcon(btnDuyetChi, "duyet-chi");
-            SetIcon(btnBaoCao, "bao-cao");
-            SetIconSub(btnSubBaoCaoLD, "lanh-dao");
-            SetIconSub(btnSubBaoCaoCN, "cong-no");
-            SetIconSub(btnSubBaoCaoTH, "tong-hop");
-            SetIcon(btnDotThanhToan, "dot-thanh-toan");
-            SetIcon(btnTaiKhoan, "tai-khoan");
-            SetIcon(btnDangXuat, "dang-xuat");
         }
 
         private void AdjustMenuForScreen()
@@ -180,7 +148,7 @@ namespace HETHONGTINHNHUANBUT
                 SetButtonVisible(true,
                     btnDashboard, btnTroLyAI, btnBaoCaoAI,
                     btnBaoCaoThongKe, btnCanhBaoAI,
-                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan,
                     btnKiemDuyet, btnPhieuChi, btnDuyetChi,
                     btnDotThanhToan, btnTaiKhoan,
                     btnTacGia, btnQuanLyBao, btnBaoCao);
@@ -189,7 +157,7 @@ namespace HETHONGTINHNHUANBUT
 
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
-                SetButtonVisible(true, btnNhapNhuanBut, btnTraCuuCaNhan);
+                SetButtonVisible(true, btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan);
                 return;
             }
 
@@ -307,6 +275,12 @@ namespace HETHONGTINHNHUANBUT
         private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
         {
             FrmTraCuuNhuanBut frm = new FrmTraCuuNhuanBut();
+            frm.NguoiDangNhap = this.currentUserName;
+            OpenChildForm(frm, sender as Guna2Button);
+        }
+        private void btnThongKeCaNhan_Click(object sender, EventArgs e)
+        {
+            FrmThongkePhongvien frm = new FrmThongkePhongvien();
             frm.NguoiDangNhap = this.currentUserName;
             OpenChildForm(frm, sender as Guna2Button);
         }

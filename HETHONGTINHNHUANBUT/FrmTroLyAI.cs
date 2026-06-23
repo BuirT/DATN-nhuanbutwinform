@@ -38,12 +38,20 @@ namespace HETHONGTINHNHUANBUT
             if (flpChat.IsDisposed) return;
             foreach (Control c in flpChat.Controls)
             {
-                if (c is Label lbl)
+                if (c is Guna.UI2.WinForms.Guna2Panel pnl && pnl.Controls.Count > 0 && pnl.Controls[0] is Label lbl)
                 {
                     lbl.MaximumSize = new Size(flpChat.ClientSize.Width - 100, 0);
-                    if (lbl.BackColor == Color.FromArgb(6, 78, 59)) // isUser
+                    if (pnl.FillColor == Color.FromArgb(6, 78, 59)) // isUser
                     {
-                        lbl.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - lbl.Width - 25), 10, 10, 10);
+                        pnl.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - pnl.Width - 25), 10, 10, 10);
+                    }
+                }
+                else if (c is Label oldLbl)
+                {
+                    oldLbl.MaximumSize = new Size(flpChat.ClientSize.Width - 100, 0);
+                    if (oldLbl.BackColor == Color.FromArgb(6, 78, 59)) // isUser
+                    {
+                        oldLbl.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - oldLbl.Width - 25), 10, 10, 10);
                     }
                 }
             }
@@ -593,23 +601,30 @@ Câu hỏi: {userMessage}";
                 lbl.MaximumSize = new Size(flpChat.ClientSize.Width - 100, 0);
                 lbl.Padding = new Padding(16);
                 lbl.Font = new Font("Segoe UI", 11.5F);
+                lbl.BackColor = Color.Transparent;
 
-                flpChat.Controls.Add(lbl); // Thêm vào trước để WinForms tính toán lbl.Width
+                Guna.UI2.WinForms.Guna2Panel bubble = new Guna.UI2.WinForms.Guna2Panel();
+                bubble.BorderRadius = 18;
+                bubble.AutoSize = true;
+                bubble.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                bubble.Controls.Add(lbl);
+
+                flpChat.Controls.Add(bubble); // Thêm vào trước để WinForms tính toán Width
 
                 if (isUser)
                 {
-                    lbl.BackColor = Color.FromArgb(6, 78, 59);
+                    bubble.FillColor = Color.FromArgb(6, 78, 59);
                     lbl.ForeColor = Color.White;
-                    lbl.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - lbl.Width - 25), 10, 10, 10);
+                    bubble.Margin = new Padding(Math.Max(10, flpChat.ClientSize.Width - bubble.Width - 25), 10, 10, 10);
                 }
                 else
                 {
-                    lbl.BackColor = Color.FromArgb(241, 245, 249);
+                    bubble.FillColor = Color.FromArgb(241, 245, 249);
                     lbl.ForeColor = Color.FromArgb(6, 78, 59);
-                    lbl.Margin = new Padding(10, 10, 10, 10);
+                    bubble.Margin = new Padding(10, 10, 10, 10);
                 }
 
-                flpChat.ScrollControlIntoView(lbl);
+                flpChat.ScrollControlIntoView(bubble);
             }
             catch (ObjectDisposedException) { }
         }

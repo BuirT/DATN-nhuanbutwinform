@@ -18,6 +18,8 @@ namespace HETHONGTINHNHUANBUT
 
         private Label[] lblKPIValues;
         private Timer timerClock;
+        private Timer timerAnimation;
+        private double animTick = 0;
 
         public FrmDashboard()
         {
@@ -26,6 +28,10 @@ namespace HETHONGTINHNHUANBUT
             timerClock = new Timer();
             timerClock.Interval = 1000;
             timerClock.Tick += new EventHandler(timerClock_Tick);
+
+            timerAnimation = new Timer();
+            timerAnimation.Interval = 50;
+            timerAnimation.Tick += TimerAnimation_Tick;
         }
 
         private void timerClock_Tick(object sender, EventArgs e)
@@ -44,9 +50,75 @@ namespace HETHONGTINHNHUANBUT
             this.dgvHoatDong.ClearSelection();
         }
 
+        private void TimerAnimation_Tick(object sender, EventArgs e)
+        {
+            animTick += 0.2;
+            int offset = (int)(Math.Sin(animTick) * 4);
+            
+            lblIcon1.Top = 10 + offset;
+            lblIcon2.Top = 10 + (int)(Math.Sin(animTick + 1) * 4);
+            lblIcon3.Top = 10 + (int)(Math.Sin(animTick + 2) * 4);
+            lblIcon4.Top = 10 + (int)(Math.Sin(animTick + 3) * 4);
+            lblIcon5.Top = 10 + (int)(Math.Sin(animTick + 4) * 4);
+            lblIcon6.Top = 10 + (int)(Math.Sin(animTick + 5) * 4);
+        }
+
+        private Color LightenColor(Color color, float amount)
+        {
+            int r = (int)(color.R + (255 - color.R) * amount);
+            int g = (int)(color.G + (255 - color.G) * amount);
+            int b = (int)(color.B + (255 - color.B) * amount);
+            return Color.FromArgb(color.A, Math.Min(255, r), Math.Min(255, g), Math.Min(255, b));
+        }
+
+        private void SetupUIStyles()
+        {
+            var cards = new[] { card1, card2, card3, card4, card5, card6 };
+            var colorPairs = new (Color c1, Color c2)[]
+            {
+                (Color.FromArgb(14, 165, 233), Color.FromArgb(56, 189, 248)), // Bright Cerulean -> Light Sky Blue
+                (Color.FromArgb(139, 92, 246), Color.FromArgb(167, 139, 250)), // Bright Violet -> Light Violet
+                (Color.FromArgb(16, 185, 129), Color.FromArgb(52, 211, 153)), // Bright Emerald -> Mint
+                (Color.FromArgb(245, 158, 11), Color.FromArgb(251, 191, 36)), // Bright Amber -> Yellow
+                (Color.FromArgb(244, 63, 94), Color.FromArgb(251, 113, 133)), // Bright Rose -> Pink
+                (Color.FromArgb(239, 68, 68), Color.FromArgb(248, 113, 113))  // Bright Red -> Light Red
+            };
+
+            for (int i = 0; i < cards.Length; i++)
+            {
+                int captureIndex = i;
+                EventHandler onEnter = (s, e) => {
+                    cards[captureIndex].FillColor = LightenColor(colorPairs[captureIndex].c1, 0.2f);
+                    cards[captureIndex].FillColor2 = LightenColor(colorPairs[captureIndex].c2, 0.2f);
+                    cards[captureIndex].ShadowDecoration.Depth = 15;
+                    cards[captureIndex].ShadowDecoration.Shadow = new Padding(0, 0, 10, 10);
+                };
+                EventHandler onLeave = (s, e) => {
+                    if (cards[captureIndex].ClientRectangle.Contains(cards[captureIndex].PointToClient(Cursor.Position)))
+                        return;
+                    cards[captureIndex].FillColor = colorPairs[captureIndex].c1;
+                    cards[captureIndex].FillColor2 = colorPairs[captureIndex].c2;
+                    cards[captureIndex].ShadowDecoration.Depth = 8;
+                    cards[captureIndex].ShadowDecoration.Shadow = new Padding(0, 0, 5, 5);
+                };
+
+                cards[i].MouseEnter += onEnter;
+                cards[i].MouseLeave += onLeave;
+
+                foreach (Control c in cards[i].Controls)
+                {
+                    c.MouseEnter += onEnter;
+                    c.MouseLeave += onLeave;
+                    c.Cursor = Cursors.Hand;
+                }
+            }
+        }
+
         private void FrmDashboard_Load(object sender, EventArgs e)
         {
+            SetupUIStyles();
             timerClock.Start();
+            timerAnimation.Start();
             _ = TaiDuLieuAsync();
         }
 

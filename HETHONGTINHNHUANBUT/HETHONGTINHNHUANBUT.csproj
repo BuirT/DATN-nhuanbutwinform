@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -312,6 +312,12 @@
     <Compile Include="FrmDashboard.Designer.cs">
       <DependentUpon>FrmDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmThongkePhongvien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmThongkePhongvien.Designer.cs">
+      <DependentUpon>FrmThongkePhongvien.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmBaoCaoThongKe.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -367,6 +373,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmDashboard.resx">
       <DependentUpon>FrmDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmThongkePhongvien.resx">
+      <DependentUpon>FrmThongkePhongvien.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmDuyetPhieuChi.resx">
       <DependentUpon>FrmDuyetPhieuChi.cs</DependentUpon>

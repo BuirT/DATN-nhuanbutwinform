@@ -18,6 +18,7 @@ namespace HETHONGTINHNHUANBUT
         public FrmCanhBaoAI()
         {
             InitializeComponent();
+            UIHelper.FormatGiaoDienBang(dgvCanhBao);
             this.Load += FrmCanhBaoAI_Load;
             this.dgvCanhBao.DataError += dgvCanhBao_DataError;
             this.btnRefresh.Click += btnRefresh_Click;
@@ -117,6 +118,10 @@ namespace HETHONGTINHNHUANBUT
             }
             if (dgvCanhBao.Columns["DaXuLy"] != null)
                 dgvCanhBao.Columns["DaXuLy"].HeaderText = "TRẠNG THÁI";
+
+            dgvCanhBao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            foreach (DataGridViewColumn c in dgvCanhBao.Columns)
+                if (c.Visible) c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
         private void CapNhatKPI()
