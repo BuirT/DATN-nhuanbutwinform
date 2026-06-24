@@ -74,8 +74,6 @@ namespace HETHONGTINHNHUANBUT
                 dgvCanhBao.DataSource = dtCanhBao;
                 CauHinhGrid();
                 CapNhatKPI();
-                if (dgvCanhBao.Rows.Count > 0)
-                    HienThiChiTiet(dgvCanhBao.Rows[0]);
             }
             catch { }
         }
@@ -140,9 +138,9 @@ namespace HETHONGTINHNHUANBUT
                 return !dx;
             });
 
-            lblKpiTotal.Text = total.ToString();
-            lblKpiCao.Text = cao.ToString();
-            lblKpiChuaXuLy.Text = chuaXuLy.ToString();
+            lblKpiTotal.Text = string.Format("Tổng cảnh báo: {0}", total);
+            lblKpiCao.Text = string.Format("Mức cao: {0}", cao);
+            lblKpiChuaXuLy.Text = string.Format("Chưa xử lý: {0}", chuaXuLy);
 
             var topPV = dtCanhBao.AsEnumerable()
                 .Where(r => r["TenPhongVien"] != null && !string.IsNullOrEmpty(r["TenPhongVien"].ToString()))
@@ -151,9 +149,9 @@ namespace HETHONGTINHNHUANBUT
                 .OrderByDescending(x => x.Count)
                 .FirstOrDefault();
 
-            lblKpiTopPV.Text = topPV != null
+            lblKpiTopPV.Text = "PV cảnh báo nhiều nhất: " + (topPV != null
                 ? string.Format("{0} ({1} cảnh báo)", topPV.Ten, topPV.Count)
-                : "-";
+                : "-");
 
             lblCount.Text = string.Format("Tổng: {0} cảnh báo (chưa xử lý: {1})", total, chuaXuLy);
         }
@@ -294,34 +292,6 @@ namespace HETHONGTINHNHUANBUT
             else
                 dv.RowFilter = "";
             dgvCanhBao.DataSource = dv;
-        }
-
-        private void dgvCanhBao_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-            HienThiChiTiet(dgvCanhBao.Rows[e.RowIndex]);
-        }
-
-        private void HienThiChiTiet(DataGridViewRow row)
-        {
-            lblTieuDe.Text = row.Cells["TieuDe"]?.Value?.ToString() ?? "(Không có)";
-            lblPhongVien.Text = row.Cells["TenPhongVien"]?.Value?.ToString() ?? "-";
-            lblTienNB.Text = TienNBSafe(row.Cells["TienNhuanbut"]?.Value);
-
-            decimal diemAI = ToDecimalSafe(row.Cells["DiemChatLuongAI"]?.Value);
-            lblDiemAI.Text = diemAI > 0 ? ((int)diemAI).ToString("0") + "/100" : "Chưa có điểm";
-
-            string danhGiaAI = row.Cells["DanhGiaAI"]?.Value?.ToString() ?? "";
-            txtDanhGiaAI.Text = !string.IsNullOrEmpty(danhGiaAI) ? danhGiaAI : "Chưa đánh giá";
-
-            string noiDung = row.Cells["NoiDungBaiViet"]?.Value?.ToString() ?? "";
-            txtNoiDungBaiViet.Text = !string.IsNullOrEmpty(noiDung) ? noiDung : "(Không có nội dung)";
-
-            string canhBao = row.Cells["NoiDung"]?.Value?.ToString() ?? "";
-            txtChiTietCanhBao.Text = canhBao;
-
-            string giaiThich = row.Cells["GiaTriPhatHien"]?.Value?.ToString() ?? "";
-            txtGiaiThich.Text = !string.IsNullOrEmpty(giaiThich) ? giaiThich : "";
         }
 
         private void dgvCanhBao_DataError(object sender, DataGridViewDataErrorEventArgs e)

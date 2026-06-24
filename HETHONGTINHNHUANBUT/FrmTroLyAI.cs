@@ -23,6 +23,17 @@ namespace HETHONGTINHNHUANBUT
             txtInput.KeyDown += TxtInput_KeyDown;
             flpChat.Resize += FlpChat_Resize;
 
+            // Add colorful AI icon
+            var pbIcon = new Guna.UI2.WinForms.Guna2PictureBox();
+            pbIcon.Size = new Size(35, 35);
+            pbIcon.Location = new Point(20, 18);
+            pbIcon.BackColor = Color.Transparent;
+            pbIcon.SizeMode = PictureBoxSizeMode.Zoom;
+            pbIcon.Image = AiIconResource.GetIcon();
+            
+            pnlHeader.Controls.Add(pbIcon);
+            lblTitle.Location = new Point(65, 20); // Shift text right
+            
             ThemBongBongChat("🤖 Chào đồng chí! Tôi là Trợ lý AI hệ thống NewsPay. " +
                 "Tôi có thể:\n" +
                 "• 📊 Hỏi thống kê tổng quan (tổng bài, tổng tiền, trạng thái duyệt...)\n" +

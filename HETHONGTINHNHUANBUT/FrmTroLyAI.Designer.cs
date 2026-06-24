@@ -15,6 +15,7 @@ namespace HETHONGTINHNHUANBUT
         {
             this.panelOverlay = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlHeader = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlChat = new Guna.UI2.WinForms.Guna2Panel();
             this.flpChat = new System.Windows.Forms.FlowLayoutPanel();
@@ -42,7 +43,6 @@ namespace HETHONGTINHNHUANBUT
             this.panelOverlay.Padding = new System.Windows.Forms.Padding(20);
             this.panelOverlay.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.panelOverlay.ShadowDecoration.Depth = 12;
-            this.panelOverlay.ShadowDecoration.Enabled = false;
             this.panelOverlay.Size = new System.Drawing.Size(1485, 652);
             this.panelOverlay.TabIndex = 0;
             // 
@@ -55,26 +55,13 @@ namespace HETHONGTINHNHUANBUT
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(44)))), ((int)(((byte)(34)))));
             this.pnlHeader.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.pnlHeader.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
             this.pnlHeader.Location = new System.Drawing.Point(20, 20);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1445, 70);
             this.pnlHeader.TabIndex = 1;
             // 
-            // lblTitle
-            // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(20, 20);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(313, 32);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "🤖  TRỢ LÝ AI - NEWSPAY";
-            // 
             // btnRefresh
             // 
-            this.btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.Animated = true;
             this.btnRefresh.BorderRadius = 8;
@@ -87,6 +74,17 @@ namespace HETHONGTINHNHUANBUT
             this.btnRefresh.TabIndex = 6;
             this.btnRefresh.Text = "🔄 LÀM MỚI";
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
+            this.lblTitle.Location = new System.Drawing.Point(20, 20);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(306, 32);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "🤖 TRỢ LÝ AI - NEWSPAY";
             // 
             // pnlChat
             // 
@@ -177,6 +175,7 @@ namespace HETHONGTINHNHUANBUT
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(247)))), ((int)(((byte)(254)))));
             this.ClientSize = new System.Drawing.Size(1525, 692);
             this.Controls.Add(this.panelOverlay);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FrmTroLyAI";
@@ -187,7 +186,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlHeader.PerformLayout();
             this.pnlChat.ResumeLayout(false);
             this.pnlInput.ResumeLayout(false);
-            this.DoubleBuffered = true;
             this.ResumeLayout(false);
 
         }
