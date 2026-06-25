@@ -72,7 +72,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
             this.pnlMenu.ShadowDecoration.Depth = 12;
             this.pnlMenu.ShadowDecoration.Enabled = false;
-            this.pnlMenu.Size = new System.Drawing.Size(260, 750);
+            this.pnlMenu.Size = new System.Drawing.Size(220, 750);
             this.pnlMenu.TabIndex = 0;
             // 
             // pnlMenuScroll

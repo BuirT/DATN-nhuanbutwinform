@@ -18,9 +18,44 @@ namespace HETHONGTINHNHUANBUT
         private Form activeForm = null;
         private Guna2Button currentActiveButton = null;
 
+        private Guna2Button btnLichSuThanhToan;
+
         public FrmTrangChinh()
         {
             InitializeComponent();
+            InitDynamicUI();
+        }
+
+        private void InitDynamicUI()
+        {
+            this.btnLichSuThanhToan = new Guna.UI2.WinForms.Guna2Button();
+            this.btnLichSuThanhToan.BorderRadius = 10;
+            this.btnLichSuThanhToan.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnLichSuThanhToan.FillColor = System.Drawing.Color.Transparent;
+            this.btnLichSuThanhToan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnLichSuThanhToan.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            this.btnLichSuThanhToan.Height = 44;
+            this.btnLichSuThanhToan.Text = "LỊCH SỬ GIAO DỊCH";
+            this.btnLichSuThanhToan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnLichSuThanhToan.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnLichSuThanhToan.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLichSuThanhToan.HoverState.FillColor = System.Drawing.Color.FromArgb(238, 242, 255);
+            this.btnLichSuThanhToan.HoverState.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            this.btnLichSuThanhToan.Image = btnPhieuChi.Image; 
+            this.btnLichSuThanhToan.ImageSize = new System.Drawing.Size(24, 24);
+            this.btnLichSuThanhToan.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnLichSuThanhToan.MouseEnter += new System.EventHandler(this.BtnSidebar_MouseEnter);
+            this.btnLichSuThanhToan.MouseLeave += new System.EventHandler(this.BtnSidebar_MouseLeave);
+            this.btnLichSuThanhToan.Click += new System.EventHandler(this.btnLichSuThanhToan_Click);
+            
+            this.pnlMenuScroll.Controls.Add(this.btnLichSuThanhToan);
+            this.pnlMenuScroll.Controls.SetChildIndex(this.btnLichSuThanhToan, this.pnlMenuScroll.Controls.GetChildIndex(this.btnBaoCao));
+        }
+
+        private void btnLichSuThanhToan_Click(object sender, EventArgs e)
+        {
+            FrmLichSuThanhToan frm = new FrmLichSuThanhToan();
+            OpenChildForm(frm, sender as Guna2Button);
         }
 
         private async void FrmTrangChinh_Load(object sender, EventArgs e)
@@ -110,11 +145,14 @@ namespace HETHONGTINHNHUANBUT
             {
                 currentActiveButton.FillColor = System.Drawing.Color.Transparent;
                 currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+                currentActiveButton.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 0);
             }
 
             currentActiveButton = clickedButton;
-            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(238, 242, 255);
-            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(79, 70, 229);
+            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(239, 246, 255); // Xanh nhạt
+            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235); // Primary color
+            currentActiveButton.CustomBorderColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            currentActiveButton.CustomBorderThickness = new System.Windows.Forms.Padding(4, 0, 0, 0);
         }
 
         private void btnDashboard_Click(object sender, EventArgs e)
@@ -149,7 +187,7 @@ namespace HETHONGTINHNHUANBUT
                     btnDashboard, btnTroLyAI, btnBaoCaoAI,
                     btnBaoCaoThongKe, btnCanhBaoAI,
                     btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan,
-                    btnKiemDuyet, btnPhieuChi, btnDuyetChi,
+                    btnKiemDuyet, btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnDotThanhToan, btnTaiKhoan,
                     btnTacGia, btnQuanLyBao, btnBaoCao);
                 return;
@@ -175,7 +213,7 @@ namespace HETHONGTINHNHUANBUT
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
-                    btnPhieuChi, btnDuyetChi,
+                    btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan);
@@ -186,7 +224,7 @@ namespace HETHONGTINHNHUANBUT
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
-                    btnKiemDuyet, btnDuyetChi,
+                    btnKiemDuyet, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan, btnTaiKhoan);

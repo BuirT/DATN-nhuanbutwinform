@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -16,9 +16,7 @@ namespace HETHONGTINHNHUANBUT
         public string NguoiDangNhap { get; set; }
         public string QuyenHienTai { get; set; }
 
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.RichTextBox txtNoiDungBaiViet;
-        private Guna.UI2.WinForms.Guna2Button btnPhanTichAI;
+
 
         public FrmNhapBaiPhongVien()
         {

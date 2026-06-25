@@ -36,7 +36,32 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmKiemDuyetNhuanBut_Load(object sender, EventArgs e)
         {
-            CreateSignaturePanel();
+            // Tạo trường nhập tên người ký cho Tổng thư ký
+            pnlNguoiKy = new Guna.UI2.WinForms.Guna2Panel();
+            pnlNguoiKy.BackColor = Color.Transparent;
+            pnlNguoiKy.Location = new Point(980, 15);
+            pnlNguoiKy.Size = new Size(180, 50);
+            pnlNguoiKy.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            lblNguoiKy = new Label();
+            lblNguoiKy.Text = "✍ Tên người ký:";
+            lblNguoiKy.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            lblNguoiKy.ForeColor = Color.FromArgb(79, 70, 229);
+            lblNguoiKy.Location = new Point(0, 0);
+            lblNguoiKy.AutoSize = true;
+
+            txtNguoiKy = new Guna.UI2.WinForms.Guna2TextBox();
+            txtNguoiKy.BorderRadius = 5;
+            txtNguoiKy.Font = new Font("Segoe UI", 9);
+            txtNguoiKy.Location = new Point(0, 20);
+            txtNguoiKy.Size = new Size(180, 26);
+            txtNguoiKy.PlaceholderText = "Nhập tên ký...";
+
+            pnlNguoiKy.Controls.Add(lblNguoiKy);
+            pnlNguoiKy.Controls.Add(txtNguoiKy);
+            pnlTop.Controls.Add(pnlNguoiKy);
+            pnlNguoiKy.Visible = false;
+            
             SetupRoleUI();
 
             if (string.IsNullOrEmpty(QuyenHienTai?.Trim()))
@@ -45,14 +70,6 @@ namespace HETHONGTINHNHUANBUT
                 this.Close();
                 return;
             }
-
-            // Đặt lại anchor cho các nút
-            btnXacNhan.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnTuChoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-
-            // Điều chỉnh layout
-            pnlBottom.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            LayoutBottomPanel();
 
             await LoadDataAsync("");
         }
@@ -229,6 +246,21 @@ namespace HETHONGTINHNHUANBUT
                     else if (role == "tổng thư ký") trangThaiLabel = "đã kiểm tra";
                     if (IsDisposed) return;
                     lblCount.Text = $"📋 Tổng số: {dt.Rows.Count} bài {trangThaiLabel}";
+
+                    // Calculate stats
+                    lblStat1Value.Text = dt.Rows.Count.ToString();
+                    decimal totalMoney = 0;
+                    int aiWarns = 0;
+                    int approvedToday = 0;
+                    foreach (DataRow r in dt.Rows)
+                    {
+                        if (r["TienNhuanbut"] != DBNull.Value) totalMoney += Convert.ToDecimal(r["TienNhuanbut"]);
+                        if (r["DanhGiaAI"] != DBNull.Value && r["DanhGiaAI"].ToString().Contains("Cảnh báo")) aiWarns++;
+                        if (r["NgayKy"] != DBNull.Value && Convert.ToDateTime(r["NgayKy"]).Date == DateTime.Today) approvedToday++;
+                    }
+                    lblStat2Value.Text = totalMoney.ToString("N0") + " đ";
+                    lblStat3Value.Text = aiWarns.ToString();
+                    lblStat4Value.Text = approvedToday.ToString();
                 }
             }
             catch (Exception ex)
@@ -598,126 +630,8 @@ namespace HETHONGTINHNHUANBUT
         }
 
         // =====================================================================
-        // SIGNATURE PANEL
+        // SIGNATURE PANEL (NATIVE)
         // =====================================================================
-        private void CreateSignaturePanel()
-        {
-            pnlSignatureContainer = new Guna.UI2.WinForms.Guna2Panel();
-            pnlSignatureContainer.Height = 100;
-            pnlSignatureContainer.BackColor = Color.Transparent;
-
-            pnlSignature = new Guna.UI2.WinForms.Guna2Panel();
-            pnlSignature.Dock = DockStyle.Fill;
-            pnlSignature.BackColor = Color.White;
-            pnlSignature.BorderRadius = 10;
-            pnlSignature.BorderColor = Color.FromArgb(226, 232, 240);
-            pnlSignature.BorderThickness = 1;
-
-            FlowLayoutPanel flp = new FlowLayoutPanel();
-            flp.Dock = DockStyle.Fill;
-            flp.Padding = new Padding(10);
-            flp.FlowDirection = FlowDirection.LeftToRight;
-            flp.WrapContents = true;
-
-            string[] sigLabels = { "📝 Người nhập", "🖊 Người chấm", "📋 Nhập liệu", "✅ Kiểm tra", "📌 Ký duyệt" };
-            string[] sigNames = { "", "", "", "", "" };
-            Color[] sigColors = {
-                Color.FromArgb(100, 116, 139),
-                Color.FromArgb(245, 158, 11),
-                Color.FromArgb(59, 130, 246),
-                Color.FromArgb(16, 185, 129),
-                Color.FromArgb(79, 70, 229)
-            };
-            Label[] sigLabelsRef = { null, null, null, null, null };
-            string[] sigFields = { "NguoiNhap", "NguoiChamTien", "NguoiKeToan", "NguoiKiemTra", "TongThuKy" };
-
-            for (int i = 0; i < 5; i++)
-            {
-                var panel = new Guna.UI2.WinForms.Guna2Panel();
-                panel.Width = 165;
-                panel.Height = 72;
-                panel.BackColor = Color.FromArgb(249, 250, 251);
-                panel.BorderRadius = 8;
-                panel.BorderColor = Color.FromArgb(229, 231, 235);
-                panel.BorderThickness = 1;
-                panel.Margin = new Padding(4);
-
-                var lblTitle = new Label();
-                lblTitle.Text = sigLabels[i];
-                lblTitle.Font = new Font("Segoe UI", 8, FontStyle.Bold);
-                lblTitle.ForeColor = sigColors[i];
-                lblTitle.Location = new Point(8, 6);
-                lblTitle.AutoSize = true;
-
-                var lblName = new Label();
-                lblName.Text = "—";
-                lblName.Font = new Font("Segoe UI", 10, FontStyle.Regular);
-                lblName.ForeColor = Color.FromArgb(30, 41, 59);
-                lblName.Location = new Point(8, 26);
-                lblName.AutoSize = true;
-                lblName.MaximumSize = new Size(150, 40);
-
-                if (i == 0) lblSigNguoiNhap = lblName;
-                else if (i == 1) lblSigNguoiCham = lblName;
-                else if (i == 2) lblSigNhapLieu = lblName;
-                else if (i == 3) lblSigKiemTra = lblName;
-                else if (i == 4) lblSigTongThuKy = lblName;
-
-                panel.Controls.Add(lblTitle);
-                panel.Controls.Add(lblName);
-                flp.Controls.Add(panel);
-            }
-
-            // Ô nhập tên cho Tổng thư ký
-            pnlNguoiKy = new Guna.UI2.WinForms.Guna2Panel();
-            pnlNguoiKy.Width = 210;
-            pnlNguoiKy.Height = 72;
-            pnlNguoiKy.BackColor = Color.FromArgb(249, 250, 251);
-            pnlNguoiKy.BorderRadius = 8;
-            pnlNguoiKy.BorderColor = Color.FromArgb(229, 231, 235);
-            pnlNguoiKy.BorderThickness = 1;
-            pnlNguoiKy.Margin = new Padding(4);
-
-            lblNguoiKy = new Label();
-            lblNguoiKy.Text = "✍ Tên người ký:";
-            lblNguoiKy.Font = new Font("Segoe UI", 8, FontStyle.Bold);
-            lblNguoiKy.ForeColor = Color.FromArgb(79, 70, 229);
-            lblNguoiKy.Location = new Point(8, 6);
-            lblNguoiKy.AutoSize = true;
-
-            txtNguoiKy = new Guna.UI2.WinForms.Guna2TextBox();
-            txtNguoiKy.BorderRadius = 5;
-            txtNguoiKy.Font = new Font("Segoe UI", 9);
-            txtNguoiKy.Location = new Point(8, 25);
-            txtNguoiKy.Size = new Size(195, 30);
-            txtNguoiKy.PlaceholderText = "Nhập tên ký...";
-            txtNguoiKy.Visible = false;
-
-            pnlNguoiKy.Controls.Add(lblNguoiKy);
-            pnlNguoiKy.Controls.Add(txtNguoiKy);
-            flp.Controls.Add(pnlNguoiKy);
-
-            pnlSignature.Controls.Add(flp);
-            pnlSignatureContainer.Controls.Add(pnlSignature);
-
-            this.Controls.Add(pnlSignatureContainer);
-
-            LayoutBottomPanel();
-            this.Resize += (s, e) => LayoutBottomPanel();
-        }
-
-        private void LayoutBottomPanel()
-        {
-            if (pnlSignatureContainer == null) return;
-            pnlSignatureContainer.Location = new Point(0, this.ClientSize.Height - pnlSignatureContainer.Height);
-            pnlSignatureContainer.Width = this.ClientSize.Width;
-
-            // Điều chỉnh pnlBottom không đè lên signature panel
-            pnlBottom.Height = this.ClientSize.Height - pnlBottom.Top - pnlSignatureContainer.Height - 10;
-
-            dgvNhuanBut.Height = pnlBottom.Height - dgvNhuanBut.Top - 10;
-        }
-
         private void LoadSignaturePanel(DataGridViewRow row)
         {
             try
@@ -725,25 +639,27 @@ namespace HETHONGTINHNHUANBUT
                 string GetVal(string col) => row.Cells[col]?.Value?.ToString() ?? "—";
                 string GetDate(string col)
                 {
-                    if (row.Cells[col]?.Value == null) return "";
+                    if (row.Cells[col]?.Value == null || row.Cells[col].Value == DBNull.Value) return "";
                     if (row.Cells[col].Value is DateTime dt)
-                        return dt.ToString(" dd/MM/yy HH:mm");
+                        return dt.ToString(" dd/MM/yyyy HH:mm");
                     return "";
                 }
 
-                if (lblSigNguoiNhap != null)
-                    lblSigNguoiNhap.Text = GetVal("NguoiNhap") + GetDate("NgayNhap");
-                if (lblSigNguoiCham != null)
-                    lblSigNguoiCham.Text = GetVal("NguoiChamTien") + GetDate("NgayChamTien");
-                if (lblSigNhapLieu != null)
-                    lblSigNhapLieu.Text = GetVal("NguoiKeToan") + GetDate("NgayNhapLieu");
-                if (lblSigKiemTra != null)
-                    lblSigKiemTra.Text = GetVal("NguoiKiemTra") + GetDate("NgayKiemTra");
-                if (lblSigTongThuKy != null)
-                    lblSigTongThuKy.Text = GetVal("TongThuKy") + GetDate("NgayKy");
-            }
-            catch { }
-        }
+                string pvName = GetVal("NguoiNhap");
+                if (string.IsNullOrWhiteSpace(pvName)) pvName = GetVal("Butdanh");
+                if (!string.IsNullOrWhiteSpace(pvName) && !pvName.StartsWith("PV", StringComparison.OrdinalIgnoreCase))
+                    pvName = "PV " + pvName;
 
+                if (lblWF1Value != null) lblWF1Value.Text = pvName + GetDate("NgayNhap");
+                if (lblWF2Value != null) lblWF2Value.Text = GetVal("NguoiChamTien") + GetDate("NgayChamTien");
+                if (lblWF3Value != null) lblWF3Value.Text = GetVal("NguoiKeToan") + GetDate("NgayNhapLieu");
+                if (lblWF4Value != null) lblWF4Value.Text = GetVal("NguoiKiemTra") + GetDate("NgayKiemTra");
+                if (lblWF5Value != null) lblWF5Value.Text = GetVal("TongThuKy") + GetDate("NgayKy");
+            }
+            catch (Exception ex)
+            {
+                // handle error
+            }
+        }
     }
 }

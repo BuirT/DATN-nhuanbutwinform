@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
@@ -37,10 +37,10 @@ namespace HETHONGTINHNHUANBUT
             this.btnKiemToanAI = new Guna.UI2.WinForms.Guna2Button();
             this.btnPhanTichAI = new Guna.UI2.WinForms.Guna2Button();
             this.label7 = new System.Windows.Forms.Label();
-            this.txtNoiDungBaiViet = new System.Windows.Forms.RichTextBox();
+            this.txtNoiDungBaiViet = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblDiemAI = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.txtDanhGiaAI = new System.Windows.Forms.RichTextBox();
+            this.txtDanhGiaAI = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblWarning = new System.Windows.Forms.Label();
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDataTitle = new System.Windows.Forms.Label();
@@ -349,24 +349,30 @@ namespace HETHONGTINHNHUANBUT
             // 
             // txtNoiDungBaiViet
             // 
-            this.txtNoiDungBaiViet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNoiDungBaiViet.BackColor = System.Drawing.Color.White;
-            this.txtNoiDungBaiViet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtNoiDungBaiViet.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNoiDungBaiViet.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.txtNoiDungBaiViet.BorderRadius = 8;
+            this.txtNoiDungBaiViet.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtNoiDungBaiViet.DefaultText = "";
+            this.txtNoiDungBaiViet.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.txtNoiDungBaiViet.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtNoiDungBaiViet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.txtNoiDungBaiViet.Location = new System.Drawing.Point(25, 288);
+            this.txtNoiDungBaiViet.Multiline = true;
             this.txtNoiDungBaiViet.Name = "txtNoiDungBaiViet";
-            this.txtNoiDungBaiViet.Size = new System.Drawing.Size(1110, 131);
+            this.txtNoiDungBaiViet.PlaceholderText = "Nhập nội dung bài viết...";
+            this.txtNoiDungBaiViet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtNoiDungBaiViet.SelectedText = "";
+            this.txtNoiDungBaiViet.Size = new System.Drawing.Size(650, 287);
             this.txtNoiDungBaiViet.TabIndex = 9;
-            this.txtNoiDungBaiViet.Text = "";
             // 
             // lblDiemAI
             // 
             this.lblDiemAI.AutoSize = true;
             this.lblDiemAI.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblDiemAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblDiemAI.Location = new System.Drawing.Point(25, 398);
+            this.lblDiemAI.Location = new System.Drawing.Point(800, 263);
+            this.lblDiemAI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDiemAI.Name = "lblDiemAI";
             this.lblDiemAI.Size = new System.Drawing.Size(0, 21);
             this.lblDiemAI.TabIndex = 12;
@@ -376,7 +382,8 @@ namespace HETHONGTINHNHUANBUT
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.label8.Location = new System.Drawing.Point(25, 430);
+            this.label8.Location = new System.Drawing.Point(695, 265);
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(90, 17);
             this.label8.TabIndex = 13;
@@ -384,18 +391,23 @@ namespace HETHONGTINHNHUANBUT
             // 
             // txtDanhGiaAI
             // 
-            this.txtDanhGiaAI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDanhGiaAI.BackColor = System.Drawing.Color.White;
-            this.txtDanhGiaAI.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDanhGiaAI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDanhGiaAI.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.txtDanhGiaAI.BorderRadius = 8;
+            this.txtDanhGiaAI.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtDanhGiaAI.DefaultText = "";
+            this.txtDanhGiaAI.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.txtDanhGiaAI.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtDanhGiaAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.txtDanhGiaAI.Location = new System.Drawing.Point(25, 452);
+            this.txtDanhGiaAI.Location = new System.Drawing.Point(695, 288);
+            this.txtDanhGiaAI.Multiline = true;
             this.txtDanhGiaAI.Name = "txtDanhGiaAI";
+            this.txtDanhGiaAI.PlaceholderText = "";
             this.txtDanhGiaAI.ReadOnly = true;
-            this.txtDanhGiaAI.Size = new System.Drawing.Size(1110, 123);
+            this.txtDanhGiaAI.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDanhGiaAI.SelectedText = "";
+            this.txtDanhGiaAI.Size = new System.Drawing.Size(440, 287);
             this.txtDanhGiaAI.TabIndex = 14;
-            this.txtDanhGiaAI.Text = "";
             // 
             // lblWarning
             // 
@@ -538,9 +550,12 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2ComboBox cboVungChuyenDen;
         private Guna.UI2.WinForms.Guna2Button btnNopBai;
         private Guna.UI2.WinForms.Guna2Button btnKiemToanAI;
+        private Guna.UI2.WinForms.Guna2Button btnPhanTichAI;
+        private System.Windows.Forms.Label label7;
+        private Guna.UI2.WinForms.Guna2TextBox txtNoiDungBaiViet;
         private System.Windows.Forms.Label lblDiemAI;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.RichTextBox txtDanhGiaAI;
+        private Guna.UI2.WinForms.Guna2TextBox txtDanhGiaAI;
         private System.Windows.Forms.Label lblWarning;
         private Guna.UI2.WinForms.Guna2Panel pnlBottom;
         private System.Windows.Forms.Label lblDataTitle;

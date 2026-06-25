@@ -37,14 +37,24 @@ namespace HETHONGTINHNHUANBUT
             this.pnlSummary3 = new Guna.UI2.WinForms.Guna2Panel();
             this.lblDaDuyet = new System.Windows.Forms.Label();
             this.lblDaDuyetTieuDe = new System.Windows.Forms.Label();
+            this.pnlSummary4 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblTienThangNay = new System.Windows.Forms.Label();
+            this.lblTienThangNayTieuDe = new System.Windows.Forms.Label();
+            this.pnlSummary5 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblTienNamNay = new System.Windows.Forms.Label();
+            this.lblTienNamNayTieuDe = new System.Windows.Forms.Label();
             this.chartPie = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartBar = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.pnlBottom = new Guna.UI2.WinForms.Guna2Panel();
             this.dgvTraCuu = new Guna.UI2.WinForms.Guna2DataGridView();
+            this.cboButDanh = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.lblLocButDanh = new System.Windows.Forms.Label();
             this.pnlTop.SuspendLayout();
             this.pnlSummary1.SuspendLayout();
             this.pnlSummary2.SuspendLayout();
             this.pnlSummary3.SuspendLayout();
+            this.pnlSummary4.SuspendLayout();
+            this.pnlSummary5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartPie)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartBar)).BeginInit();
             this.pnlBottom.SuspendLayout();
@@ -61,6 +71,10 @@ namespace HETHONGTINHNHUANBUT
             this.pnlTop.Controls.Add(this.pnlSummary1);
             this.pnlTop.Controls.Add(this.pnlSummary2);
             this.pnlTop.Controls.Add(this.pnlSummary3);
+            this.pnlTop.Controls.Add(this.pnlSummary4);
+            this.pnlTop.Controls.Add(this.pnlSummary5);
+            this.pnlTop.Controls.Add(this.cboButDanh);
+            this.pnlTop.Controls.Add(this.lblLocButDanh);
             this.pnlTop.FillColor = System.Drawing.Color.White;
             this.pnlTop.Location = new System.Drawing.Point(30, 20);
             this.pnlTop.Name = "pnlTop";
@@ -179,6 +193,102 @@ namespace HETHONGTINHNHUANBUT
             this.lblDaDuyetTieuDe.Size = new System.Drawing.Size(85, 19);
             this.lblDaDuyetTieuDe.TabIndex = 0;
             this.lblDaDuyetTieuDe.Text = "Bài đã duyệt";
+            // 
+            // pnlSummary4
+            // 
+            this.pnlSummary4.BackColor = System.Drawing.Color.Transparent;
+            this.pnlSummary4.BorderRadius = 10;
+            this.pnlSummary4.Controls.Add(this.lblTienThangNay);
+            this.pnlSummary4.Controls.Add(this.lblTienThangNayTieuDe);
+            this.pnlSummary4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.pnlSummary4.Location = new System.Drawing.Point(835, 60);
+            this.pnlSummary4.Name = "pnlSummary4";
+            this.pnlSummary4.Size = new System.Drawing.Size(250, 80);
+            this.pnlSummary4.TabIndex = 6;
+            // 
+            // lblTienThangNay
+            // 
+            this.lblTienThangNay.AutoSize = true;
+            this.lblTienThangNay.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTienThangNay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.lblTienThangNay.Location = new System.Drawing.Point(14, 38);
+            this.lblTienThangNay.Name = "lblTienThangNay";
+            this.lblTienThangNay.Size = new System.Drawing.Size(80, 30);
+            this.lblTienThangNay.TabIndex = 1;
+            this.lblTienThangNay.Text = "0 VNĐ";
+            // 
+            // lblTienThangNayTieuDe
+            // 
+            this.lblTienThangNayTieuDe.AutoSize = true;
+            this.lblTienThangNayTieuDe.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTienThangNayTieuDe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblTienThangNayTieuDe.Location = new System.Drawing.Point(15, 15);
+            this.lblTienThangNayTieuDe.Name = "lblTienThangNayTieuDe";
+            this.lblTienThangNayTieuDe.Size = new System.Drawing.Size(108, 19);
+            this.lblTienThangNayTieuDe.TabIndex = 0;
+            this.lblTienThangNayTieuDe.Text = "Tháng này";
+            // 
+            // pnlSummary5
+            // 
+            this.pnlSummary5.BackColor = System.Drawing.Color.Transparent;
+            this.pnlSummary5.BorderRadius = 10;
+            this.pnlSummary5.Controls.Add(this.lblTienNamNay);
+            this.pnlSummary5.Controls.Add(this.lblTienNamNayTieuDe);
+            this.pnlSummary5.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.pnlSummary5.Location = new System.Drawing.Point(1105, 60);
+            this.pnlSummary5.Name = "pnlSummary5";
+            this.pnlSummary5.Size = new System.Drawing.Size(250, 80);
+            this.pnlSummary5.TabIndex = 7;
+            // 
+            // lblTienNamNay
+            // 
+            this.lblTienNamNay.AutoSize = true;
+            this.lblTienNamNay.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTienNamNay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
+            this.lblTienNamNay.Location = new System.Drawing.Point(14, 38);
+            this.lblTienNamNay.Name = "lblTienNamNay";
+            this.lblTienNamNay.Size = new System.Drawing.Size(80, 30);
+            this.lblTienNamNay.TabIndex = 1;
+            this.lblTienNamNay.Text = "0 VNĐ";
+            // 
+            // lblTienNamNayTieuDe
+            // 
+            this.lblTienNamNayTieuDe.AutoSize = true;
+            this.lblTienNamNayTieuDe.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTienNamNayTieuDe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblTienNamNayTieuDe.Location = new System.Drawing.Point(15, 15);
+            this.lblTienNamNayTieuDe.Name = "lblTienNamNayTieuDe";
+            this.lblTienNamNayTieuDe.Size = new System.Drawing.Size(108, 19);
+            this.lblTienNamNayTieuDe.TabIndex = 0;
+            this.lblTienNamNayTieuDe.Text = "Năm nay";
+            // 
+            // lblLocButDanh
+            // 
+            this.lblLocButDanh.AutoSize = true;
+            this.lblLocButDanh.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLocButDanh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblLocButDanh.Location = new System.Drawing.Point(850, 20);
+            this.lblLocButDanh.Name = "lblLocButDanh";
+            this.lblLocButDanh.Size = new System.Drawing.Size(127, 19);
+            this.lblLocButDanh.TabIndex = 4;
+            this.lblLocButDanh.Text = "Lọc theo Bút danh:";
+            // 
+            // cboButDanh
+            // 
+            this.cboButDanh.BackColor = System.Drawing.Color.Transparent;
+            this.cboButDanh.BorderRadius = 8;
+            this.cboButDanh.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboButDanh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboButDanh.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cboButDanh.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cboButDanh.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cboButDanh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cboButDanh.ItemHeight = 30;
+            this.cboButDanh.Location = new System.Drawing.Point(985, 12);
+            this.cboButDanh.Name = "cboButDanh";
+            this.cboButDanh.Size = new System.Drawing.Size(250, 36);
+            this.cboButDanh.TabIndex = 5;
+            this.cboButDanh.SelectedIndexChanged += new System.EventHandler(this.cboButDanh_SelectedIndexChanged);
             // 
             // chartPie
             // 
@@ -303,6 +413,10 @@ namespace HETHONGTINHNHUANBUT
             this.pnlSummary2.PerformLayout();
             this.pnlSummary3.ResumeLayout(false);
             this.pnlSummary3.PerformLayout();
+            this.pnlSummary4.ResumeLayout(false);
+            this.pnlSummary4.PerformLayout();
+            this.pnlSummary5.ResumeLayout(false);
+            this.pnlSummary5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartPie)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartBar)).EndInit();
             this.pnlBottom.ResumeLayout(false);
@@ -328,5 +442,13 @@ namespace HETHONGTINHNHUANBUT
         private System.Windows.Forms.DataVisualization.Charting.Chart chartBar;
         private Guna.UI2.WinForms.Guna2Panel pnlBottom;
         private Guna.UI2.WinForms.Guna2DataGridView dgvTraCuu;
+        private Guna.UI2.WinForms.Guna2ComboBox cboButDanh;
+        private System.Windows.Forms.Label lblLocButDanh;
+        private Guna.UI2.WinForms.Guna2Panel pnlSummary4;
+        private System.Windows.Forms.Label lblTienThangNayTieuDe;
+        private System.Windows.Forms.Label lblTienThangNay;
+        private Guna.UI2.WinForms.Guna2Panel pnlSummary5;
+        private System.Windows.Forms.Label lblTienNamNayTieuDe;
+        private System.Windows.Forms.Label lblTienNamNay;
     }
 }
