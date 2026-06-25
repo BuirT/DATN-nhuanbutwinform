@@ -1,0 +1,413 @@
+﻿diff --git a/HETHONGTINHNHUANBUT/FrmTrangChinh.cs b/HETHONGTINHNHUANBUT/FrmTrangChinh.cs
+index 65f7625..b7fa0db 100644
+--- a/HETHONGTINHNHUANBUT/FrmTrangChinh.cs
++++ b/HETHONGTINHNHUANBUT/FrmTrangChinh.cs
+@@ -11,6 +11,8 @@ namespace HETHONGTINHNHUANBUT
+ {
+     public partial class FrmTrangChinh : Form
+     {
++        private Guna.UI2.WinForms.Guna2Panel pnlDesktopInner;
++
+         public string currentUserName { get; set; }
+         public string currentPrivilege { get; set; }
+         public string currentMaTacGia { get; set; }
+@@ -24,6 +26,7 @@ namespace HETHONGTINHNHUANBUT
+         {
+             InitializeComponent();
+             InitDynamicUI();
++            BuildModernUI();
+         }
+ 
+         private void InitDynamicUI()
+@@ -40,16 +43,13 @@ namespace HETHONGTINHNHUANBUT
+             this.btnLichSuThanhToan.TextOffset = new System.Drawing.Point(20, 0);
+             this.btnLichSuThanhToan.Cursor = System.Windows.Forms.Cursors.Hand;
+             this.btnLichSuThanhToan.HoverState.FillColor = System.Drawing.Color.FromArgb(238, 242, 255);
+-            this.btnLichSuThanhToan.HoverState.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
++            this.btnLichSuThanhToan.HoverState.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
+             this.btnLichSuThanhToan.Image = btnPhieuChi.Image; 
+             this.btnLichSuThanhToan.ImageSize = new System.Drawing.Size(24, 24);
+             this.btnLichSuThanhToan.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+             this.btnLichSuThanhToan.MouseEnter += new System.EventHandler(this.BtnSidebar_MouseEnter);
+             this.btnLichSuThanhToan.MouseLeave += new System.EventHandler(this.BtnSidebar_MouseLeave);
+             this.btnLichSuThanhToan.Click += new System.EventHandler(this.btnLichSuThanhToan_Click);
+-            
+-            this.pnlMenuScroll.Controls.Add(this.btnLichSuThanhToan);
+-            this.pnlMenuScroll.Controls.SetChildIndex(this.btnLichSuThanhToan, this.pnlMenuScroll.Controls.GetChildIndex(this.btnBaoCao));
+         }
+ 
+         private void btnLichSuThanhToan_Click(object sender, EventArgs e)
+@@ -149,9 +149,9 @@ namespace HETHONGTINHNHUANBUT
+             }
+ 
+             currentActiveButton = clickedButton;
+-            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(239, 246, 255); // Xanh nhß║ít
+-            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235); // Primary color
+-            currentActiveButton.CustomBorderColor = System.Drawing.Color.FromArgb(37, 99, 235);
++            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(254, 226, 226); // Xanh nhß║ít
++            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38); // Primary color
++            currentActiveButton.CustomBorderColor = System.Drawing.Color.FromArgb(220, 38, 38);
+             currentActiveButton.CustomBorderThickness = new System.Windows.Forms.Padding(4, 0, 0, 0);
+         }
+ 
+@@ -272,7 +272,201 @@ namespace HETHONGTINHNHUANBUT
+             childForm.FormBorderStyle = FormBorderStyle.None;
+             childForm.Dock = DockStyle.Fill;
+             pnlMain.Controls.Clear();
+-            pnlMain.Controls.Add(childForm);
++            pnlDesktopInner.Controls.Add(childForm);
++            pnlMain.Tag = childForm;
++            childForm.BringToFront();
++            childForm.Show();
++        }
++
++        // ==========================================================
++        // C├üC Sß╗░ KIß╗åN Mß╗₧ FORM CON
++        // ==========================================================
++        private void btnBaoCaoAI_Click(object sender, EventArgs e)
++        {
++            OpenChildForm(new FrmBaoCaoAI(), sender as Guna2Button);
++        }
++
++        private void btnTroLyAI_Click(object sender, EventArgs e)
++        {
++            OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
++        }
++
++        public void BtnSidebar_MouseLeave(object sender, EventArgs e)
++        {
++            if (sender is Guna2Button btn)
++            {
++                btn.TextOffset = new Point(btn.TextOffset.X - 8, btn.TextOffset.Y);
++                if (btn.Image != null)
++                    btn.ImageOffset = new Point(btn.ImageOffset.X - 8, btn.ImageOffset.Y);
++            }
++        }
++
++        private void AdjustMenuForScreen()
++        {
++            int availableH = Math.Min(Screen.FromControl(this).WorkingArea.Height, this.ClientSize.Height);
++            bool compact = availableH < 860;
++
++            int mainH = compact ? 40 : 44;
++            int subH = compact ? 34 : 40;
++            float mainFont = compact ? 9.75f : 10.5f;
++            float subFont = compact ? 9f : 10f;
++            int logoH = compact ? 56 : 64;
++
++            pnlLogo.Height = logoH;
++
++            foreach (Control c in pnlMenuScroll.Controls)
++            {
++                if (c is Guna2Button btn)
++                {
++                    bool isSub = btn.Name.StartsWith("btnSub");
++                    btn.Height = isSub ? subH : mainH;
++                    btn.Font = new Font("Segoe UI", isSub ? subFont : mainFont, FontStyle.Bold);
++                }
++            }
++
++            btnTaiKhoan.Height = compact ? 40 : 44;
++            btnDangXuat.Height = compact ? 40 : 44;
++            btnTaiKhoan.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
++            btnDangXuat.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
++            pnlMenuFooter.Height = (btnTaiKhoan.Height + btnDangXuat.Height) + 16;
++        }
++
++        private void SetActiveButton(Guna2Button clickedButton)
++        {
++            if (clickedButton == null) return;
++
++            if (currentActiveButton != null)
++            {
++                currentActiveButton.FillColor = System.Drawing.Color.Transparent;
++                currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
++                currentActiveButton.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 0);
++            }
++
++            currentActiveButton = clickedButton;
++            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(254, 226, 226); // Xanh nhß║ít
++            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38); // Primary color
++            currentActiveButton.CustomBorderColor = System.Drawing.Color.FromArgb(220, 38, 38);
++            currentActiveButton.CustomBorderThickness = new System.Windows.Forms.Padding(4, 0, 0, 0);
++        }
++
++        private void btnDashboard_Click(object sender, EventArgs e)
++        {
++            OpenChildForm(new FrmDashboard(), sender as Guna2Button);
++        }
++
++        private void btnBaoCaoThongKe_Click(object sender, EventArgs e)
++        {
++            OpenChildForm(new FrmBaoCaoThongKe(), sender as Guna2Button);
++        }
++
++        private void btnCanhBaoAI_Click(object sender, EventArgs e)
++        {
++            OpenChildForm(new FrmCanhBaoAI(), sender as Guna2Button);
++        }
++
++        private void ApplyPermissions()
++        {
++            string role = currentPrivilege?.Trim().ToLower() ?? "";
++
++            btnTaiKhoan.Visible = false;
++            foreach (Control c in pnlMenuScroll.Controls)
++            {
++                if (c is Guna2Button btn)
++                    btn.Visible = false;
++            }
++
++            if (role == "admin" || role == "quß║ún trß╗ï vi├¬n")
++            {
++                SetButtonVisible(true,
++                    btnDashboard, btnTroLyAI, btnBaoCaoAI,
++                    btnBaoCaoThongKe, btnCanhBaoAI,
++                    btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan,
++                    btnKiemDuyet, btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
++                    btnDotThanhToan, btnTaiKhoan,
++                    btnTacGia, btnQuanLyBao, btnBaoCao);
++                return;
++            }
++
++            if (role == "ph├│ng vi├¬n" || role == "cß╗Öng t├íc vi├¬n" || role == "kh├ích mß╗¥i")
++            {
++                SetButtonVisible(true, btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan);
++                return;
++            }
++
++            if (role == "th╞░ k├╜")
++            {
++                SetButtonVisible(true,
++                    btnNhapNhuanBut, btnTraCuuCaNhan,
++                    btnKiemDuyet,
++                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
++                return;
++            }
++
++            if (role == "kß║┐ to├ín")
++            {
++                SetButtonVisible(true,
++                    btnNhapNhuanBut, btnTraCuuCaNhan,
++                    btnKiemDuyet,
++                    btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
++                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
++                    btnTroLyAI, btnBaoCaoAI,
++                    btnDotThanhToan);
++                return;
++            }
++
++            if (role == "l├únh ─æß║ío")
++            {
++                SetButtonVisible(true,
++                    btnNhapNhuanBut, btnTraCuuCaNhan,
++                    btnKiemDuyet, btnDuyetChi, btnLichSuThanhToan,
++                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
++                    btnTroLyAI, btnBaoCaoAI,
++                    btnDotThanhToan, btnTaiKhoan);
++                return;
++            }
++
++            if (role == "kiß╗âm tra vi├¬n")
++            {
++                SetButtonVisible(true,
++                    btnNhapNhuanBut, btnTraCuuCaNhan,
++                    btnKiemDuyet,
++                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
++                return;
++            }
++
++            if (role == "tß╗òng th╞░ k├╜")
++            {
++                SetButtonVisible(true,
++                    btnNhapNhuanBut, btnTraCuuCaNhan,
++                    btnKiemDuyet,
++                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
++            }
++        }
++
++        private void SetButtonVisible(bool visible, params Guna.UI2.WinForms.Guna2Button[] buttons)
++        {
++            foreach (var btn in buttons)
++                btn.Visible = visible;
++        }
++
++        private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
++        {
++            if (clickedButton != null) SetActiveButton(clickedButton);
++
++            if (activeForm != null) activeForm.Close();
++            activeForm = childForm;
++
++            var propQuyen = childForm.GetType().GetProperty("QuyenHienTai");
++            if (propQuyen != null) propQuyen.SetValue(childForm, currentPrivilege);
++
++            var propMaGoc = childForm.GetType().GetProperty("MaTacGiaCuaToi");
++            if (propMaGoc != null) propMaGoc.SetValue(childForm, currentMaTacGia);
++
++            childForm.TopLevel = false;
++            childForm.FormBorderStyle = FormBorderStyle.None;
++            childForm.Dock = DockStyle.Fill;
++            pnlMain.Controls.Clear();
++            pnlDesktopInner.Controls.Add(childForm);
+             pnlMain.Tag = childForm;
+             childForm.BringToFront();
+             childForm.Show();
+@@ -308,8 +502,8 @@ namespace HETHONGTINHNHUANBUT
+                 btnQuanLyBao.Text = "QUß║óN L├¥ B├üO  Γû╝";
+         }
+ 
+-        private void btnSubSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao(), sender as Guna2Button);
+-        private void btnSubLoaiBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmLoaiBao(), sender as Guna2Button);
++        private void btnSubSoBao_Click(object sender, EventArgs e) { OpenChildForm(new FrmSoBao(), sender as Guna2Button); }
++        private void btnSubLoaiBao_Click(object sender, EventArgs e) { OpenChildForm(new FrmLoaiBao(), sender as Guna2Button); }
+         private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
+         {
+             FrmTraCuuNhuanBut frm = new FrmTraCuuNhuanBut();
+@@ -329,9 +523,9 @@ namespace HETHONGTINHNHUANBUT
+             btnSubButDanh.Visible = !isExpanded;
+             btnTacGia.Text = isExpanded ? "QUß║óN L├¥ T├üC GIß║ó  Γû╝" : "QUß║óN L├¥ T├üC GIß║ó  Γû▓";
+         }
+-        private void btnSubTacGiaHoSo_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia(), sender as Guna2Button);
+-        private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh(), sender as Guna2Button);
+-        private void btnTaiKhoan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button);
++        private void btnSubTacGiaHoSo_Click(object sender, EventArgs e) { OpenChildForm(new FrmTacGia(), sender as Guna2Button); }
++        private void btnButDanh_Click(object sender, EventArgs e) { OpenChildForm(new FrmButDanh(), sender as Guna2Button); }
++        private void btnTaiKhoan_Click(object sender, EventArgs e) { OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button); }
+ 
+         private void btnNhapNhuanBut_Click(object sender, EventArgs e)
+         {
+@@ -379,9 +573,9 @@ namespace HETHONGTINHNHUANBUT
+             btnSubBaoCaoLD.Visible = !isExpanded;
+             btnBaoCao.Text = isExpanded ? "B├üO C├üO  Γû╝" : "B├üO C├üO  Γû▓";
+         }
+-        private void btnSubBaoCaoTH_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
+-        private void btnSubBaoCaoCN_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
+-        private void btnSubBaoCaoLD_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoLanhDao(), sender as Guna2Button);
++        private void btnSubBaoCaoTH_Click(object sender, EventArgs e) { OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button); }
++        private void btnSubBaoCaoCN_Click(object sender, EventArgs e) { OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button); }
++        private void btnSubBaoCaoLD_Click(object sender, EventArgs e) { OpenChildForm(new FrmBaoCaoLanhDao(), sender as Guna2Button); }
+ 
+         private void btnDangXuat_Click(object sender, EventArgs e)
+         {
+@@ -402,5 +596,118 @@ namespace HETHONGTINHNHUANBUT
+         {
+             Environment.Exit(0);
+         }
+-    }
++    
++        private void BuildModernUI()
++        {
++            pnlMenu.Width = 220;
++            pnlMain.Controls.Clear();
++            pnlMain.BackColor = System.Drawing.Color.FromArgb(244, 247, 254);
++            
++            Guna.UI2.WinForms.Guna2Panel pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
++            pnlHeader.Name = "pnlHeader";
++            pnlHeader.Height = 60;
++            pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
++            pnlHeader.BackColor = System.Drawing.Color.White;
++            pnlHeader.ShadowDecoration.Enabled = true;
++            pnlHeader.ShadowDecoration.Depth = 10;
++            
++            System.Windows.Forms.Label lblNgay = new System.Windows.Forms.Label();
++            lblNgay.Text = "H├┤m nay: " + DateTime.Now.ToString("dd/MM/yyyy");
++            lblNgay.Font = new System.Drawing.Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
++            lblNgay.ForeColor = System.Drawing.Color.DimGray;
++            lblNgay.AutoSize = true;
++            lblNgay.Location = new System.Drawing.Point(20, 20);
++            pnlHeader.Controls.Add(lblNgay);
++            
++            System.Windows.Forms.Label lblUser = new System.Windows.Forms.Label();
++            lblUser.Text = "Xin ch├áo, " + (string.IsNullOrEmpty(this.currentUserName) ? "Admin" : this.currentUserName);
++            lblUser.Font = new System.Drawing.Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
++            lblUser.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
++            lblUser.AutoSize = true;
++            lblUser.Location = new System.Drawing.Point(pnlMain.Width - 300, 20);
++            lblUser.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
++            pnlHeader.Controls.Add(lblUser);
++            
++            Guna.UI2.WinForms.Guna2Panel pnlDesktopContainer = new Guna.UI2.WinForms.Guna2Panel();
++            pnlDesktopContainer.Name = "pnlDesktopContainer";
++            pnlDesktopContainer.Dock = System.Windows.Forms.DockStyle.Fill;
++            pnlDesktopContainer.Padding = new System.Windows.Forms.Padding(20);
++            
++            pnlDesktopInner = new Guna.UI2.WinForms.Guna2Panel();
++            pnlDesktopInner.Name = "pnlDesktopInner";
++            pnlDesktopInner.Dock = System.Windows.Forms.DockStyle.Fill;
++            pnlDesktopInner.BackColor = System.Drawing.Color.White;
++            pnlDesktopInner.BorderRadius = 12;
++            pnlDesktopInner.ShadowDecoration.Enabled = true;
++            pnlDesktopInner.ShadowDecoration.Depth = 10;
++            
++            pnlDesktopContainer.Controls.Add(pnlDesktopInner);
++            
++            pnlMain.Controls.Add(pnlDesktopContainer);
++            pnlMain.Controls.Add(pnlHeader);
++            pnlDesktopContainer.BringToFront();
++            
++            pnlLogo.Controls.Clear();
++            System.Windows.Forms.Label lblLogo = new System.Windows.Forms.Label();
++            lblLogo.Text = "NEWSPAY\nQUß║óN L├¥ T├ÆA SOß║áN";
++            lblLogo.Font = new System.Drawing.Font("Segoe UI", 12, System.Drawing.FontStyle.Bold);
++            lblLogo.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
++            lblLogo.Dock = System.Windows.Forms.DockStyle.Fill;
++            lblLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
++            pnlLogo.Controls.Add(lblLogo);
++            
++            pnlMenuScroll.Controls.Clear();
++            
++            Action<string> AddGroup = (title) => {
++                System.Windows.Forms.Label lbl = new System.Windows.Forms.Label();
++                lbl.Text = title;
++                lbl.Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Bold);
++                lbl.ForeColor = System.Drawing.Color.Gray;
++                lbl.Dock = System.Windows.Forms.DockStyle.Top;
++                lbl.Height = 35;
++                lbl.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
++                lbl.Padding = new System.Windows.Forms.Padding(15, 0, 0, 5);
++                pnlMenuScroll.Controls.Add(lbl);
++                lbl.BringToFront();
++            };
++            
++            Action<Guna.UI2.WinForms.Guna2Button, string> AddBtn = (btn, text) => {
++                if (btn == null) return;
++                btn.Text = text;
++                btn.Dock = System.Windows.Forms.DockStyle.Top;
++                btn.Height = 45;
++                btn.TextOffset = new System.Drawing.Point(10, 0);
++                btn.Visible = true;
++                btn.CustomBorderThickness = new System.Windows.Forms.Padding(0,0,0,0);
++                pnlMenuScroll.Controls.Add(btn);
++                btn.BringToFront();
++            };
++
++            AddGroup("DANH Mß╗ñC");
++            AddBtn(btnTacGia, "T├íc giß║ú");
++            AddBtn(btnSubButDanh, "B├║t danh");
++            AddBtn(btnSubLoaiBao, "Loß║íi b├ío");
++            AddBtn(btnSubSoBao, "Sß╗æ b├ío");
++            
++            AddGroup("NGHIß╗åP Vß╗ñ");
++            AddBtn(btnNhapNhuanBut, "Nhß║¡p nhuß║¡n b├║t");
++            AddBtn(btnKiemDuyet, "Kiß╗âm duyß╗çt");
++            AddBtn(btnTraCuuCaNhan, "Tra cß╗⌐u nhuß║¡n b├║t");
++            AddBtn(btnPhieuChi, "Phiß║┐u chi");
++            AddBtn(btnDuyetChi, "Duyß╗çt phiß║┐u chi");
++            AddBtn(btnLichSuThanhToan, "Lß╗ïch sß╗¡ giao dß╗ïch");
++            AddBtn(btnDotThanhToan, "Thanh to├ín");
++
++            AddGroup("AI Hß╗û TRß╗ó");
++            AddBtn(btnBaoCaoAI, "Kiß╗âm ─æß╗ïnh AI");
++            AddBtn(btnTroLyAI, "Trß╗ú l├╜ AI");
++            AddBtn(btnCanhBaoAI, "Cß║únh b├ío AI");
++
++            AddGroup("B├üO C├üO");
++            AddBtn(btnDashboard, "Dashboard");
++            if (btnBaoCaoThongKe != null) AddBtn(btnBaoCaoThongKe, "B├ío c├ío tß╗òng hß╗úp");
++            else if (btnBaoCao != null) AddBtn(btnBaoCao, "B├ío c├ío tß╗òng hß╗úp");
++            AddBtn(btnSubBaoCaoCN, "B├ío c├ío c├┤ng nß╗ú");
++        }
++}
+ }
+\ No newline at end of file

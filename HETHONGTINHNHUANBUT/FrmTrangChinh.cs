@@ -11,6 +11,8 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmTrangChinh : Form
     {
+        private Guna.UI2.WinForms.Guna2Panel pnlDesktopInner;
+
         public string currentUserName { get; set; }
         public string currentPrivilege { get; set; }
         public string currentMaTacGia { get; set; }
@@ -24,6 +26,7 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             InitDynamicUI();
+            BuildModernUI();
         }
 
         private void InitDynamicUI()
@@ -40,16 +43,13 @@ namespace HETHONGTINHNHUANBUT
             this.btnLichSuThanhToan.TextOffset = new System.Drawing.Point(20, 0);
             this.btnLichSuThanhToan.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLichSuThanhToan.HoverState.FillColor = System.Drawing.Color.FromArgb(238, 242, 255);
-            this.btnLichSuThanhToan.HoverState.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            this.btnLichSuThanhToan.HoverState.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
             this.btnLichSuThanhToan.Image = btnPhieuChi.Image; 
             this.btnLichSuThanhToan.ImageSize = new System.Drawing.Size(24, 24);
             this.btnLichSuThanhToan.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnLichSuThanhToan.MouseEnter += new System.EventHandler(this.BtnSidebar_MouseEnter);
             this.btnLichSuThanhToan.MouseLeave += new System.EventHandler(this.BtnSidebar_MouseLeave);
             this.btnLichSuThanhToan.Click += new System.EventHandler(this.btnLichSuThanhToan_Click);
-            
-            this.pnlMenuScroll.Controls.Add(this.btnLichSuThanhToan);
-            this.pnlMenuScroll.Controls.SetChildIndex(this.btnLichSuThanhToan, this.pnlMenuScroll.Controls.GetChildIndex(this.btnBaoCao));
         }
 
         private void btnLichSuThanhToan_Click(object sender, EventArgs e)
@@ -63,8 +63,6 @@ namespace HETHONGTINHNHUANBUT
             this.SuspendLayout();
             pnlMenu.SuspendLayout();
             pnlMenuScroll.SuspendLayout();
-
-            await DatabaseMigrator.AutoFixDatabaseColumnsAsync();
 
             AdjustMenuForScreen();
             ApplyPermissions();
@@ -149,9 +147,9 @@ namespace HETHONGTINHNHUANBUT
             }
 
             currentActiveButton = clickedButton;
-            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(239, 246, 255); // Xanh nhạt
-            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235); // Primary color
-            currentActiveButton.CustomBorderColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            currentActiveButton.FillColor = System.Drawing.Color.FromArgb(254, 226, 226); // Xanh nhạt
+            currentActiveButton.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38); // Primary color
+            currentActiveButton.CustomBorderColor = System.Drawing.Color.FromArgb(220, 38, 38);
             currentActiveButton.CustomBorderThickness = new System.Windows.Forms.Padding(4, 0, 0, 0);
         }
 
@@ -190,25 +188,19 @@ namespace HETHONGTINHNHUANBUT
                     btnKiemDuyet, btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnDotThanhToan, btnTaiKhoan,
                     btnTacGia, btnQuanLyBao, btnBaoCao);
-                return;
             }
-
-            if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
+            else if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
                 SetButtonVisible(true, btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan);
-                return;
             }
-
-            if (role == "thư ký")
+            else if (role == "thư ký")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
-                return;
             }
-
-            if (role == "kế toán")
+            else if (role == "kế toán")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
@@ -217,10 +209,8 @@ namespace HETHONGTINHNHUANBUT
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan);
-                return;
             }
-
-            if (role == "lãnh đạo")
+            else if (role == "lãnh đạo")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
@@ -228,24 +218,46 @@ namespace HETHONGTINHNHUANBUT
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan, btnTaiKhoan);
-                return;
             }
-
-            if (role == "kiểm tra viên")
+            else if (role == "kiểm tra viên")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
-                return;
             }
-
-            if (role == "tổng thư ký")
+            else if (role == "tổng thư ký")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+            }
+
+            // Hide empty group labels dynamically
+            System.Windows.Forms.Label currentGroupLabel = null;
+            bool hasVisibleButtonInGroup = false;
+
+            for (int i = pnlMenuScroll.Controls.Count - 1; i >= 0; i--)
+            {
+                Control c = pnlMenuScroll.Controls[i];
+                if (c is System.Windows.Forms.Label && c.Tag != null && c.Tag.ToString() == "GROUP")
+                {
+                    if (currentGroupLabel != null)
+                    {
+                        currentGroupLabel.Visible = hasVisibleButtonInGroup;
+                    }
+                    currentGroupLabel = (System.Windows.Forms.Label)c;
+                    hasVisibleButtonInGroup = false;
+                }
+                else if (c is Guna.UI2.WinForms.Guna2Button && c.Visible)
+                {
+                    hasVisibleButtonInGroup = true;
+                }
+            }
+            if (currentGroupLabel != null)
+            {
+                currentGroupLabel.Visible = hasVisibleButtonInGroup;
             }
         }
 
@@ -271,9 +283,9 @@ namespace HETHONGTINHNHUANBUT
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
-            pnlMain.Controls.Clear();
-            pnlMain.Controls.Add(childForm);
-            pnlMain.Tag = childForm;
+            pnlDesktopInner.Controls.Clear();
+            pnlDesktopInner.Controls.Add(childForm);
+            pnlDesktopInner.Tag = childForm;
             childForm.BringToFront();
             childForm.Show();
         }
@@ -291,11 +303,6 @@ namespace HETHONGTINHNHUANBUT
             OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
         }
 
-        private void btnDotThanhToan_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new FrmThanhToan(), sender as Guna2Button);
-        }
-
         private void btnQuanLyBao_Click(object sender, EventArgs e)
         {
             bool isExpanded = btnSubSoBao.Visible;
@@ -308,8 +315,8 @@ namespace HETHONGTINHNHUANBUT
                 btnQuanLyBao.Text = "QUẢN LÝ BÁO  ▼";
         }
 
-        private void btnSubSoBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmSoBao(), sender as Guna2Button);
-        private void btnSubLoaiBao_Click(object sender, EventArgs e) => OpenChildForm(new FrmLoaiBao(), sender as Guna2Button);
+        private void btnSubSoBao_Click(object sender, EventArgs e) { OpenChildForm(new FrmSoBao(), sender as Guna2Button); }
+        private void btnSubLoaiBao_Click(object sender, EventArgs e) { OpenChildForm(new FrmLoaiBao(), sender as Guna2Button); }
         private void btnTraCuuCaNhan_Click(object sender, EventArgs e)
         {
             FrmTraCuuNhuanBut frm = new FrmTraCuuNhuanBut();
@@ -329,9 +336,9 @@ namespace HETHONGTINHNHUANBUT
             btnSubButDanh.Visible = !isExpanded;
             btnTacGia.Text = isExpanded ? "QUẢN LÝ TÁC GIẢ  ▼" : "QUẢN LÝ TÁC GIẢ  ▲";
         }
-        private void btnSubTacGiaHoSo_Click(object sender, EventArgs e) => OpenChildForm(new FrmTacGia(), sender as Guna2Button);
-        private void btnButDanh_Click(object sender, EventArgs e) => OpenChildForm(new FrmButDanh(), sender as Guna2Button);
-        private void btnTaiKhoan_Click(object sender, EventArgs e) => OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button);
+        private void btnSubTacGiaHoSo_Click(object sender, EventArgs e) { OpenChildForm(new FrmTacGia(), sender as Guna2Button); }
+        private void btnButDanh_Click(object sender, EventArgs e) { OpenChildForm(new FrmButDanh(), sender as Guna2Button); }
+        private void btnTaiKhoan_Click(object sender, EventArgs e) { OpenChildForm(new FrmTaiKhoan(), sender as Guna2Button); }
 
         private void btnNhapNhuanBut_Click(object sender, EventArgs e)
         {
@@ -379,9 +386,14 @@ namespace HETHONGTINHNHUANBUT
             btnSubBaoCaoLD.Visible = !isExpanded;
             btnBaoCao.Text = isExpanded ? "BÁO CÁO  ▼" : "BÁO CÁO  ▲";
         }
-        private void btnSubBaoCaoTH_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button);
-        private void btnSubBaoCaoCN_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button);
-        private void btnSubBaoCaoLD_Click(object sender, EventArgs e) => OpenChildForm(new FrmBaoCaoLanhDao(), sender as Guna2Button);
+        private void btnSubBaoCaoTH_Click(object sender, EventArgs e) { OpenChildForm(new FrmBaoCaoTongHop(), sender as Guna2Button); }
+        private void btnSubBaoCaoCN_Click(object sender, EventArgs e) { OpenChildForm(new FrmBaoCaoCongNo(), sender as Guna2Button); }
+        private void btnSubBaoCaoLD_Click(object sender, EventArgs e) { OpenChildForm(new FrmBaoCaoLanhDao(), sender as Guna2Button); }
+
+        private void btnDotThanhToan_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmThanhToan(), sender as Guna2Button);
+        }
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
@@ -402,5 +414,121 @@ namespace HETHONGTINHNHUANBUT
         {
             Environment.Exit(0);
         }
-    }
+    
+        private void BuildModernUI()
+        {
+            pnlMenu.Width = 220;
+            pnlMain.Controls.Clear();
+            pnlMain.BackColor = System.Drawing.Color.FromArgb(244, 247, 254);
+            
+            Guna.UI2.WinForms.Guna2Panel pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
+            pnlHeader.Name = "pnlHeader";
+            pnlHeader.Height = 60;
+            pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            pnlHeader.BackColor = System.Drawing.Color.White;
+            pnlHeader.ShadowDecoration.Enabled = true;
+            pnlHeader.ShadowDecoration.Depth = 10;
+            
+            System.Windows.Forms.Label lblNgay = new System.Windows.Forms.Label();
+            lblNgay.Name = "lblNgay";
+            lblNgay.Text = "Hôm nay: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            lblNgay.Font = new System.Drawing.Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
+            lblNgay.ForeColor = System.Drawing.Color.DimGray;
+            lblNgay.AutoSize = true;
+            lblNgay.Location = new System.Drawing.Point(20, 20);
+            pnlHeader.Controls.Add(lblNgay);
+
+            System.Windows.Forms.Timer tmrClock = new System.Windows.Forms.Timer();
+            tmrClock.Interval = 1000;
+            tmrClock.Tick += (s, e) => { lblNgay.Text = "Hôm nay: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"); };
+            tmrClock.Start();
+            
+            System.Windows.Forms.Label lblUser = new System.Windows.Forms.Label();
+            lblUser.Text = "Xin chào, " + (string.IsNullOrEmpty(this.currentUserName) ? "Admin" : this.currentUserName);
+            lblUser.Font = new System.Drawing.Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
+            lblUser.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            lblUser.AutoSize = true;
+            lblUser.Location = new System.Drawing.Point(pnlMain.Width - 300, 20);
+            lblUser.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            pnlHeader.Controls.Add(lblUser);
+            
+            Guna.UI2.WinForms.Guna2Panel pnlDesktopContainer = new Guna.UI2.WinForms.Guna2Panel();
+            pnlDesktopContainer.Name = "pnlDesktopContainer";
+            pnlDesktopContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlDesktopContainer.Padding = new System.Windows.Forms.Padding(20);
+            
+            pnlDesktopInner = new Guna.UI2.WinForms.Guna2Panel();
+            pnlDesktopInner.Name = "pnlDesktopInner";
+            pnlDesktopInner.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlDesktopInner.BackColor = System.Drawing.Color.White;
+            pnlDesktopInner.BorderRadius = 12;
+            pnlDesktopInner.ShadowDecoration.Enabled = true;
+            pnlDesktopInner.ShadowDecoration.Depth = 10;
+            
+            pnlDesktopContainer.Controls.Add(pnlDesktopInner);
+            
+            pnlMain.Controls.Add(pnlDesktopContainer);
+            pnlMain.Controls.Add(pnlHeader);
+            pnlDesktopContainer.BringToFront();
+            
+            // pnlLogo is kept intact with its designer-added picLogo
+            pnlMenuScroll.Controls.Clear();
+            
+            Action<string> AddGroup = (title) => {
+                System.Windows.Forms.Label lbl = new System.Windows.Forms.Label();
+                lbl.Text = title;
+                lbl.Tag = "GROUP";
+                lbl.Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Bold);
+                lbl.ForeColor = System.Drawing.Color.Gray;
+                lbl.Dock = System.Windows.Forms.DockStyle.Top;
+                lbl.Height = 35;
+                lbl.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+                lbl.Padding = new System.Windows.Forms.Padding(15, 0, 0, 5);
+                pnlMenuScroll.Controls.Add(lbl);
+                lbl.BringToFront();
+            };
+            
+            Action<Guna.UI2.WinForms.Guna2Button, string> AddBtn = (btn, text) => {
+                if (btn == null) return;
+                btn.Text = text;
+                btn.Dock = System.Windows.Forms.DockStyle.Top;
+                btn.Height = 45;
+                btn.TextOffset = new System.Drawing.Point(10, 0);
+                btn.Visible = true;
+                btn.CustomBorderThickness = new System.Windows.Forms.Padding(0,0,0,0);
+                pnlMenuScroll.Controls.Add(btn);
+                btn.BringToFront();
+            };
+
+            AddBtn(btnDashboard, "Dashboard");
+
+            AddGroup("DANH MỤC");
+            AddBtn(btnTacGia, "QUẢN LÝ TÁC GIẢ  ▲");
+            AddBtn(btnSubTacGiaHoSo, "Hồ sơ tác giả");
+            AddBtn(btnSubButDanh, "Bút danh");
+            AddBtn(btnQuanLyBao, "QUẢN LÝ BÁO  ▲");
+            AddBtn(btnSubLoaiBao, "Loại báo");
+            AddBtn(btnSubSoBao, "Số báo");
+            
+            AddGroup("NGHIỆP VỤ");
+            AddBtn(btnNhapNhuanBut, "Nhập nhuận bút");
+            AddBtn(btnKiemDuyet, "Kiểm duyệt");
+            AddBtn(btnTraCuuCaNhan, "Tra cứu nhuận bút");
+            if (btnThongKeCaNhan != null) AddBtn(btnThongKeCaNhan, "Thống kê cá nhân");
+            AddBtn(btnPhieuChi, "Phiếu chi");
+            AddBtn(btnDuyetChi, "Duyệt phiếu chi");
+            AddBtn(btnLichSuThanhToan, "Lịch sử giao dịch");
+            AddBtn(btnDotThanhToan, "Thanh toán");
+
+            AddGroup("AI HỖ TRỢ");
+            AddBtn(btnBaoCaoAI, "Kiểm định AI");
+            AddBtn(btnTroLyAI, "Trợ lý AI");
+            AddBtn(btnCanhBaoAI, "Cảnh báo AI");
+
+            AddGroup("BÁO CÁO");
+            if (btnBaoCaoThongKe != null) AddBtn(btnBaoCaoThongKe, "Báo cáo tổng hợp");
+            else if (btnBaoCao != null) AddBtn(btnBaoCao, "Báo cáo tổng hợp");
+            AddBtn(btnSubBaoCaoCN, "Báo cáo công nợ");
+        }
+}
 }

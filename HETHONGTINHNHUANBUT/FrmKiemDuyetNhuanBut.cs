@@ -15,9 +15,9 @@ namespace HETHONGTINHNHUANBUT
         private string _selectedMaso = "";
         private int _trangThaiHienTai = 0;
 
-        private Label lblSigNguoiNhap, lblSigNguoiCham, lblSigNhapLieu, lblSigKiemTra, lblSigTongThuKy;
-        private Guna.UI2.WinForms.Guna2Panel pnlSignature;
-        private Guna.UI2.WinForms.Guna2Panel pnlSignatureContainer;
+        
+        
+        
         private Guna.UI2.WinForms.Guna2Panel pnlNguoiKy;
         private Guna.UI2.WinForms.Guna2TextBox txtNguoiKy;
         private Label lblNguoiKy;
@@ -245,7 +245,7 @@ namespace HETHONGTINHNHUANBUT
                     else if (role == "kiểm tra viên") trangThaiLabel = "đã nhập liệu";
                     else if (role == "tổng thư ký") trangThaiLabel = "đã kiểm tra";
                     if (IsDisposed) return;
-                    lblCount.Text = $"📋 Tổng số: {dt.Rows.Count} bài {trangThaiLabel}";
+                    lblCount.Text = string.Format("📋 Tổng số: {0} bài {1}", dt.Rows.Count, trangThaiLabel);
 
                     // Calculate stats
                     lblStat1Value.Text = dt.Rows.Count.ToString();
@@ -266,7 +266,7 @@ namespace HETHONGTINHNHUANBUT
             catch (Exception ex)
             {
                 if (!IsDisposed)
-                    MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+                    MessageBox.Show("Lỗi: " + ex.Message);
             }
         }
 
@@ -355,7 +355,7 @@ namespace HETHONGTINHNHUANBUT
                         action = "duyệt nhanh";
                         trangThaiMoi = currentStatus + 1;
                         string[] statusNames = { "", "chấm tiền", "nhập liệu", "kiểm tra", "ký duyệt" };
-                        action = $"duyệt ({statusNames[trangThaiMoi]})";
+                        action = string.Format("duyệt ({0})", statusNames[trangThaiMoi]);
                         sql = @"UPDATE Nhuanbut SET TrangThaiDuyet = @tt WHERE Maso = @ma";
                     }
                     break;
@@ -367,7 +367,7 @@ namespace HETHONGTINHNHUANBUT
 
             if (hasError) return;
 
-            string msg = $"Xác nhận {action} cho bài viết này?";
+            string msg = string.Format("Xác nhận {0} cho bài viết này?", action);
 
             // AI phát hiện bất thường trước khi duyệt
             if (dgvNhuanBut.CurrentRow != null)
@@ -438,7 +438,7 @@ namespace HETHONGTINHNHUANBUT
                         }
                     }
 
-                    MessageBox.Show($"Đã {action} thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(string.Format("Đã {0} thành công!", action), "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _selectedMaso = "";
                     txtTienNhuanBut.Text = "0";
                     await LoadDataAsync(txtTimKiem.Text.Trim());
@@ -493,7 +493,7 @@ namespace HETHONGTINHNHUANBUT
                     trangThaiVe = 0;
                     action = "báo sai sót về Thư ký";
                     sql = "UPDATE Nhuanbut SET TrangThaiDuyet = @tt, LyDoBaoSai = @lydo, NgayBaoSai = GETDATE() WHERE Maso = @ma";
-                    if (MessageBox.Show($"Xác nhận báo sai sót: \"{lyDo}\"?\nBài sẽ được gửi trả về Thư ký sửa.", "Xác nhận",
+                    if (MessageBox.Show(string.Format("Xác nhận báo sai sót: \"{0}\"?\nBài sẽ được gửi trả về Thư ký sửa.", lyDo), "Xác nhận",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         using (SqlConnection conn = new SqlConnection(sqlConnectionString))
@@ -554,7 +554,7 @@ namespace HETHONGTINHNHUANBUT
                             await cmd.ExecuteNonQueryAsync();
                         }
                     }
-                    MessageBox.Show($"Đã {action}!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(string.Format("Đã {0}!", action), "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _selectedMaso = "";
                     await LoadDataAsync(txtTimKiem.Text.Trim());
                 }
@@ -616,7 +616,7 @@ namespace HETHONGTINHNHUANBUT
 
                     if (diemAI > 0 || !string.IsNullOrEmpty(danhGiaAI))
                     {
-                        lblDiemAI.Text = diemAI > 0 ? $"🤖 Điểm AI: {diemAI}/100" : "";
+                        lblDiemAI.Text = diemAI > 0 ? string.Format("🤖 Điểm AI: {0}/100", diemAI) : "";
                         lblDiemAI.Visible = true;
                         txtDanhGiaAI.Text = danhGiaAI ?? "";
                     }
@@ -636,27 +636,32 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                string GetVal(string col) => row.Cells[col]?.Value?.ToString() ?? "—";
-                string GetDate(string col)
-                {
-                    if (row.Cells[col]?.Value == null || row.Cells[col].Value == DBNull.Value) return "";
-                    if (row.Cells[col].Value is DateTime dt)
-                        return dt.ToString(" dd/MM/yyyy HH:mm");
+                Func<string, string> GetVal = delegate (string col) {
+                    if (row.Cells[col] != null && row.Cells[col].Value != null && row.Cells[col].Value != DBNull.Value)
+                        return row.Cells[col].Value.ToString();
+                    return "—";
+                };
+
+                Func<string, string> GetDate = delegate (string col) {
+                    if (row.Cells[col] == null || row.Cells[col].Value == null || row.Cells[col].Value == DBNull.Value) return "";
+                    if (row.Cells[col].Value is DateTime)
+                        return ((DateTime)row.Cells[col].Value).ToString(" dd/MM/yyyy HH:mm");
                     return "";
-                }
+                };
 
                 string pvName = GetVal("NguoiNhap");
-                if (string.IsNullOrWhiteSpace(pvName)) pvName = GetVal("Butdanh");
-                if (!string.IsNullOrWhiteSpace(pvName) && !pvName.StartsWith("PV", StringComparison.OrdinalIgnoreCase))
+                if (pvName == "—" || string.IsNullOrWhiteSpace(pvName)) pvName = GetVal("Butdanh");
+                if (pvName == "—" || string.IsNullOrWhiteSpace(pvName)) pvName = "";
+                else if (!pvName.StartsWith("PV", StringComparison.OrdinalIgnoreCase))
                     pvName = "PV " + pvName;
 
-                if (lblWF1Value != null) lblWF1Value.Text = pvName + GetDate("NgayNhap");
+                if (lblWF1Value != null) lblWF1Value.Text = pvName + GetDate("Ngaynhap");
                 if (lblWF2Value != null) lblWF2Value.Text = GetVal("NguoiChamTien") + GetDate("NgayChamTien");
                 if (lblWF3Value != null) lblWF3Value.Text = GetVal("NguoiKeToan") + GetDate("NgayNhapLieu");
                 if (lblWF4Value != null) lblWF4Value.Text = GetVal("NguoiKiemTra") + GetDate("NgayKiemTra");
                 if (lblWF5Value != null) lblWF5Value.Text = GetVal("TongThuKy") + GetDate("NgayKy");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // handle error
             }

@@ -49,7 +49,12 @@ namespace HETHONGTINHNHUANBUT
         {
             this.SuspendLayout();
 
-            if (!_dbFixed) { await Task.Run(() => TaoBangUsersNeuChuaCo()); _dbFixed = true; }
+            if (!_dbFixed) 
+            { 
+                await Task.Run(() => TaoBangUsersNeuChuaCo()); 
+                await DatabaseMigrator.AutoFixDatabaseColumnsAsync();
+                _dbFixed = true; 
+            }
 
             txtUsername.Focus();
             this.ResumeLayout();
