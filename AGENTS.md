@@ -6,7 +6,7 @@
 - **Giao diện**: Windows Forms + Guna.UI2 v2.0.4.7 + Guna.Charts.WinForms v1.1.0
 - **CSDL**: SQL Server (System.Data.SqlClient) — `TNConnection`
 - **Excel**: ClosedXML v0.95.4
-- **AI**: Ollama + Qwen2.5:7b (local, http://localhost:11434/api/generate)
+- **AI**: Ollama + Qwen2.5:7b (local, <http://localhost:11434/api/generate>)
 - **NuGet**: 42 packages
 
 ## Cấu trúc project
@@ -296,3 +296,7 @@ private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
 
 - `Workflow/WORKFLOW_GIAO_DIEN_WINFORM.md` — Design guide, style, pattern chi tiết
 - `Workflow/quy-trinh-nghiep-vu-he-thong-nhuan-but.md` — Quy trình nghiệp vụ
+
+### Quy tắc giao diện
+
+- **Phân tích logic và design**: LUÔN LUÔN ghi nhớ file .cs chỉ được dùng để viết logic (xử lý sự kiện, nghiệp vụ, API, v.v.). KHÔNG ĐƯỢC viết code khởi tạo giao diện (UI design, add controls, set properties) trong file .cs. Mọi code khởi tạo giao diện, định dạng layout bắt buộc phải được viết trong file .Designer.cs (phương thức InitializeComponent).
