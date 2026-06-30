@@ -158,7 +158,6 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    
     <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
@@ -469,6 +468,3 @@
     <PreBuildEvent>taskkill /F /IM HETHONGTINHNHUANBUT.exe 2&gt;nul 1&gt;nul || exit 0</PreBuildEvent>
   </PropertyGroup>
 </Project>
-
-
-

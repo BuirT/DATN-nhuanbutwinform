@@ -38,7 +38,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnLichSuThanhToan.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnLichSuThanhToan.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
             this.btnLichSuThanhToan.Height = 44;
-            this.btnLichSuThanhToan.Text = "LỊCH SỬ GIAO DỊCH";
+            this.btnLichSuThanhToan.Text = "Lịch sử giao dịch";
             this.btnLichSuThanhToan.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnLichSuThanhToan.TextOffset = new System.Drawing.Point(20, 0);
             this.btnLichSuThanhToan.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -187,7 +187,7 @@ namespace HETHONGTINHNHUANBUT
                     btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan,
                     btnKiemDuyet, btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnDotThanhToan, btnTaiKhoan,
-                    btnTacGia, btnQuanLyBao, btnBaoCao);
+                    btnTacGia, btnQuanLyBao, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD);
             }
             else if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
@@ -503,10 +503,10 @@ namespace HETHONGTINHNHUANBUT
             AddBtn(btnDashboard, "Dashboard");
 
             AddGroup("DANH MỤC");
-            AddBtn(btnTacGia, "QUẢN LÝ TÁC GIẢ  ▲");
+            AddBtn(btnTacGia, "QUẢN LÝ TÁC GIẢ  ▼");
             AddBtn(btnSubTacGiaHoSo, "Hồ sơ tác giả");
             AddBtn(btnSubButDanh, "Bút danh");
-            AddBtn(btnQuanLyBao, "QUẢN LÝ BÁO  ▲");
+            AddBtn(btnQuanLyBao, "QUẢN LÝ BÁO  ▼");
             AddBtn(btnSubLoaiBao, "Loại báo");
             AddBtn(btnSubSoBao, "Số báo");
             
@@ -526,9 +526,10 @@ namespace HETHONGTINHNHUANBUT
             AddBtn(btnCanhBaoAI, "Cảnh báo AI");
 
             AddGroup("BÁO CÁO");
-            if (btnBaoCaoThongKe != null) AddBtn(btnBaoCaoThongKe, "Báo cáo tổng hợp");
-            else if (btnBaoCao != null) AddBtn(btnBaoCao, "Báo cáo tổng hợp");
+            AddBtn(btnBaoCaoThongKe, "Báo cáo thống kê");
+            AddBtn(btnSubBaoCaoTH, "Báo cáo tổng hợp");
             AddBtn(btnSubBaoCaoCN, "Báo cáo công nợ");
+            AddBtn(btnSubBaoCaoLD, "Báo cáo lãnh đạo");
         }
 }
 }
