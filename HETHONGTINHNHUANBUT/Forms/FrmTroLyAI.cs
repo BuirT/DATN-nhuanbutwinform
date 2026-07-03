@@ -34,14 +34,14 @@ namespace HETHONGTINHNHUANBUT
             pnlHeader.Controls.Add(pbIcon);
             lblTitle.Location = new Point(65, 20); // Shift text right
             
-            ThemBongBongChat("🤖 Chào đồng chí! Tôi là Trợ lý AI hệ thống NewsPay. " +
+            ThemBongBongChat("🤖 Chào bạn! Tôi là Trợ lý AI hệ thống NewsPay. " +
                 "Tôi có thể:\n" +
                 "• 📊 Hỏi thống kê tổng quan (tổng bài, tổng tiền, trạng thái duyệt...)\n" +
                 "• 👤 Tra cứu tác giả (vd: 'thông tin tác giả Nguyễn Văn A')\n" +
                 "• 📅 Báo cáo theo tháng (vd: 'thống kê tháng 6/2026')\n" +
                 "• 💰 Phiếu chi, thuế (vd: 'phiếu chi tháng này')\n" +
                 "• 🔍 Phát hiện bất thường (vd: 'kiểm tra bài bất thường')\n" +
-                "Đồng chí muốn hỏi gì?", false);
+                "Bạn muốn hỏi gì?", false);
         }
 
         private void FlpChat_Resize(object sender, EventArgs e)
@@ -218,14 +218,14 @@ namespace HETHONGTINHNHUANBUT
 
                 string prompt = $@"Bạn là chuyên gia tư vấn về nhuận bút báo chí và Trợ lý AI của hệ thống NewsPay.
 
-Đồng chí đang hỏi về: {chuDe}
+Bạn đang hỏi về: {chuDe}
 
 DỮ LIỆU THỰC TẾ TỪ HỆ THỐNG (nếu có):
 {dataContext}
 
 Hướng dẫn trả lời:
 - Ưu tiên dùng dữ liệu từ hệ thống ở trên để trả lời nếu có thông tin liên quan.
-- Nếu câu hỏi vượt quá dữ liệu hệ thống, hãy dùng KIẾN THỨC CHUYÊN MÔN của bạn về nghiệp vụ nhuận bút, báo chí, thuế TNCN, quy trình tòa soạn... để tư vấn cho đồng chí.
+- Nếu câu hỏi vượt quá dữ liệu hệ thống, hãy dùng KIẾN THỨC CHUYÊN MÔN của bạn về nghiệp vụ nhuận bút, báo chí, thuế TNCN, quy trình tòa soạn... để tư vấn cho bạn.
 - Phân biệt rõ: ""Theo dữ liệu hệ thống..."" (khi có số liệu) và ""Theo quy định chung..."" (khi dùng kiến thức).
 - Trả lời bằng tiếng Việt, chuyên nghiệp, dễ hiểu.
 
