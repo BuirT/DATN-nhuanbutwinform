@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HETHONGTINHNHUANBUT
@@ -54,7 +54,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
             this.lblNgay = new System.Windows.Forms.Label();
             this.tmrClock = new System.Windows.Forms.Timer(this.components);
-            this.lblUser = new System.Windows.Forms.Label();
             this.pnlDesktopContainer = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlDesktopInner = new Guna.UI2.WinForms.Guna2Panel();
             this.lblGroupDanhMuc = new System.Windows.Forms.Label();
@@ -775,7 +774,6 @@ namespace HETHONGTINHNHUANBUT
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
-            this.pnlHeader.Controls.Add(this.lblUser);
             this.pnlHeader.Controls.Add(this.lblNgay);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Name = "pnlHeader";
@@ -797,17 +795,6 @@ namespace HETHONGTINHNHUANBUT
             // 
             this.tmrClock.Interval = 1000;
             // 
-            // lblUser
-            // 
-            this.lblUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblUser.AutoSize = true;
-            this.lblUser.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
-            this.lblUser.Location = new System.Drawing.Point(640, 20);
-            this.lblUser.Name = "lblUser";
-            this.lblUser.Size = new System.Drawing.Size(80, 20);
-            this.lblUser.TabIndex = 1;
-            this.lblUser.Text = "Xin chào";
             // 
             // pnlDesktopContainer
             // 
@@ -944,7 +931,6 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Panel pnlHeader;
         private System.Windows.Forms.Label lblNgay;
         private System.Windows.Forms.Timer tmrClock;
-        private System.Windows.Forms.Label lblUser;
         private Guna.UI2.WinForms.Guna2Panel pnlDesktopContainer;
         private System.Windows.Forms.Label lblGroupDanhMuc;
         private System.Windows.Forms.Label lblGroupNghiepVu;

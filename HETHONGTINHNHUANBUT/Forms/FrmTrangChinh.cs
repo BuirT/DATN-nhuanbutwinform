@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -38,6 +38,10 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             AdjustMenuForScreen();
             ApplyPermissions();
 
+            tmrClock.Enabled = true;
+            tmrClock.Tick += TmrClock_Tick;
+            TmrClock_Tick(null, null);
+
             string role = currentPrivilege?.Trim().ToLower() ?? "";
             if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
             {
@@ -54,6 +58,11 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             pnlMenuScroll.ResumeLayout();
             pnlMenu.ResumeLayout();
             this.ResumeLayout();
+        }
+
+        private void TmrClock_Tick(object sender, EventArgs e)
+        {
+            lblNgay.Text = "Hôm nay: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
 
         public void BtnSidebar_MouseEnter(object sender, EventArgs e)

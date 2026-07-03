@@ -17,7 +17,6 @@ namespace HETHONGTINHNHUANBUT
             System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         private Label[] lblKPIValues;
-        private Timer timerClock;
         private Timer timerAnimation;
         private double animTick = 0;
 
@@ -25,24 +24,9 @@ namespace HETHONGTINHNHUANBUT
         {
             InitializeComponent();
             lblKPIValues = new Label[6] { lblBaiVietValue, lblPhongVienValue, lblNhuanButValue, lblBaiChuaDuyetValue, lblPhieuChiValue, lblCanhBaoValue };
-            timerClock = new Timer();
-            timerClock.Interval = 1000;
-            timerClock.Tick += new EventHandler(timerClock_Tick);
-
             timerAnimation = new Timer();
             timerAnimation.Interval = 50;
             timerAnimation.Tick += TimerAnimation_Tick;
-        }
-
-        private void timerClock_Tick(object sender, EventArgs e)
-        {
-            if (lblUpdate != null && !lblUpdate.IsDisposed)
-                lblUpdate.Text = DateTime.Now.ToString("dd/MM/yyyy | HH:mm:ss");
-        }
-
-        private void pnlHeader_Resize(object sender, EventArgs e)
-        {
-            this.lblUpdate.Left = this.pnlHeader.Width - this.lblUpdate.Width - 12;
         }
 
         private void dgvHoatDong_SelectionChanged(object sender, EventArgs e)
@@ -117,7 +101,6 @@ namespace HETHONGTINHNHUANBUT
         private void FrmDashboard_Load(object sender, EventArgs e)
         {
             SetupUIStyles();
-            timerClock.Start();
             timerAnimation.Start();
             _ = TaiDuLieuAsync();
         }
