@@ -26,7 +26,6 @@ namespace HETHONGTINHNHUANBUT
             this.Load += FrmBaoCaoThongKe_Load;
             this.btnLoc.Click += btnLoc_Click;
             this.btnXuatExcel.Click += btnXuatExcel_Click;
-            this.btnIn.Click += btnIn_Click;
         }
 
         private async void FrmBaoCaoThongKe_Load(object sender, EventArgs e)
@@ -164,34 +163,71 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                SaveFileDialog sfd = new SaveFileDialog
+                using (XLWorkbook wb = new XLWorkbook())
                 {
-                    Filter = "Excel files (*.xlsx)|*.xlsx",
-                    FileName = string.Format("BaoCao_NhuanBut_{0:yyyyMMdd}.xlsx", DateTime.Now)
-                };
+                    DataTable dtExport = dtBaoCao.Copy();
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    using (XLWorkbook wb = new XLWorkbook())
+                    foreach (DataColumn col in dtExport.Columns)
                     {
-                        DataTable dtExport = dtBaoCao.Copy();
-
-                        foreach (DataColumn col in dtExport.Columns)
+                        if (col.ColumnName == "Maso")
                         {
-                            if (col.ColumnName == "Maso")
-                            {
-                                dtExport.Columns.Remove(col.ColumnName);
-                                break;
-                            }
+                            dtExport.Columns.Remove(col.ColumnName);
+                            break;
                         }
-
-                        var ws = wb.Worksheets.Add(dtExport, "Báo cáo NB");
-                        ws.Columns().AdjustToContents();
-                        wb.SaveAs(sfd.FileName);
                     }
 
-                    MessageBox.Show("Xuất Excel thành công!", "Thành công",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (dtExport.Columns.Contains("Tenbai")) dtExport.Columns["Tenbai"].ColumnName = "Tên bài";
+                    if (dtExport.Columns.Contains("Trang")) dtExport.Columns["Trang"].ColumnName = "Trang";
+                    if (dtExport.Columns.Contains("Muc")) dtExport.Columns["Muc"].ColumnName = "Chuyên mục";
+                    if (dtExport.Columns.Contains("Butdanh")) dtExport.Columns["Butdanh"].ColumnName = "Bút danh";
+                    if (dtExport.Columns.Contains("TienNhuanbut")) dtExport.Columns["TienNhuanbut"].ColumnName = "Tiền nhuận bút";
+                    if (dtExport.Columns.Contains("NgayChuyen")) dtExport.Columns["NgayChuyen"].ColumnName = "Ngày chuyển";
+                    if (dtExport.Columns.Contains("TrangThai")) dtExport.Columns["TrangThai"].ColumnName = "Trạng thái";
+
+                    var ws = wb.Worksheets.Add("Báo cáo NB");
+                    string title = "BÁO CÁO THỐNG KÊ NHUẬN BÚT - " + DateTime.Now.ToString("MM/yyyy");
+                    ws.Cell(1, 1).Value = title;
+                    var titleRange = ws.Range(1, 1, 1, dtExport.Columns.Count);
+                    titleRange.Merge().Style.Font.SetBold().Font.FontSize = 16;
+                    titleRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    titleRange.Style.Font.FontColor = XLColor.DarkBlue;
+
+                    int startRow = 3;
+                    for (int i = 0; i < dtExport.Columns.Count; i++)
+                    {
+                        var cell = ws.Cell(startRow, i + 1);
+                        cell.Value = dtExport.Columns[i].ColumnName;
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                        cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    }
+
+                    int rowIndex = startRow + 1;
+                    foreach (DataRow row in dtExport.Rows)
+                    {
+                        for (int j = 0; j < dtExport.Columns.Count; j++)
+                        {
+                            var cell = ws.Cell(rowIndex, j + 1);
+                            var val = row[j];
+                            if (val != null && decimal.TryParse(val.ToString(), out decimal numVal))
+                            {
+                                cell.Value = numVal;
+                                cell.Style.NumberFormat.Format = "#,##0";
+                            }
+                            else
+                            {
+                                cell.Value = val?.ToString();
+                            }
+                            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        }
+                        rowIndex++;
+                    }
+                    ws.Columns().AdjustToContents();
+
+                    string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), string.Format("BaoCao_NhuanBut_{0:yyyyMMddHHmmss}.xlsx", DateTime.Now));
+                    wb.SaveAs(tempPath);
+                    System.Diagnostics.Process.Start(tempPath);
                 }
             }
             catch (Exception ex)

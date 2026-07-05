@@ -239,58 +239,97 @@ namespace HETHONGTINHNHUANBUT
                 return;
             }
 
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Excel files|*.xlsx";
-            sfd.FileName = $"BaoCaoLanhDao_{dtpThang.Value:MMyyyy}.xlsx";
-            if (sfd.ShowDialog() != DialogResult.OK) return;
-
             try
             {
                 using (var workbook = new XLWorkbook())
                 {
                     var ws1 = workbook.Worksheets.Add("Tổng hợp tác giả");
-                    var sumTable = new DataTable();
-                    sumTable.Columns.Add("Tác giả");
-                    sumTable.Columns.Add("Số bài");
-                    sumTable.Columns.Add("Tổng NB");
-                    sumTable.Columns.Add("Đã chi");
-                    sumTable.Columns.Add("Chưa chi");
+                    string title1 = "TỔNG HỢP TÁC GIẢ - THÁNG " + dtpThang.Value.ToString("MM/yyyy");
+                    ws1.Cell(1, 1).Value = title1;
+                    var titleRange1 = ws1.Range(1, 1, 1, dgvSummary.Columns.Count);
+                    titleRange1.Merge().Style.Font.SetBold().Font.FontSize = 16;
+                    titleRange1.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    titleRange1.Style.Font.FontColor = XLColor.DarkBlue;
 
+                    int startRow = 3;
+                    for (int i = 0; i < dgvSummary.Columns.Count; i++)
+                    {
+                        var cell = ws1.Cell(startRow, i + 1);
+                        cell.Value = dgvSummary.Columns[i].HeaderText;
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                        cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    }
+
+                    int rowIndex1 = startRow + 1;
                     foreach (DataGridViewRow row in dgvSummary.Rows)
                     {
                         if (row.IsNewRow) continue;
-                        sumTable.Rows.Add(
-                            row.Cells["TacGia"]?.Value?.ToString(),
-                            row.Cells["SoBai"]?.Value?.ToString(),
-                            row.Cells["TongNB"]?.Value?.ToString(),
-                            row.Cells["DaChi"]?.Value?.ToString(),
-                            row.Cells["ChuaChi"]?.Value?.ToString()
-                        );
+                        for (int j = 0; j < dgvSummary.Columns.Count; j++)
+                        {
+                            var cell = ws1.Cell(rowIndex1, j + 1);
+                            var val = row.Cells[j].Value;
+                            if (val != null && decimal.TryParse(val.ToString(), out decimal numVal))
+                            {
+                                cell.Value = numVal;
+                                cell.Style.NumberFormat.Format = "#,##0";
+                            }
+                            else
+                            {
+                                cell.Value = val?.ToString();
+                            }
+                            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        }
+                        rowIndex1++;
                     }
-                    ws1.Cell(1, 1).InsertTable(sumTable);
                     ws1.Columns().AdjustToContents();
 
                     var ws2 = workbook.Worksheets.Add("Chi tiết nhuận bút");
-                    var dt2 = new DataTable();
-                    foreach (DataGridViewColumn col in dgvDetail.Columns)
-                        dt2.Columns.Add(col.HeaderText);
+                    string title2 = "CHI TIẾT NHUẬN BÚT - THÁNG " + dtpThang.Value.ToString("MM/yyyy");
+                    ws2.Cell(1, 1).Value = title2;
+                    var titleRange2 = ws2.Range(1, 1, 1, dgvDetail.Columns.Count);
+                    titleRange2.Merge().Style.Font.SetBold().Font.FontSize = 16;
+                    titleRange2.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    titleRange2.Style.Font.FontColor = XLColor.DarkBlue;
 
+                    for (int i = 0; i < dgvDetail.Columns.Count; i++)
+                    {
+                        var cell = ws2.Cell(startRow, i + 1);
+                        cell.Value = dgvDetail.Columns[i].HeaderText;
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                        cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    }
+
+                    int rowIndex2 = startRow + 1;
                     foreach (DataGridViewRow row in dgvDetail.Rows)
                     {
                         if (row.IsNewRow) continue;
-                        var dr = dt2.NewRow();
-                        foreach (DataGridViewCell cell in row.Cells)
-                            dr[cell.ColumnIndex] = cell.Value?.ToString() ?? "";
-                        dt2.Rows.Add(dr);
+                        for (int j = 0; j < dgvDetail.Columns.Count; j++)
+                        {
+                            var cell = ws2.Cell(rowIndex2, j + 1);
+                            var val = row.Cells[j].Value;
+                            if (val != null && decimal.TryParse(val.ToString(), out decimal numVal))
+                            {
+                                cell.Value = numVal;
+                                cell.Style.NumberFormat.Format = "#,##0";
+                            }
+                            else
+                            {
+                                cell.Value = val?.ToString();
+                            }
+                            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        }
+                        rowIndex2++;
                     }
-                    ws2.Cell(1, 1).InsertTable(dt2);
                     ws2.Columns().AdjustToContents();
 
-                    workbook.SaveAs(sfd.FileName);
+                    string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"BaoCaoLanhDao_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+                    workbook.SaveAs(tempPath);
+                    System.Diagnostics.Process.Start(tempPath);
                 }
-
-                MessageBox.Show("Xuất Excel thành công!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
