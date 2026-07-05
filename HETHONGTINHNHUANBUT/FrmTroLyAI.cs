@@ -34,14 +34,14 @@ namespace HETHONGTINHNHUANBUT
             pnlHeader.Controls.Add(pbIcon);
             lblTitle.Location = new Point(65, 20); // Shift text right
             
-            ThemBongBongChat("🤖 Chào đồng chí! Tôi là Trợ lý AI hệ thống NewsPay. " +
+            ThemBongBongChat("🤖 Chào bạn! Tôi là Trợ lý AI hệ thống NewsPay. " +
                 "Tôi có thể:\n" +
                 "• 📊 Hỏi thống kê tổng quan (tổng bài, tổng tiền, trạng thái duyệt...)\n" +
                 "• 👤 Tra cứu tác giả (vd: 'thông tin tác giả Nguyễn Văn A')\n" +
                 "• 📅 Báo cáo theo tháng (vd: 'thống kê tháng 6/2026')\n" +
                 "• 💰 Phiếu chi, thuế (vd: 'phiếu chi tháng này')\n" +
                 "• 🔍 Phát hiện bất thường (vd: 'kiểm tra bài bất thường')\n" +
-                "Đồng chí muốn hỏi gì?", false);
+                "Bạn muốn hỏi gì?", false);
         }
 
         private void FlpChat_Resize(object sender, EventArgs e)
