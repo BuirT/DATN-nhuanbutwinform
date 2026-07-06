@@ -85,7 +85,45 @@ Phần mềm được phát triển nhằm giải quyết bài toán quản lý 
 ```
 DATN-nhuanbutwinform/
 ├── HETHONGTINHNHUANBUT/
-│   ├── DAL/                        # Data Access Layer
+│   ├── Forms/                      # Các giao diện (WinForms)
+│   │   ├── FormLogin.cs            # Đăng nhập
+│   │   ├── FrmBaoCaoAI.cs          # Báo cáo AI
+│   │   ├── FrmBaoCaoCongNo.cs      # Báo cáo công nợ
+│   │   ├── FrmBaoCaoLanhDao.cs     # Báo cáo lãnh đạo
+│   │   ├── FrmBaoCaoThongKe.cs     # Báo cáo thống kê
+│   │   ├── FrmBaoCaoTongHop.cs     # Báo cáo tổng hợp
+│   │   ├── FrmButdanh.cs           # Quản lý bút danh
+│   │   ├── FrmCanhBaoAI.cs         # Cảnh báo AI
+│   │   ├── FrmDashboard.cs         # Dashboard
+│   │   ├── FrmDuyetPhieuChi.cs     # Duyệt phiếu chi
+│   │   ├── FrmKiemDuyetNhuanBut.cs # Kiểm duyệt nhuận bút
+│   │   ├── FrmLichSuThanhToan.cs   # Lịch sử thanh toán
+│   │   ├── FrmLoaiBao.cs           # Quản lý loại báo
+│   │   ├── FrmNhapBaiPhongVien.cs  # Nhập bài phóng viên
+│   │   ├── FrmNhapNhuanBut.cs      # Nhập nhuận bút
+│   │   ├── FrmPhieuChi.cs          # Quản lý phiếu chi
+│   │   ├── FrmSoBao.cs             # Quản lý số báo
+│   │   ├── FrmTacGia.cs            # Quản lý tác giả
+│   │   ├── FrmTaiKhoan.cs          # Quản lý tài khoản
+│   │   ├── FrmThanhToan.cs         # Thanh toán
+│   │   ├── FrmThongkePhongvien.cs  # Thống kê phóng viên
+│   │   ├── FrmTongHopThang.cs      # Tổng hợp tháng
+│   │   ├── FrmTraCuuNhuanBut.cs    # Tra cứu nhuận bút
+│   │   ├── FrmTrangChinh.cs        # Trang chính
+│   │   ├── FrmTroLyAI.cs           # Trợ lý AI
+│   │   └── FrmXemBaiViet.cs        # Xem bài viết
+│   ├── Services/                   # Business logic & AI services
+│   │   ├── AIAuditService.cs       # Service kiểm toán AI
+│   │   ├── AIHelper.cs             # Helper tích hợp Ollama
+│   │   ├── AIReportService.cs      # Service báo cáo AI
+│   │   ├── AnomalyDetector.cs      # Phát hiện bất thường
+│   │   ├── DatabaseMigrator.cs     # Migration cơ sở dữ liệu
+│   │   └── KiemDuyetService.cs     # Service kiểm duyệt
+│   ├── Helpers/                    # Utility/helper classes
+│   │   ├── AIConfig.cs             # Cấu hình AI
+│   │   ├── AiIconResource.cs       # Resource icon AI
+│   │   ├── HashHelper.cs           # Mã hóa mật khẩu
+│   │   └── UIHelper.cs             # Helper giao diện
 │   ├── Models/                     # Business Models
 │   │   ├── Bao.cs                  # Bài báo
 │   │   ├── ButDanh.cs              # Bút danh
@@ -93,35 +131,14 @@ DATN-nhuanbutwinform/
 │   │   ├── PhieuChi.cs             # Phiếu chi
 │   │   ├── TacGia.cs               # Tác giả
 │   │   ├── ThanhToan.cs            # Thanh toán
-│   │   └── User.cs                 # Người dùng
-│   ├── AIHelper.cs                 # Ollama AI Integration
-│   ├── HashHelper.cs               # Mã hóa mật khẩu
-│   ├── UIHelper.cs                 # Helper giao diện
+│   │   ├── User.cs                 # Người dùng
+│   │   └── AICanhBao.cs            # AI Cảnh báo
+│   ├── Properties/                 # Project properties
+│   ├── Workflow/                   # Tài liệu quy trình
+│   ├── resources/                  # Tài nguyên hình ảnh
 │   ├── Program.cs                  # Entry point
-│   ├── FormLogin.cs                # Đăng nhập
-│   ├── FormRegister.cs             # Đăng ký
-│   ├── FrmTrangChinh.cs            # Trang chính
-│   ├── FrmNhapNhuanBut.cs          # Nhập nhuận bút
-│   ├── FrmTraCuuNhuanBut.cs        # Tra cứu nhuận bút
-│   ├── FrmKiemDinhAI.cs            # Kiểm định AI
-│   ├── FrmTroLyAI.cs               # Trợ lý AI Chat
-│   ├── FrmPhieuChi.cs              # Phiếu chi
-│   ├── FrmDuyetPhieuChi.cs         # Duyệt phiếu chi
-│   ├── FrmThanhToan.cs             # Thanh toán
-│   ├── FrmTacGia.cs                # Quản lý tác giả
-│   ├── FrmButdanh.cs               # Quản lý bút danh
-│   ├── FrmLoaiBao.cs               # Quản lý loại báo
-│   ├── FrmSoBao.cs                 # Quản lý số báo
-│   ├── FrmTaiKhoan.cs              # Quản lý tài khoản
-│   ├── FrmTongQuan.cs              # Dashboard
-│   ├── FrmBaoCaoTongHop.cs         # Báo cáo tổng hợp
-│   ├── FrmBaoCaoChiTiet.cs         # Báo cáo chi tiết
-│   ├── FrmBaoCaoCongNo.cs          # Báo cáo công nợ
-│   ├── FrmTongHopThang.cs          # Tổng hợp tháng
-│   ├── App.config                  # Cấu hình
-│   └── resources/                  # Tài nguyên
+│   └── App.config                  # Cấu hình
 ├── packages/                       # NuGet packages
-├── scripts/                        # Scripts hỗ trợ
 ├── .gitignore
 ├── HETHONGTINHNHUANBUT.sln
 └── README.md

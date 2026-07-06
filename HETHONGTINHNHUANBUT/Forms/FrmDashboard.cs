@@ -17,32 +17,58 @@ namespace HETHONGTINHNHUANBUT
             System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
         private Label[] lblKPIValues;
-        private Timer timerClock;
         private Timer timerAnimation;
         private double animTick = 0;
+
+        private GunaSplineDataset dsNBThang;
+        private GunaHorizontalBarDataset dsTopPV;
+        private GunaDoughnutDataset dsBaiTheoCM;
+        private GunaBarDataset dsDiemAI;
 
         public FrmDashboard()
         {
             InitializeComponent();
-            lblKPIValues = new Label[6] { lblBaiVietValue, lblPhongVienValue, lblNhuanButValue, lblBaiChuaDuyetValue, lblPhieuChiValue, lblCanhBaoValue };
-            timerClock = new Timer();
-            timerClock.Interval = 1000;
-            timerClock.Tick += new EventHandler(timerClock_Tick);
+            UIHelper.FormatGiaoDienBang(dgvHoatDong);
 
+            lblKPIValues = new Label[6] { lblBaiVietValue, lblPhongVienValue, lblNhuanButValue, lblBaiChuaDuyetValue, lblPhieuChiValue, lblCanhBaoValue };
+
+            dsNBThang = new GunaSplineDataset { Label = "Nhuận bút (VNĐ)" };
+            dsNBThang.BorderColor = Color.FromArgb(79, 70, 229);
+            dsNBThang.FillColor = Color.FromArgb(50, 79, 70, 229);
+            dsNBThang.BorderWidth = 2;
+            dsNBThang.PointRadius = 3;
+            chartNBThang.Datasets.Add(dsNBThang);
+            chartNBThang.Legend.Display = false;
+
+            dsTopPV = new GunaHorizontalBarDataset { Label = "Tổng NB (VNĐ)" };
+            dsTopPV.FillColors.Add(Color.FromArgb(16, 185, 129));
+            dsTopPV.BorderColors.Add(Color.FromArgb(16, 185, 129));
+            chartTopPV.Datasets.Add(dsTopPV);
+            chartTopPV.Legend.Display = false;
+
+            dsBaiTheoCM = new GunaDoughnutDataset { Label = "Số bài" };
+            Color[] sliceColors = new Color[8] {
+                Color.FromArgb(79, 70, 229), Color.FromArgb(16, 185, 129),
+                Color.FromArgb(245, 158, 11), Color.FromArgb(239, 68, 68),
+                Color.FromArgb(59, 130, 246), Color.FromArgb(168, 85, 247),
+                Color.FromArgb(236, 72, 153), Color.FromArgb(20, 184, 166)
+            };
+            foreach (var c in sliceColors)
+            {
+                dsBaiTheoCM.FillColors.Add(c);
+                dsBaiTheoCM.BorderColors.Add(c);
+            }
+            chartBaiTheoCM.Datasets.Add(dsBaiTheoCM);
+            chartBaiTheoCM.Legend.Position = LegendPosition.Bottom;
+
+            dsDiemAI = new GunaBarDataset { Label = "Điểm TB" };
+            dsDiemAI.FillColors.Add(Color.FromArgb(59, 130, 246));
+            dsDiemAI.BorderColors.Add(Color.FromArgb(59, 130, 246));
+            chartDiemAI.Datasets.Add(dsDiemAI);
+            chartDiemAI.Legend.Display = false;
             timerAnimation = new Timer();
             timerAnimation.Interval = 50;
             timerAnimation.Tick += TimerAnimation_Tick;
-        }
-
-        private void timerClock_Tick(object sender, EventArgs e)
-        {
-            if (lblUpdate != null && !lblUpdate.IsDisposed)
-                lblUpdate.Text = DateTime.Now.ToString("dd/MM/yyyy | HH:mm:ss");
-        }
-
-        private void pnlHeader_Resize(object sender, EventArgs e)
-        {
-            this.lblUpdate.Left = this.pnlHeader.Width - this.lblUpdate.Width - 12;
         }
 
         private void dgvHoatDong_SelectionChanged(object sender, EventArgs e)
@@ -117,7 +143,6 @@ namespace HETHONGTINHNHUANBUT
         private void FrmDashboard_Load(object sender, EventArgs e)
         {
             SetupUIStyles();
-            timerClock.Start();
             timerAnimation.Start();
             _ = TaiDuLieuAsync();
         }
@@ -179,11 +204,7 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                GunaSplineDataset ds = new GunaSplineDataset { Label = "Nhuận bút (VNĐ)" };
-                ds.BorderColor = Color.FromArgb(79, 70, 229);
-                ds.FillColor = Color.FromArgb(50, 79, 70, 229);
-                ds.BorderWidth = 2;
-                ds.PointRadius = 3;
+                dsNBThang.DataPoints.Clear();
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -201,14 +222,11 @@ namespace HETHONGTINHNHUANBUT
                         {
                             int t = Convert.ToInt32(r["Thang"]);
                             int n = Convert.ToInt32(r["Nam"]);
-                            ds.DataPoints.Add($"T{t}/{n}", Convert.ToDouble(r["Tong"]));
+                            dsNBThang.DataPoints.Add($"T{t}/{n}", Convert.ToDouble(r["Tong"]));
                         }
                     }
                 }
 
-                chartNBThang.Datasets.Clear();
-                chartNBThang.Datasets.Add(ds);
-                chartNBThang.Legend.Display = false;
                 chartNBThang.Update();
             }
             catch { }
@@ -218,9 +236,7 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                GunaHorizontalBarDataset ds = new GunaHorizontalBarDataset { Label = "Tổng NB (VNĐ)" };
-                ds.FillColors.Add(Color.FromArgb(16, 185, 129));
-                ds.BorderColors.Add(Color.FromArgb(16, 185, 129));
+                dsTopPV.DataPoints.Clear();
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -234,14 +250,11 @@ namespace HETHONGTINHNHUANBUT
                         while (await r.ReadAsync())
                         {
                             string bd = r["Butdanh"]?.ToString() ?? "";
-                            ds.DataPoints.Add(bd, Convert.ToDouble(r["Tong"]));
+                            dsTopPV.DataPoints.Add(bd, Convert.ToDouble(r["Tong"]));
                         }
                     }
                 }
 
-                chartTopPV.Datasets.Clear();
-                chartTopPV.Datasets.Add(ds);
-                chartTopPV.Legend.Display = false;
                 chartTopPV.Update();
             }
             catch { }
@@ -251,18 +264,7 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                GunaDoughnutDataset ds = new GunaDoughnutDataset();
-                Color[] sliceColors = new Color[8] {
-                    Color.FromArgb(79, 70, 229), Color.FromArgb(16, 185, 129),
-                    Color.FromArgb(245, 158, 11), Color.FromArgb(239, 68, 68),
-                    Color.FromArgb(59, 130, 246), Color.FromArgb(168, 85, 247),
-                    Color.FromArgb(236, 72, 153), Color.FromArgb(20, 184, 166)
-                };
-                foreach (var c in sliceColors)
-                {
-                    ds.FillColors.Add(c);
-                    ds.BorderColors.Add(c);
-                }
+                dsBaiTheoCM.DataPoints.Clear();
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -276,14 +278,11 @@ namespace HETHONGTINHNHUANBUT
                         while (await r.ReadAsync())
                         {
                             string muc = r["Muc"]?.ToString() ?? "";
-                            ds.DataPoints.Add(muc, Convert.ToInt32(r["SoBai"]));
+                            dsBaiTheoCM.DataPoints.Add(muc, Convert.ToInt32(r["SoBai"]));
                         }
                     }
                 }
 
-                chartBaiTheoCM.Datasets.Clear();
-                chartBaiTheoCM.Datasets.Add(ds);
-                chartBaiTheoCM.Legend.Position = LegendPosition.Bottom;
                 chartBaiTheoCM.Update();
             }
             catch { }
@@ -293,9 +292,7 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
-                GunaBarDataset ds = new GunaBarDataset { Label = "Điểm TB" };
-                ds.FillColors.Add(Color.FromArgb(59, 130, 246));
-                ds.BorderColors.Add(Color.FromArgb(59, 130, 246));
+                dsDiemAI.DataPoints.Clear();
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -312,14 +309,11 @@ namespace HETHONGTINHNHUANBUT
                         while (await r.ReadAsync())
                         {
                             string muc = r["Muc"]?.ToString() ?? "";
-                            ds.DataPoints.Add(muc, Convert.ToDouble(r["DiemTB"]));
+                            dsDiemAI.DataPoints.Add(muc, Convert.ToDouble(r["DiemTB"]));
                         }
                     }
                 }
 
-                chartDiemAI.Datasets.Clear();
-                chartDiemAI.Datasets.Add(ds);
-                chartDiemAI.Legend.Display = false;
                 chartDiemAI.Update();
             }
             catch (Exception ex)
@@ -359,13 +353,16 @@ namespace HETHONGTINHNHUANBUT
                     }
                 }
 
-                if (dgvHoatDong.Columns["SoPhieu"] != null)
+                UIHelper.ConfigureColumns(dgvHoatDong,
+                    ("SoPhieu", "SỐ PHIẾU", false, true),
+                    ("Ngay", "NGÀY LẬP", false, true),
+                    ("Nhan", "NGƯỜI NHẬN", false, false),
+                    ("Tien", "TIỀN CHI (VNĐ)", true, false),
+                    ("TT", "TRẠNG THÁI", false, true)
+                );
+
+                if (dgvHoatDong.Columns["Ngay"] != null)
                 {
-                    dgvHoatDong.Columns["SoPhieu"].HeaderText = "SỐ PHIẾU";
-                    dgvHoatDong.Columns["Ngay"].HeaderText = "NGÀY LẬP";
-                    dgvHoatDong.Columns["Nhan"].HeaderText = "NGƯỜI NHẬN";
-                    dgvHoatDong.Columns["Tien"].HeaderText = "TIỀN CHI (VNĐ)";
-                    dgvHoatDong.Columns["TT"].HeaderText = "TRẠNG THÁI";
                     dgvHoatDong.Columns["Ngay"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
                 }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -179,28 +179,65 @@ namespace HETHONGTINHNHUANBUT
         private void btnXuatExcel_Click(object sender, EventArgs e)
         {
             if (dgvCongNo.Rows.Count == 0) { MessageBox.Show("Không có dữ liệu để xuất!"); return; }
-            SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel|*.xlsx", FileName = "BaoCaoCongNo_" + DateTime.Now.ToString("MM_yyyy") + ".xlsx" };
-            if (sfd.ShowDialog() == DialogResult.OK)
+            try
             {
                 using (var workbook = new XLWorkbook())
                 {
                     var ws = workbook.Worksheets.Add("CongNo");
+
+                    // 1. In tiêu đề
+                    string title = "BÁO CÁO CÔNG NỢ ĐẾN THÁNG " + dtpDenThang.Value.ToString("MM/yyyy");
+                    ws.Cell(1, 1).Value = title;
+                    var titleRange = ws.Range(1, 1, 1, dgvCongNo.Columns.Count);
+                    titleRange.Merge().Style.Font.SetBold().Font.FontSize = 16;
+                    titleRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    titleRange.Style.Font.FontColor = XLColor.DarkBlue;
+
+                    int startRow = 3;
+
+                    // 2. In Header
                     for (int i = 0; i < dgvCongNo.Columns.Count; i++)
                     {
-                        ws.Cell(1, i + 1).Value = dgvCongNo.Columns[i].HeaderText;
-                        ws.Cell(1, i + 1).Style.Font.Bold = true;
+                        var cell = ws.Cell(startRow, i + 1);
+                        cell.Value = dgvCongNo.Columns[i].HeaderText;
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                        cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     }
+
+                    // 3. In Data
                     for (int i = 0; i < dgvCongNo.Rows.Count; i++)
                     {
                         for (int j = 0; j < dgvCongNo.Columns.Count; j++)
                         {
-                            ws.Cell(i + 2, j + 1).Value = dgvCongNo.Rows[i].Cells[j].Value?.ToString();
+                            var cell = ws.Cell(i + startRow + 1, j + 1);
+                            var val = dgvCongNo.Rows[i].Cells[j].Value;
+                            
+                            // Định dạng số nếu có thể
+                            if (val != null && decimal.TryParse(val.ToString(), out decimal numVal))
+                            {
+                                cell.Value = numVal;
+                                cell.Style.NumberFormat.Format = "#,##0";
+                            }
+                            else
+                            {
+                                cell.Value = val?.ToString();
+                            }
+                            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         }
                     }
                     ws.Columns().AdjustToContents();
-                    workbook.SaveAs(sfd.FileName);
-                    MessageBox.Show("Xuất Excel thành công!");
+
+                    // 4. Lưu file tạm và mở Excel lên cho người dùng xem trước
+                    string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "BaoCaoCongNo_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
+                    workbook.SaveAs(tempPath);
+                    System.Diagnostics.Process.Start(tempPath);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi xuất Excel: " + ex.Message);
             }
         }
     }

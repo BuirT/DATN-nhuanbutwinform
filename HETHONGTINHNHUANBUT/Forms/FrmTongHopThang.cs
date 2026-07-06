@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -106,41 +106,33 @@ namespace HETHONGTINHNHUANBUT
 
             try
             {
-                SaveFileDialog sfd = new SaveFileDialog()
+                using (var workbook = new XLWorkbook())
                 {
-                    Filter = "Excel Workbook (*.xlsx)|*.xlsx",
-                    FileName = "BaoCaoNhuanBut_Thang_" + dtpThang.Value.ToString("MM_yyyy") + ".xlsx",
-                    Title = "Lưu báo cáo Excel"
-                };
+                    var worksheet = workbook.Worksheets.Add("BaoCaoTongHop");
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    using (var workbook = new XLWorkbook())
+                    for (int i = 0; i < dgvBaoCao.Columns.Count; i++)
                     {
-                        var worksheet = workbook.Worksheets.Add("BaoCaoTongHop");
-
-                        for (int i = 0; i < dgvBaoCao.Columns.Count; i++)
-                        {
-                            worksheet.Cell(1, i + 1).Value = dgvBaoCao.Columns[i].HeaderText;
-                            worksheet.Cell(1, i + 1).Style.Font.Bold = true;
-                            worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.MediumSeaGreen;
-                            worksheet.Cell(1, i + 1).Style.Font.FontColor = XLColor.White;
-                            worksheet.Cell(1, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        }
-
-                        for (int i = 0; i < dgvBaoCao.Rows.Count; i++)
-                        {
-                            for (int j = 0; j < dgvBaoCao.Columns.Count; j++)
-                            {
-                                string cellValue = dgvBaoCao.Rows[i].Cells[j].Value?.ToString();
-                                worksheet.Cell(i + 2, j + 1).Value = cellValue;
-                            }
-                        }
-
-                        worksheet.Columns().AdjustToContents();
-                        workbook.SaveAs(sfd.FileName);
-                        MessageBox.Show("Đã xuất báo cáo Excel thành công!", "Tuyệt vời", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        worksheet.Cell(1, i + 1).Value = dgvBaoCao.Columns[i].HeaderText;
+                        worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                        worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.MediumSeaGreen;
+                        worksheet.Cell(1, i + 1).Style.Font.FontColor = XLColor.White;
+                        worksheet.Cell(1, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     }
+
+                    for (int i = 0; i < dgvBaoCao.Rows.Count; i++)
+                    {
+                        for (int j = 0; j < dgvBaoCao.Columns.Count; j++)
+                        {
+                            string cellValue = dgvBaoCao.Rows[i].Cells[j].Value?.ToString();
+                            worksheet.Cell(i + 2, j + 1).Value = cellValue;
+                        }
+                    }
+
+                    worksheet.Columns().AdjustToContents();
+
+                    string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "BaoCaoNhuanBut_Thang_" + dtpThang.Value.ToString("MM_yyyy_HHmmss") + ".xlsx");
+                    workbook.SaveAs(tempPath);
+                    System.Diagnostics.Process.Start(tempPath);
                 }
             }
             catch (Exception ex)

@@ -274,52 +274,54 @@ namespace HETHONGTINHNHUANBUT
         private void btnXuatExcel_Click(object sender, EventArgs e)
         {
             if (dgvPhieuChi.Rows.Count == 0) return;
-            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", FileName = "LichSuGiaoDich.xlsx" })
+            try
             {
-                if (sfd.ShowDialog() == DialogResult.OK)
+                using (var workbook = new XLWorkbook())
                 {
-                    try
+                    var worksheet = workbook.Worksheets.Add("GiaoDich");
+                    worksheet.Cell(1, 1).Value = "LỊCH SỬ GIAO DỊCH TỪ " + dtpTuNgay.Value.ToString("dd/MM/yyyy") + " ĐẾN " + dtpDenNgay.Value.ToString("dd/MM/yyyy");
+                    worksheet.Cell(1, 1).Style.Font.Bold = true;
+                    worksheet.Cell(1, 1).Style.Font.FontSize = 14;
+                    worksheet.Range(1, 1, 1, 6).Merge();
+
+                    // Headers
+                    worksheet.Cell(3, 1).Value = "Số phiếu";
+                    worksheet.Cell(3, 2).Value = "Tác giả";
+                    worksheet.Cell(3, 3).Value = "Lý do";
+                    worksheet.Cell(3, 4).Value = "Thực lĩnh";
+                    worksheet.Cell(3, 5).Value = "Duyệt";
+                    worksheet.Cell(3, 6).Value = "Chi tiền";
+                    var headerRange = worksheet.Range(3, 1, 3, 6);
+                    headerRange.Style.Font.Bold = true;
+                    headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    int row = 4;
+                    foreach (DataGridViewRow r in dgvPhieuChi.Rows)
                     {
-                        using (var workbook = new XLWorkbook())
-                        {
-                            var worksheet = workbook.Worksheets.Add("GiaoDich");
-                            worksheet.Cell(1, 1).Value = "LỊCH SỬ GIAO DỊCH TỪ " + dtpTuNgay.Value.ToString("dd/MM/yyyy") + " ĐẾN " + dtpDenNgay.Value.ToString("dd/MM/yyyy");
-                            worksheet.Cell(1, 1).Style.Font.Bold = true;
-                            worksheet.Cell(1, 1).Style.Font.FontSize = 14;
-                            worksheet.Range(1, 1, 1, 6).Merge();
-
-                            // Headers
-                            worksheet.Cell(3, 1).Value = "Số phiếu";
-                            worksheet.Cell(3, 2).Value = "Tác giả";
-                            worksheet.Cell(3, 3).Value = "Lý do";
-                            worksheet.Cell(3, 4).Value = "Thực lĩnh";
-                            worksheet.Cell(3, 5).Value = "Duyệt";
-                            worksheet.Cell(3, 6).Value = "Chi tiền";
-                            var headerRange = worksheet.Range(3, 1, 3, 6);
-                            headerRange.Style.Font.Bold = true;
-                            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
-
-                            int row = 4;
-                            foreach (DataGridViewRow r in dgvPhieuChi.Rows)
-                            {
-                                if (r.IsNewRow) continue;
-                                worksheet.Cell(row, 1).Value = r.Cells["Sophieu"].Value?.ToString();
-                                worksheet.Cell(row, 2).Value = r.Cells["Tacgia"].Value?.ToString();
-                                worksheet.Cell(row, 3).Value = r.Cells["Lydo"].Value?.ToString();
-                                worksheet.Cell(row, 4).Value = Convert.ToDecimal(r.Cells["Conlai"].Value);
-                                worksheet.Cell(row, 4).Style.NumberFormat.Format = "#,##0";
-                                worksheet.Cell(row, 5).Value = r.Cells["TrangThai"].Value?.ToString();
-                                worksheet.Cell(row, 6).Value = r.Cells["TinhTrang"].Value?.ToString();
-                                row++;
-                            }
-                            worksheet.Columns().AdjustToContents();
-                            workbook.SaveAs(sfd.FileName);
-                            MessageBox.Show("Xuất Excel thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        if (r.IsNewRow) continue;
+                        worksheet.Cell(row, 1).Value = r.Cells["Sophieu"].Value?.ToString();
+                        worksheet.Cell(row, 2).Value = r.Cells["Tacgia"].Value?.ToString();
+                        worksheet.Cell(row, 3).Value = r.Cells["Lydo"].Value?.ToString();
+                        worksheet.Cell(row, 4).Value = Convert.ToDecimal(r.Cells["Conlai"].Value);
+                        worksheet.Cell(row, 4).Style.NumberFormat.Format = "#,##0";
+                        worksheet.Cell(row, 5).Value = r.Cells["TrangThai"].Value?.ToString();
+                        worksheet.Cell(row, 6).Value = r.Cells["TinhTrang"].Value?.ToString();
+                        
+                        worksheet.Range(row, 1, row, 6).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Range(row, 1, row, 6).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                        
+                        row++;
                     }
-                    catch (Exception ex) { MessageBox.Show("Lỗi xuất Excel: " + ex.Message); }
+                    worksheet.Columns().AdjustToContents();
+
+                    string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "LichSuGiaoDich_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
+                    workbook.SaveAs(tempPath);
+                    System.Diagnostics.Process.Start(tempPath);
                 }
             }
+            catch (Exception ex) { MessageBox.Show("Lỗi xuất Excel: " + ex.Message); }
         }
         
         // Disable original button handlers

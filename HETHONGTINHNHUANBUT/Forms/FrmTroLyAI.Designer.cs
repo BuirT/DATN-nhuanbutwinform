@@ -82,9 +82,10 @@ namespace HETHONGTINHNHUANBUT
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.Location = new System.Drawing.Point(20, 20);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(306, 32);
+            this.lblTitle.Size = new System.Drawing.Size(350, 40);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "🤖 TRỢ LÝ AI - NEWSPAY";
+            this.lblTitle.Text = "TRỢ LÝ AI - NEWSPAY";
+            this.lblTitle.UseCompatibleTextRendering = true;
             // 
             // pnlChat
             // 

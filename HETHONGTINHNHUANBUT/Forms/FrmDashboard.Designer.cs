@@ -11,7 +11,6 @@ namespace HETHONGTINHNHUANBUT
         private Panel pnlMain;
         private Panel pnlHeader;
         private Label lblWelcome;
-        private Label lblUpdate;
         private TableLayoutPanel tlpKPI;
         private TableLayoutPanel tlpCharts;
         private Guna2Panel pnlGridBox;
@@ -139,7 +138,6 @@ namespace HETHONGTINHNHUANBUT
             this.lblTitle6 = new System.Windows.Forms.Label();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblWelcome = new System.Windows.Forms.Label();
-            this.lblUpdate = new System.Windows.Forms.Label();
             this.pnlMain.SuspendLayout();
             this.tlpCharts.SuspendLayout();
             this.chartPanel1.SuspendLayout();
@@ -938,13 +936,11 @@ namespace HETHONGTINHNHUANBUT
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
             this.pnlHeader.Controls.Add(this.lblWelcome);
-            this.pnlHeader.Controls.Add(this.lblUpdate);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1211, 55);
             this.pnlHeader.TabIndex = 0;
-            this.pnlHeader.Resize += new System.EventHandler(this.pnlHeader_Resize);
             // 
             // lblWelcome
             // 
@@ -958,15 +954,6 @@ namespace HETHONGTINHNHUANBUT
             this.lblWelcome.TabIndex = 0;
             this.lblWelcome.Text = "TỔNG QUAN HỆ THỐNG";
             // 
-            // lblUpdate
-            // 
-            this.lblUpdate.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
-            this.lblUpdate.Location = new System.Drawing.Point(950, 15);
-            this.lblUpdate.Name = "lblUpdate";
-            this.lblUpdate.Size = new System.Drawing.Size(250, 30);
-            this.lblUpdate.TabIndex = 1;
-            this.lblUpdate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FrmDashboard
             // 

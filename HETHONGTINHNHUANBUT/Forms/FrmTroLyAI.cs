@@ -23,16 +23,7 @@ namespace HETHONGTINHNHUANBUT
             txtInput.KeyDown += TxtInput_KeyDown;
             flpChat.Resize += FlpChat_Resize;
 
-            // Add colorful AI icon
-            var pbIcon = new Guna.UI2.WinForms.Guna2PictureBox();
-            pbIcon.Size = new Size(35, 35);
-            pbIcon.Location = new Point(20, 18);
-            pbIcon.BackColor = Color.Transparent;
-            pbIcon.SizeMode = PictureBoxSizeMode.Zoom;
-            pbIcon.Image = AiIconResource.GetIcon();
-            
-            pnlHeader.Controls.Add(pbIcon);
-            lblTitle.Location = new Point(65, 20); // Shift text right
+            // Removed programmatic AI icon per user request
             
             ThemBongBongChat("🤖 Chào bạn! Tôi là Trợ lý AI hệ thống NewsPay. " +
                 "Tôi có thể:\n" +
@@ -218,14 +209,14 @@ namespace HETHONGTINHNHUANBUT
 
                 string prompt = $@"Bạn là chuyên gia tư vấn về nhuận bút báo chí và Trợ lý AI của hệ thống NewsPay.
 
-Đồng chí đang hỏi về: {chuDe}
+Bạn đang hỏi về: {chuDe}
 
 DỮ LIỆU THỰC TẾ TỪ HỆ THỐNG (nếu có):
 {dataContext}
 
 Hướng dẫn trả lời:
 - Ưu tiên dùng dữ liệu từ hệ thống ở trên để trả lời nếu có thông tin liên quan.
-- Nếu câu hỏi vượt quá dữ liệu hệ thống, hãy dùng KIẾN THỨC CHUYÊN MÔN của bạn về nghiệp vụ nhuận bút, báo chí, thuế TNCN, quy trình tòa soạn... để tư vấn cho đồng chí.
+- Nếu câu hỏi vượt quá dữ liệu hệ thống, hãy dùng KIẾN THỨC CHUYÊN MÔN của bạn về nghiệp vụ nhuận bút, báo chí, thuế TNCN, quy trình tòa soạn... để tư vấn cho bạn.
 - Phân biệt rõ: ""Theo dữ liệu hệ thống..."" (khi có số liệu) và ""Theo quy định chung..."" (khi dùng kiến thức).
 - Trả lời bằng tiếng Việt, chuyên nghiệp, dễ hiểu.
 
