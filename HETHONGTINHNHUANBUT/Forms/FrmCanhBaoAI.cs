@@ -21,6 +21,7 @@ namespace HETHONGTINHNHUANBUT
             UIHelper.FormatGiaoDienBang(dgvCanhBao);
             this.Load += FrmCanhBaoAI_Load;
             this.dgvCanhBao.DataError += dgvCanhBao_DataError;
+            this.dgvCanhBao.CellClick += dgvCanhBao_CellClick;
             this.btnRefresh.Click += btnRefresh_Click;
             this.btnRunAudit.Click += btnRunAudit_Click;
             this.btnMarkProcessed.Click += btnMarkProcessed_Click;
@@ -115,7 +116,10 @@ namespace HETHONGTINHNHUANBUT
                 dgvCanhBao.Columns["NgayCanhBao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             }
             if (dgvCanhBao.Columns["DaXuLy"] != null)
+            {
                 dgvCanhBao.Columns["DaXuLy"].HeaderText = "TRẠNG THÁI";
+                dgvCanhBao.Columns["DaXuLy"].ReadOnly = false;
+            }
 
             dgvCanhBao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             foreach (DataGridViewColumn c in dgvCanhBao.Columns)
@@ -191,6 +195,21 @@ namespace HETHONGTINHNHUANBUT
 
             int id = ToIntSafe(dgvCanhBao.CurrentRow.Cells["Id"].Value);
             await AIAuditService.DanhDauDaXuLyAsync(id);
+            await TaiDuLieuAsync();
+        }
+
+        private async void dgvCanhBao_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+            if (dgvCanhBao.Columns[e.ColumnIndex].Name != "DaXuLy") return;
+
+            DataGridViewRow row = dgvCanhBao.Rows[e.RowIndex];
+            if (!CoGiaTri(row.Cells["Id"].Value)) return;
+
+            int id = ToIntSafe(row.Cells["Id"].Value);
+            bool daXuLyHienTai = CoGiaTri(row.Cells["DaXuLy"].Value) && Convert.ToBoolean(row.Cells["DaXuLy"].Value);
+
+            await AIAuditService.CapNhatTrangThaiXuLyAsync(id, !daXuLyHienTai);
             await TaiDuLieuAsync();
         }
 
@@ -322,12 +341,6 @@ namespace HETHONGTINHNHUANBUT
 
                 if (colName == "DaXuLy")
                 {
-                    if (e.Value != null && e.Value != DBNull.Value)
-                    {
-                        bool dx = Convert.ToBoolean(e.Value);
-                        e.Value = dx ? "Đã xử lý" : "Chưa xử lý";
-                        e.FormattingApplied = true;
-                    }
                     return;
                 }
 

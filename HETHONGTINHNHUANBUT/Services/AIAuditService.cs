@@ -91,15 +91,21 @@ namespace HETHONGTINHNHUANBUT
 
         public static async Task DanhDauDaXuLyAsync(int id)
         {
+            await CapNhatTrangThaiXuLyAsync(id, true);
+        }
+
+        public static async Task CapNhatTrangThaiXuLyAsync(int id, bool daXuLy)
+        {
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(
-                        "UPDATE AICanhBao SET DaXuLy = 1 WHERE Id = @id", conn))
+                        "UPDATE AICanhBao SET DaXuLy = @daXuLy WHERE Id = @id", conn))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@daXuLy", daXuLy);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -337,16 +343,27 @@ namespace HETHONGTINHNHUANBUT
                                 ? Convert.ToDouble(reader["TbBai3Thang"]) : 0;
 
                             double tyLe = tb > 0 ? soBai / tb : 0;
+                            string noiDung = tb > 0
+                                ? string.Format(
+                                    "PV \"{0}\" có {1} bài tháng này, gấp {2:F1} lần TB 3 tháng ({3:F1} bài/tháng).",
+                                    butDanh, soBai, tyLe, tb)
+                                : string.Format(
+                                    "PV \"{0}\" có {1} bài tháng này. Chưa có dữ liệu trung bình 3 tháng trước để đối chiếu, cần kiểm tra thủ công.",
+                                    butDanh, soBai);
+                            string giaTriPhatHien = tb > 0
+                                ? string.Format(
+                                    "Tháng này: {0} bài | TB 3 tháng: {1:F0} bài | Tỷ lệ: {2:F0}%",
+                                    soBai, tb, tyLe * 100)
+                                : string.Format(
+                                    "Tháng này: {0} bài | TB 3 tháng: chưa có dữ liệu | Tỷ lệ: không xác định",
+                                    soBai);
+
                             alerts.Add(new AuditAlert
                             {
                                 LoaiCanhBao = "Số bài viết tăng đột biến",
                                 MucDo = 2,
-                                NoiDung = string.Format(
-                                    "PV \"{0}\" có {1} bài tháng này, gấp {2:F1} lần TB 3 tháng ({3:F1} bài/tháng).",
-                                    butDanh, soBai, tyLe, tb),
-                                GiaTriPhatHien = string.Format(
-                                    "Tháng này: {0} bài | TB 3 tháng: {1:F0} bài | Tỷ lệ: {2:F0}%",
-                                    soBai, tb, tyLe * 100)
+                                NoiDung = noiDung,
+                                GiaTriPhatHien = giaTriPhatHien
                             });
                         }
                     }

@@ -116,6 +116,26 @@ namespace HETHONGTINHNHUANBUT
                 string dataContext = "";
                 string chuDe = "hệ thống";
 
+                if (LaLoiChao(lower))
+                {
+                    return LayLoiChaoTroLy();
+                }
+
+                if (TryLayPhanHoiXaGiao(lower, out string phanHoiXaGiao))
+                {
+                    return phanHoiXaGiao;
+                }
+
+                if (!LaCauHoiTrongPhamViHeThong(lower))
+                {
+                    return "Tôi chỉ hỗ trợ các câu hỏi liên quan đến hệ thống NewsPay: nhuận bút, bài viết, tác giả, bút danh, phiếu chi, thanh toán, thuế TNCN, báo cáo, cảnh báo AI, kiểm duyệt và dữ liệu nghiệp vụ trong hệ thống. Vui lòng đặt câu hỏi trong phạm vi này.";
+                }
+
+                if (LaCauHoiCachTinhThue(lower))
+                {
+                    return LayHuongDanTinhThueTncn();
+                }
+
                 if (lower.Contains("tác giả") || lower.Contains("phóng viên") || lower.Contains("người viết") || lower.Contains("ai viết"))
                 {
                     dataContext = await LayThongTinTacGiaAsync(cauHoi);
@@ -198,6 +218,128 @@ namespace HETHONGTINHNHUANBUT
             }
         }
 
+        private bool LaLoiChao(string lower)
+        {
+            string text = lower.Trim();
+            string[] loiChao =
+            {
+                "hi", "hello", "hey", "alo", "xin chào", "xin chao",
+                "chào", "chao", "chào bạn", "chao ban",
+                "chào ai", "chao ai", "chào trợ lý", "chao tro ly",
+                "good morning", "good afternoon", "good evening"
+            };
+
+            foreach (string cauChao in loiChao)
+            {
+                if (text == cauChao)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private string LayLoiChaoTroLy()
+        {
+            return "Xin chào! Tôi là Trợ lý AI NewsPay. Tôi có thể hỗ trợ bạn về nhuận bút, bài viết, tác giả, bút danh, phiếu chi, thanh toán, thuế TNCN, báo cáo, cảnh báo AI và quy trình kiểm duyệt trong hệ thống.";
+        }
+
+        private bool TryLayPhanHoiXaGiao(string lower, out string phanHoi)
+        {
+            string text = lower.Trim();
+
+            if (text == "cảm ơn" || text == "cam on" || text == "thanks" || text == "thank you" ||
+                text == "ok cảm ơn" || text == "ok cam on")
+            {
+                phanHoi = "Rất vui được hỗ trợ bạn. Nếu cần, bạn có thể hỏi tôi về nhuận bút, phiếu chi, báo cáo, cảnh báo AI hoặc quy trình kiểm duyệt trong NewsPay.";
+                return true;
+            }
+
+            if (text == "tạm biệt" || text == "tam biet" || text == "bye" || text == "goodbye" ||
+                text == "hẹn gặp lại" || text == "hen gap lai")
+            {
+                phanHoi = "Tạm biệt! Khi cần tra cứu dữ liệu hoặc nghiệp vụ trong NewsPay, bạn cứ mở Trợ lý AI để hỏi tiếp.";
+                return true;
+            }
+
+            if (text == "bạn là ai" || text == "ban la ai" || text == "bạn là gì" || text == "ban la gi" ||
+                text == "trợ lý là ai" || text == "tro ly la ai")
+            {
+                phanHoi = "Tôi là Trợ lý AI NewsPay, hỗ trợ các câu hỏi liên quan đến hệ thống quản lý nhuận bút: bài viết, tác giả, phiếu chi, thanh toán, thuế TNCN, báo cáo, cảnh báo AI và quy trình kiểm duyệt.";
+                return true;
+            }
+
+            if (text == "bạn giúp được gì" || text == "ban giup duoc gi" || text == "bạn làm được gì" ||
+                text == "ban lam duoc gi" || text == "help" || text == "hỗ trợ gì" || text == "ho tro gi")
+            {
+                phanHoi = "Tôi có thể hỗ trợ bạn trong NewsPay: xem tổng quan hệ thống, tra cứu tác giả/bài viết, thống kê nhuận bút, kiểm tra phiếu chi, giải thích thuế TNCN, xem định mức, cảnh báo bất thường và hướng dẫn quy trình kiểm duyệt.";
+                return true;
+            }
+
+            phanHoi = null;
+            return false;
+        }
+
+        private bool LaCauHoiCachTinhThue(string lower)
+        {
+            bool coNoiDungThue = lower.Contains("thuế") || lower.Contains("thue") || lower.Contains("tncn");
+            if (!coNoiDungThue) return false;
+
+            bool hoiCongThuc =
+                lower.Contains("tính") || lower.Contains("tinh") ||
+                lower.Contains("cách") || lower.Contains("cach") ||
+                lower.Contains("công thức") || lower.Contains("cong thuc") ||
+                lower.Contains("khấu trừ") || lower.Contains("khau tru") ||
+                lower.Contains("phần trăm") || lower.Contains("phan tram") ||
+                lower.Contains("%") ||
+                lower.Contains("như thế nào") || lower.Contains("nhu the nao");
+
+            bool hoiSoLieu =
+                lower.Contains("tổng thuế") || lower.Contains("tong thue") ||
+                lower.Contains("tổng số thuế") || lower.Contains("tong so thue") ||
+                lower.Contains("thuế tháng") || lower.Contains("thue thang") ||
+                lower.Contains("thuế năm") || lower.Contains("thue nam") ||
+                lower.Contains("hiện tại") || lower.Contains("hien tai") ||
+                lower.Contains("đã khấu trừ") || lower.Contains("da khau tru");
+
+            return hoiCongThuc && !hoiSoLieu;
+        }
+
+        private string LayHuongDanTinhThueTncn()
+        {
+            return "Trong hệ thống NewsPay, thuế TNCN được tính theo từng lần lập phiếu chi:\n" +
+                   "- Nếu tổng tiền chi trả từ 2.000.000đ trở lên: khấu trừ 10% thuế TNCN.\n" +
+                   "- Nếu tổng tiền chi trả dưới 2.000.000đ: không khấu trừ thuế.\n" +
+                   "- Số tiền thực lĩnh = Tổng nhuận bút - Thuế TNCN.";
+        }
+
+        private bool LaCauHoiTrongPhamViHeThong(string lower)
+        {
+            string[] tuKhoaHeThong =
+            {
+                "newspay", "hệ thống", "phần mềm", "chức năng", "menu", "dữ liệu", "database",
+                "nhuận bút", "nhuan but", "bài", "bài viết", "báo", "số báo", "loại báo",
+                "tác giả", "tac gia", "phóng viên", "phong vien", "cộng tác viên", "ctv",
+                "bút danh", "but danh", "phiếu chi", "phieu chi", "thanh toán", "thanh toan",
+                "thuế", "thue", "tncn", "duyệt", "duyet", "kiểm duyệt", "kiem duyet",
+                "kiểm tra", "kiem tra", "lãnh đạo", "lanh dao", "kế toán", "ke toan",
+                "thư ký", "thu ky", "tổng thư ký", "tong thu ky", "tài khoản", "tai khoan",
+                "đăng nhập", "dang nhap", "báo cáo", "bao cao", "thống kê", "thong ke",
+                "dashboard", "excel", "công nợ", "cong no", "cảnh báo", "canh bao",
+                "bất thường", "bat thuong", "rủi ro", "rui ro", "định mức", "dinh muc",
+                "tiền", "tien", "chi trả", "chi tra", "trạng thái", "trang thai",
+                "quy trình", "quy trinh", "nhập bài", "nhap bai", "tra cứu", "tra cuu",
+                "vai trò", "vai tro", "quyền", "quyen"
+            };
+
+            foreach (string tuKhoa in tuKhoaHeThong)
+            {
+                if (lower.Contains(tuKhoa))
+                    return true;
+            }
+
+            return false;
+        }
+
         // =========================================================================
         // GỌI OLLAMA
         // =========================================================================
@@ -216,9 +358,13 @@ DỮ LIỆU THỰC TẾ TỪ HỆ THỐNG (nếu có):
 
 Hướng dẫn trả lời:
 - Ưu tiên dùng dữ liệu từ hệ thống ở trên để trả lời nếu có thông tin liên quan.
-- Nếu câu hỏi vượt quá dữ liệu hệ thống, hãy dùng KIẾN THỨC CHUYÊN MÔN của bạn về nghiệp vụ nhuận bút, báo chí, thuế TNCN, quy trình tòa soạn... để tư vấn cho bạn.
-- Phân biệt rõ: ""Theo dữ liệu hệ thống..."" (khi có số liệu) và ""Theo quy định chung..."" (khi dùng kiến thức).
+- Nếu câu hỏi không liên quan đến hệ thống NewsPay hoặc nghiệp vụ nhuận bút, không được dùng kiến thức chung để trả lời.
 - Trả lời bằng tiếng Việt, chuyên nghiệp, dễ hiểu.
+
+QUY TẮC PHẠM VI BẮT BUỘC:
+- Chỉ trả lời nội dung liên quan trực tiếp đến hệ thống NewsPay, dữ liệu nghiệp vụ trong hệ thống, nhuận bút, bài viết, tác giả, phiếu chi, thanh toán, thuế TNCN, báo cáo, cảnh báo AI, kiểm duyệt, phân quyền.
+- Không trả lời câu hỏi ngoài phạm vi như thời tiết, giải trí, lập trình chung, học tập, tin tức, đời sống, hay chủ đề không liên quan NewsPay.
+- Nếu câu hỏi ngoài phạm vi, chỉ trả lời đúng một câu: ""Tôi chỉ hỗ trợ các câu hỏi liên quan đến hệ thống NewsPay và nghiệp vụ nhuận bút. Vui lòng đặt câu hỏi trong phạm vi này.""
 
 Câu hỏi: {userMessage}";
 

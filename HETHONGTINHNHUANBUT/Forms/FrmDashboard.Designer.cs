@@ -11,6 +11,7 @@ namespace HETHONGTINHNHUANBUT
         private Panel pnlMain;
         private Panel pnlHeader;
         private Label lblWelcome;
+        private Guna.UI2.WinForms.Guna2Button btnAIPhanTich;
         private TableLayoutPanel tlpKPI;
         private TableLayoutPanel tlpCharts;
         private Guna2Panel pnlGridBox;
@@ -138,6 +139,7 @@ namespace HETHONGTINHNHUANBUT
             this.lblTitle6 = new System.Windows.Forms.Label();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblWelcome = new System.Windows.Forms.Label();
+            this.btnAIPhanTich = new Guna.UI2.WinForms.Guna2Button();
             this.pnlMain.SuspendLayout();
             this.tlpCharts.SuspendLayout();
             this.chartPanel1.SuspendLayout();
@@ -935,12 +937,28 @@ namespace HETHONGTINHNHUANBUT
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
+            this.pnlHeader.Controls.Add(this.btnAIPhanTich);
             this.pnlHeader.Controls.Add(this.lblWelcome);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1211, 55);
             this.pnlHeader.TabIndex = 0;
+            // 
+            // btnAIPhanTich
+            // 
+            this.btnAIPhanTich.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAIPhanTich.BorderRadius = 6;
+            this.btnAIPhanTich.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(99)))), ((int)(((byte)(102)))), ((int)(((byte)(241)))));
+            this.btnAIPhanTich.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAIPhanTich.ForeColor = System.Drawing.Color.White;
+            this.btnAIPhanTich.Location = new System.Drawing.Point(970, 10);
+            this.btnAIPhanTich.Name = "btnAIPhanTich";
+            this.btnAIPhanTich.Size = new System.Drawing.Size(220, 35);
+            this.btnAIPhanTich.TabIndex = 1;
+            this.btnAIPhanTich.Text = "🤖 AI Phân tích Dashboard";
+            this.btnAIPhanTich.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAIPhanTich.Click += new System.EventHandler(this.btnAIPhanTich_Click);
             // 
             // lblWelcome
             // 

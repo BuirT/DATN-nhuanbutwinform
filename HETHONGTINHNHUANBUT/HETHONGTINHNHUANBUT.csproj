@@ -185,6 +185,7 @@
   <ItemGroup>
     <!-- Helpers -->
     <Compile Include="Helpers\AIConfig.cs" />
+    <Compile Include="Helpers\PermissionHelper.cs" />
     <Compile Include="Helpers\AiIconResource.cs" />
     <Compile Include="Helpers\UIHelper.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="Services\KiemDuyetService.cs" />
     <Compile Include="Services\AnomalyDetector.cs" />
     <Compile Include="Services\AIAuditService.cs" />
+    <Compile Include="Services\AIDashboardService.cs" />
     <Compile Include="Services\AIReportService.cs" />
     <!-- Forms -->
     <Compile Include="Forms\FormLogin.cs">
@@ -349,10 +351,18 @@
     <Compile Include="Forms\FrmTroLyAI.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\FrmAIPhanTichDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAIPhanTichDashboard.Designer.cs">
+      <DependentUpon>FrmAIPhanTichDashboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmTroLyAI.Designer.cs">
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>
     </Compile>
     <!-- Models -->
+    <Compile Include="Models\DashboardData.cs" />
+    <Compile Include="Models\AIAnalysisInfo.cs" />
     <Compile Include="Models\AppManager.cs" />
     <Compile Include="Models\Bao.cs" />
     <Compile Include="Models\ButDanh.cs" />
@@ -368,6 +378,9 @@
     <!-- Embedded Resources (Forms) -->
     <EmbeddedResource Include="Forms\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmAIPhanTichDashboard.resx">
+      <DependentUpon>FrmAIPhanTichDashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmBaoCaoCongNo.resx">
       <DependentUpon>FrmBaoCaoCongNo.cs</DependentUpon>

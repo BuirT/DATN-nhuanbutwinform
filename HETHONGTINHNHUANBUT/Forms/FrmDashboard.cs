@@ -13,6 +13,8 @@ namespace HETHONGTINHNHUANBUT
 {
     public partial class FrmDashboard : Form
     {
+        public string QuyenHienTai { get; set; }
+
         private readonly string connStr =
             System.Configuration.ConfigurationManager.ConnectionStrings["TNConnection"].ConnectionString;
 
@@ -143,8 +145,21 @@ namespace HETHONGTINHNHUANBUT
         private void FrmDashboard_Load(object sender, EventArgs e)
         {
             SetupUIStyles();
+            
+            lblWelcome.Text = "TỔNG QUAN HỆ THỐNG";
+            
+            // Phân quyền hiển thị tính năng AI
+            btnAIPhanTich.Visible = HETHONGTINHNHUANBUT.Helpers.PermissionHelper.CanUseAIDashboard(QuyenHienTai);
+            
             timerAnimation.Start();
             _ = TaiDuLieuAsync();
+        }
+
+        private void btnAIPhanTich_Click(object sender, EventArgs e)
+        {
+            FrmAIPhanTichDashboard frm = new FrmAIPhanTichDashboard();
+            frm.QuyenHienTai = this.QuyenHienTai;
+            frm.ShowDialog();
         }
 
         // ================================================================
