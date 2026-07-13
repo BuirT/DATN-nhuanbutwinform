@@ -173,7 +173,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             {
                 SetButtonVisible(true, btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan);
             }
-            else if (role == "thư ký")
+            else if (role == "thư ký" || role == "thư kí" || role == "biên tập" || role == "biên tập viên")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
