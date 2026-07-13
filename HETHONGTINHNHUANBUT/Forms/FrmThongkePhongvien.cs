@@ -85,9 +85,12 @@ namespace HETHONGTINHNHUANBUT
         {
             try
             {
+                if (!CoTheCapNhatUi()) return;
+
                 using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
                     await conn.OpenAsync();
+                    if (!CoTheCapNhatUi()) return;
 
                     // 1. Thống kê tổng quan
                     string qTongQuan = @"
@@ -115,6 +118,8 @@ namespace HETHONGTINHNHUANBUT
                         
                         using (SqlDataReader r = await cmd.ExecuteReaderAsync())
                         {
+                            if (!CoTheCapNhatUi()) return;
+
                             if (r.Read())
                             {
                                 int tongBai = r["TongBai"] != DBNull.Value ? Convert.ToInt32(r["TongBai"]) : 0;
@@ -148,7 +153,8 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@ms", string.IsNullOrEmpty(MaTacGiaCuaToi) ? DBNull.Value : (object)MaTacGiaCuaToi);
                         cmd.Parameters.AddWithValue("@nguoi", string.IsNullOrEmpty(NguoiDangNhap) ? DBNull.Value : (object)NguoiDangNhap);
                         cmd.Parameters.AddWithValue("@bd", string.IsNullOrEmpty(selectedBD) ? DBNull.Value : (object)selectedBD);
-                        
+
+                        if (!CoTheCapNhatChart(chartPie)) return;
                         chartPie.Series.Clear();
                         Series sPie = new Series("TrangThai");
                         sPie.ChartType = SeriesChartType.Doughnut;
@@ -185,7 +191,8 @@ namespace HETHONGTINHNHUANBUT
                         cmd.Parameters.AddWithValue("@ms", string.IsNullOrEmpty(MaTacGiaCuaToi) ? DBNull.Value : (object)MaTacGiaCuaToi);
                         cmd.Parameters.AddWithValue("@nguoi", string.IsNullOrEmpty(NguoiDangNhap) ? DBNull.Value : (object)NguoiDangNhap);
                         cmd.Parameters.AddWithValue("@bd", string.IsNullOrEmpty(selectedBD) ? DBNull.Value : (object)selectedBD);
-                        
+
+                        if (!CoTheCapNhatChart(chartBar)) return;
                         chartBar.Series.Clear();
                         Series sBar = new Series("ThuNhap");
                         sBar.ChartType = SeriesChartType.Column;
@@ -254,6 +261,16 @@ namespace HETHONGTINHNHUANBUT
             {
                 MessageBox.Show("Lỗi tải dữ liệu thống kê: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private bool CoTheCapNhatUi()
+        {
+            return !IsDisposed && !Disposing && IsHandleCreated;
+        }
+
+        private bool CoTheCapNhatChart(Chart chart)
+        {
+            return CoTheCapNhatUi() && chart != null && !chart.IsDisposed;
         }
     }
 }

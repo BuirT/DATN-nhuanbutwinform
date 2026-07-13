@@ -88,6 +88,9 @@ namespace HETHONGTINHNHUANBUT
 
             switch (role)
             {
+                case "biên tập":
+                case "biên tập viên":
+                case "thư kí":
                 case "thư ký":
                     _trangThaiHienTai = 0;
                     lblRoleInfo.Text = "👤 Thư ký (Ban thư ký): Chấm tiền nhuận bút";
@@ -240,7 +243,7 @@ namespace HETHONGTINHNHUANBUT
 
                     string role = QuyenHienTai?.Trim().ToLower() ?? "";
                     string trangThaiLabel = "chờ xử lý";
-                    if (role == "thư ký") trangThaiLabel = "chờ chấm tiền";
+                    if (role == "thư ký" || role == "thư kí" || role == "biên tập" || role == "biên tập viên") trangThaiLabel = "chờ chấm tiền";
                     else if (role == "kế toán") trangThaiLabel = "đã chấm tiền";
                     else if (role == "kiểm tra viên") trangThaiLabel = "đã nhập liệu";
                     else if (role == "tổng thư ký") trangThaiLabel = "đã kiểm tra";
@@ -291,6 +294,9 @@ namespace HETHONGTINHNHUANBUT
 
             switch (role)
             {
+                case "biên tập":
+                case "biên tập viên":
+                case "thư kí":
                 case "thư ký":
                     action = "chấm tiền";
                     trangThaiMoi = 1;
@@ -411,9 +417,9 @@ namespace HETHONGTINHNHUANBUT
                             cmd.Parameters.AddWithValue("@tt", trangThaiMoi);
                             cmd.Parameters.AddWithValue("@ma", _selectedMaso);
 
-                            if (role == "thư ký" || role == "admin" || role == "quản trị viên")
+                            if (role == "thư ký" || role == "thư kí" || role == "biên tập" || role == "biên tập viên" || role == "admin" || role == "quản trị viên")
                             {
-                                if (role == "thư ký")
+                                if (role == "thư ký" || role == "thư kí" || role == "biên tập" || role == "biên tập viên")
                                 {
                                     decimal tienNB = decimal.TryParse(txtTienNhuanBut.Text, out decimal t) ? t : 0;
                                     cmd.Parameters.AddWithValue("@tien", tienNB);
@@ -466,6 +472,9 @@ namespace HETHONGTINHNHUANBUT
 
             switch (role)
             {
+                case "biên tập":
+                case "biên tập viên":
+                case "thư kí":
                 case "thư ký":
                     msg = "Từ chối bài này?";
                     trangThaiVe = 0;
@@ -574,7 +583,7 @@ namespace HETHONGTINHNHUANBUT
 
                 string role = QuyenHienTai?.Trim().ToLower() ?? "";
 
-                if (role == "thư ký" && row.Cells["TienNhuanbut"].Value != null)
+                if ((role == "thư ký" || role == "thư kí" || role == "biên tập" || role == "biên tập viên") && row.Cells["TienNhuanbut"].Value != null)
                 {
                     txtTienNhuanBut.Text = Convert.ToDecimal(row.Cells["TienNhuanbut"].Value).ToString("0");
                 }

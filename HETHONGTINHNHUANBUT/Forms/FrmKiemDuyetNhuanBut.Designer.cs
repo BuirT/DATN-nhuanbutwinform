@@ -33,54 +33,50 @@ namespace HETHONGTINHNHUANBUT
             this.lblDiemAI = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.txtDanhGiaAI = new Guna.UI2.WinForms.Guna2TextBox();
+            this.pnlStats = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlStat4 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblStat4Value = new System.Windows.Forms.Label();
+            this.lblStat4Title = new System.Windows.Forms.Label();
+            this.pnlStat3 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblStat3Value = new System.Windows.Forms.Label();
+            this.lblStat3Title = new System.Windows.Forms.Label();
+            this.pnlStat2 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblStat2Value = new System.Windows.Forms.Label();
+            this.lblStat2Title = new System.Windows.Forms.Label();
+            this.pnlStat1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblStat1Value = new System.Windows.Forms.Label();
+            this.lblStat1Title = new System.Windows.Forms.Label();
+            this.pnlFooter = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlWF5 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblWF5Value = new System.Windows.Forms.Label();
+            this.lblWF5Title = new System.Windows.Forms.Label();
+            this.pnlWF4 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblWF4Value = new System.Windows.Forms.Label();
+            this.lblWF4Title = new System.Windows.Forms.Label();
+            this.pnlWF3 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblWF3Value = new System.Windows.Forms.Label();
+            this.lblWF3Title = new System.Windows.Forms.Label();
+            this.pnlWF2 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblWF2Value = new System.Windows.Forms.Label();
+            this.lblWF2Title = new System.Windows.Forms.Label();
+            this.pnlWF1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblWF1Value = new System.Windows.Forms.Label();
+            this.lblWF1Title = new System.Windows.Forms.Label();
             this.pnlTop.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhuanBut)).BeginInit();
             this.pnlContent.SuspendLayout();
-
-            this.pnlStats = new Guna.UI2.WinForms.Guna2Panel();
-            this.pnlStat1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblStat1Title = new System.Windows.Forms.Label();
-            this.lblStat1Value = new System.Windows.Forms.Label();
-            this.pnlStat2 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblStat2Title = new System.Windows.Forms.Label();
-            this.lblStat2Value = new System.Windows.Forms.Label();
-            this.pnlStat3 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblStat3Title = new System.Windows.Forms.Label();
-            this.lblStat3Value = new System.Windows.Forms.Label();
-            this.pnlStat4 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblStat4Title = new System.Windows.Forms.Label();
-            this.lblStat4Value = new System.Windows.Forms.Label();
-            
-            this.pnlFooter = new Guna.UI2.WinForms.Guna2Panel();
-            this.pnlWF1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblWF1Title = new System.Windows.Forms.Label();
-            this.lblWF1Value = new System.Windows.Forms.Label();
-            this.pnlWF2 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblWF2Title = new System.Windows.Forms.Label();
-            this.lblWF2Value = new System.Windows.Forms.Label();
-            this.pnlWF3 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblWF3Title = new System.Windows.Forms.Label();
-            this.lblWF3Value = new System.Windows.Forms.Label();
-            this.pnlWF4 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblWF4Title = new System.Windows.Forms.Label();
-            this.lblWF4Value = new System.Windows.Forms.Label();
-            this.pnlWF5 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblWF5Title = new System.Windows.Forms.Label();
-            this.lblWF5Value = new System.Windows.Forms.Label();
-            
             this.pnlStats.SuspendLayout();
-            this.pnlStat1.SuspendLayout();
-            this.pnlStat2.SuspendLayout();
-            this.pnlStat3.SuspendLayout();
             this.pnlStat4.SuspendLayout();
+            this.pnlStat3.SuspendLayout();
+            this.pnlStat2.SuspendLayout();
+            this.pnlStat1.SuspendLayout();
             this.pnlFooter.SuspendLayout();
-            this.pnlWF1.SuspendLayout();
-            this.pnlWF2.SuspendLayout();
-            this.pnlWF3.SuspendLayout();
-            this.pnlWF4.SuspendLayout();
             this.pnlWF5.SuspendLayout();
-
+            this.pnlWF4.SuspendLayout();
+            this.pnlWF3.SuspendLayout();
+            this.pnlWF2.SuspendLayout();
+            this.pnlWF1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlTop
@@ -130,7 +126,7 @@ namespace HETHONGTINHNHUANBUT
             this.lblTien.AutoSize = true;
             this.lblTien.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblTien.Location = new System.Drawing.Point(25, 100);
+            this.lblTien.Location = new System.Drawing.Point(856, 58);
             this.lblTien.Name = "lblTien";
             this.lblTien.Size = new System.Drawing.Size(103, 17);
             this.lblTien.TabIndex = 3;
@@ -146,7 +142,7 @@ namespace HETHONGTINHNHUANBUT
             this.txtTienNhuanBut.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.txtTienNhuanBut.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.txtTienNhuanBut.ForeColor = System.Drawing.Color.Crimson;
-            this.txtTienNhuanBut.Location = new System.Drawing.Point(143, 81);
+            this.txtTienNhuanBut.Location = new System.Drawing.Point(982, 39);
             this.txtTienNhuanBut.Name = "txtTienNhuanBut";
             this.txtTienNhuanBut.PlaceholderText = "";
             this.txtTienNhuanBut.SelectedText = "";
@@ -156,7 +152,6 @@ namespace HETHONGTINHNHUANBUT
             // 
             // lblCount
             // 
-            this.lblCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCount.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.lblCount.Location = new System.Drawing.Point(380, 20);
@@ -172,7 +167,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnXacNhan.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnXacNhan.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnXacNhan.ForeColor = System.Drawing.Color.White;
-            this.btnXacNhan.Location = new System.Drawing.Point(1330, 18);
+            this.btnXacNhan.Location = new System.Drawing.Point(1340, 33);
             this.btnXacNhan.Name = "btnXacNhan";
             this.btnXacNhan.Size = new System.Drawing.Size(150, 42);
             this.btnXacNhan.TabIndex = 0;
@@ -186,7 +181,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnTuChoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.btnTuChoi.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnTuChoi.ForeColor = System.Drawing.Color.White;
-            this.btnTuChoi.Location = new System.Drawing.Point(1170, 18);
+            this.btnTuChoi.Location = new System.Drawing.Point(1168, 33);
             this.btnTuChoi.Name = "btnTuChoi";
             this.btnTuChoi.Size = new System.Drawing.Size(150, 42);
             this.btnTuChoi.TabIndex = 1;
@@ -335,7 +330,9 @@ namespace HETHONGTINHNHUANBUT
             // 
             // txtNoiDungBaiViet
             // 
-            this.txtNoiDungBaiViet.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNoiDungBaiViet.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtNoiDungBaiViet.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.txtNoiDungBaiViet.BorderRadius = 8;
             this.txtNoiDungBaiViet.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -355,22 +352,22 @@ namespace HETHONGTINHNHUANBUT
             // 
             // lblDiemAI
             // 
+            this.lblDiemAI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDiemAI.AutoSize = true;
             this.lblDiemAI.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblDiemAI.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.lblDiemAI.Location = new System.Drawing.Point(1030, 8);
-            this.lblDiemAI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDiemAI.Name = "lblDiemAI";
             this.lblDiemAI.Size = new System.Drawing.Size(0, 21);
             this.lblDiemAI.TabIndex = 1;
             // 
             // label8
             // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.label8.Location = new System.Drawing.Point(920, 10);
-            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(90, 17);
             this.label8.TabIndex = 2;
@@ -378,7 +375,8 @@ namespace HETHONGTINHNHUANBUT
             // 
             // txtDanhGiaAI
             // 
-            this.txtDanhGiaAI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDanhGiaAI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDanhGiaAI.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.txtDanhGiaAI.BorderRadius = 8;
             this.txtDanhGiaAI.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -396,8 +394,6 @@ namespace HETHONGTINHNHUANBUT
             this.txtDanhGiaAI.Size = new System.Drawing.Size(550, 200);
             this.txtDanhGiaAI.TabIndex = 2;
             // 
-            
-            // 
             // pnlStats
             // 
             this.pnlStats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -412,75 +408,40 @@ namespace HETHONGTINHNHUANBUT
             this.pnlStats.Size = new System.Drawing.Size(1504, 100);
             this.pnlStats.TabIndex = 4;
             // 
-            // pnlStat1
+            // pnlStat4
             // 
-            this.pnlStat1.BorderRadius = 12;
-            this.pnlStat1.Controls.Add(this.lblStat1Value);
-            this.pnlStat1.Controls.Add(this.lblStat1Title);
-            this.pnlStat1.FillColor = System.Drawing.Color.White;
-            this.pnlStat1.Location = new System.Drawing.Point(0, 0);
-            this.pnlStat1.Name = "pnlStat1";
-            this.pnlStat1.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlStat1.ShadowDecoration.Depth = 8;
-            this.pnlStat1.Size = new System.Drawing.Size(360, 100);
-            this.pnlStat1.TabIndex = 0;
+            this.pnlStat4.BorderRadius = 12;
+            this.pnlStat4.Controls.Add(this.lblStat4Value);
+            this.pnlStat4.Controls.Add(this.lblStat4Title);
+            this.pnlStat4.FillColor = System.Drawing.Color.White;
+            this.pnlStat4.Location = new System.Drawing.Point(1140, 0);
+            this.pnlStat4.Name = "pnlStat4";
+            this.pnlStat4.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlStat4.ShadowDecoration.Depth = 8;
+            this.pnlStat4.Size = new System.Drawing.Size(364, 100);
+            this.pnlStat4.TabIndex = 3;
             // 
-            // lblStat1Title
+            // lblStat4Value
             // 
-            this.lblStat1Title.AutoSize = true;
-            this.lblStat1Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblStat1Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblStat1Title.Location = new System.Drawing.Point(20, 20);
-            this.lblStat1Title.Name = "lblStat1Title";
-            this.lblStat1Title.Size = new System.Drawing.Size(175, 19);
-            this.lblStat1Title.TabIndex = 0;
-            this.lblStat1Title.Text = "⏳ TỔNG BÀI CHỜ DUYỆT";
+            this.lblStat4Value.AutoSize = true;
+            this.lblStat4Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblStat4Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.lblStat4Value.Location = new System.Drawing.Point(20, 45);
+            this.lblStat4Value.Name = "lblStat4Value";
+            this.lblStat4Value.Size = new System.Drawing.Size(33, 37);
+            this.lblStat4Value.TabIndex = 1;
+            this.lblStat4Value.Text = "0";
             // 
-            // lblStat1Value
+            // lblStat4Title
             // 
-            this.lblStat1Value.AutoSize = true;
-            this.lblStat1Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblStat1Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblStat1Value.Location = new System.Drawing.Point(20, 45);
-            this.lblStat1Value.Name = "lblStat1Value";
-            this.lblStat1Value.Size = new System.Drawing.Size(33, 37);
-            this.lblStat1Value.TabIndex = 1;
-            this.lblStat1Value.Text = "0";
-            // 
-            // pnlStat2
-            // 
-            this.pnlStat2.BorderRadius = 12;
-            this.pnlStat2.Controls.Add(this.lblStat2Value);
-            this.pnlStat2.Controls.Add(this.lblStat2Title);
-            this.pnlStat2.FillColor = System.Drawing.Color.White;
-            this.pnlStat2.Location = new System.Drawing.Point(380, 0);
-            this.pnlStat2.Name = "pnlStat2";
-            this.pnlStat2.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlStat2.ShadowDecoration.Depth = 8;
-            this.pnlStat2.Size = new System.Drawing.Size(360, 100);
-            this.pnlStat2.TabIndex = 1;
-            // 
-            // lblStat2Title
-            // 
-            this.lblStat2Title.AutoSize = true;
-            this.lblStat2Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblStat2Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblStat2Title.Location = new System.Drawing.Point(20, 20);
-            this.lblStat2Title.Name = "lblStat2Title";
-            this.lblStat2Title.Size = new System.Drawing.Size(185, 19);
-            this.lblStat2Title.TabIndex = 0;
-            this.lblStat2Title.Text = "💰 TỔNG TIỀN NHUẬN BÚT";
-            // 
-            // lblStat2Value
-            // 
-            this.lblStat2Value.AutoSize = true;
-            this.lblStat2Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblStat2Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblStat2Value.Location = new System.Drawing.Point(20, 45);
-            this.lblStat2Value.Name = "lblStat2Value";
-            this.lblStat2Value.Size = new System.Drawing.Size(33, 37);
-            this.lblStat2Value.TabIndex = 1;
-            this.lblStat2Value.Text = "0";
+            this.lblStat4Title.AutoSize = true;
+            this.lblStat4Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblStat4Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblStat4Title.Location = new System.Drawing.Point(20, 20);
+            this.lblStat4Title.Name = "lblStat4Title";
+            this.lblStat4Title.Size = new System.Drawing.Size(173, 19);
+            this.lblStat4Title.TabIndex = 0;
+            this.lblStat4Title.Text = "✅ ĐÃ DUYỆT HÔM NAY";
             // 
             // pnlStat3
             // 
@@ -495,17 +456,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlStat3.Size = new System.Drawing.Size(360, 100);
             this.pnlStat3.TabIndex = 2;
             // 
-            // lblStat3Title
-            // 
-            this.lblStat3Title.AutoSize = true;
-            this.lblStat3Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblStat3Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblStat3Title.Location = new System.Drawing.Point(20, 20);
-            this.lblStat3Title.Name = "lblStat3Title";
-            this.lblStat3Title.Size = new System.Drawing.Size(163, 19);
-            this.lblStat3Title.TabIndex = 0;
-            this.lblStat3Title.Text = "⚠️ BÀI BỊ AI CẢNH BÁO";
-            // 
             // lblStat3Value
             // 
             this.lblStat3Value.AutoSize = true;
@@ -517,41 +467,86 @@ namespace HETHONGTINHNHUANBUT
             this.lblStat3Value.TabIndex = 1;
             this.lblStat3Value.Text = "0";
             // 
-            // pnlStat4
+            // lblStat3Title
             // 
-            this.pnlStat4.BorderRadius = 12;
-            this.pnlStat4.Controls.Add(this.lblStat4Value);
-            this.pnlStat4.Controls.Add(this.lblStat4Title);
-            this.pnlStat4.FillColor = System.Drawing.Color.White;
-            this.pnlStat4.Location = new System.Drawing.Point(1140, 0);
-            this.pnlStat4.Name = "pnlStat4";
-            this.pnlStat4.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlStat4.ShadowDecoration.Depth = 8;
-            this.pnlStat4.Size = new System.Drawing.Size(364, 100);
-            this.pnlStat4.TabIndex = 3;
+            this.lblStat3Title.AutoSize = true;
+            this.lblStat3Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblStat3Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblStat3Title.Location = new System.Drawing.Point(20, 20);
+            this.lblStat3Title.Name = "lblStat3Title";
+            this.lblStat3Title.Size = new System.Drawing.Size(170, 19);
+            this.lblStat3Title.TabIndex = 0;
+            this.lblStat3Title.Text = "⚠️ BÀI BỊ AI CẢNH BÁO";
             // 
-            // lblStat4Title
+            // pnlStat2
             // 
-            this.lblStat4Title.AutoSize = true;
-            this.lblStat4Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblStat4Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblStat4Title.Location = new System.Drawing.Point(20, 20);
-            this.lblStat4Title.Name = "lblStat4Title";
-            this.lblStat4Title.Size = new System.Drawing.Size(152, 19);
-            this.lblStat4Title.TabIndex = 0;
-            this.lblStat4Title.Text = "✅ ĐÃ DUYỆT HÔM NAY";
+            this.pnlStat2.BorderRadius = 12;
+            this.pnlStat2.Controls.Add(this.lblStat2Value);
+            this.pnlStat2.Controls.Add(this.lblStat2Title);
+            this.pnlStat2.FillColor = System.Drawing.Color.White;
+            this.pnlStat2.Location = new System.Drawing.Point(380, 0);
+            this.pnlStat2.Name = "pnlStat2";
+            this.pnlStat2.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlStat2.ShadowDecoration.Depth = 8;
+            this.pnlStat2.Size = new System.Drawing.Size(360, 100);
+            this.pnlStat2.TabIndex = 1;
             // 
-            // lblStat4Value
+            // lblStat2Value
             // 
-            this.lblStat4Value.AutoSize = true;
-            this.lblStat4Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblStat4Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
-            this.lblStat4Value.Location = new System.Drawing.Point(20, 45);
-            this.lblStat4Value.Name = "lblStat4Value";
-            this.lblStat4Value.Size = new System.Drawing.Size(33, 37);
-            this.lblStat4Value.TabIndex = 1;
-            this.lblStat4Value.Text = "0";
-            
+            this.lblStat2Value.AutoSize = true;
+            this.lblStat2Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblStat2Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.lblStat2Value.Location = new System.Drawing.Point(20, 45);
+            this.lblStat2Value.Name = "lblStat2Value";
+            this.lblStat2Value.Size = new System.Drawing.Size(33, 37);
+            this.lblStat2Value.TabIndex = 1;
+            this.lblStat2Value.Text = "0";
+            // 
+            // lblStat2Title
+            // 
+            this.lblStat2Title.AutoSize = true;
+            this.lblStat2Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblStat2Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblStat2Title.Location = new System.Drawing.Point(20, 20);
+            this.lblStat2Title.Name = "lblStat2Title";
+            this.lblStat2Title.Size = new System.Drawing.Size(195, 19);
+            this.lblStat2Title.TabIndex = 0;
+            this.lblStat2Title.Text = "💰 TỔNG TIỀN NHUẬN BÚT";
+            // 
+            // pnlStat1
+            // 
+            this.pnlStat1.BorderRadius = 12;
+            this.pnlStat1.Controls.Add(this.lblStat1Value);
+            this.pnlStat1.Controls.Add(this.lblStat1Title);
+            this.pnlStat1.FillColor = System.Drawing.Color.White;
+            this.pnlStat1.Location = new System.Drawing.Point(0, 0);
+            this.pnlStat1.Name = "pnlStat1";
+            this.pnlStat1.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlStat1.ShadowDecoration.Depth = 8;
+            this.pnlStat1.Size = new System.Drawing.Size(360, 100);
+            this.pnlStat1.TabIndex = 0;
+            // 
+            // lblStat1Value
+            // 
+            this.lblStat1Value.AutoSize = true;
+            this.lblStat1Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblStat1Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblStat1Value.Location = new System.Drawing.Point(20, 45);
+            this.lblStat1Value.Name = "lblStat1Value";
+            this.lblStat1Value.Size = new System.Drawing.Size(33, 37);
+            this.lblStat1Value.TabIndex = 1;
+            this.lblStat1Value.Text = "0";
+            // 
+            // lblStat1Title
+            // 
+            this.lblStat1Title.AutoSize = true;
+            this.lblStat1Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblStat1Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblStat1Title.Location = new System.Drawing.Point(20, 20);
+            this.lblStat1Title.Name = "lblStat1Title";
+            this.lblStat1Title.Size = new System.Drawing.Size(183, 19);
+            this.lblStat1Title.TabIndex = 0;
+            this.lblStat1Title.Text = "⏳ TỔNG BÀI CHỜ DUYỆT";
             // 
             // pnlFooter
             // 
@@ -567,137 +562,12 @@ namespace HETHONGTINHNHUANBUT
             this.pnlFooter.Name = "pnlFooter";
             this.pnlFooter.Size = new System.Drawing.Size(1504, 80);
             this.pnlFooter.TabIndex = 5;
-            
             // 
-            // pnlWF1
-            // 
-            this.pnlWF1.BorderRadius = 8;
-            this.pnlWF1.BorderThickness = 1;
-            this.pnlWF1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlWF1.Controls.Add(this.lblWF1Value);
-            this.pnlWF1.Controls.Add(this.lblWF1Title);
-            this.pnlWF1.FillColor = System.Drawing.Color.White;
-            this.pnlWF1.Location = new System.Drawing.Point(0, 0);
-            this.pnlWF1.Name = "pnlWF1";
-            this.pnlWF1.Size = new System.Drawing.Size(250, 60);
-            this.pnlWF1.TabIndex = 0;
-            // 
-            // lblWF1Title
-            // 
-            this.lblWF1Title.AutoSize = true;
-            this.lblWF1Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblWF1Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblWF1Title.Location = new System.Drawing.Point(10, 10);
-            this.lblWF1Title.Name = "lblWF1Title";
-            this.lblWF1Title.Text = "👤 Người nhập";
-            // 
-            // lblWF1Value
-            // 
-            this.lblWF1Value.AutoSize = true;
-            this.lblWF1Value.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblWF1Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblWF1Value.Location = new System.Drawing.Point(10, 30);
-            this.lblWF1Value.Name = "lblWF1Value";
-            this.lblWF1Value.Text = "—";
-            
-            // pnlWF2
-            // 
-            this.pnlWF2.BorderRadius = 8;
-            this.pnlWF2.BorderThickness = 1;
-            this.pnlWF2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlWF2.Controls.Add(this.lblWF2Value);
-            this.pnlWF2.Controls.Add(this.lblWF2Title);
-            this.pnlWF2.FillColor = System.Drawing.Color.White;
-            this.pnlWF2.Location = new System.Drawing.Point(270, 0);
-            this.pnlWF2.Name = "pnlWF2";
-            this.pnlWF2.Size = new System.Drawing.Size(250, 60);
-            this.pnlWF2.TabIndex = 1;
-            // 
-            // lblWF2Title
-            // 
-            this.lblWF2Title.AutoSize = true;
-            this.lblWF2Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblWF2Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
-            this.lblWF2Title.Location = new System.Drawing.Point(10, 10);
-            this.lblWF2Title.Name = "lblWF2Title";
-            this.lblWF2Title.Text = "✍️ Người chấm";
-            // 
-            // lblWF2Value
-            // 
-            this.lblWF2Value.AutoSize = true;
-            this.lblWF2Value.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblWF2Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblWF2Value.Location = new System.Drawing.Point(10, 30);
-            this.lblWF2Value.Name = "lblWF2Value";
-            this.lblWF2Value.Text = "—";
-            
-            // pnlWF3
-            // 
-            this.pnlWF3.BorderRadius = 8;
-            this.pnlWF3.BorderThickness = 1;
-            this.pnlWF3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlWF3.Controls.Add(this.lblWF3Value);
-            this.pnlWF3.Controls.Add(this.lblWF3Title);
-            this.pnlWF3.FillColor = System.Drawing.Color.White;
-            this.pnlWF3.Location = new System.Drawing.Point(540, 0);
-            this.pnlWF3.Name = "pnlWF3";
-            this.pnlWF3.Size = new System.Drawing.Size(250, 60);
-            this.pnlWF3.TabIndex = 2;
-            // 
-            // lblWF3Title
-            // 
-            this.lblWF3Title.AutoSize = true;
-            this.lblWF3Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblWF3Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.lblWF3Title.Location = new System.Drawing.Point(10, 10);
-            this.lblWF3Title.Name = "lblWF3Title";
-            this.lblWF3Title.Text = "💻 Nhập liệu";
-            // 
-            // lblWF3Value
-            // 
-            this.lblWF3Value.AutoSize = true;
-            this.lblWF3Value.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblWF3Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblWF3Value.Location = new System.Drawing.Point(10, 30);
-            this.lblWF3Value.Name = "lblWF3Value";
-            this.lblWF3Value.Text = "—";
-            
-            // pnlWF4
-            // 
-            this.pnlWF4.BorderRadius = 8;
-            this.pnlWF4.BorderThickness = 1;
-            this.pnlWF4.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlWF4.Controls.Add(this.lblWF4Value);
-            this.pnlWF4.Controls.Add(this.lblWF4Title);
-            this.pnlWF4.FillColor = System.Drawing.Color.White;
-            this.pnlWF4.Location = new System.Drawing.Point(810, 0);
-            this.pnlWF4.Name = "pnlWF4";
-            this.pnlWF4.Size = new System.Drawing.Size(250, 60);
-            this.pnlWF4.TabIndex = 3;
-            // 
-            // lblWF4Title
-            // 
-            this.lblWF4Title.AutoSize = true;
-            this.lblWF4Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblWF4Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblWF4Title.Location = new System.Drawing.Point(10, 10);
-            this.lblWF4Title.Name = "lblWF4Title";
-            this.lblWF4Title.Text = "✅ Kiểm tra";
-            // 
-            // lblWF4Value
-            // 
-            this.lblWF4Value.AutoSize = true;
-            this.lblWF4Value.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblWF4Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblWF4Value.Location = new System.Drawing.Point(10, 30);
-            this.lblWF4Value.Name = "lblWF4Value";
-            this.lblWF4Value.Text = "—";
-            
             // pnlWF5
             // 
+            this.pnlWF5.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlWF5.BorderRadius = 8;
             this.pnlWF5.BorderThickness = 1;
-            this.pnlWF5.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlWF5.Controls.Add(this.lblWF5Value);
             this.pnlWF5.Controls.Add(this.lblWF5Title);
             this.pnlWF5.FillColor = System.Drawing.Color.White;
@@ -706,15 +576,6 @@ namespace HETHONGTINHNHUANBUT
             this.pnlWF5.Size = new System.Drawing.Size(250, 60);
             this.pnlWF5.TabIndex = 4;
             // 
-            // lblWF5Title
-            // 
-            this.lblWF5Title.AutoSize = true;
-            this.lblWF5Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblWF5Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
-            this.lblWF5Title.Location = new System.Drawing.Point(10, 10);
-            this.lblWF5Title.Name = "lblWF5Title";
-            this.lblWF5Title.Text = "🖋️ Ký duyệt";
-            // 
             // lblWF5Value
             // 
             this.lblWF5Value.AutoSize = true;
@@ -722,8 +583,161 @@ namespace HETHONGTINHNHUANBUT
             this.lblWF5Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.lblWF5Value.Location = new System.Drawing.Point(10, 30);
             this.lblWF5Value.Name = "lblWF5Value";
+            this.lblWF5Value.Size = new System.Drawing.Size(23, 19);
+            this.lblWF5Value.TabIndex = 0;
             this.lblWF5Value.Text = "—";
-
+            // 
+            // lblWF5Title
+            // 
+            this.lblWF5Title.AutoSize = true;
+            this.lblWF5Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblWF5Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
+            this.lblWF5Title.Location = new System.Drawing.Point(10, 10);
+            this.lblWF5Title.Name = "lblWF5Title";
+            this.lblWF5Title.Size = new System.Drawing.Size(72, 15);
+            this.lblWF5Title.TabIndex = 1;
+            this.lblWF5Title.Text = "🖋️ Ký duyệt";
+            // 
+            // pnlWF4
+            // 
+            this.pnlWF4.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlWF4.BorderRadius = 8;
+            this.pnlWF4.BorderThickness = 1;
+            this.pnlWF4.Controls.Add(this.lblWF4Value);
+            this.pnlWF4.Controls.Add(this.lblWF4Title);
+            this.pnlWF4.FillColor = System.Drawing.Color.White;
+            this.pnlWF4.Location = new System.Drawing.Point(810, 0);
+            this.pnlWF4.Name = "pnlWF4";
+            this.pnlWF4.Size = new System.Drawing.Size(250, 60);
+            this.pnlWF4.TabIndex = 3;
+            // 
+            // lblWF4Value
+            // 
+            this.lblWF4Value.AutoSize = true;
+            this.lblWF4Value.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblWF4Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblWF4Value.Location = new System.Drawing.Point(10, 30);
+            this.lblWF4Value.Name = "lblWF4Value";
+            this.lblWF4Value.Size = new System.Drawing.Size(23, 19);
+            this.lblWF4Value.TabIndex = 0;
+            this.lblWF4Value.Text = "—";
+            // 
+            // lblWF4Title
+            // 
+            this.lblWF4Title.AutoSize = true;
+            this.lblWF4Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblWF4Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.lblWF4Title.Location = new System.Drawing.Point(10, 10);
+            this.lblWF4Title.Name = "lblWF4Title";
+            this.lblWF4Title.Size = new System.Drawing.Size(71, 15);
+            this.lblWF4Title.TabIndex = 1;
+            this.lblWF4Title.Text = "✅ Kiểm tra";
+            // 
+            // pnlWF3
+            // 
+            this.pnlWF3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlWF3.BorderRadius = 8;
+            this.pnlWF3.BorderThickness = 1;
+            this.pnlWF3.Controls.Add(this.lblWF3Value);
+            this.pnlWF3.Controls.Add(this.lblWF3Title);
+            this.pnlWF3.FillColor = System.Drawing.Color.White;
+            this.pnlWF3.Location = new System.Drawing.Point(540, 0);
+            this.pnlWF3.Name = "pnlWF3";
+            this.pnlWF3.Size = new System.Drawing.Size(250, 60);
+            this.pnlWF3.TabIndex = 2;
+            // 
+            // lblWF3Value
+            // 
+            this.lblWF3Value.AutoSize = true;
+            this.lblWF3Value.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblWF3Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblWF3Value.Location = new System.Drawing.Point(10, 30);
+            this.lblWF3Value.Name = "lblWF3Value";
+            this.lblWF3Value.Size = new System.Drawing.Size(23, 19);
+            this.lblWF3Value.TabIndex = 0;
+            this.lblWF3Value.Text = "—";
+            // 
+            // lblWF3Title
+            // 
+            this.lblWF3Title.AutoSize = true;
+            this.lblWF3Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblWF3Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
+            this.lblWF3Title.Location = new System.Drawing.Point(10, 10);
+            this.lblWF3Title.Name = "lblWF3Title";
+            this.lblWF3Title.Size = new System.Drawing.Size(75, 15);
+            this.lblWF3Title.TabIndex = 1;
+            this.lblWF3Title.Text = "💻 Nhập liệu";
+            // 
+            // pnlWF2
+            // 
+            this.pnlWF2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlWF2.BorderRadius = 8;
+            this.pnlWF2.BorderThickness = 1;
+            this.pnlWF2.Controls.Add(this.lblWF2Value);
+            this.pnlWF2.Controls.Add(this.lblWF2Title);
+            this.pnlWF2.FillColor = System.Drawing.Color.White;
+            this.pnlWF2.Location = new System.Drawing.Point(270, 0);
+            this.pnlWF2.Name = "pnlWF2";
+            this.pnlWF2.Size = new System.Drawing.Size(250, 60);
+            this.pnlWF2.TabIndex = 1;
+            // 
+            // lblWF2Value
+            // 
+            this.lblWF2Value.AutoSize = true;
+            this.lblWF2Value.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblWF2Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblWF2Value.Location = new System.Drawing.Point(10, 30);
+            this.lblWF2Value.Name = "lblWF2Value";
+            this.lblWF2Value.Size = new System.Drawing.Size(23, 19);
+            this.lblWF2Value.TabIndex = 0;
+            this.lblWF2Value.Text = "—";
+            // 
+            // lblWF2Title
+            // 
+            this.lblWF2Title.AutoSize = true;
+            this.lblWF2Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblWF2Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
+            this.lblWF2Title.Location = new System.Drawing.Point(10, 10);
+            this.lblWF2Title.Name = "lblWF2Title";
+            this.lblWF2Title.Size = new System.Drawing.Size(91, 15);
+            this.lblWF2Title.TabIndex = 1;
+            this.lblWF2Title.Text = "✍️ Người chấm";
+            // 
+            // pnlWF1
+            // 
+            this.pnlWF1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlWF1.BorderRadius = 8;
+            this.pnlWF1.BorderThickness = 1;
+            this.pnlWF1.Controls.Add(this.lblWF1Value);
+            this.pnlWF1.Controls.Add(this.lblWF1Title);
+            this.pnlWF1.FillColor = System.Drawing.Color.White;
+            this.pnlWF1.Location = new System.Drawing.Point(0, 0);
+            this.pnlWF1.Name = "pnlWF1";
+            this.pnlWF1.Size = new System.Drawing.Size(250, 60);
+            this.pnlWF1.TabIndex = 0;
+            // 
+            // lblWF1Value
+            // 
+            this.lblWF1Value.AutoSize = true;
+            this.lblWF1Value.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblWF1Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblWF1Value.Location = new System.Drawing.Point(10, 30);
+            this.lblWF1Value.Name = "lblWF1Value";
+            this.lblWF1Value.Size = new System.Drawing.Size(23, 19);
+            this.lblWF1Value.TabIndex = 0;
+            this.lblWF1Value.Text = "—";
+            // 
+            // lblWF1Title
+            // 
+            this.lblWF1Title.AutoSize = true;
+            this.lblWF1Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblWF1Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblWF1Title.Location = new System.Drawing.Point(10, 10);
+            this.lblWF1Title.Name = "lblWF1Title";
+            this.lblWF1Title.Size = new System.Drawing.Size(88, 15);
+            this.lblWF1Title.TabIndex = 1;
+            this.lblWF1Title.Text = "👤 Người nhập";
+            // 
             // FrmKiemDuyetNhuanBut
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -742,32 +756,32 @@ namespace HETHONGTINHNHUANBUT
             this.Text = "Kiem duyet nhuan but";
             this.Load += new System.EventHandler(this.FrmKiemDuyetNhuanBut_Load);
             this.pnlTop.ResumeLayout(false);
-            this.pnlStats.ResumeLayout(false);
-            this.pnlStat1.ResumeLayout(false);
-            this.pnlStat1.PerformLayout();
-            this.pnlStat2.ResumeLayout(false);
-            this.pnlStat2.PerformLayout();
-            this.pnlStat3.ResumeLayout(false);
-            this.pnlStat3.PerformLayout();
-            this.pnlStat4.ResumeLayout(false);
-            this.pnlStat4.PerformLayout();
-            this.pnlFooter.ResumeLayout(false);
-            this.pnlWF1.ResumeLayout(false);
-            this.pnlWF1.PerformLayout();
-            this.pnlWF2.ResumeLayout(false);
-            this.pnlWF2.PerformLayout();
-            this.pnlWF3.ResumeLayout(false);
-            this.pnlWF3.PerformLayout();
-            this.pnlWF4.ResumeLayout(false);
-            this.pnlWF4.PerformLayout();
-            this.pnlWF5.ResumeLayout(false);
-            this.pnlWF5.PerformLayout();
             this.pnlTop.PerformLayout();
             this.pnlBottom.ResumeLayout(false);
             this.pnlBottom.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhuanBut)).EndInit();
             this.pnlContent.ResumeLayout(false);
             this.pnlContent.PerformLayout();
+            this.pnlStats.ResumeLayout(false);
+            this.pnlStat4.ResumeLayout(false);
+            this.pnlStat4.PerformLayout();
+            this.pnlStat3.ResumeLayout(false);
+            this.pnlStat3.PerformLayout();
+            this.pnlStat2.ResumeLayout(false);
+            this.pnlStat2.PerformLayout();
+            this.pnlStat1.ResumeLayout(false);
+            this.pnlStat1.PerformLayout();
+            this.pnlFooter.ResumeLayout(false);
+            this.pnlWF5.ResumeLayout(false);
+            this.pnlWF5.PerformLayout();
+            this.pnlWF4.ResumeLayout(false);
+            this.pnlWF4.PerformLayout();
+            this.pnlWF3.ResumeLayout(false);
+            this.pnlWF3.PerformLayout();
+            this.pnlWF2.ResumeLayout(false);
+            this.pnlWF2.PerformLayout();
+            this.pnlWF1.ResumeLayout(false);
+            this.pnlWF1.PerformLayout();
             this.ResumeLayout(false);
 
         }
