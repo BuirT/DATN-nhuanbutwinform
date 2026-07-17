@@ -434,7 +434,7 @@ namespace HETHONGTINHNHUANBUT
                             {
                                 cmd.Parameters.AddWithValue("@nguoi", NguoiDangNhap ?? "Kiểm tra viên");
                             }
-                            else if (role == "tổng thư ký")
+                            else if (role == "tổng thư ký" || role == "tổng thư kí" || role == "lãnh đạo")
                             {
                                 cmd.Parameters.AddWithValue("@nguoi", txtNguoiKy.Text.Trim());
                             }

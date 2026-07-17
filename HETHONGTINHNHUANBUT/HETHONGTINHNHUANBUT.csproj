@@ -360,6 +360,15 @@
     <Compile Include="Forms\FrmTroLyAI.Designer.cs">
       <DependentUpon>FrmTroLyAI.cs</DependentUpon>
     </Compile>
+    <!-- AI Services -->
+    <Compile Include="Services\AI\NewsPayAIService.cs" />
+    <Compile Include="Services\AI\Providers\IAIProvider.cs" />
+    <Compile Include="Services\AI\Providers\OllamaProvider.cs" />
+    <Compile Include="Services\AI\Memory\ConversationMemory.cs" />
+    <Compile Include="Services\AI\RAG\RAGService.cs" />
+    <Compile Include="Services\AI\ToolCalling\ToolCallingRouter.cs" />
+    <Compile Include="Services\AI\ToolCalling\QueryExtractorService.cs" />
+    <Compile Include="Services\AI\ToolCalling\QueryParameters.cs" />
     <!-- Models -->
     <Compile Include="Models\DashboardData.cs" />
     <Compile Include="Models\AIAnalysisInfo.cs" />
