@@ -166,7 +166,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                     btnDashboard, btnTroLyAI, btnBaoCaoAI,
                     btnBaoCaoThongKe, btnCanhBaoAI,
                     btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan,
-                    btnKiemDuyet, btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
+                    btnKiemDuyet, btnPhieuChi, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnDotThanhToan, btnTaiKhoan,
                     btnTacGia, btnQuanLyBao, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD);
             }
@@ -186,7 +186,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
-                    btnPhieuChi, btnDuyetChi, btnLichSuThanhToan,
+                    btnPhieuChi, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan);
@@ -195,7 +195,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
-                    btnKiemDuyet, btnDuyetChi, btnLichSuThanhToan,
+                    btnKiemDuyet, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan, btnTaiKhoan);

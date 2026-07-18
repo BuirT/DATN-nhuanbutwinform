@@ -333,6 +333,9 @@ namespace HETHONGTINHNHUANBUT
             this.btnQuanLyPhieuChi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnQuanLyPhieuChi.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
             this.btnQuanLyPhieuChi.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.btnQuanLyPhieuChi.Image = ((System.Drawing.Image)(resources.GetObject("btnPhieuChi.Image")));
+            this.btnQuanLyPhieuChi.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnQuanLyPhieuChi.ImageSize = new System.Drawing.Size(24, 24);
             this.btnQuanLyPhieuChi.Location = new System.Drawing.Point(14, 745);
             this.btnQuanLyPhieuChi.Name = "btnQuanLyPhieuChi";
             this.btnQuanLyPhieuChi.Size = new System.Drawing.Size(232, 45);
