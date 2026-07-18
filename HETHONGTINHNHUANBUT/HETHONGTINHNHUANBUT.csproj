@@ -282,6 +282,12 @@
     <Compile Include="Forms\FrmPhieuChi.Designer.cs">
       <DependentUpon>FrmPhieuChi.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmQuanLyPhieuChi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmQuanLyPhieuChi.Designer.cs">
+      <DependentUpon>FrmQuanLyPhieuChi.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmSoBao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -426,6 +432,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPhieuChi.resx">
       <DependentUpon>FrmPhieuChi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmQuanLyPhieuChi.resx">
+      <DependentUpon>FrmQuanLyPhieuChi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmSoBao.resx">
       <DependentUpon>FrmSoBao.cs</DependentUpon>

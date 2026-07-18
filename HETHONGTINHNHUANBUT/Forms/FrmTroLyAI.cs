@@ -106,7 +106,15 @@ namespace HETHONGTINHNHUANBUT
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             _aiService.ClearMemory();
-            ThemBongBongChat("🔄 Đã xóa lịch sử trò chuyện. Bắt đầu phiên mới!", false);
+            flpChat.Controls.Clear();
+            ThemBongBongChat("🤖 Chào bạn! Tôi là Trợ lý AI hệ thống NewsPay. " +
+                "Tôi có thể:\n" +
+                "• 📊 Hỏi thống kê tổng quan (tổng bài, tổng tiền, trạng thái duyệt...)\n" +
+                "• 👤 Tra cứu tác giả (vd: 'thông tin tác giả Nguyễn Văn A')\n" +
+                "• 📅 Báo cáo theo tháng (vd: 'thống kê tháng 6/2026')\n" +
+                "• 💰 Phiếu chi, thuế (vd: 'phiếu chi tháng này')\n" +
+                "• 🔍 Phát hiện bất thường (vd: 'kiểm tra bài bất thường')\n" +
+                "Bạn muốn hỏi gì?", false);
         }
 
         // =========================================================================

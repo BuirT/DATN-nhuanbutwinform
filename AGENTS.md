@@ -18,11 +18,9 @@ HETHONGTINHNHUANBUT/
 ├── App.config           (connection string + settings)
 ├── packages.config      (NuGet references)
 ├── Program.cs           (entry: Application.Run(new FormLogin()))
-├── UIHelper.cs          (FormatGiaoDienBang, ConfigureColumns)
-├── HashHelper.cs        (SHA-256 + salt password hashing)
-├── AIHelper.cs          (Ollama API calls for metadata audit)
-├── AnomalyDetector.cs   (AI anomaly detection before approval)
-└── Frm*.cs              (24 form files)
+├── Helpers/             (AIConfig, UIHelper, HashHelper, PermissionHelper, AiIconResource)
+├── Services/            (AIHelper, AIAuditService, AIDashboardService, AIReportService, AnomalyDetector, DatabaseMigrator, KiemDuyetService)
+└── Frm*.cs              (28 form files)
 ```
 
 ## Connection string
@@ -96,11 +94,14 @@ HETHONGTINHNHUANBUT/
 
 | File                  | Chức năng                                                                                                 | Controls chính                                                |
 | --------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `FrmTongQuan.cs`      | Dashboard: 4 thẻ tóm tắt, biểu đồ đường (chi theo tháng), biểu đồ tròn (loại báo), lưới hoạt động gần đây | GunaChart x2, Guna2DataGridView, Timer                        |
-| `FrmBaoCaoTongHop.cs` | Báo cáo tổng hợp theo tháng, biểu đồ đường nợ, xuất Excel                                                 | Chart (System.Windows.Forms), Guna2DataGridView               |
-| `FrmBaoCaoCongNo.cs`  | Công nợ tác giả, biểu đồ cột 3 màu (tổng nợ/đã trả/còn nợ), xuất Excel                                    | Chart (System.Windows.Forms), Guna2DataGridView               |
-| `FrmBaoCaoLanhDao.cs` | Báo cáo lãnh đạo: biểu đồ tròn (đã chi/chưa chi), biểu đồ ngang (top tác giả), 2 lưới, xuất Excel 2 sheet | GunaChart x2 (Doughnut + HorizontalBar), Guna2DataGridView x2 |
-| `FrmBaoCaoAI.cs`      | Báo cáo AI: thống kê dạng bảng + AI commentary, copy/save .txt                                            | Button x3, TextBox, DateTimePicker                            |
+| `FrmDashboard.cs`           | Dashboard: thẻ tóm tắt, biểu đồ nhuận bút, top tác giả, biểu đồ tròn, lưới hoạt động gần đây              | GunaChart x4, Guna2DataGridView, Timer                        |
+| `FrmBaoCaoThongKe.cs`       | Báo cáo thống kê, xuất báo cáo ra Excel với tiêu đề cột tiếng Việt                                        | Guna2DataGridView, Guna2ComboBox                              |
+| `FrmBaoCaoTongHop.cs`       | Báo cáo tổng hợp theo tháng, biểu đồ đường nợ, xuất Excel                                                 | Chart (System.Windows.Forms), Guna2DataGridView               |
+| `FrmBaoCaoCongNo.cs`        | Công nợ tác giả, biểu đồ cột 3 màu (tổng nợ/đã trả/còn nợ), xuất Excel                                    | Chart (System.Windows.Forms), Guna2DataGridView               |
+| `FrmBaoCaoLanhDao.cs`       | Báo cáo lãnh đạo: biểu đồ tròn (đã chi/chưa chi), biểu đồ ngang (top tác giả), 2 lưới, xuất Excel 2 sheet | GunaChart x2 (Doughnut + HorizontalBar), Guna2DataGridView x2 |
+| `FrmBaoCaoAI.cs`            | Báo cáo AI: thống kê dạng bảng + AI commentary, copy/save .txt                                            | Button x3, TextBox, DateTimePicker                            |
+| `FrmAIPhanTichDashboard.cs` | Dashboard phân tích AI chuyên sâu, hiển thị cảnh báo, rủi ro                                              | Panels, Guna2DataGridView                                     |
+| `FrmCanhBaoAI.cs`           | Quản lý cảnh báo AI, kiểm duyệt cảnh báo (xóa, đánh dấu đã xử lý)                                         | Guna2DataGridView, Buttons                                    |
 
 ### Nghiệp vụ chính
 
@@ -112,6 +113,8 @@ HETHONGTINHNHUANBUT/
 | `FrmPhieuChi.cs`          | Lập phiếu chi, chọn tác giả -> chọn bài -> tính thuế (10% nếu >=2tr) -> transaction | Guna2DataGridView (manual columns), ComboBox x2 |
 | `FrmDuyetPhieuChi.cs`     | Duyệt/từ chối phiếu chi, xác nhận đã thanh toán (kế toán)                           | Guna2DataGridView, dynamic btnThanhToan         |
 | `FrmTroLyAI.cs`           | Chat AI: hỏi đáp về tác giả, thống kê, phiếu chi, bất thường, định mức              | FlowLayoutPanel (chat bubbles), Guna2TextBox    |
+| `FrmThongkePhongvien.cs`  | Thống kê nhuận bút cá nhân dành cho phóng viên                                      | Guna2DataGridView, GunaChart                    |
+| `FrmXemBaiViet.cs`        | Xem trước hoặc chỉnh sửa nội dung bài viết                                          | Guna2TextBox, Guna2Button                       |
 
 ### CRUD forms
 

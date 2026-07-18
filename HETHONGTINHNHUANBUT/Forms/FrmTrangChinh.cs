@@ -55,6 +55,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             }
 
             // LoadButtonIcons(); removed, now in Designer
+
             pnlMenuScroll.ResumeLayout();
             pnlMenu.ResumeLayout();
             this.ResumeLayout();
@@ -247,11 +248,25 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                 btn.Visible = visible;
         }
 
+        private FrmTroLyAI _frmTroLyAI = null;
+
         private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
         {
             if (clickedButton != null) SetActiveButton(clickedButton);
 
-            if (activeForm != null) activeForm.Close();
+            if (activeForm != null && activeForm != childForm)
+            {
+                if (activeForm == _frmTroLyAI)
+                {
+                    activeForm.Hide();
+                    pnlDesktopInner.Controls.Remove(activeForm);
+                }
+                else
+                {
+                    activeForm.Close();
+                }
+            }
+
             activeForm = childForm;
 
             var propQuyen = childForm.GetType().GetProperty("QuyenHienTai");
@@ -263,8 +278,12 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
-            pnlDesktopInner.Controls.Clear();
-            pnlDesktopInner.Controls.Add(childForm);
+            
+            if (!pnlDesktopInner.Controls.Contains(childForm))
+            {
+                pnlDesktopInner.Controls.Clear();
+                pnlDesktopInner.Controls.Add(childForm);
+            }
             pnlDesktopInner.Tag = childForm;
             childForm.BringToFront();
             childForm.Show();
@@ -280,7 +299,9 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
 
         private void btnTroLyAI_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmTroLyAI(), sender as Guna2Button);
+            if (_frmTroLyAI == null || _frmTroLyAI.IsDisposed)
+                _frmTroLyAI = new FrmTroLyAI();
+            OpenChildForm(_frmTroLyAI, sender as Guna2Button);
         }
 
         private void btnQuanLyBao_Click(object sender, EventArgs e)
@@ -356,6 +377,12 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             FrmDuyetPhieuChi frmDuyet = new FrmDuyetPhieuChi();
             frmDuyet.NguoiDuyet = string.IsNullOrEmpty(this.currentUserName) ? "Ban Giám Đốc" : this.currentUserName;
             OpenChildForm(frmDuyet, sender as Guna2Button);
+        }
+
+        private void btnQuanLyPhieuChi_Click(object sender, EventArgs e)
+        {
+            FrmQuanLyPhieuChi frmQL = new FrmQuanLyPhieuChi();
+            OpenChildForm(frmQL, sender as Guna2Button);
         }
 
         private void btnBaoCao_Click(object sender, EventArgs e)

@@ -41,7 +41,8 @@ namespace HETHONGTINHNHUANBUT.Services.AI.ToolCalling
                 }
                 else if (lower.Contains("tác giả") || lower.Contains("phóng viên") || lower.Contains("người viết") || lower.Contains("ai viết"))
                 {
-                    dataContext = await _ragService.GetAuthorInfoAsync(userQuery);
+                    string searchKeyword = !string.IsNullOrEmpty(param.TacGia) ? param.TacGia : userQuery;
+                    dataContext = await _ragService.GetAuthorInfoAsync(searchKeyword);
                     chuDe = "tác giả";
                 }
                 else if (lower.Contains("phiếu chi") || lower.Contains("thuế") || lower.Contains("thanh toán") || lower.Contains("đã chi"))

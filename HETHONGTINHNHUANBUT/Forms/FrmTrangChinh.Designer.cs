@@ -32,6 +32,7 @@ namespace HETHONGTINHNHUANBUT
             this.btnSubBaoCaoCN = new Guna.UI2.WinForms.Guna2Button();
             this.btnSubBaoCaoLD = new Guna.UI2.WinForms.Guna2Button();
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
+            this.btnQuanLyPhieuChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnDuyetChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnPhieuChi = new Guna.UI2.WinForms.Guna2Button();
             this.btnCanhBaoAI = new Guna.UI2.WinForms.Guna2Button();
@@ -99,6 +100,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenuScroll.Controls.Add(this.lblGroupAI);
             this.pnlMenuScroll.Controls.Add(this.btnDotThanhToan);
             this.pnlMenuScroll.Controls.Add(this.btnLichSuThanhToan);
+            this.pnlMenuScroll.Controls.Add(this.btnQuanLyPhieuChi);
             this.pnlMenuScroll.Controls.Add(this.btnDuyetChi);
             this.pnlMenuScroll.Controls.Add(this.btnPhieuChi);
             this.pnlMenuScroll.Controls.Add(this.btnThongKeCaNhan);
@@ -320,6 +322,27 @@ namespace HETHONGTINHNHUANBUT
             this.btnBaoCao.Click += new System.EventHandler(this.btnBaoCao_Click);
             this.btnBaoCao.MouseEnter += new System.EventHandler(this.BtnSidebar_MouseEnter);
             this.btnBaoCao.MouseLeave += new System.EventHandler(this.BtnSidebar_MouseLeave);
+            // 
+            // btnQuanLyPhieuChi
+            // 
+            this.btnQuanLyPhieuChi.BorderRadius = 10;
+            this.btnQuanLyPhieuChi.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnQuanLyPhieuChi.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnQuanLyPhieuChi.FillColor = System.Drawing.Color.Transparent;
+            this.btnQuanLyPhieuChi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnQuanLyPhieuChi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnQuanLyPhieuChi.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.btnQuanLyPhieuChi.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.btnQuanLyPhieuChi.Location = new System.Drawing.Point(14, 745);
+            this.btnQuanLyPhieuChi.Name = "btnQuanLyPhieuChi";
+            this.btnQuanLyPhieuChi.Size = new System.Drawing.Size(232, 45);
+            this.btnQuanLyPhieuChi.TabIndex = 6;
+            this.btnQuanLyPhieuChi.Text = "QUẢN LÝ PHIẾU CHI";
+            this.btnQuanLyPhieuChi.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnQuanLyPhieuChi.TextOffset = new System.Drawing.Point(10, 0);
+            this.btnQuanLyPhieuChi.Click += new System.EventHandler(this.btnQuanLyPhieuChi_Click);
+            this.btnQuanLyPhieuChi.MouseEnter += new System.EventHandler(this.BtnSidebar_MouseEnter);
+            this.btnQuanLyPhieuChi.MouseLeave += new System.EventHandler(this.BtnSidebar_MouseLeave);
             // 
             // btnDuyetChi
             // 
@@ -918,6 +941,7 @@ namespace HETHONGTINHNHUANBUT
         private Guna.UI2.WinForms.Guna2Button btnKiemDuyet;
         private Guna.UI2.WinForms.Guna2Button btnPhieuChi;
         private Guna.UI2.WinForms.Guna2Button btnDuyetChi;
+        private Guna.UI2.WinForms.Guna2Button btnQuanLyPhieuChi;
         private Guna.UI2.WinForms.Guna2Button btnBaoCao;
         private Guna.UI2.WinForms.Guna2Button btnSubBaoCaoCN;
         private Guna.UI2.WinForms.Guna2Button btnSubBaoCaoTH;
