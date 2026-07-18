@@ -38,9 +38,7 @@
 ### Lãnh đạo
 - **Chỉ xem**: không có nút duyệt/từ chối
 - Xem được tất cả bài không phân biệt trạng thái
-
 ---
-
 ## 2. Quy Trình Nhập Bài
 
 ### Phóng viên tự nhập (FrmNhapBaiPhongVien)

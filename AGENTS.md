@@ -51,6 +51,7 @@ HETHONGTINHNHUANBUT/
 | ThanhToan  | Thanh toán                                         | N/A                 |
 | DinhMuc    | Định mức theo thể loại                             | MaDM                |
 | Users      | Người dùng                                         | Id (INT IDENTITY)   |
+| AICanhBao  | Lịch sử cảnh báo bất thường do AI quét             | Id (INT IDENTITY)   |
 
 ### NhuanBut — TrangThaiDuyet workflow (5 bước)
 
@@ -111,7 +112,9 @@ HETHONGTINHNHUANBUT/
 | `FrmNhapNhuanBut.cs`      | Nhập bài (thư ký/admin), CRUD, AI kiểm toán, kiểm tra định mức                      | Guna2DataGridView, ComboBox x4, Guna2TextBox x5 |
 | `FrmNhapBaiPhongVien.cs`  | Nhập bài cho phóng viên (chỉ nhập thông tin, không nhập tiền)                       | Guna2DataGridView, ComboBox x3                  |
 | `FrmPhieuChi.cs`          | Lập phiếu chi, chọn tác giả -> chọn bài -> tính thuế (10% nếu >=2tr) -> transaction | Guna2DataGridView (manual columns), ComboBox x2 |
+| `FrmQuanLyPhieuChi.cs`    | Xem và quản lý các phiếu chi đã lập, hiển thị danh sách tổng quan                   | Guna2DataGridView                               |
 | `FrmDuyetPhieuChi.cs`     | Duyệt/từ chối phiếu chi, xác nhận đã thanh toán (kế toán)                           | Guna2DataGridView, dynamic btnThanhToan         |
+| `FrmLichSuThanhToan.cs`   | Tra cứu lịch sử thanh toán chi tiết của tác giả hoặc phiếu chi                      | Guna2DataGridView, ComboBox                     |
 | `FrmTroLyAI.cs`           | Chat AI: hỏi đáp về tác giả, thống kê, phiếu chi, bất thường, định mức              | FlowLayoutPanel (chat bubbles), Guna2TextBox    |
 | `FrmThongkePhongvien.cs`  | Thống kê nhuận bút cá nhân dành cho phóng viên                                      | Guna2DataGridView, GunaChart                    |
 | `FrmXemBaiViet.cs`        | Xem trước hoặc chỉnh sửa nội dung bài viết                                          | Guna2TextBox, Guna2Button                       |
@@ -263,11 +266,11 @@ private void OpenChildForm(Form childForm, Guna2Button clickedButton = null)
 | ---------------------------------- | --------------------------------------------------------------------------------------------- |
 | Admin                              | Tất cả                                                                                        |
 | Phóng viên / CTV / Khách mời       | NHẬP BÀI, TRA CỨU CÁ NHÂN                                                                     |
-| Thư ký                             | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD                            |
-| Kế toán                            | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, PHIẾU CHI, DUYỆT CHI, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD, TRỢ LÝ AI, BÁO CÁO AI, ĐỢT CHI |
-| Lãnh đạo                           | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, DUYỆT CHI, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD, TRỢ LÝ AI, BÁO CÁO AI, ĐỢT CHI, TÀI KHOẢN |
-| Kiểm tra viên                      | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD                            |
-| Tổng thư ký                        | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK, CẢNH BÁO AI, DASHBOARD                            |
+| Thư ký                             | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK (cả menu con), CẢNH BÁO AI, DASHBOARD              |
+| Kế toán                            | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, PHIẾU CHI, DUYỆT CHI, LỊCH SỬ TT, BÁO CÁO TK (cả menu con), CẢNH BÁO AI, DASHBOARD, TRỢ LÝ AI, BÁO CÁO AI, ĐỢT CHI |
+| Lãnh đạo                           | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, QL PHIẾU CHI, DUYỆT CHI, LỊCH SỬ TT, BÁO CÁO TK (cả menu con), CẢNH BÁO AI, DASHBOARD, TRỢ LÝ AI, BÁO CÁO AI, ĐỢT CHI, TÀI KHOẢN |
+| Kiểm tra viên                      | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK (cả menu con), CẢNH BÁO AI, DASHBOARD              |
+| Tổng thư ký                        | NHẬP BÀI, TRA CỨU, KIỂM DUYỆT, BÁO CÁO TK (cả menu con), CẢNH BÁO AI, DASHBOARD              |
 
 ---
 

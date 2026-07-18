@@ -17,11 +17,11 @@ Hệ thống quản lý nhuận bút dành cho tòa soạn báo in, hỗ trợ q
 |---------|-------|-------------|-----------|
 | Quản trị viên (Admin) | Quản lý toàn hệ thống | Tất cả quyền | Tất cả |
 | Phóng viên / CTV / Khách mời | Đối tượng nộp bài, được thanh toán | Nộp bài, tra cứu cá nhân | NhapBai, TraCuu |
-| Thư ký | Chấm tiền nhuận bút | Chấm tiền (0→1) | KiemDuyet |
-| Kế toán | Nhập liệu NB, lập phiếu chi, xác nhận thanh toán | Nhập liệu (1→2), báo sai sót, lập phiếu chi, duyệt chi, AI + BC AI, thanh toán | KiemDuyet, PhieuChi, DuyetChi, TroLyAI, BaoCaoAI, DotThanhToan |
-| Kiểm tra viên | Kiểm tra tính chính xác dữ liệu nhập | Kiểm tra (2→3), trả về Kế toán | KiemDuyet |
-| Tổng thư ký | Ký duyệt NB cuối cùng | Ký duyệt (3→4), nhập tên ký thủ công | KiemDuyet |
-| Lãnh đạo | Phê duyệt phiếu chi | Duyệt/từ chối phiếu chi, xem báo cáo, quản lý tài khoản | KiemDuyet, DuyetChi, TaiKhoan, TroLyAI, BaoCaoAI, DotThanhToan |
+| Thư ký | Chấm tiền nhuận bút | Chấm tiền (0→1) | KiemDuyet, BaoCao (cả menu con), CanhBaoAI, Dashboard |
+| Kế toán | Nhập liệu NB, lập phiếu chi, xác nhận thanh toán | Nhập liệu (1→2), báo sai sót, lập phiếu chi, duyệt chi, AI + BC AI, thanh toán | KiemDuyet, PhieuChi, QuanLyPhieuChi, DuyetChi, LichSuThanhToan, BaoCao (cả menu con), CanhBaoAI, Dashboard, TroLyAI, BaoCaoAI, DotThanhToan |
+| Kiểm tra viên | Kiểm tra tính chính xác dữ liệu nhập | Kiểm tra (2→3), trả về Kế toán | KiemDuyet, BaoCao (cả menu con), CanhBaoAI, Dashboard |
+| Tổng thư ký | Ký duyệt NB cuối cùng | Ký duyệt (3→4), nhập tên ký thủ công | KiemDuyet, BaoCao (cả menu con), CanhBaoAI, Dashboard |
+| Lãnh đạo | Phê duyệt phiếu chi | Duyệt/từ chối phiếu chi, xem báo cáo, quản lý tài khoản | KiemDuyet, QuanLyPhieuChi, DuyetChi, LichSuThanhToan, BaoCao (cả menu con), CanhBaoAI, Dashboard, TroLyAI, BaoCaoAI, DotThanhToan, TaiKhoan |
 
 **Lưu ý:** Vai trò "Thư ký" tương ứng **Ban thư ký tòa soạn** - người chấm tiền NB.
 

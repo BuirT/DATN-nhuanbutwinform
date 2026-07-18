@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -222,20 +222,29 @@ namespace HETHONGTINHNHUANBUT
 
             txtTongTien.Text = tong.ToString("N0");
 
-            // 🔥 ÁP DỤNG ĐÚNG LUẬT: TỪ 2 TRIỆU TRỞ LÊN MỚI TÍNH THUẾ
-            decimal thueVnd = 0;
-            if (tong >= 2000000)
-            {
-                if (decimal.TryParse(txtThueSuat.Text, out decimal thuePT))
-                {
-                    thueVnd = tong * (thuePT / 100);
-                }
-            }
-            else
-            {
-                // Dưới 2 triệu thì ép hiển thị % thuế bằng 0 cho Kế toán biết
-                txtThueSuat.Text = "0";
-            }
+              // ⚡ ÁP DỤNG ĐÚNG LUẬT: TỪ 2 TRIỆU TRỞ LÊN MỚI TÍNH THUẾ
+              decimal thueVnd = 0;
+              if (tong >= 2000000)
+              {
+                  // Tự động gán 10% nếu trước đó đang là 0 hoặc rỗng
+                  if (txtThueSuat.Text == "0" || string.IsNullOrWhiteSpace(txtThueSuat.Text))
+                  {
+                      txtThueSuat.Text = "10";
+                  }
+
+                  if (decimal.TryParse(txtThueSuat.Text, out decimal thuePT))
+                  {
+                      thueVnd = tong * (thuePT / 100);
+                  }
+              }
+              else
+              {
+                  // Dưới 2 triệu thì ép hiển thị % thuế bằng 0 cho Kế toán biết
+                  if (txtThueSuat.Text != "0")
+                  {
+                      txtThueSuat.Text = "0";
+                  }
+              }
 
             txtTienThue.Text = thueVnd.ToString("N0");
             txtThucLinh.Text = (tong - thueVnd).ToString("N0");

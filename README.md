@@ -87,6 +87,7 @@ DATN-nhuanbutwinform/
 ├── HETHONGTINHNHUANBUT/
 │   ├── Forms/                      # Các giao diện (WinForms)
 │   │   ├── FormLogin.cs            # Đăng nhập
+│   │   ├── FrmAIPhanTichDashboard.cs # Dashboard phân tích AI
 │   │   ├── FrmBaoCaoAI.cs          # Báo cáo AI
 │   │   ├── FrmBaoCaoCongNo.cs      # Báo cáo công nợ
 │   │   ├── FrmBaoCaoLanhDao.cs     # Báo cáo lãnh đạo
@@ -101,7 +102,8 @@ DATN-nhuanbutwinform/
 │   │   ├── FrmLoaiBao.cs           # Quản lý loại báo
 │   │   ├── FrmNhapBaiPhongVien.cs  # Nhập bài phóng viên
 │   │   ├── FrmNhapNhuanBut.cs      # Nhập nhuận bút
-│   │   ├── FrmPhieuChi.cs          # Quản lý phiếu chi
+│   │   ├── FrmPhieuChi.cs          # Lập phiếu chi
+│   │   ├── FrmQuanLyPhieuChi.cs    # Quản lý phiếu chi
 │   │   ├── FrmSoBao.cs             # Quản lý số báo
 │   │   ├── FrmTacGia.cs            # Quản lý tác giả
 │   │   ├── FrmTaiKhoan.cs          # Quản lý tài khoản
@@ -178,7 +180,7 @@ cd DATN-nhuanbutwinform
 #### 3. Tạo database
 
 - Mở SQL Server Management Studio
-- Tạo database tên `TN`
+- Tạo database tên `TenDatabase` hoặc khôi phục từ file `DATNnhuanbut.bak` / chạy script `DATNnhuanbut.sql`
 - Ứng dụng sẽ tự động tạo bảng khi chạy lần đầu
 
 #### 4. Cấu hình kết nối
@@ -188,7 +190,7 @@ Mở file `App.config`, sửa chuỗi kết nối:
 ```xml
 <connectionStrings>
   <add name="TNConnection"
-       connectionString="Server=YOUR_SERVER\SQLEXPRESS;Database=TN;Trusted_Connection=True;" />
+       connectionString="Server=YOUR_SERVER\SQLEXPRESS;Database=TenDatabase;Trusted_Connection=True;" />
 </connectionStrings>
 ```
 

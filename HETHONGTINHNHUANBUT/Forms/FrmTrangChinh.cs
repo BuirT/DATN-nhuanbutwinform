@@ -179,7 +179,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
-                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+                    btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard);
             }
             else if (role == "kế toán")
             {
@@ -187,7 +187,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
                     btnPhieuChi, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
-                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
+                    btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan);
             }
@@ -196,7 +196,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
-                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard,
+                    btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
                     btnDotThanhToan, btnTaiKhoan);
             }
@@ -205,14 +205,14 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
-                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+                    btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard);
             }
             else if (role == "tổng thư ký")
             {
                 SetButtonVisible(true,
                     btnNhapNhuanBut, btnTraCuuCaNhan,
                     btnKiemDuyet,
-                    btnBaoCaoThongKe, btnCanhBaoAI, btnDashboard);
+                    btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard);
             }
 
             // Hide empty group labels dynamically
