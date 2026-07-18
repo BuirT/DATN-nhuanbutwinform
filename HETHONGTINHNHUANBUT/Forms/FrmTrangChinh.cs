@@ -35,8 +35,8 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             pnlMenu.SuspendLayout();
             pnlMenuScroll.SuspendLayout();
 
-            AdjustMenuForScreen();
             ApplyPermissions();
+            AdjustMenuForScreen();
 
             tmrClock.Enabled = true;
             tmrClock.Tick += TmrClock_Tick;
@@ -111,9 +111,17 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
 
             btnTaiKhoan.Height = compact ? 40 : 44;
             btnDangXuat.Height = compact ? 40 : 44;
+            btnCauHinhThue.Height = compact ? 40 : 44;
             btnTaiKhoan.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
             btnDangXuat.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
-            pnlMenuFooter.Height = (btnTaiKhoan.Height + btnDangXuat.Height) + 16;
+            btnCauHinhThue.Font = new Font("Segoe UI", compact ? 9.75f : 10.5f, FontStyle.Bold);
+            
+            // Check if btnCauHinhThue is visible to calculate footer height properly
+            int visibleButtonsHeight = btnDangXuat.Height;
+            if (btnTaiKhoan.Visible) visibleButtonsHeight += btnTaiKhoan.Height;
+            if (btnCauHinhThue.Visible) visibleButtonsHeight += btnCauHinhThue.Height;
+            
+            pnlMenuFooter.Height = visibleButtonsHeight + 16;
         }
 
         private void SetActiveButton(Guna2Button clickedButton)
@@ -154,6 +162,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             string role = currentPrivilege?.Trim().ToLower() ?? "";
 
             btnTaiKhoan.Visible = false;
+            btnCauHinhThue.Visible = false;
             foreach (Control c in pnlMenuScroll.Controls)
             {
                 if (c is Guna2Button btn)
@@ -167,7 +176,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                     btnBaoCaoThongKe, btnCanhBaoAI,
                     btnNhapNhuanBut, btnTraCuuCaNhan, btnThongKeCaNhan,
                     btnKiemDuyet, btnPhieuChi, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
-                    btnDotThanhToan, btnTaiKhoan,
+                    btnDotThanhToan, btnTaiKhoan, btnCauHinhThue,
                     btnTacGia, btnQuanLyBao, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD);
             }
             else if (role == "phóng viên" || role == "cộng tác viên" || role == "khách mời")
@@ -198,7 +207,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
                     btnKiemDuyet, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
-                    btnDotThanhToan, btnTaiKhoan);
+                    btnDotThanhToan, btnTaiKhoan, btnCauHinhThue);
             }
             else if (role == "kiểm tra viên")
             {
@@ -421,6 +430,11 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
         }
-}
+
+        private void btnCauHinhThue_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmCauHinhThue(), btnCauHinhThue);
+        }
+    }
 }
 

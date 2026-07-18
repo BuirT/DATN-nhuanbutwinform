@@ -37,7 +37,17 @@ namespace HETHONGTINHNHUANBUT
                             Quyen NVARCHAR(50),
                             HoatDong BIT DEFAULT 1,
                             MaTacGiaGoc NVARCHAR(50)
-                        )";
+                        );
+                        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='CauHinhThue' AND xtype='U')
+                        BEGIN
+                            CREATE TABLE CauHinhThue (
+                                Id INT IDENTITY(1,1) PRIMARY KEY,
+                                MucChiuThue MONEY NOT NULL,
+                                PhanTramThue REAL NOT NULL
+                            );
+                            INSERT INTO CauHinhThue (MucChiuThue, PhanTramThue) VALUES (2000000, 10);
+                        END
+                        ";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                         cmd.ExecuteNonQuery();
                 }

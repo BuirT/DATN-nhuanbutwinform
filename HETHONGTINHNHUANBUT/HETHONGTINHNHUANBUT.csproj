@@ -187,6 +187,7 @@
     <Compile Include="Helpers\AIConfig.cs" />
     <Compile Include="Helpers\PermissionHelper.cs" />
     <Compile Include="Helpers\AiIconResource.cs" />
+    <Compile Include="Helpers\GearIconResource.cs" />
     <Compile Include="Helpers\UIHelper.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <!-- Services -->
@@ -198,6 +199,12 @@
     <Compile Include="Services\AIDashboardService.cs" />
     <Compile Include="Services\AIReportService.cs" />
     <!-- Forms -->
+    <Compile Include="Forms\FrmCauHinhThue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmCauHinhThue.Designer.cs">
+      <DependentUpon>FrmCauHinhThue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormLogin.cs">
       <SubType>Form</SubType>
     </Compile>

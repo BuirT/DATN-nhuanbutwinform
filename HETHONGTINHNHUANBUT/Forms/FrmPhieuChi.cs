@@ -18,6 +18,10 @@ namespace HETHONGTINHNHUANBUT
 
         public string QuyenHienTai { get; set; }
         public string NguoiLapPhieu { get; set; }
+        public string NguoiDangNhap { get; set; }
+        
+        private decimal MucChiuThue_CauHinh = 2000000m;
+        private float PhanTramThue_CauHinh = 10f;
 
         public FrmPhieuChi()
         {
@@ -61,8 +65,30 @@ namespace HETHONGTINHNHUANBUT
             txtMST.KeyPress += OnlyNumber_KeyPress;
         }
 
+        private async Task LoadCauHinhThueAsync()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand("SELECT TOP 1 MucChiuThue, PhanTramThue FROM CauHinhThue", conn))
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            MucChiuThue_CauHinh = reader["MucChiuThue"] != DBNull.Value ? Convert.ToDecimal(reader["MucChiuThue"]) : 2000000m;
+                            PhanTramThue_CauHinh = reader["PhanTramThue"] != DBNull.Value ? Convert.ToSingle(reader["PhanTramThue"]) : 10f;
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
         private async void FrmPhieuChi_Load(object sender, EventArgs e)
         {
+            await LoadCauHinhThueAsync();
             UIHelper.FormatGiaoDienBang(dgvChuaThanhToan);
             dgvChuaThanhToan.ReadOnly = false;
             dgvChuaThanhToan.ThemeStyle.ReadOnly = false;
@@ -222,14 +248,14 @@ namespace HETHONGTINHNHUANBUT
 
             txtTongTien.Text = tong.ToString("N0");
 
-              // ⚡ ÁP DỤNG ĐÚNG LUẬT: TỪ 2 TRIỆU TRỞ LÊN MỚI TÍNH THUẾ
+              // ⚡ ÁP DỤNG MỨC CHỊU THUẾ TỪ BẢNG CẤU HÌNH
               decimal thueVnd = 0;
-              if (tong >= 2000000)
+              if (tong >= MucChiuThue_CauHinh)
               {
-                  // Tự động gán 10% nếu trước đó đang là 0 hoặc rỗng
+                  // Tự động gán phần trăm thuế cấu hình nếu trước đó đang là 0 hoặc rỗng
                   if (txtThueSuat.Text == "0" || string.IsNullOrWhiteSpace(txtThueSuat.Text))
                   {
-                      txtThueSuat.Text = "10";
+                      txtThueSuat.Text = PhanTramThue_CauHinh.ToString();
                   }
 
                   if (decimal.TryParse(txtThueSuat.Text, out decimal thuePT))
@@ -239,7 +265,7 @@ namespace HETHONGTINHNHUANBUT
               }
               else
               {
-                  // Dưới 2 triệu thì ép hiển thị % thuế bằng 0 cho Kế toán biết
+                  // Dưới mức cấu hình thì ép hiển thị % thuế bằng 0 cho Kế toán biết
                   if (txtThueSuat.Text != "0")
                   {
                       txtThueSuat.Text = "0";

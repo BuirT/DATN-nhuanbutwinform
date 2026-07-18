@@ -23,6 +23,7 @@ namespace HETHONGTINHNHUANBUT
             this.pnlMenu = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlMenuScroll = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlMenuFooter = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnCauHinhThue = new Guna.UI2.WinForms.Guna2Button();
             this.btnTaiKhoan = new Guna.UI2.WinForms.Guna2Button();
             this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
@@ -126,14 +127,39 @@ namespace HETHONGTINHNHUANBUT
             // pnlMenuFooter
             // 
             this.pnlMenuFooter.BackColor = System.Drawing.Color.White;
+            this.pnlMenuFooter.Controls.Add(this.btnCauHinhThue);
             this.pnlMenuFooter.Controls.Add(this.btnTaiKhoan);
             this.pnlMenuFooter.Controls.Add(this.btnDangXuat);
             this.pnlMenuFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlMenuFooter.Location = new System.Drawing.Point(14, 650);
+            this.pnlMenuFooter.Location = new System.Drawing.Point(14, 590);
             this.pnlMenuFooter.Name = "pnlMenuFooter";
             this.pnlMenuFooter.Padding = new System.Windows.Forms.Padding(0, 4, 0, 12);
-            this.pnlMenuFooter.Size = new System.Drawing.Size(252, 100);
+            this.pnlMenuFooter.Size = new System.Drawing.Size(252, 160);
             this.pnlMenuFooter.TabIndex = 1;
+            // 
+            // btnCauHinhThue
+            // 
+            this.btnCauHinhThue.BorderRadius = 10;
+            this.btnCauHinhThue.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCauHinhThue.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnCauHinhThue.FillColor = System.Drawing.Color.Transparent;
+            this.btnCauHinhThue.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
+            this.btnCauHinhThue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.btnCauHinhThue.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.btnCauHinhThue.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.btnCauHinhThue.Image = HETHONGTINHNHUANBUT.GearIconResource.GetIcon();
+            this.btnCauHinhThue.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnCauHinhThue.ImageSize = new System.Drawing.Size(24, 24);
+            this.btnCauHinhThue.Location = new System.Drawing.Point(0, -2);
+            this.btnCauHinhThue.Name = "btnCauHinhThue";
+            this.btnCauHinhThue.Size = new System.Drawing.Size(252, 45);
+            this.btnCauHinhThue.TabIndex = 8;
+            this.btnCauHinhThue.Text = "CẤU HÌNH THUẾ";
+            this.btnCauHinhThue.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnCauHinhThue.TextOffset = new System.Drawing.Point(10, 0);
+            this.btnCauHinhThue.Click += new System.EventHandler(this.btnCauHinhThue_Click);
+            this.btnCauHinhThue.MouseEnter += new System.EventHandler(this.BtnSidebar_MouseEnter);
+            this.btnCauHinhThue.MouseLeave += new System.EventHandler(this.BtnSidebar_MouseLeave);
             // 
             // btnTaiKhoan
             // 
@@ -963,6 +989,6 @@ namespace HETHONGTINHNHUANBUT
         private System.Windows.Forms.Label lblGroupNghiepVu;
         private System.Windows.Forms.Label lblGroupAI;
         private System.Windows.Forms.Label lblGroupBaoCao;
+        private Guna.UI2.WinForms.Guna2Button btnCauHinhThue;
     }
 }
-
