@@ -50,8 +50,16 @@ namespace HETHONGTINHNHUANBUT
                 {
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(@"
-                        INSERT INTO AICanhBao (NgayCanhBao, LoaiCanhBao, MucDo, MaBaiViet, MaPhongVien, NoiDung, DaXuLy, GiaTriPhatHien)
-                        VALUES (@Ngay, @Loai, @MucDo, @MaBai, @MaPV, @NoiDung, 0, @GiaTri)", conn))
+                        IF NOT EXISTS (
+                            SELECT 1 FROM AICanhBao 
+                            WHERE LoaiCanhBao = @Loai 
+                              AND ISNULL(MaBaiViet, 0) = ISNULL(@MaBai, 0)
+                              AND ISNULL(MaPhongVien, 0) = ISNULL(@MaPV, 0)
+                        )
+                        BEGIN
+                            INSERT INTO AICanhBao (NgayCanhBao, LoaiCanhBao, MucDo, MaBaiViet, MaPhongVien, NoiDung, DaXuLy, GiaTriPhatHien)
+                            VALUES (@Ngay, @Loai, @MucDo, @MaBai, @MaPV, @NoiDung, 0, @GiaTri)
+                        END", conn))
                     {
                         cmd.Parameters.AddWithValue("@Ngay", DateTime.Now);
                         cmd.Parameters.AddWithValue("@Loai", alert.LoaiCanhBao);

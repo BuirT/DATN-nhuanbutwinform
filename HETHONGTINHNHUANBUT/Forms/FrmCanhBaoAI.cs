@@ -61,10 +61,9 @@ namespace HETHONGTINHNHUANBUT
                             n.NoiDungBaiViet,
                             n.DanhGiaAI,
                             n.DiemChatLuongAI,
-                            u.HoTen AS TenPhongVien
+                            n.Butdanh AS TenPhongVien
                         FROM AICanhBao a
                         LEFT JOIN Nhuanbut n ON a.MaBaiViet = n.Maso
-                        LEFT JOIN Users u ON a.MaPhongVien = u.Id
                         ORDER BY a.NgayCanhBao DESC", conn))
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -93,7 +92,10 @@ namespace HETHONGTINHNHUANBUT
             if (dgvCanhBao.Columns["DiemChatLuongAI"] != null) dgvCanhBao.Columns["DiemChatLuongAI"].Visible = false;
 
             if (dgvCanhBao.Columns["MaBai"] != null)
+            {
                 dgvCanhBao.Columns["MaBai"].HeaderText = "MÃ BÀI";
+                dgvCanhBao.Columns["MaBai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
             if (dgvCanhBao.Columns["TieuDe"] != null)
             {
                 dgvCanhBao.Columns["TieuDe"].HeaderText = "TIÊU ĐỀ";
@@ -109,21 +111,35 @@ namespace HETHONGTINHNHUANBUT
             if (dgvCanhBao.Columns["LoaiCanhBao"] != null)
                 dgvCanhBao.Columns["LoaiCanhBao"].HeaderText = "LOẠI CẢNH BÁO";
             if (dgvCanhBao.Columns["MucDo"] != null)
+            {
                 dgvCanhBao.Columns["MucDo"].HeaderText = "MỨC ĐỘ";
+                dgvCanhBao.Columns["MucDo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
             if (dgvCanhBao.Columns["NgayCanhBao"] != null)
             {
                 dgvCanhBao.Columns["NgayCanhBao"].HeaderText = "NGÀY";
                 dgvCanhBao.Columns["NgayCanhBao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                dgvCanhBao.Columns["NgayCanhBao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
             if (dgvCanhBao.Columns["DaXuLy"] != null)
             {
                 dgvCanhBao.Columns["DaXuLy"].HeaderText = "TRẠNG THÁI";
                 dgvCanhBao.Columns["DaXuLy"].ReadOnly = false;
+                dgvCanhBao.Columns["DaXuLy"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
             dgvCanhBao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             foreach (DataGridViewColumn c in dgvCanhBao.Columns)
-                if (c.Visible) c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            {
+                if (c.Visible)
+                {
+                    c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    if (c.DefaultCellStyle.Alignment != DataGridViewContentAlignment.NotSet)
+                    {
+                        c.HeaderCell.Style.Alignment = c.DefaultCellStyle.Alignment;
+                    }
+                }
+            }
         }
 
         private void CapNhatKPI()
