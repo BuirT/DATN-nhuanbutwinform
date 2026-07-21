@@ -387,6 +387,7 @@ namespace HETHONGTINHNHUANBUT
                     lblWarning.Text = warning.TrimEnd('\n');
                     lblWarning.ForeColor = Color.FromArgb(220, 38, 38);
                     lblWarning.Visible = true;
+                    UpdatePanelLayout();
                     MessageBox.Show(string.Format("AI Kiểm Toán phát hiện vấn đề:\n\n{0}\n\nĐồng chí vui lòng kiểm tra lại!", warning),
                         "AI Kiểm Toán - Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -395,6 +396,7 @@ namespace HETHONGTINHNHUANBUT
                     lblWarning.Text = string.Format("✔️ {0}", ketQua.TomTat);
                     lblWarning.ForeColor = Color.FromArgb(16, 185, 129);
                     lblWarning.Visible = true;
+                    UpdatePanelLayout();
                     MessageBox.Show(string.Format("✔️ AI Kiểm Toán: {0}", ketQua.TomTat),
                         "AI Kiểm Toán", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -413,6 +415,7 @@ namespace HETHONGTINHNHUANBUT
                     lblWarning.Text = warning.TrimEnd('\n');
                     lblWarning.ForeColor = Color.FromArgb(220, 38, 38);
                     lblWarning.Visible = true;
+                    UpdatePanelLayout();
                     MessageBox.Show(noiDung, tieuDe,
                         MessageBoxButtons.OK,
                         batThuong.MucDo == AnomalyDetector.MucDo.NghiemTrong

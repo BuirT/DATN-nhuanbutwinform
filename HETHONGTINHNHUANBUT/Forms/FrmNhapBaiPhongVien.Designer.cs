@@ -411,12 +411,14 @@ namespace HETHONGTINHNHUANBUT
             // 
             // lblWarning
             // 
+            this.lblWarning.AutoSize = true;
+            this.lblWarning.MaximumSize = new System.Drawing.Size(1110, 0);
             this.lblWarning.BackColor = System.Drawing.Color.Transparent;
             this.lblWarning.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.lblWarning.Location = new System.Drawing.Point(25, 580);
             this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(1110, 25);
+            this.lblWarning.Size = new System.Drawing.Size(1110, 60);
             this.lblWarning.TabIndex = 15;
             this.lblWarning.Visible = false;
             // 
