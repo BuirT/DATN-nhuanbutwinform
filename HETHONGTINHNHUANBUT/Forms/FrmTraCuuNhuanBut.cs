@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -17,6 +17,7 @@ namespace HETHONGTINHNHUANBUT
 
         private bool LaAdmin => string.Equals(QuyenHienTai?.Trim(), "admin", StringComparison.OrdinalIgnoreCase)
                              || string.Equals(QuyenHienTai?.Trim(), "quản trị viên", StringComparison.OrdinalIgnoreCase);
+        private bool LaPhongVien => string.Equals(QuyenHienTai?.Trim(), "phóng viên", StringComparison.OrdinalIgnoreCase);
 
         public FrmTraCuuNhuanBut()
         {
@@ -25,6 +26,13 @@ namespace HETHONGTINHNHUANBUT
 
         private async void FrmTraCuuNhuanBut_Load(object sender, EventArgs e)
         {
+            if (!LaAdmin && !LaPhongVien)
+            {
+                this.Visible = false;
+                this.BeginInvoke(new Action(() => this.Close()));
+                return;
+            }
+
             UIHelper.FormatGiaoDienBang(dgvTraCuu);
 
             if (string.IsNullOrEmpty(MaTacGiaCuaToi))

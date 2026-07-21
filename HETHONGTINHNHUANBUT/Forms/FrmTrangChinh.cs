@@ -186,14 +186,14 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             else if (role == "thư ký" || role == "thư kí" || role == "biên tập" || role == "biên tập viên")
             {
                 SetButtonVisible(true,
-                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnNhapNhuanBut,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard);
             }
             else if (role == "kế toán")
             {
                 SetButtonVisible(true,
-                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnNhapNhuanBut,
                     btnKiemDuyet,
                     btnPhieuChi, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard,
@@ -203,7 +203,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             else if (role == "lãnh đạo")
             {
                 SetButtonVisible(true,
-                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnNhapNhuanBut,
                     btnKiemDuyet, btnQuanLyPhieuChi, btnDuyetChi, btnLichSuThanhToan,
                     btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard,
                     btnTroLyAI, btnBaoCaoAI,
@@ -212,14 +212,14 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
             else if (role == "kiểm tra viên")
             {
                 SetButtonVisible(true,
-                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnNhapNhuanBut,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard);
             }
             else if (role == "tổng thư ký")
             {
                 SetButtonVisible(true,
-                    btnNhapNhuanBut, btnTraCuuCaNhan,
+                    btnNhapNhuanBut,
                     btnKiemDuyet,
                     btnBaoCaoThongKe, btnSubBaoCaoTH, btnSubBaoCaoCN, btnSubBaoCaoLD, btnCanhBaoAI, btnDashboard);
             }
@@ -331,6 +331,7 @@ private void btnLichSuThanhToan_Click(object sender, EventArgs e)
         {
             FrmTraCuuNhuanBut frm = new FrmTraCuuNhuanBut();
             frm.NguoiDangNhap = this.currentUserName;
+            frm.QuyenHienTai = this.currentPrivilege;
             OpenChildForm(frm, sender as Guna2Button);
         }
         private void btnThongKeCaNhan_Click(object sender, EventArgs e)
