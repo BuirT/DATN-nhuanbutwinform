@@ -172,7 +172,7 @@ QUY TẮC:
                 if (!string.IsNullOrEmpty(noiDung) && noiDung.Length > 3000)
                     truncatedNoiDung = noiDung.Substring(0, 3000) + "\n...(nội dung bị cắt do quá dài)";
 
-                string prompt = $@"Bạn là một biên tập viên giàu kinh nghiệm của một tòa soạn báo. 
+                string prompt = $@"Bạn là một biên tập viên giàu kinh nghiệm và vô cùng khắt khe của một tòa soạn báo. 
 Nhiệm vụ của bạn là đánh giá chất lượng bài viết dựa trên nội dung dưới đây.
 
 THÔNG TIN BÀI VIẾT:
@@ -183,18 +183,18 @@ THÔNG TIN BÀI VIẾT:
 NỘI DUNG BÀI VIẾT:
 ""{truncatedNoiDung}""
 
-Hãy đánh giá bài viết, tập trung vào các khía cạnh sau:
-1. Chính tả và ngữ pháp
-2. Cấu trúc và bố cục
-3. Giá trị thông tin
-4. Chiều sâu chuyên môn
-5. Tính hấp dẫn
+QUY TẮC CHẤM ĐIỂM (RẤT NGHIÊM NGẶT):
+1. Nếu bài viết KHÔNG CÓ DẤU TIẾNG VIỆT (ví dụ: ""hom nay troi mua""), KHÔNG VIẾT HOA ĐẦU CÂU, viết tắt, hoặc sai ngữ pháp nghiêm trọng: BẮT BUỘC CHẤM DƯỚI 40 ĐIỂM.
+2. Nếu bài viết quá ngắn, cẩu thả, nội dung lủng củng không chuẩn văn phong báo chí: CHẤM DƯỚI 50 ĐIỂM.
+3. Nếu bài viết đúng chuẩn tin tức, mạch lạc, chính tả hoàn hảo và sâu sắc: CHẤM 80-100 ĐIỂM.
+
+Hãy đánh giá bài viết dựa vào các khía cạnh: Chính tả, Ngữ pháp, Cấu trúc, Giá trị thông tin, Chiều sâu.
 
 QUAN TRỌNG: Trả về KẾT QUẢ DUY NHẤT DƯỚI DẠNG JSON như sau (không thêm bất kỳ ký tự nào khác ngoài JSON):
 {{
     ""diem"": <số nguyên từ 0 đến 100, đánh giá tổng thể chất lượng bài viết>,
     ""chiTiet"": ""<nhận xét chi tiết cho từng tiêu chí, viết thành đoạn văn>"",
-    ""nhanXet"": ""<nhận xét tổng quan 2-3 câu bằng tiếng Việt, tập trung vào điểm mạnh và điểm cần cải thiện>""
+    ""nhanXet"": ""<nhận xét tổng quan 2-3 câu bằng tiếng Việt, tập trung vào điểm mạnh và điểm yếu>""
 }}
 
 TUYỆT ĐỐI trả lời 100% BẰNG TIẾNG VIỆT. KHÔNG ĐƯỢC thêm bất kỳ chữ nào ngoài JSON.";

@@ -123,7 +123,19 @@ namespace HETHONGTINHNHUANBUT.Services.AI
         private bool TryLayPhanHoiXaGiao(string lower, out string phanHoi)
         {
             string text = lower.Trim();
-            if (text == "cảm ơn" || text == "cam on" || text == "thanks" || text == "thank you" || text == "ok cảm ơn" || text == "ok cam on")
+            
+            bool isThankYou = false;
+            string[] thankWords = { "cảm ơn", "cám ơn", "cam on", "thanks", "thank you", "ok cảm ơn" };
+            foreach (var w in thankWords)
+            {
+                if (text.StartsWith(w) || (text.Contains(w) && text.Length < 60))
+                {
+                    isThankYou = true;
+                    break;
+                }
+            }
+
+            if (isThankYou)
             {
                 phanHoi = "Rất vui được hỗ trợ bạn. Nếu cần, bạn có thể hỏi tôi về nhuận bút, phiếu chi, báo cáo, cảnh báo AI hoặc quy trình kiểm duyệt trong NewsPay.";
                 return true;
